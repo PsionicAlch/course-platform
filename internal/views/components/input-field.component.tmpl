@@ -1,0 +1,41 @@
+{{/*
+  Required properties:
+    .Label (string)
+    .Name (string)
+    .Type (string)
+    .PlaceHolder (string)
+    .Value (string)
+    .ValidationURL (string)
+    .Errors ([]string)
+*/}}
+
+{{ define "input-field" }}
+  <div class="form-control {{ if .Errors }} has-error {{ end }}">
+    <label for="{{ .Name }}">{{ .Label }}</label>
+    <input
+      {{ if .ValidationURL }}
+        hx-post="{{ .ValidationURL }}"
+        hx-target="closest form"
+        hx-swap="outerHTML"
+        hx-trigger="blur"
+      {{ end }}
+
+      type="{{ .Type }}"
+      name="{{ .Name }}"
+      id="{{ .Name }}"
+      placeholder="{{ .PlaceHolder }}"
+      spellcheck="false"
+      autocomplete="on"
+      value="{{ .Value }}">
+
+    {{ if .Errors }}
+      <div class="errors">
+        <ul>
+          {{ range .Errors }}
+            <li><small>{{ . }}</small></li>
+          {{ end }}
+        </ul>
+      </div>
+    {{ end }}
+  </div>
+{{ end }}

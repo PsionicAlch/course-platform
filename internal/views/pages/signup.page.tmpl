@@ -1,0 +1,25 @@
+{{ template "base" . }}
+
+{{ define "head" }}
+  <link rel="stylesheet" href="/assets/css/auth.css">
+
+  {{ template "spiral" "gray" }}
+
+  <title>Sign Up - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <header class="header">
+    {{ template "navbar" }}
+
+    <section class="auth-section">
+      <h1>Sign Up</h1>
+
+      {{ with .SignUpFormData }}
+        {{ template "signup-form" . }}
+      {{ else }}
+        <p>SignUpFormData was not set...</p>
+      {{ end }}
+    </section>
+  </header>
+{{ end }}

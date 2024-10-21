@@ -1,0 +1,11 @@
+{{/*
+  Required properties:
+    Checked (bool)
+*/}}
+
+{{ define "remember-field" }}
+  <div class="form-control">
+    <label for="remember-me">Remember Me:</label>
+    <input type="checkbox" name="remember-me" id="remember-me" {{ if .Checked }}checked{{ end }}>
+  </div>
+{{ end }}

@@ -1,0 +1,256 @@
+noscript {
+  display: block;
+  background: #FF1E00;
+  text-align: center;
+  padding: 2rem;
+  text-transform: uppercase;
+  width: 100vw;
+}
+
+::selection {
+  background-color: #00E1FF;
+  color: black;
+  -webkit-text-fill-color: black;
+  -moz-text-fill-color: black;
+}
+
+/* Turn off those annoying autofill styles */
+input:is(:-webkit-autofill, :autofill),
+input:is(:-webkit-autofill, :autofill):hover,
+input:is(:-webkit-autofill, :autofill):focus,
+input:is(:-webkit-autofill, :autofill):active {
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+input:is(:-webkit-autofill, :autofill) {
+    -webkit-text-fill-color: #fff;
+}
+
+input:is(:-webkit-autofill, :autofill):focus {
+    -webkit-text-fill-color: #fff;
+}
+
+.container {
+  max-width: 1400px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.bg-dark {
+  background-color: #121212;
+}
+
+.bg-dark-gray {
+  background-color: #1a1a1a;
+}
+
+.bg-gray {
+  background-color: #2a2a2a;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.shadow {
+  box-shadow: 5px 5px 17px 0px #000000;
+  transition: all 1s linear;
+}
+
+.gradient-text {
+  background: linear-gradient(45deg, #00E1FF, #FF1E00);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+}
+
+.gradient-btn {
+  background: linear-gradient(45deg, #00E1FF, #FF1E00);
+  background-size: 100%;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.gradient-btn:hover {
+  background: linear-gradient(45deg, #00cde8, #e81b00);
+}
+
+.btn {
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 25px;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
+.card-outer {
+  background: linear-gradient(45deg, #00E1FF, #FF1E00);
+  border-radius: 25px;
+  width: 300px;
+  height: 400px;
+  padding: 3px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  background: #121212;
+  border-radius: inherit;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  background-position: center;
+  background-size: 100%;
+  transition: all 1s cubic-bezier(.4,0,.2,1);
+}
+
+.card-inner:hover {
+  background-size: 110%;
+}
+
+.card-body {
+  background: #121212;
+  padding: 1rem;
+}
+
+.card-body h2 {
+  margin-bottom: 0.7rem;
+}
+
+.card-body p {
+  margin-bottom: 1rem;
+}
+
+.card-body a {
+  display: block;
+  width: 100%;
+  padding: 0.3rem 0;
+  background-color: white;
+  color: black;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.card-body a:hover {
+  background-color: lightgray;
+}
+
+.header {
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+  min-height: 100vh;
+  background-image: linear-gradient(to bottom, transparent 80%, #121212 100%);
+}
+
+.header::before {
+  content: "";
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  background-image: url('/assets/img/blue-spiral.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 50%;
+  transform: translate(-50%, -50%) rotate(0deg) scale(3);
+  animation: spiral-rotation 300s linear infinite;
+}
+
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.hero-wrapper {
+  width: 1400px;
+  text-align: center;
+  padding: 2rem 3rem;
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+}
+
+.hero-wrapper h1 {
+  font-size: 5rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hero-wrapper p {
+  max-width: 85%;
+  margin-right: auto;
+  margin-left: auto;
+  font-size: 2em;
+  color: white;
+  line-height: 1.3em;
+}
+
+.hero-wrapper a {
+  display: block;
+  margin-top: 5rem;
+}
+
+.navbar {
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.navbar-header {
+  font-weight: bold;
+  padding: 1rem 2rem;
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+}
+
+.navbar-links {
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+}
+
+.navbar-links a {
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.navbar-links a:hover {
+  font-weight: bold;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+section {
+  padding: 4rem 0;
+}

@@ -1,0 +1,10 @@
+{{/*
+  Required properties:
+    Value (string)
+    ValidationURL (string)
+    Errors ([]string)
+*/}}
+
+{{ define "email-field" }}
+  {{ template "input-field" (props "Label" "Email:" "Name" "email" "Type" "email" "PlaceHolder" "Enter Email" "Value" .Value "ValidationURL" .ValidationURL "Errors" .Errors)}}
+{{ end }}

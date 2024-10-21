@@ -1,0 +1,40 @@
+{{ define "base" }}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/assets/css/reset.css">
+  <link rel="stylesheet" href="/assets/css/global.css">
+  <link rel="stylesheet" href="/assets/css/animations.css">
+
+  <script src="/assets/js/alpine.min.js" defer></script>
+  <script src="/assets/js/htmx.min.js" defer></script>
+  <script src="/assets/js/htmx-head-support-ext.min.js" defer></script>
+  <!-- <script src="/assets/js/htmx-idiomorph-ext.min.js" defer></script> -->
+
+  {{ block "head" . }}
+    <title>Default Title - PsionicAlch</title>
+  {{ end }}
+</head>
+<body hx-ext="head-support" hx-boost="true">
+  <noscript>
+    <h3>This website requires JavaScript to work as intended. Please enable JavaScript to have the full experience.</h3>
+  </noscript>
+
+  {{ block "body" . }}
+    <h1>Default Body</h1>
+  {{ end }}
+
+  <!-- Footer Section -->
+  <footer id="footer">
+    <div class="container">
+      <p>&copy; 2024 PsionicAlch. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
+
+{{ end }}

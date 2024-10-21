@@ -1,0 +1,11 @@
+{{ define "tutorial-card" }}
+  <div class="card-outer shadow">
+    <div class="card-inner" style="background-image: url('/assets/img/{{ .Image }}');">
+      <div class="card-body">
+        <h2>{{ .Title }}</h2>
+        <p>{{ .Description }}</p>
+        <a href="/tutorials/{{ .Slug }}">More</a>
+      </div>
+    </div>
+  </div>
+{{ end }}
