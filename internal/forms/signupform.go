@@ -24,9 +24,9 @@ func (form *SignUpForm) SetErrors(errs FormErrors) {
 
 func NewSignupFormErrors() FormErrors {
 	return map[string][]string{
-		"email":            []string{},
-		"password":         []string{},
-		"confirm_password": []string{},
+		"email":            {},
+		"password":         {},
+		"confirm_password": {},
 	}
 }
 
