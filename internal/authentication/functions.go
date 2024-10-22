@@ -3,7 +3,6 @@ package authentication
 import (
 	"bytes"
 	"crypto/subtle"
-	"encoding/base64"
 	"encoding/gob"
 	"errors"
 	"runtime"
@@ -70,12 +69,12 @@ func HashPassword(password string, params ...*HashParameters) (string, error) {
 	}
 
 	// Convert password byte slice into a string.
-	return base64.RawStdEncoding.Strict().EncodeToString(hashedBytes), nil
+	return utils.EncodeString(hashedBytes), nil
 }
 
 // ComparePasswordAndHash compares a password to a hashed password to see if they are the same password.
 func ComparePasswordAndHash(password, encodedHash string) (bool, error) {
-	hashedBytes, err := base64.RawStdEncoding.Strict().DecodeString(encodedHash)
+	hashedBytes, err := utils.DecodeString(encodedHash)
 	if err != nil {
 		return false, err
 	}

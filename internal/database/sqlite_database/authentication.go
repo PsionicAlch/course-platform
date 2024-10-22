@@ -26,8 +26,8 @@ func (db *SQLiteDatabase) AddUser(email, password string) (string, error) {
 }
 
 // CreateAuthenticationToken creates a new authentication token in the database and returns the token.
-func (db *SQLiteDatabase) CreateAuthenticationToken(userId string) (string, error) {
-	query := `INSERT INTO tokens (id, token, token_type, valid_until, user_id) VALUES (?, ?, ?, ?, ?);`
+func (db *SQLiteDatabase) CreateAuthenticationToken(userId, ip string) (string, error) {
+	query := `INSERT INTO tokens (id, token, token_type, valid_until, user_id, ip_address) VALUES (?, ?, ?, ?, ?, ?);`
 
 	// Create token ID.
 	id, err := database.GenerateID()
@@ -45,10 +45,11 @@ func (db *SQLiteDatabase) CreateAuthenticationToken(userId string) (string, erro
 	tokenType := "authentication"
 
 	// Set date on which token expires.
-	validUntil := time.Now().Add(config.GetAuthTokenLifetime())
+	authTokenLifetime := time.Duration(config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME"))
+	validUntil := time.Now().Add(authTokenLifetime * time.Minute)
 
 	// Save cookie to the database.
-	_, err = db.connection.Exec(query, id, token, tokenType, validUntil, userId)
+	_, err = db.connection.Exec(query, id, token, tokenType, validUntil, userId, ip)
 	if err != nil {
 		return "", database.CreateFailedToCreateAuthenticationToken(err.Error())
 	}

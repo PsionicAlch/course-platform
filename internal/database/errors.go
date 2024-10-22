@@ -2,6 +2,36 @@ package database
 
 import "fmt"
 
+// TODO: Cleanup errors!
+
+type FailedToConnectToDatabase struct {
+	msg string
+}
+
+func CreateFailedConnectToDatabase(err string) FailedToConnectToDatabase {
+	return FailedToConnectToDatabase{
+		msg: err,
+	}
+}
+
+func (err FailedToConnectToDatabase) Error() string {
+	return fmt.Sprintf("failed to connect to database: %s", err.msg)
+}
+
+type FailedToMigrate struct {
+	msg string
+}
+
+func CreateFailedToMigrate(err string) FailedToMigrate {
+	return FailedToMigrate{
+		msg: err,
+	}
+}
+
+func (err FailedToMigrate) Error() string {
+	return fmt.Sprintf("failed to run migrations: %s", err.msg)
+}
+
 // UserAlreadyExists serves to indicate that the user's email address already exists.
 type UserAlreadyExists struct{}
 

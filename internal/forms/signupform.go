@@ -1,59 +1,81 @@
 package forms
 
 import (
-	"net/http"
+	"net/url"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/validators"
 )
 
 type SignUpForm struct {
-	email           string
-	password        string
-	confirmPassword string
-	rememberMe      bool
-	formErrors      map[string][]string
+	Email           string
+	Password        string
+	ConfirmPassword string
+	RememberMe      bool
+	Errors          FormErrors
 }
 
-func (form *SignUpForm) GetErrors() map[string][]string {
-	return form.formErrors
+func (form *SignUpForm) GetErrors() FormErrors {
+	return form.Errors
 }
 
-func (form *SignUpForm) SetErrors(errs map[string][]string) {
-	form.formErrors = errs
+func (form *SignUpForm) SetErrors(errs FormErrors) {
+	form.Errors = errs
 }
 
-func CreateSignUpForm(r *http.Request) *SignUpForm {
-	r.ParseForm()
+func NewSignupFormErrors() FormErrors {
+	return map[string][]string{
+		"email":            []string{},
+		"password":         []string{},
+		"confirm_password": []string{},
+	}
+}
 
-	email := r.Form.Get("email")
-	password := r.Form.Get("password")
-	confirmPassword := r.Form.Get("confirm-password")
-	rememberMe := r.Form.Has("remember-me")
-	errors := make(map[string][]string)
+func NewSignupForm() *SignUpForm {
+	email := ""
+	password := ""
+	confirmPassword := ""
+	rememberMe := false
+	formErrors := NewSignupFormErrors()
 
 	return &SignUpForm{
-		email:           email,
-		password:        password,
-		confirmPassword: confirmPassword,
-		rememberMe:      rememberMe,
-		formErrors:      errors,
+		Email:           email,
+		Password:        password,
+		ConfirmPassword: confirmPassword,
+		RememberMe:      rememberMe,
+		Errors:          formErrors,
+	}
+}
+
+func CreateSignUpForm(form url.Values) *SignUpForm {
+	email := form.Get("email")
+	password := form.Get("password")
+	confirmPassword := form.Get("confirm-password")
+	rememberMe := form.Has("remember-me")
+	formErrors := NewSignupFormErrors()
+
+	return &SignUpForm{
+		Email:           email,
+		Password:        password,
+		ConfirmPassword: confirmPassword,
+		RememberMe:      rememberMe,
+		Errors:          formErrors,
 	}
 }
 
 func (form *SignUpForm) Validate() bool {
 	valid := true
 
-	if err := validators.ValidateEmail(form.email); err != nil {
+	if err := validators.ValidateEmail(form.Email); err != nil {
 		AppendErrors(err, "email", form)
 		valid = false
 	}
 
-	if err := validators.ValidatePassword(form.password, 8); err != nil {
+	if err := validators.ValidatePassword(form.Password, 8); err != nil {
 		AppendErrors(err, "password", form)
 		valid = false
 	}
 
-	if err := validators.ValidatePasswordsMatch(form.password, form.confirmPassword); err != nil {
+	if err := validators.ValidatePasswordsMatch(form.Password, form.ConfirmPassword); err != nil {
 		AppendErrors(err, "confirm_password", form)
 		valid = false
 	}
@@ -64,17 +86,17 @@ func (form *SignUpForm) Validate() bool {
 func (form *SignUpForm) ValidateWithoutEmpty() bool {
 	valid := true
 
-	if err := validators.ValidateEmailWithoutEmpty(form.email); err != nil {
+	if err := validators.ValidateEmailWithoutEmpty(form.Email); err != nil {
 		AppendErrors(err, "email", form)
 		valid = false
 	}
 
-	if err := validators.ValidatePasswordWithoutEmpty(form.password, 8); err != nil {
+	if err := validators.ValidatePasswordWithoutEmpty(form.Password, 8); err != nil {
 		AppendErrors(err, "password", form)
 		valid = false
 	}
 
-	if err := validators.ValidatePasswordsMatch(form.password, form.confirmPassword); err != nil {
+	if err := validators.ValidatePasswordsMatch(form.Password, form.ConfirmPassword); err != nil {
 		AppendErrors(err, "confirm_password", form)
 		valid = false
 	}
@@ -83,13 +105,5 @@ func (form *SignUpForm) ValidateWithoutEmpty() bool {
 }
 
 func (form *SignUpForm) IsValid() bool {
-	return len(form.formErrors) == 0
-}
-
-func (form *SignUpForm) GetEmail() string {
-	return form.email
-}
-
-func (form *SignUpForm) GetPassword() string {
-	return form.password
+	return len(form.Errors) == 0
 }

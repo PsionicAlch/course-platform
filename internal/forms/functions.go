@@ -3,8 +3,8 @@ package forms
 import "github.com/PsionicAlch/psionicalch-home/internal/validators"
 
 type Form interface {
-	GetErrors() map[string][]string
-	SetErrors(errs map[string][]string)
+	GetErrors() FormErrors
+	SetErrors(errs FormErrors)
 }
 
 func AppendErrors(err error, field string, form Form) {

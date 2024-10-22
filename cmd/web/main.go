@@ -24,10 +24,16 @@ func main() {
 	loggers := utils.CreateLoggers("MAIN")
 
 	// Set up project config.
-	config.NewConfig()
+	err := config.SetupConfig()
+	if err != nil {
+		loggers.ErrorLog.Fatalln(err)
+	}
 
 	// Set up database.
-	db := sqlite_database.CreateSQLiteDatabase()
+	db, err := sqlite_database.CreateSQLiteDatabase("/db/db.sqlite", "/db/migrations")
+	if err != nil {
+		loggers.ErrorLog.Fatalln(err)
+	}
 	defer db.Close()
 
 	// Set up session.
@@ -40,7 +46,10 @@ func main() {
 	tuts := tutorials.SetupTutorials()
 
 	// Set up authentication.
-	auth := authentication.CreateAuthentication(db)
+	auth, err := authentication.CreateAuthentication(db)
+	if err != nil {
+		loggers.ErrorLog.Fatalln(err)
+	}
 
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(view)
@@ -52,10 +61,10 @@ func main() {
 	router := chi.NewRouter()
 
 	// Set up middleware.
+	router.Use(middleware.RealIP)
 	router.Use(session.LoadSession)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
-	router.Use(middleware.RealIP)
 
 	// Set up 404 handler.
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +78,9 @@ func main() {
 	router.Mount("/courses", courses.RegisterRoutes(courseHandlers))
 	router.Mount("/assets", assets.RegisterAssetRoutes())
 
+	port := config.GetWithoutError[string]("PORT")
+
 	// Start server.
-	loggers.InfoLog.Println("Starting server on port:", config.GetPort())
-	loggers.ErrorLog.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", config.GetPort()), router))
+	loggers.InfoLog.Println("Starting server on port:", port)
+	loggers.ErrorLog.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), router))
 }

@@ -14,8 +14,8 @@ func Redirect(w http.ResponseWriter, r *http.Request, url string, status ...int)
 	}
 
 	if hxRequest, err := strconv.ParseBool(r.Header.Get("HX-Request")); err == nil && hxRequest {
-		w.Header().Set("HX-Redirect", "/accounts/signup")
+		w.Header().Set("HX-Redirect", url)
 	} else {
-		http.Redirect(w, r, "/accounts/signup", statusCode)
+		http.Redirect(w, r, url, statusCode)
 	}
 }

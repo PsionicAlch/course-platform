@@ -1,6 +1,9 @@
 package utils
 
-import "crypto/rand"
+import (
+	"crypto/rand"
+	"encoding/base64"
+)
 
 // InSlice checks to see if an item is in a list of items.
 func InSlice[T comparable](item T, items []T) bool {
@@ -21,4 +24,12 @@ func RandomByteSlice(length int) ([]byte, error) {
 	}
 
 	return b, nil
+}
+
+func EncodeString(src []byte) string {
+	return base64.RawStdEncoding.EncodeToString(src)
+}
+
+func DecodeString(src string) ([]byte, error) {
+	return base64.RawStdEncoding.Strict().DecodeString(src)
 }

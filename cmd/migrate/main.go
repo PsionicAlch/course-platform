@@ -4,12 +4,10 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/sqlite"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "modernc.org/sqlite"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 )
 
@@ -25,20 +23,9 @@ func main() {
 	// Get the subcommand (e.g., "up", "down", "rollback")
 	subcommand := os.Args[1]
 
-	// Open database.
-	db := database.CreateDatabase()
-	defer db.Close()
-
-	// Configure database driver for migrate.
-	driver, err := sqlite.WithInstance(db.GetConnection(), &sqlite.Config{})
+	db, err := sqlite_database.CreateSQLiteDatabase("/db/db.sqlite", "/db/migrations")
 	if err != nil {
-		loggers.ErrorLog.Fatalln("Failed to configure database driver for migrate: ", err)
-	}
-
-	// Specify migrations directory.
-	m, err := migrate.NewWithDatabaseInstance("file://db/migrations", "sqlite", driver)
-	if err != nil {
-		loggers.ErrorLog.Fatalln("Failed to construct new instance of migrate: ", err)
+		loggers.ErrorLog.Fatalln(err)
 	}
 
 	// Run command.
@@ -46,13 +33,9 @@ func main() {
 	case "up":
 		loggers.InfoLog.Println("Running migrations up.")
 
-		// Apply all up migrations.
-		if err = m.Up(); err != nil {
-			if err == migrate.ErrNoChange {
-				loggers.InfoLog.Println("Migrations are up to date.")
-			} else {
-				loggers.ErrorLog.Fatalln("Failed to run migrations: ", err)
-			}
+		err = db.MigrateUp()
+		if err != nil {
+			loggers.ErrorLog.Fatalln(err)
 		}
 
 		loggers.InfoLog.Println("Migrations applied successfully!")
@@ -60,13 +43,9 @@ func main() {
 	case "down":
 		loggers.InfoLog.Println("Running migrations down.")
 
-		// Apply all down migrations.
-		if err = m.Down(); err != nil {
-			if err == migrate.ErrNoChange {
-				loggers.InfoLog.Println("Migrations are up to date.")
-			} else {
-				loggers.ErrorLog.Fatalln("Failed to run migrations: ", err)
-			}
+		err = db.MigrateDown()
+		if err != nil {
+			loggers.ErrorLog.Fatalln(err)
 		}
 
 		loggers.InfoLog.Println("Migrations removed successfully!")
@@ -81,12 +60,9 @@ func main() {
 
 		loggers.InfoLog.Printf("Rolling back %d step(s)\n", steps)
 
-		if err = m.Steps(-1 * steps); err != nil {
-			if err == migrate.ErrNoChange {
-				loggers.InfoLog.Println("Migrations are up to date.")
-			} else {
-				loggers.ErrorLog.Fatalln("Failed to run migrations: ", err)
-			}
+		err = db.Rollback(steps)
+		if err != nil {
+			loggers.ErrorLog.Fatalln(err)
 		}
 
 		loggers.InfoLog.Printf("Successfully rolled back %d migration(s)\n", steps)

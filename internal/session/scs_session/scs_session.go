@@ -25,8 +25,8 @@ func NewSession() *SCSSession {
 	sessionManager := scs.New()
 	sessionManager.Lifetime = 3 * time.Hour
 	sessionManager.IdleTimeout = 20 * time.Minute
-	sessionManager.Cookie.Name = config.GetSessionCookieName()
-	sessionManager.Cookie.Domain = config.GetDomainName()
+	sessionManager.Cookie.Name = config.GetWithoutError[string]("SESSION_COOKIE_NAME")
+	sessionManager.Cookie.Domain = config.GetWithoutError[string]("DOMAIN_NAME")
 	sessionManager.Cookie.HttpOnly = true
 	sessionManager.Cookie.Path = "/"
 	sessionManager.Cookie.Persist = false
@@ -47,7 +47,7 @@ func (s *SCSSession) StoreSignUpFormData(ctx context.Context, signUpFormData *fo
 }
 
 func (s *SCSSession) RetrieveSignUpFormData(ctx context.Context) *forms.SignUpForm {
-	signUpFormData := new(forms.SignUpForm)
+	signUpFormData := forms.NewSignupForm()
 
 	if s.SessionManager.Exists(ctx, "signup-form-data") {
 		data, ok := s.SessionManager.Pop(ctx, "signup-form-data").(*forms.SignUpForm)

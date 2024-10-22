@@ -1,12 +1,42 @@
-package config
+package envloader
 
 import (
 	"fmt"
 	"os"
 	"strconv"
-	"time"
+
+	"github.com/PsionicAlch/psionicalch-home/pkg/envloader/validators"
+	"github.com/joho/godotenv"
 )
 
+// LoadEnvironment uses github.com/joho/godotenv to load the specified env files afterwards it ensures that
+// all the required variables are set and validated. Just pass it a map containing the names of the environment
+// variables that you want to have set as well as a validation function to ensure that the variable is in the
+// correct format.
+func LoadEnvironment(settings map[string]validators.ValidationFunc, filenames ...string) error {
+	err := godotenv.Load(filenames...)
+	if err != nil {
+		return err
+	}
+
+	for name, validateFunc := range settings {
+		variable, variableAvailable := os.LookupEnv(name)
+		if !variableAvailable {
+			return fmt.Errorf("%s environment variable was not set", name)
+		}
+
+		err = validateFunc(name, variable)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// GetVariable is a generic function that allows you to read an environment variable and automatically convert
+// it to one of the following types: string, int, int8, int16, int32, int64, uint8, uint16, uint32, uint64,
+// float32, float64, bool, complex64, complex128.
 func GetVariable[T any](name string) (T, error) {
 	var empty T
 
@@ -139,13 +169,6 @@ func GetVariable[T any](name string) (T, error) {
 
 		return any(v).(T), nil
 
-	case time.Duration:
-		v, err := strconv.ParseInt(variable, 10, 64)
-		if err != nil {
-			return empty, fmt.Errorf("failed to convert %s to int64: %v", name, err)
-		}
-
-		return any(time.Duration(v)).(T), nil
 	default:
 		return empty, fmt.Errorf("unsupported type for %s", name)
 	}

@@ -41,7 +41,8 @@ func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
-	signUpForm := forms.CreateSignUpForm(r)
+	r.ParseForm()
+	signUpForm := forms.CreateSignUpForm(r.Form)
 	valid := signUpForm.Validate()
 
 	if !valid {
@@ -50,18 +51,16 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.auth.SignUserIn(signUpForm)
+	cookie, err := h.auth.SignUserIn(signUpForm, r.RemoteAddr)
 	if err != nil {
-		switch err.(type) {
-		case authentication.UserAlreadyExists:
-			forms.AppendError("email", err.Error(), signUpForm)
-		}
+		h.Loggers.ErrorLog.Println("failed to sign user in: ", err)
 
 		h.session.StoreSignUpFormData(r.Context(), signUpForm)
 		utils.Redirect(w, r, "/accounts/signup")
 		return
 	}
 
+	http.SetCookie(w, cookie)
 	utils.Redirect(w, r, "/")
 }
 
@@ -70,7 +69,9 @@ func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) ValidateSignupForm(w http.ResponseWriter, r *http.Request) {
-	signUpForm := forms.CreateSignUpForm(r)
+	r.ParseForm()
+
+	signUpForm := forms.CreateSignUpForm(r.Form)
 	signUpForm.ValidateWithoutEmpty()
 
 	h.views.RenderHTMX(w, "signup-form.htmx.tmpl", signUpForm)

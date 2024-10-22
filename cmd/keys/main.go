@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/base64"
 	"fmt"
 	"log"
 
@@ -19,8 +18,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	hashKey := base64.RawStdEncoding.EncodeToString(hashSlice)
-	blockKey := base64.RawStdEncoding.EncodeToString(blockSlice)
+	hashKey := utils.EncodeString(hashSlice)
+	blockKey := utils.EncodeString(blockSlice)
 
 	fmt.Printf("Hash Key: %s\nBlock Key: %s\n", hashKey, blockKey)
 }
