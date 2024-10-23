@@ -1,9 +1,17 @@
 {{ define "signup-form"}}
   <form method="post" class="auth-form">
-    {{ template "email-field" (props "Value" .Email "ValidationURL" "/accounts/validate/signup-form" "Errors" .Errors.email) }}
-    {{ template "password-field" (props "Value" .Password "ValidationURL" "/accounts/validate/signup-form" "Errors" .Errors.password) }}
-    {{ template "confirm-password-field" (props "Value" .ConfirmPassword "ValidationURL" "/accounts/validate/signup-form"  "Errors" .Errors.confirm_password) }}
-    {{ template "remember-field" }}
+    {{ if .Error }}
+      <div class="form-error">
+        <p>{{ .Error }}</p>
+      </div>
+    {{ end }}
+
+    {{ with .Form }}
+      {{ template "email-field" (props "Value" .Email "ValidationURL" "/accounts/validate/signup-form" "Errors" .Errors.email) }}
+      {{ template "password-field" (props "Value" .Password "ValidationURL" "/accounts/validate/signup-form" "Errors" .Errors.password) }}
+      {{ template "confirm-password-field" (props "Value" .ConfirmPassword "ValidationURL" "/accounts/validate/signup-form"  "Errors" .Errors.confirm_password) }}
+      {{ template "remember-field" (props "Checked" .RememberMe) }}
+    {{ end }}
 
     <button type="submit" class="gradient-btn">Sign Up</button>
 

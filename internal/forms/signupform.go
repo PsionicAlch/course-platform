@@ -107,3 +107,7 @@ func (form *SignUpForm) ValidateWithoutEmpty() bool {
 func (form *SignUpForm) IsValid() bool {
 	return len(form.Errors) == 0
 }
+
+func (form *SignUpForm) AddError(field, msg string) {
+	form.Errors[field] = append(form.Errors[field], msg)
+}

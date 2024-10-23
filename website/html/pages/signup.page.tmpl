@@ -15,7 +15,7 @@
     <section class="auth-section">
       <h1>Sign Up</h1>
 
-      {{ with .SignUpFormData }}
+      {{ with .SignUpForm }}
         {{ template "signup-form" . }}
       {{ else }}
         <p>SignUpFormData was not set...</p>

@@ -1,7 +1,9 @@
 package accounts
 
-import "github.com/PsionicAlch/psionicalch-home/internal/forms"
+import (
+	"github.com/PsionicAlch/psionicalch-home/website/html"
+)
 
 type SignUpPageData struct {
-	SignUpFormData *forms.SignUpForm
+	SignUpForm *html.SignupFormComponentData
 }

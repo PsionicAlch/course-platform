@@ -4,10 +4,12 @@ import (
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
+	"github.com/PsionicAlch/psionicalch-home/internal/authentication/errors"
 	"github.com/PsionicAlch/psionicalch-home/internal/forms"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -40,7 +42,10 @@ func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 	signUpForm := h.session.RetrieveSignUpFormData(r.Context())
 
 	h.renderers.Page.RenderHTML(w, "signup.page.tmpl", &SignUpPageData{
-		SignUpFormData: signUpForm,
+		SignUpForm: &html.SignupFormComponentData{
+			Form:  signUpForm,
+			Error: "",
+		},
 	})
 }
 
@@ -50,17 +55,38 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	valid := signUpForm.Validate()
 
 	if !valid {
-		h.session.StoreSignUpFormData(r.Context(), signUpForm)
-		utils.Redirect(w, r, "/accounts/signup")
+		if utils.IsHTMX(r) {
+			h.renderers.Htmx.RenderHTML(w, "signup-form.htmx", &html.SignupFormComponentData{
+				Form:  signUpForm,
+				Error: "",
+			})
+		} else {
+			h.session.StoreSignUpFormData(r.Context(), signUpForm)
+			utils.Redirect(w, r, "/accounts/signup")
+		}
 		return
 	}
 
 	cookie, err := h.auth.SignUserIn(signUpForm, r.RemoteAddr)
 	if err != nil {
-		h.Loggers.ErrorLog.Println("failed to sign user in: ", err)
+		formErr := ""
+		if _, ok := err.(errors.UserAlreadyExists); ok {
+			signUpForm.AddError("email", "this email address is already in use")
+		} else {
+			h.Loggers.ErrorLog.Println("failed to sign user in: ", err)
+			formErr = "unexpected server error. please try again"
+		}
 
-		h.session.StoreSignUpFormData(r.Context(), signUpForm)
-		utils.Redirect(w, r, "/accounts/signup")
+		if utils.IsHTMX(r) {
+			h.renderers.Htmx.RenderHTML(w, "signup-form.htmx", &html.SignupFormComponentData{
+				Form:  signUpForm,
+				Error: formErr,
+			})
+		} else {
+			h.session.StoreSignUpFormData(r.Context(), signUpForm)
+			utils.Redirect(w, r, "/accounts/signup")
+		}
+
 		return
 	}
 

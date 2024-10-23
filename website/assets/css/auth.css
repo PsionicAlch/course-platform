@@ -21,6 +21,17 @@
   flex-direction: column;
 }
 
+.form-error {
+  width: fit-content;
+  margin: 0 auto;
+  text-align: center;
+  text-transform: capitalize;
+  color: #FF1E00;
+  margin-bottom: 3rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #FF1E00;
+}
+
 .form-control {
   display: flex;
   margin-bottom: 3rem;

@@ -13,9 +13,14 @@ func Redirect(w http.ResponseWriter, r *http.Request, url string, status ...int)
 		statusCode = http.StatusOK
 	}
 
-	if hxRequest, err := strconv.ParseBool(r.Header.Get("HX-Request")); err == nil && hxRequest {
+	if IsHTMX(r) {
 		w.Header().Set("HX-Redirect", url)
 	} else {
 		http.Redirect(w, r, url, statusCode)
 	}
+}
+
+func IsHTMX(r *http.Request) bool {
+	hxRequest, err := strconv.ParseBool(r.Header.Get("HX-Request"))
+	return err == nil && hxRequest
 }

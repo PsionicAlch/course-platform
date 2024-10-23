@@ -1,14 +1,6 @@
-package database
+package models
 
 import "time"
-
-type UserModel struct {
-	ID         string
-	Email      string
-	Password   string
-	Created_At time.Time
-	Update_At  time.Time
-}
 
 type TokenModel struct {
 	ID         string
