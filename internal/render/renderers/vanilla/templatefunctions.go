@@ -1,11 +1,8 @@
-package views
+package vanilla
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
-
-	"github.com/PsionicAlch/psionicalch-home/internal/views/errors"
 )
 
 func CreateFuncMap() template.FuncMap {
@@ -33,20 +30,4 @@ func Props(values ...any) (map[string]any, error) {
 	}
 
 	return dict, nil
-}
-
-func Render(templateCache *TemplateCache, tmpl string, data any) (*bytes.Buffer, error) {
-	t, ok := templateCache.Cache[tmpl]
-	if !ok {
-		return nil, errors.CreateFailedToFindTemplateInCache(tmpl, templateCache.Name)
-	}
-
-	templateBuffer := new(bytes.Buffer)
-
-	err := t.Execute(templateBuffer, data)
-	if err != nil {
-		return nil, errors.CreateFailedToCompileTemplate(tmpl, err.Error())
-	}
-
-	return templateBuffer, nil
 }

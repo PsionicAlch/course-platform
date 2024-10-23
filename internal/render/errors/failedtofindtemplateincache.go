@@ -6,9 +6,9 @@ type FailedToFindTemplateInCache struct {
 	msg string
 }
 
-func CreateFailedToFindTemplateInCache(templateName, cacheName string) FailedToFindTemplateInCache {
+func CreateFailedToFindTemplateInCache(templateName, templateDir string) FailedToFindTemplateInCache {
 	return FailedToFindTemplateInCache{
-		msg: fmt.Sprintf("failed to find %s in %s template cache", templateName, cacheName),
+		msg: fmt.Sprintf("failed to find %s inside %s", templateName, templateDir),
 	}
 }
 

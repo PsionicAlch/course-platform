@@ -1,4 +1,4 @@
-package views
+package html
 
 type HeaderComponentData struct {
 	Heading  string

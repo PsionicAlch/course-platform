@@ -1,13 +1,13 @@
 package general
 
-import "github.com/PsionicAlch/psionicalch-home/internal/views"
+import "github.com/PsionicAlch/psionicalch-home/website/html"
 
 type HomePageData struct {
-	HeaderComponentData *views.HeaderComponentData
+	HeaderComponentData *html.HeaderComponentData
 }
 
 func CreateHomePageData() *HomePageData {
-	headerComponentData := views.CreateHeaderComponent(
+	headerComponentData := html.CreateHeaderComponent(
 		"Build Real Projects, Launch Real Products",
 		"Tired of courses that teach theory but don't get real-world results? Skip the fluff and dive into practical Golang courses designed to help you build projects you can use for your portfolio or business right now.",
 		"/courses",

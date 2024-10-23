@@ -8,8 +8,10 @@ import (
 )
 
 type Session interface {
+	// SignUpForm based functions.
 	StoreSignUpFormData(ctx context.Context, signUpFormData *forms.SignUpForm)
 	RetrieveSignUpFormData(ctx context.Context) *forms.SignUpForm
 
+	// Middleware functions.
 	LoadSession(next http.Handler) http.Handler
 }

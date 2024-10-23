@@ -3,26 +3,30 @@ package general
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/internal/views"
+	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
 type Handlers struct {
 	utils.Loggers
-	views *views.Views
+	renderers *pages.Renderers
 }
 
-func SetupHandlers(views *views.Views) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer) *Handlers {
 	loggers := utils.CreateLoggers("GENERAL HANDLERS")
 
 	return &Handlers{
 		Loggers: loggers,
-		views:   views,
+		renderers: &pages.Renderers{
+			Page: pageRenderer,
+			Htmx: nil,
+		},
 	}
 }
 
 func (h *Handlers) HomeGet(w http.ResponseWriter, r *http.Request) {
 	homePageData := CreateHomePageData()
 
-	h.views.RenderHTML(w, "home.page.tmpl", homePageData)
+	h.renderers.Page.RenderHTML(w, "home.page.tmpl", homePageData)
 }

@@ -3,22 +3,23 @@ package tutorials
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/internal/views"
+	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
 type Handlers struct {
 	utils.Loggers
-	views     *views.Views
+	renderers *pages.Renderers
 	tutorials *Tutorials
 }
 
-func SetupHandlers(views *views.Views, tutorials *Tutorials) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, tutorials *Tutorials) *Handlers {
 	loggers := utils.CreateLoggers("TUTORIALS HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
-		views:     views,
+		renderers: pages.CreateRenderers(pageRenderer, nil),
 		tutorials: tutorials,
 	}
 }
@@ -26,5 +27,5 @@ func SetupHandlers(views *views.Views, tutorials *Tutorials) *Handlers {
 func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 	tutorialsPageData := CreateTutorialsPageData(h.tutorials)
 
-	h.views.RenderHTML(w, "tutorials.page.tmpl", tutorialsPageData)
+	h.renderers.Page.RenderHTML(w, "tutorials.page.tmpl", tutorialsPageData)
 }

@@ -5,37 +5,41 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/forms"
+	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/internal/views"
+	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
 type Handlers struct {
 	utils.Loggers
-	views   *views.Views
-	session session.Session
-	auth    *authentication.Authentication
+	renderers *pages.Renderers
+	session   session.Session
+	auth      *authentication.Authentication
 }
 
-func SetupHandlers(views *views.Views, session session.Session, auth *authentication.Authentication) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, session session.Session, auth *authentication.Authentication) *Handlers {
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
 		Loggers: loggers,
-		views:   views,
+		renderers: &pages.Renderers{
+			Page: pageRenderer,
+			Htmx: htmxRenderer,
+		},
 		session: session,
 		auth:    auth,
 	}
 }
 
 func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
-	h.views.RenderHTML(w, "login.page.tmpl", nil)
+	h.renderers.Page.RenderHTML(w, "login.page.tmpl", nil)
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 	signUpForm := h.session.RetrieveSignUpFormData(r.Context())
 
-	h.views.RenderHTML(w, "signup.page.tmpl", &SignUpPageData{
+	h.renderers.Page.RenderHTML(w, "signup.page.tmpl", &SignUpPageData{
 		SignUpFormData: signUpForm,
 	})
 }
@@ -65,7 +69,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
-	h.views.RenderHTML(w, "forgot.page.tmpl", nil)
+	h.renderers.Page.RenderHTML(w, "forgot.page.tmpl", nil)
 }
 
 func (h *Handlers) ValidateSignupForm(w http.ResponseWriter, r *http.Request) {
@@ -74,5 +78,5 @@ func (h *Handlers) ValidateSignupForm(w http.ResponseWriter, r *http.Request) {
 	signUpForm := forms.CreateSignUpForm(r.Form)
 	signUpForm.ValidateWithoutEmpty()
 
-	h.views.RenderHTMX(w, "signup-form.htmx.tmpl", signUpForm)
+	h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", signUpForm)
 }
