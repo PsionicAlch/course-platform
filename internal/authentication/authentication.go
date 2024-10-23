@@ -45,7 +45,7 @@ func (auth *Authentication) SignUserIn(form *forms.SignUpForm, ipAddr string) (*
 	}
 
 	// Save authentication token to secure cookie.
-	encodedCookie, err := auth.cookieWrapper.Encode(token)
+	encodedCookie, err := auth.cookieWrapper.Encode(token, form.RememberMe)
 	if err != nil {
 		return nil, CreateFailedToSignUserIn(fmt.Sprintf("failed to create secure cookie: %s", err))
 	}

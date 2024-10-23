@@ -52,22 +52,25 @@ func CreateSecureCookieWrapper() (*SecureCookieWrapper, error) {
 	return cookieWrapper, nil
 }
 
-func (wrapper *SecureCookieWrapper) Encode(value any) (*http.Cookie, error) {
+func (wrapper *SecureCookieWrapper) Encode(value any, remember bool) (*http.Cookie, error) {
 	encoded, err := securecookie.EncodeMulti(wrapper.name, value, wrapper.secureCookiesMap["current"])
 	if err != nil {
 		return nil, err
 	}
 
-	cookie := &http.Cookie{
-		Name:     wrapper.name,
-		Value:    encoded,
-		Path:     "/",
-		Domain:   wrapper.domain,
-		Expires:  wrapper.expires,
-		HttpOnly: true,
-		SameSite: wrapper.sameSite,
-		Secure:   wrapper.secure,
+	cookie := new(http.Cookie)
+	cookie.Name = wrapper.name
+	cookie.Value = encoded
+	cookie.Path = "/"
+	cookie.Domain = wrapper.domain
+
+	if remember {
+		cookie.Expires = wrapper.expires
 	}
+
+	cookie.HttpOnly = true
+	cookie.SameSite = wrapper.sameSite
+	cookie.Secure = wrapper.secure
 
 	return cookie, nil
 }
