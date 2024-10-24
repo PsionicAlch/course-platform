@@ -78,10 +78,13 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if utils.IsHTMX(r) {
-			h.renderers.Htmx.RenderHTML(w, "signup-form.htmx", &html.SignupFormComponentData{
+			err = h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", &html.SignupFormComponentData{
 				Form:  signUpForm,
 				Error: formErr,
 			})
+			if err != nil {
+				h.Loggers.WarningLog.Println("Failed to render HTML: ", err)
+			}
 		} else {
 			h.session.StoreSignUpFormData(r.Context(), signUpForm)
 			utils.Redirect(w, r, "/accounts/signup")
@@ -91,7 +94,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, cookie)
-	utils.Redirect(w, r, "/")
+	utils.Redirect(w, r, "/profile")
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
@@ -104,5 +107,8 @@ func (h *Handlers) ValidateSignupForm(w http.ResponseWriter, r *http.Request) {
 	signUpForm := forms.CreateSignUpForm(r.Form)
 	signUpForm.ValidateWithoutEmpty()
 
-	h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", signUpForm)
+	h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", &html.SignupFormComponentData{
+		Form:  signUpForm,
+		Error: "",
+	})
 }

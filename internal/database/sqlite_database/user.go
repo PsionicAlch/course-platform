@@ -13,7 +13,11 @@ func (db *SQLiteDatabase) FindUserByEmail(email string) (*models.UserModel, erro
 	user := new(models.UserModel)
 
 	err := row.Scan(&user.ID, &user.Email, &user.Created_At, &user.Update_At)
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 

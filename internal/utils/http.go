@@ -13,11 +13,8 @@ func Redirect(w http.ResponseWriter, r *http.Request, url string, status ...int)
 		statusCode = http.StatusOK
 	}
 
-	if IsHTMX(r) {
-		w.Header().Set("HX-Redirect", url)
-	} else {
-		http.Redirect(w, r, url, statusCode)
-	}
+	w.Header().Set("HX-Redirect", url)
+	http.Redirect(w, r, url, statusCode)
 }
 
 func IsHTMX(r *http.Request) bool {

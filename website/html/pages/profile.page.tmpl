@@ -1,0 +1,9 @@
+{{ template "base" . }}
+
+{{ define "head" }}
+  <title>Profile - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <h1>You're currently logged in as: {{ .Email }}</h1>
+{{ end }}

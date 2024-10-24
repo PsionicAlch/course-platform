@@ -13,7 +13,7 @@
       {{ template "remember-field" (props "Checked" .RememberMe) }}
     {{ end }}
 
-    <button type="submit" class="gradient-btn">Sign Up</button>
+    <button type="submit" class="gradient-btn" hx-post="/accounts/signup" hx-target="closest form" hx-swap="outerHTML">Sign Up</button>
 
     <div class="auth-form-links">
       <a href="/accounts/login">Already have an account?</a>

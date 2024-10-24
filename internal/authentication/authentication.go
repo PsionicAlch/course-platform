@@ -5,22 +5,29 @@ import (
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication/errors"
+	"github.com/PsionicAlch/psionicalch-home/internal/config"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/forms"
+	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 )
 
 type Authentication struct {
+	utils.Loggers
 	db            database.Database
 	cookieWrapper *SecureCookieWrapper
 }
 
 func CreateAuthentication(db database.Database) (*Authentication, error) {
+	loggers := utils.CreateLoggers("AUTHENTICATION")
+
 	cookieWrapper, err := CreateSecureCookieWrapper()
 	if err != nil {
 		return nil, err
 	}
 
 	return &Authentication{
+		Loggers:       loggers,
 		db:            db,
 		cookieWrapper: cookieWrapper,
 	}, nil
@@ -62,4 +69,20 @@ func (auth *Authentication) SignUserIn(form *forms.SignUpForm, ipAddr string) (*
 	}
 
 	return encodedCookie, nil
+}
+
+func (auth *Authentication) GetUserFromCookie(cookies []*http.Cookie) (*models.UserModel, error) {
+	for _, cookie := range cookies {
+		if cookie.Name == config.GetWithoutError[string]("AUTH_COOKIE_NAME") {
+			var authToken string
+			if err := auth.cookieWrapper.Decode(cookie.Value, &authToken); err != nil {
+				auth.ErrorLog.Println(err)
+				return nil, err
+			}
+
+			auth.InfoLog.Println("Auth Token: ", authToken)
+		}
+	}
+
+	return nil, nil
 }
