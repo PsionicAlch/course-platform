@@ -7,10 +7,10 @@ import (
 )
 
 type Gatekeeper struct {
-	Lifetime      time.Duration
-	HashParams    *GatekeeperPasswordHashParameters
-	CookieManager *GatekeeperCookieManager
-	Database      GatekeeperDatabase
+	lifeTime      time.Duration
+	hashParams    *GatekeeperPasswordHashParameters
+	cookieManager *GatekeeperCookieManager
+	database      GatekeeperDatabase
 }
 
 // NewGatekeeper creates a new instance of the Gatekeeper authentication system with sensible defaults.
@@ -36,10 +36,10 @@ func NewGatekeeper(cookieName, websiteDomain string, authLifetime time.Duration,
 	cookieManager := CreateCookieManager(cookieParams)
 
 	gt := &Gatekeeper{
-		Lifetime:      authLifetime,
-		HashParams:    hashParams,
-		CookieManager: cookieManager,
-		Database:      database,
+		lifeTime:      authLifetime,
+		hashParams:    hashParams,
+		cookieManager: cookieManager,
+		database:      database,
 	}
 
 	return gt, nil
@@ -50,55 +50,50 @@ func NewGatekeeper(cookieName, websiteDomain string, authLifetime time.Duration,
 // required to authenticate the user later on.
 func (gatekeeper *Gatekeeper) SignUserIn(email, password, ipAddr string, rememberMe bool) (*http.Cookie, error) {
 	// Try and fetch a user with that email address.
-	userExists, err := gatekeeper.Database.UserExists(email)
+	userExists, err := gatekeeper.database.UserExists(email)
 	if err != nil {
-		return nil, CreateFailedToFindUserByEmail(email, err.Error())
+		return nil, createFailedToFindUserByEmail(email, err.Error())
 	}
 
 	// Make sure that the returned ID string is empty.
 	if userExists {
-		return nil, CreateUserAlreadyExists(email)
+		return nil, createUserAlreadyExists(email)
 	}
 
 	// Hash user's password.
-	hashedPassword, err := gatekeeper.HashParams.HashPassword(password)
+	hashedPassword, err := gatekeeper.hashParams.HashPassword(password)
 	if err != nil {
-		// TODO: Create dedicated error.
-		return nil, err
+		return nil, createFailedToHashPassword(err.Error())
 	}
 
 	// Add user to the database.
-	userId, err := gatekeeper.Database.AddUser(email, hashedPassword)
+	userId, err := gatekeeper.database.AddUser(email, hashedPassword)
 	if err != nil {
-		// TODO: Create dedicated error.
-		return nil, err
+		return nil, createFailedToAddUserToDatabase(err.Error())
 	}
 
 	// Generate new authentication token.
 	token, err := NewToken()
 	if err != nil {
-		// TODO: Create dedicated error.
-		return nil, err
+		return nil, createFailedToGenerateNewToken(err.Error())
 	}
 
 	// Set the token type to be "authentication".
 	tokenType := "authentication"
 
 	// Set the expiry time and date for the token based on the authentication token's lifetime.
-	validUntil := time.Now().Add(gatekeeper.Lifetime)
+	validUntil := time.Now().Add(gatekeeper.lifeTime)
 
 	// Save the token in the database.
-	err = gatekeeper.Database.AddToken(token, tokenType, validUntil, userId, ipAddr)
+	err = gatekeeper.database.AddToken(token, tokenType, validUntil, userId, ipAddr)
 	if err != nil {
-		// TODO: Create dedicated error.
-		return nil, err
+		return nil, createFailedToAddTokenToDatabase(err.Error())
 	}
 
 	// Create a new authentication cookie to help authenticate the user later on.
-	encodedCookie, err := gatekeeper.CookieManager.Encode(token, rememberMe)
+	encodedCookie, err := gatekeeper.cookieManager.Encode(token, rememberMe)
 	if err != nil {
-		// TODO: Create dedicated error.
-		return nil, err
+		return nil, createFailedToCreateAuthenticationCookie(err.Error())
 	}
 
 	return encodedCookie, nil
