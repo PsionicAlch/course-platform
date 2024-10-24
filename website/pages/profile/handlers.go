@@ -3,9 +3,9 @@ package profile
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
@@ -13,10 +13,10 @@ import (
 type Handlers struct {
 	utils.Loggers
 	renderers pages.Renderers
-	auth      *authentication.Authentication
+	auth      *gatekeeper.Gatekeeper
 }
 
-func SetupHandlers(pageRenderer render.Renderer, auth *authentication.Authentication) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, auth *gatekeeper.Gatekeeper) *Handlers {
 	loggers := utils.CreateLoggers("PROFILE HANDLERS")
 
 	return &Handlers{

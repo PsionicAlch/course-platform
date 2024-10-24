@@ -9,7 +9,7 @@ import (
 func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
 
-	router.Use(handlers.auth.AllowAuthenticated("/accounts/login"))
+	// router.Use(handlers.auth.AllowAuthenticated("/accounts/login"))
 
 	router.Get("/", handlers.ProfileGet)
 

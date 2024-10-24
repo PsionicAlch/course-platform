@@ -3,12 +3,12 @@ package accounts
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication/errors"
 	"github.com/PsionicAlch/psionicalch-home/internal/forms"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
@@ -17,10 +17,10 @@ type Handlers struct {
 	utils.Loggers
 	renderers *pages.Renderers
 	session   session.Session
-	auth      *authentication.Authentication
+	auth      *gatekeeper.Gatekeeper
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, session session.Session, auth *authentication.Authentication) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, session session.Session, auth *gatekeeper.Gatekeeper) *Handlers {
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
@@ -67,7 +67,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie, err := h.auth.SignUserIn(signUpForm, r.RemoteAddr)
+	cookie, err := h.auth.SignUserIn(signUpForm.Email, signUpForm.Password, r.RemoteAddr, signUpForm.RememberMe)
 	if err != nil {
 		formErr := ""
 		if _, ok := err.(errors.UserAlreadyExists); ok {

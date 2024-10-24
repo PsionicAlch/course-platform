@@ -54,18 +54,23 @@ func GenerateBlockKey() (string, error) {
 	return BytesToString(byteSlice), nil
 }
 
-func DecodeKeys(encodedHashKey, encodedBlockKey string) ([]byte, []byte, error) {
+func DecodeKeys(encodedHashKey, encodedBlockKey string) (*GatekeeperSecureCookieKeys, error) {
 	decodedHashKey, err := utils.DecodeString(encodedHashKey)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	decodedBlockKey, err := utils.DecodeString(encodedBlockKey)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return decodedHashKey, decodedBlockKey, nil
+	keys := &GatekeeperSecureCookieKeys{
+		HashKey:  decodedHashKey,
+		BlockKey: decodedBlockKey,
+	}
+
+	return keys, nil
 }
 
 type CookieParameters struct {

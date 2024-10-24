@@ -3,13 +3,14 @@ package website
 import (
 	"fmt"
 	"net/http"
+	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/config"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla"
 	scssession "github.com/PsionicAlch/psionicalch-home/internal/session/scs_session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/accounts"
@@ -55,10 +56,33 @@ func StartWebsite() {
 	// Set up tutorials.
 	tuts := tutorials.SetupTutorials()
 
-	// Set up authentication.
-	auth, err := authentication.CreateAuthentication(db)
+	// Set up Gatekeeper.
+	// auth, err := authentication.CreateAuthentication(db)
+	// if err != nil {
+	// 	loggers.ErrorLog.Fatalln(err)
+	// }
+
+	authCookieName := config.GetWithoutError[string]("AUTH_COOKIE_NAME")
+	websiteDomain := config.GetWithoutError[string]("DOMAIN_NAME")
+	authLifetime := time.Duration(config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME")) * time.Minute
+	currentSecureCookieHashKey := config.GetWithoutError[string]("SECURE_COOKIE_HASH_KEY")
+	currentSecureCookieBlockKey := config.GetWithoutError[string]("SECURE_COOKIE_BLOCK_KEY")
+	prevSecureCookieHashKey := config.GetWithoutError[string]("SECURE_COOKIE_PREVIOUS_HASH_KEY")
+	prevSecureCookieBlockKey := config.GetWithoutError[string]("SECURE_COOKIE_PREVIOUS_BLOCK_KEY")
+
+	currentKeys, err := gatekeeper.DecodeKeys(currentSecureCookieHashKey, currentSecureCookieBlockKey)
 	if err != nil {
-		loggers.ErrorLog.Fatalln(err)
+		loggers.ErrorLog.Fatalln("Failed to decode current secure cookie keys: ", err)
+	}
+
+	prevKeys, err := gatekeeper.DecodeKeys(prevSecureCookieHashKey, prevSecureCookieBlockKey)
+	if err != nil {
+		loggers.ErrorLog.Fatalln("Failed to decode previous secure cookie keys: ", err)
+	}
+
+	auth, err := gatekeeper.NewGatekeeper(authCookieName, websiteDomain, authLifetime, currentKeys, prevKeys, db)
+	if err != nil {
+		loggers.ErrorLog.Fatalln("Failed to set up authentication: ", err)
 	}
 
 	// Set up renderer.
