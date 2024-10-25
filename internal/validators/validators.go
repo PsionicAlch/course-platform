@@ -118,3 +118,11 @@ func ValidatePasswordsMatch(password1, password2 string) error {
 
 	return nil
 }
+
+func ValidateNotEmpty(value string) error {
+	if value != "" && len(value) > 0 {
+		return CreateValidationError([]string{"cannot be empty"})
+	}
+
+	return nil
+}

@@ -3,12 +3,11 @@ package accounts
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication/errors"
-	"github.com/PsionicAlch/psionicalch-home/internal/forms"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
+	"github.com/PsionicAlch/psionicalch-home/website/forms"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
@@ -35,7 +34,18 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, s
 }
 
 func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "login.page.tmpl", nil)
+	loginForm := h.session.RetrieveLoginFormData(r.Context())
+
+	h.renderers.Page.RenderHTML(w, "login.page.tmpl", &LoginPageData{
+		LoginForm: &html.LoginFormComponentData{
+			Form:  loginForm,
+			Error: "",
+		},
+	})
+}
+
+func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +80,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	cookie, err := h.auth.SignUserIn(signUpForm.Email, signUpForm.Password, r.RemoteAddr, signUpForm.RememberMe)
 	if err != nil {
 		formErr := ""
-		if _, ok := err.(errors.UserAlreadyExists); ok {
+		if _, ok := err.(gatekeeper.UserAlreadyExists); ok {
 			signUpForm.AddError("email", "this email address is already in use")
 		} else {
 			h.Loggers.ErrorLog.Println("failed to sign user in: ", err)

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/config"
-	"github.com/PsionicAlch/psionicalch-home/internal/forms"
+	"github.com/PsionicAlch/psionicalch-home/website/forms"
 	"github.com/alexedwards/scs/v2"
 )
 
@@ -29,6 +29,7 @@ func NewSession() *SCSSession {
 
 	// Register the required data types for retrieval.
 	gob.Register(&forms.SignUpForm{})
+	gob.Register(&forms.LoginForm{})
 
 	return &SCSSession{
 		SessionManager: sessionManager,

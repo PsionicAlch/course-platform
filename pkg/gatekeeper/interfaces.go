@@ -1,13 +1,7 @@
 package gatekeeper
 
 type GatekeeperDatabase interface {
-	// UserExists takes a user string and returns a string that represents the
-	// user's ID and possibly and error if anything went wrong. This function's
-	// responsibility is to query the database for a user using the user's email address
-	// and then return the ID of the user (in string format to support all possible ID
-	// types) or an empty string if that user couldn't be found. The function can also return
-	// an error if there were any.
-	UserExists(email string) (bool, error)
+	GetUserInformation(email string) (*UserInformation, error)
 
 	// AddUser takes in the user's email address and the user's hashed password and returns
 	// the user's ID as well as a possible error. This function's responsibility is to add

@@ -7,3 +7,7 @@ import (
 type SignUpPageData struct {
 	SignUpForm *html.SignupFormComponentData
 }
+
+type LoginPageData struct {
+	LoginForm *html.LoginFormComponentData
+}

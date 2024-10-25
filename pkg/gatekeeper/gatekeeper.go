@@ -1,6 +1,7 @@
 package gatekeeper
 
 import (
+	"errors"
 	"net/http"
 	"runtime"
 	"time"
@@ -62,18 +63,19 @@ func NewGatekeeper(cookieName, websiteDomain string, authLifetime int, currentKe
 // required to authenticate the user later on.
 func (gatekeeper *Gatekeeper) SignUserIn(email, password, ipAddr string, rememberMe bool) (*http.Cookie, error) {
 	// Try and fetch a user with that email address.
-	userExists, err := gatekeeper.database.UserExists(email)
+	userInfo, err := gatekeeper.database.GetUserInformation(email)
 	if err != nil {
 		return nil, createFailedToFindUserByEmail(email, err.Error())
 	}
 
-	// Make sure that the returned ID string is empty.
-	if userExists {
-		return nil, createUserAlreadyExists(email)
+	if userInfo != nil {
+		if userInfo.ID != "" && userInfo.Email != "" {
+			return nil, createUserAlreadyExists(email)
+		}
 	}
 
 	// Hash user's password.
-	hashedPassword, err := gatekeeper.hashParams.HashPassword(password)
+	hashedPassword, err := gatekeeper.hashParams.hashPassword(password)
 	if err != nil {
 		return nil, createFailedToHashPassword(err.Error())
 	}
@@ -94,11 +96,7 @@ func (gatekeeper *Gatekeeper) SignUserIn(email, password, ipAddr string, remembe
 	validUntil := time.Now().Add(gatekeeper.lifetime)
 
 	// Save the token in the database.
-	tokenStruct, err := NewToken(token, authenticationTokenType, userId, ipAddr, validUntil)
-	if err != nil {
-		// TODO: Custom error.
-		return nil, err
-	}
+	tokenStruct := NewToken(token, authenticationTokenType, userId, ipAddr, validUntil)
 
 	err = gatekeeper.database.AddToken(tokenStruct)
 	if err != nil {
@@ -115,7 +113,55 @@ func (gatekeeper *Gatekeeper) SignUserIn(email, password, ipAddr string, remembe
 }
 
 func (gatekeeper *Gatekeeper) LogUserIn(email, password, ipAddr string, rememberMe bool) (*http.Cookie, error) {
-	return nil, nil
+	// Try and fetch a user with that email address.
+	userInfo, err := gatekeeper.database.GetUserInformation(email)
+	if err != nil {
+		return nil, createFailedToFindUserByEmail(email, err.Error())
+	}
+
+	if userInfo != nil {
+		if userInfo.ID == "" && userInfo.Email == "" {
+			return nil, createUserDoesNotExist(email)
+		}
+	} else {
+		return nil, createUserDoesNotExist(email)
+	}
+
+	match, err := comparePasswordAndHash(password, userInfo.Password)
+	if err != nil {
+		// TODO: Custom error.
+		return nil, err
+	}
+
+	if !match {
+		// TODO: Custom error.
+		return nil, errors.New("user's login credentials don't match")
+	}
+
+	// Generate new authentication token.
+	token, err := newToken()
+	if err != nil {
+		return nil, createFailedToGenerateNewToken(err.Error())
+	}
+
+	// Set the expiry time and date for the token based on the authentication token's lifetime.
+	validUntil := time.Now().Add(gatekeeper.lifetime)
+
+	// Save the token in the database.
+	tokenStruct := NewToken(token, authenticationTokenType, userInfo.ID, ipAddr, validUntil)
+
+	err = gatekeeper.database.AddToken(tokenStruct)
+	if err != nil {
+		return nil, createFailedToAddTokenToDatabase(err.Error())
+	}
+
+	// Create a new authentication cookie to help authenticate the user later on.
+	encodedCookie, err := gatekeeper.cookieManager.Encode(token, rememberMe)
+	if err != nil {
+		return nil, createFailedToCreateAuthenticationCookie(err.Error())
+	}
+
+	return encodedCookie, nil
 }
 
 func (gatekeeper *Gatekeeper) ValidateAuthenticationToken(cookies []*http.Cookie) (bool, error) {

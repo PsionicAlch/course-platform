@@ -1,6 +1,6 @@
 package html
 
-import "github.com/PsionicAlch/psionicalch-home/internal/forms"
+import "github.com/PsionicAlch/psionicalch-home/website/forms"
 
 type HeaderComponentData struct {
 	Heading  string
@@ -20,5 +20,10 @@ func CreateHeaderComponent(heading, text, linkhref, linktext string) *HeaderComp
 
 type SignupFormComponentData struct {
 	Form  *forms.SignUpForm
+	Error string
+}
+
+type LoginFormComponentData struct {
+	Form  *forms.LoginForm
 	Error string
 }

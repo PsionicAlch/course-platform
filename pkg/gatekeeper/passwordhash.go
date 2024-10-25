@@ -26,7 +26,7 @@ func CreatePasswordHashParameters(saltLength uint8, iterations uint8, memory uin
 	}
 }
 
-func (params *GatekeeperPasswordHashParameters) HashPassword(password string) (string, error) {
+func (params *GatekeeperPasswordHashParameters) hashPassword(password string) (string, error) {
 	salt, err := newSalt(int(params.saltLength))
 	if err != nil {
 		// TODO: Create dedicated error.
@@ -54,7 +54,7 @@ func (params *GatekeeperPasswordHashParameters) HashPassword(password string) (s
 	return bytesToString(passwordBytes), nil
 }
 
-func ComparePasswordAndHash(password, passwordHash string) (bool, error) {
+func comparePasswordAndHash(password, passwordHash string) (bool, error) {
 	passwordBytes, err := stringToBytes(passwordHash)
 	if err != nil {
 		// TODO: Create dedicated error.

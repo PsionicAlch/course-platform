@@ -1,7 +1,6 @@
 package gatekeeper
 
 import (
-	"errors"
 	"time"
 )
 
@@ -28,31 +27,26 @@ type Token struct {
 	IPAddress  string
 }
 
-func NewToken(token, tokenType, userId, ipAddr string, validUntil time.Time) (*Token, error) {
-	// TODO: Custom errors.
-	if token == "" {
-		return nil, errors.New("token cannot be empty")
-	}
-
-	if tokenType == "" {
-		return nil, errors.New("token type cannot be empty")
-	}
-
-	if !inSlice(tokenType, []string{authenticationTokenType, emailTokenType}) {
-		return nil, errors.New("invalid token type")
-	}
-
-	if userId == "" {
-		return nil, errors.New("user id cannot be empty")
-	}
-
-	newToken := &Token{
+func NewToken(token, tokenType, userId, ipAddr string, validUntil time.Time) *Token {
+	return &Token{
 		Token:      token,
 		TokenType:  tokenType,
 		ValidUntil: validUntil,
 		UserID:     userId,
 		IPAddress:  ipAddr,
 	}
+}
 
-	return newToken, nil
+type UserInformation struct {
+	ID       string
+	Email    string
+	Password string
+}
+
+func NewUser(id, email, password string) *UserInformation {
+	return &UserInformation{
+		ID:       id,
+		Email:    email,
+		Password: password,
+	}
 }

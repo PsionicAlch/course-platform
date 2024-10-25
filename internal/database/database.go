@@ -15,7 +15,7 @@ type Database interface {
 	Rollback(steps int) error
 
 	// Authentication functions.
-	UserExists(email string) (bool, error)
+	GetUserInformation(email string) (*gatekeeper.UserInformation, error)
 	AddUser(email, password string) (string, error)
 	AddToken(token *gatekeeper.Token) error
 	GetToken(token string) (*gatekeeper.Token, error)

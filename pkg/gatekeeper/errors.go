@@ -188,3 +188,21 @@ func createInvalidGatekeeperKey(err string) InvalidGatekeeperKey {
 func (err InvalidGatekeeperKey) Error() string {
 	return err.msg
 }
+
+// -
+// -
+// -
+
+type UserDoesNotExist struct {
+	msg string
+}
+
+func createUserDoesNotExist(email string) UserDoesNotExist {
+	return UserDoesNotExist{
+		msg: fmt.Sprintf("there's no registered user with %s as an email address", email),
+	}
+}
+
+func (err UserDoesNotExist) Error() string {
+	return err.msg
+}

@@ -1,7 +1,6 @@
 package sqlite_database
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
@@ -10,22 +9,14 @@ import (
 )
 
 // UserExists checks if a user with the given email address is in the database.
-func (db *SQLiteDatabase) UserExists(email string) (bool, error) {
-	query := `SELECT id FROM users WHERE email = ?;`
+func (db *SQLiteDatabase) GetUserInformation(email string) (*gatekeeper.UserInformation, error) {
+	query := `SELECT id, email, password FROM users WHERE email = ?;`
 	row := db.connection.QueryRow(query, email)
 
-	id := ""
+	userInfo := new(gatekeeper.UserInformation)
+	err := row.Scan(&userInfo.ID, &userInfo.Email, &userInfo.Password)
 
-	err := row.Scan(&id)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return false, nil
-		}
-
-		return false, err
-	}
-
-	return true, nil
+	return userInfo, err
 }
 
 // AddUser adds the user to the database and returns their ID.
@@ -80,5 +71,5 @@ func (db *SQLiteDatabase) GetToken(token string) (*gatekeeper.Token, error) {
 		return nil, err
 	}
 
-	return gatekeeper.NewToken(dbToken, tokenType, userId, ipAddr, validUntil)
+	return gatekeeper.NewToken(dbToken, tokenType, userId, ipAddr, validUntil), nil
 }

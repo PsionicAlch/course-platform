@@ -31,35 +31,22 @@ func NewSignupFormErrors() FormErrors {
 }
 
 func NewSignupForm() *SignUpForm {
-	email := ""
-	password := ""
-	confirmPassword := ""
-	rememberMe := false
-	formErrors := NewSignupFormErrors()
+	signupForm := new(SignUpForm)
+	signupForm.RememberMe = false
+	signupForm.Errors = NewSignupFormErrors()
 
-	return &SignUpForm{
-		Email:           email,
-		Password:        password,
-		ConfirmPassword: confirmPassword,
-		RememberMe:      rememberMe,
-		Errors:          formErrors,
-	}
+	return signupForm
 }
 
 func CreateSignUpForm(form url.Values) *SignUpForm {
-	email := form.Get("email")
-	password := form.Get("password")
-	confirmPassword := form.Get("confirm-password")
-	rememberMe := form.Has("remember-me")
-	formErrors := NewSignupFormErrors()
+	signupForm := NewSignupForm()
 
-	return &SignUpForm{
-		Email:           email,
-		Password:        password,
-		ConfirmPassword: confirmPassword,
-		RememberMe:      rememberMe,
-		Errors:          formErrors,
-	}
+	signupForm.Email = form.Get("email")
+	signupForm.Password = form.Get("password")
+	signupForm.ConfirmPassword = form.Get("confirm-password")
+	signupForm.RememberMe = form.Has("remember-me")
+
+	return signupForm
 }
 
 func (form *SignUpForm) Validate() bool {
