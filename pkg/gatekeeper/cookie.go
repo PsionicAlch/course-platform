@@ -1,131 +1,129 @@
 package gatekeeper
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/gorilla/securecookie"
 )
 
 type GatekeeperSecureCookieKeys struct {
-	HashKey  []byte
-	BlockKey []byte
+	hashKey  []byte
+	blockKey []byte
 }
 
-func CreateGatekeeperSecureCookieKeys(hashKey, blockKey string) (*GatekeeperSecureCookieKeys, error) {
-	hashKeyBytes, err := StringToBytes(hashKey)
-	if err != nil {
-		// TODO: Create dedicated error.
-		return nil, err
+func CreateGatekeeperSecureCookieKeys(key string) (*GatekeeperSecureCookieKeys, error) {
+	if key == "" {
+		return new(GatekeeperSecureCookieKeys), nil
 	}
 
-	blockKeyBytes, err := StringToBytes(blockKey)
+	hashKey, blockKey, found := strings.Cut(key, "$")
+	if !found {
+		return nil, createInvalidGatekeeperKey("")
+	}
+
+	hashKeyBytes, err := stringToBytes(hashKey)
 	if err != nil {
-		// TODO: Create dedicated error.
-		return nil, err
+		return nil, createInvalidGatekeeperKey(err.Error())
+	}
+
+	blockKeyBytes, err := stringToBytes(blockKey)
+	if err != nil {
+		return nil, createInvalidGatekeeperKey(err.Error())
 	}
 
 	secureCookieKeys := &GatekeeperSecureCookieKeys{
-		HashKey:  hashKeyBytes,
-		BlockKey: blockKeyBytes,
+		hashKey:  hashKeyBytes,
+		blockKey: blockKeyBytes,
 	}
 
 	return secureCookieKeys, nil
 }
 
-func GenerateHashKey() (string, error) {
-	byteSlice, err := NewBytesSlice(64)
+func GenerateGatekeeperKey() (string, error) {
+	hashKey, err := generateHashKey()
 	if err != nil {
-		// TODO: Create dedicated error.
 		return "", err
 	}
 
-	return BytesToString(byteSlice), nil
-}
-
-func GenerateBlockKey() (string, error) {
-	byteSlice, err := NewBytesSlice(32)
+	blockKey, err := generateBlockKey()
 	if err != nil {
-		// TODO: Create dedicated error.
 		return "", err
 	}
 
-	return BytesToString(byteSlice), nil
+	return fmt.Sprintf("%s$%s", hashKey, blockKey), nil
 }
 
-func DecodeKeys(encodedHashKey, encodedBlockKey string) (*GatekeeperSecureCookieKeys, error) {
-	decodedHashKey, err := utils.DecodeString(encodedHashKey)
+func generateHashKey() (string, error) {
+	byteSlice, err := newBytesSlice(64)
 	if err != nil {
-		return nil, err
+		return "", createFailedToGenerateSecureCookieKey("hash", err.Error())
 	}
 
-	decodedBlockKey, err := utils.DecodeString(encodedBlockKey)
+	return bytesToString(byteSlice), nil
+}
+
+func generateBlockKey() (string, error) {
+	byteSlice, err := newBytesSlice(32)
 	if err != nil {
-		return nil, err
+		return "", createFailedToGenerateSecureCookieKey("block", err.Error())
 	}
 
-	keys := &GatekeeperSecureCookieKeys{
-		HashKey:  decodedHashKey,
-		BlockKey: decodedBlockKey,
-	}
-
-	return keys, nil
+	return bytesToString(byteSlice), nil
 }
 
 type CookieParameters struct {
-	Name         string
-	Domain       string
-	SameSite     http.SameSite
-	Secure       bool
-	Lifetime     time.Duration
-	CurrentKeys  *GatekeeperSecureCookieKeys
-	PreviousKeys *GatekeeperSecureCookieKeys
+	name         string
+	domain       string
+	sameSite     http.SameSite
+	secure       bool
+	lifetime     time.Duration
+	currentKeys  *GatekeeperSecureCookieKeys
+	previousKeys *GatekeeperSecureCookieKeys
 }
 
 type GatekeeperCookieManager struct {
-	Parameters           *CookieParameters
-	CurrentSecureCookie  *securecookie.SecureCookie
-	PreviousSecureCookie *securecookie.SecureCookie
+	parameters           *CookieParameters
+	currentSecureCookie  *securecookie.SecureCookie
+	previousSecureCookie *securecookie.SecureCookie
 }
 
 func CreateCookieManager(params *CookieParameters) *GatekeeperCookieManager {
-	currentSecureCookie := securecookie.New(params.CurrentKeys.HashKey, params.CurrentKeys.BlockKey)
-	previousSecureCookie := securecookie.New(params.PreviousKeys.HashKey, params.PreviousKeys.BlockKey)
+	currentSecureCookie := securecookie.New(params.currentKeys.hashKey, params.currentKeys.blockKey)
+	previousSecureCookie := securecookie.New(params.previousKeys.hashKey, params.previousKeys.blockKey)
 
 	cookieManager := &GatekeeperCookieManager{
-		Parameters:           params,
-		CurrentSecureCookie:  currentSecureCookie,
-		PreviousSecureCookie: previousSecureCookie,
+		parameters:           params,
+		currentSecureCookie:  currentSecureCookie,
+		previousSecureCookie: previousSecureCookie,
 	}
 
 	return cookieManager
 }
 
 func (manager *GatekeeperCookieManager) Encode(value any, remember bool) (*http.Cookie, error) {
-	encoded, err := securecookie.EncodeMulti(manager.Parameters.Name, value, manager.CurrentSecureCookie)
+	encoded, err := securecookie.EncodeMulti(manager.parameters.name, value, manager.currentSecureCookie)
 	if err != nil {
-		// TODO: Create dedicated error.
-		return nil, err
+		return nil, createFailedToEncodeSecureCookie(err.Error())
 	}
 
 	cookie := new(http.Cookie)
-	cookie.Name = manager.Parameters.Name
+	cookie.Name = manager.parameters.name
 	cookie.Value = encoded
 	cookie.Path = "/"
-	cookie.Domain = manager.Parameters.Domain
-
-	if remember {
-		cookie.Expires = time.Now().Add(manager.Parameters.Lifetime)
-	}
-
+	cookie.Domain = manager.parameters.domain
 	cookie.HttpOnly = true
-	cookie.SameSite = manager.Parameters.SameSite
-	cookie.Secure = manager.Parameters.Secure
+	cookie.SameSite = manager.parameters.sameSite
+	cookie.Secure = manager.parameters.secure
+	if remember {
+		cookie.Expires = time.Now().Add(manager.parameters.lifetime)
+	}
 
 	return cookie, nil
 }
 
 func (manager *GatekeeperCookieManager) Decode(value string, dest any) error {
-	return securecookie.DecodeMulti(manager.Parameters.Name, value, dest, manager.CurrentSecureCookie, manager.PreviousSecureCookie)
+	return securecookie.DecodeMulti(manager.parameters.name, value, dest, manager.currentSecureCookie, manager.previousSecureCookie)
 }

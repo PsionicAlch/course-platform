@@ -7,36 +7,48 @@ import (
 )
 
 type Gatekeeper struct {
-	lifeTime      time.Duration
+	lifetime      time.Duration
 	hashParams    *GatekeeperPasswordHashParameters
 	cookieManager *GatekeeperCookieManager
 	database      GatekeeperDatabase
 }
 
 // NewGatekeeper creates a new instance of the Gatekeeper authentication system with sensible defaults.
-func NewGatekeeper(cookieName, websiteDomain string, authLifetime time.Duration, currentKeys, prevKeys *GatekeeperSecureCookieKeys, database GatekeeperDatabase) (*Gatekeeper, error) {
+func NewGatekeeper(cookieName, websiteDomain string, authLifetime int, currentKey, previousKey string, database GatekeeperDatabase) (*Gatekeeper, error) {
+	lifetime := time.Duration(authLifetime) * time.Minute
+
+	currentKeys, err := CreateGatekeeperSecureCookieKeys(currentKey)
+	if err != nil {
+		return nil, err
+	}
+
+	prevKeys, err := CreateGatekeeperSecureCookieKeys(previousKey)
+	if err != nil {
+		return nil, err
+	}
+
 	hashParams := &GatekeeperPasswordHashParameters{
-		SaltLength: 32,
-		Iterations: uint8(runtime.NumCPU()),
-		Memory:     64 * 1024,
-		Threads:    uint8(runtime.NumCPU()),
-		KeyLength:  32,
+		saltLength: 32,
+		iterations: uint8(runtime.NumCPU()),
+		memory:     64 * 1024,
+		threads:    uint8(runtime.NumCPU()),
+		keyLength:  32,
 	}
 
 	cookieParams := &CookieParameters{
-		Name:         cookieName,
-		Domain:       websiteDomain,
-		SameSite:     http.SameSiteLaxMode,
-		Secure:       true,
-		Lifetime:     authLifetime,
-		CurrentKeys:  currentKeys,
-		PreviousKeys: prevKeys,
+		name:         cookieName,
+		domain:       websiteDomain,
+		sameSite:     http.SameSiteLaxMode,
+		secure:       true,
+		lifetime:     lifetime,
+		currentKeys:  currentKeys,
+		previousKeys: prevKeys,
 	}
 
 	cookieManager := CreateCookieManager(cookieParams)
 
 	gt := &Gatekeeper{
-		lifeTime:      authLifetime,
+		lifetime:      lifetime,
 		hashParams:    hashParams,
 		cookieManager: cookieManager,
 		database:      database,
@@ -73,7 +85,7 @@ func (gatekeeper *Gatekeeper) SignUserIn(email, password, ipAddr string, remembe
 	}
 
 	// Generate new authentication token.
-	token, err := NewToken()
+	token, err := newToken()
 	if err != nil {
 		return nil, createFailedToGenerateNewToken(err.Error())
 	}
@@ -82,7 +94,7 @@ func (gatekeeper *Gatekeeper) SignUserIn(email, password, ipAddr string, remembe
 	tokenType := "authentication"
 
 	// Set the expiry time and date for the token based on the authentication token's lifetime.
-	validUntil := time.Now().Add(gatekeeper.lifeTime)
+	validUntil := time.Now().Add(gatekeeper.lifetime)
 
 	// Save the token in the database.
 	err = gatekeeper.database.AddToken(token, tokenType, validUntil, userId, ipAddr)

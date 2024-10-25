@@ -127,3 +127,64 @@ func createFailedToCreateAuthenticationCookie(err string) FailedToCreateAuthenti
 func (err FailedToCreateAuthenticationCookie) Error() string {
 	return err.msg
 }
+
+// ------------------------------------------
+// -        Failed To Generate Key          -
+// ------------------------------------------
+
+type FailedToGenerateSecureCookieKey struct {
+	msg string
+}
+
+func createFailedToGenerateSecureCookieKey(key, err string) FailedToGenerateSecureCookieKey {
+	return FailedToGenerateSecureCookieKey{
+		msg: fmt.Sprintf("failed to generate %s key: %s", key, err),
+	}
+}
+
+func (err FailedToGenerateSecureCookieKey) Error() string {
+	return err.msg
+}
+
+// --------------------------------------------------
+// -        Failed To Encode Secure Cookie          -
+// --------------------------------------------------
+
+type FailedToEncodeSecureCookie struct {
+	msg string
+}
+
+func createFailedToEncodeSecureCookie(err string) FailedToEncodeSecureCookie {
+	return FailedToEncodeSecureCookie{
+		msg: fmt.Sprintf("failed to encode secure cookie: %s", err),
+	}
+}
+
+func (err FailedToEncodeSecureCookie) Error() string {
+	return err.msg
+}
+
+// ------------------------------------------
+// -        Invalid Gatekeeper Key          -
+// ------------------------------------------
+
+type InvalidGatekeeperKey struct {
+	msg string
+}
+
+func createInvalidGatekeeperKey(err string) InvalidGatekeeperKey {
+	var msg string
+	if err == "" {
+		msg = "invalid gatekeeper key was provided. Consider generating your key using gatekeeper.GenerateGatekeeperKey"
+	} else {
+		msg = fmt.Sprintf("invalid gatekeeper key was provided: %s\n. Consider generating your key using gatekeeper.GenerateGatekeeperKey", err)
+	}
+
+	return InvalidGatekeeperKey{
+		msg: msg,
+	}
+}
+
+func (err InvalidGatekeeperKey) Error() string {
+	return err.msg
+}

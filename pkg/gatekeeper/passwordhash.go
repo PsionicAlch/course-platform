@@ -8,60 +8,60 @@ import (
 )
 
 type GatekeeperPasswordHashParameters struct {
-	SaltLength uint8
-	Iterations uint8
-	Memory     uint32
-	Threads    uint8
-	KeyLength  uint8
+	saltLength uint8
+	iterations uint8
+	memory     uint32
+	threads    uint8
+	keyLength  uint8
 }
 
 // CreatePasswordHashParameters creates a new instance of the GatekeeperPasswordHashParameters.
 func CreatePasswordHashParameters(saltLength uint8, iterations uint8, memory uint32, threads uint8, keyLength uint8) *GatekeeperPasswordHashParameters {
 	return &GatekeeperPasswordHashParameters{
-		SaltLength: saltLength,
-		Iterations: iterations,
-		Memory:     memory,
-		Threads:    threads,
-		KeyLength:  keyLength,
+		saltLength: saltLength,
+		iterations: iterations,
+		memory:     memory,
+		threads:    threads,
+		keyLength:  keyLength,
 	}
 }
 
 func (params *GatekeeperPasswordHashParameters) HashPassword(password string) (string, error) {
-	salt, err := NewSalt(int(params.SaltLength))
+	salt, err := newSalt(int(params.saltLength))
 	if err != nil {
 		// TODO: Create dedicated error.
 		return "", err
 	}
 
-	hash := argon2.IDKey([]byte(password), salt, uint32(params.Iterations), params.Memory, params.Threads, uint32(params.KeyLength))
+	hash := argon2.IDKey([]byte(password), salt, uint32(params.iterations), params.memory, params.threads, uint32(params.keyLength))
 
 	passwordStruct := GatekeeperPassword{
 		ArgonVersion: argon2.Version,
 		Hash:         hash,
 		Salt:         salt,
-		Iterations:   params.Iterations,
-		Memory:       params.Memory,
-		Threads:      params.Threads,
-		KeyLength:    params.KeyLength,
+		Iterations:   params.iterations,
+		Memory:       params.memory,
+		Threads:      params.threads,
+		KeyLength:    params.keyLength,
 	}
 
-	passwordBytes, err := PasswordToBytes(&passwordStruct)
+	passwordBytes, err := passwordToBytes(&passwordStruct)
 	if err != nil {
 		// TODO: Create dedicated error.
 		return "", err
 	}
 
-	return BytesToString(passwordBytes), nil
+	return bytesToString(passwordBytes), nil
 }
 
 func ComparePasswordAndHash(password, passwordHash string) (bool, error) {
-	passwordBytes, err := StringToBytes(passwordHash)
+	passwordBytes, err := stringToBytes(passwordHash)
 	if err != nil {
 		// TODO: Create dedicated error.
 		return false, err
 	}
 
-	passwordStruct, err := PasswordFromBytes(passwordBytes)
+	passwordStruct, err := passwordFromBytes(passwordBytes)
 	if err != nil {
 		// TODO: Create dedicated error.
 		return false, err

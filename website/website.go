@@ -3,7 +3,6 @@ package website
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/config"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
@@ -57,30 +56,13 @@ func StartWebsite() {
 	tuts := tutorials.SetupTutorials()
 
 	// Set up Gatekeeper.
-	// auth, err := authentication.CreateAuthentication(db)
-	// if err != nil {
-	// 	loggers.ErrorLog.Fatalln(err)
-	// }
-
 	authCookieName := config.GetWithoutError[string]("AUTH_COOKIE_NAME")
 	websiteDomain := config.GetWithoutError[string]("DOMAIN_NAME")
-	authLifetime := time.Duration(config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME")) * time.Minute
-	currentSecureCookieHashKey := config.GetWithoutError[string]("SECURE_COOKIE_HASH_KEY")
-	currentSecureCookieBlockKey := config.GetWithoutError[string]("SECURE_COOKIE_BLOCK_KEY")
-	prevSecureCookieHashKey := config.GetWithoutError[string]("SECURE_COOKIE_PREVIOUS_HASH_KEY")
-	prevSecureCookieBlockKey := config.GetWithoutError[string]("SECURE_COOKIE_PREVIOUS_BLOCK_KEY")
+	authLifetime := config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME")
+	currentGatekeeperKey := config.GetWithoutError[string]("GATEKEEPER_CURRENT_KEY")
+	prevGatekeeperKey := config.GetWithoutError[string]("GATEKEEPER_PREVIOUS_KEY")
 
-	currentKeys, err := gatekeeper.DecodeKeys(currentSecureCookieHashKey, currentSecureCookieBlockKey)
-	if err != nil {
-		loggers.ErrorLog.Fatalln("Failed to decode current secure cookie keys: ", err)
-	}
-
-	prevKeys, err := gatekeeper.DecodeKeys(prevSecureCookieHashKey, prevSecureCookieBlockKey)
-	if err != nil {
-		loggers.ErrorLog.Fatalln("Failed to decode previous secure cookie keys: ", err)
-	}
-
-	auth, err := gatekeeper.NewGatekeeper(authCookieName, websiteDomain, authLifetime, currentKeys, prevKeys, db)
+	auth, err := gatekeeper.NewGatekeeper(authCookieName, websiteDomain, authLifetime, currentGatekeeperKey, prevGatekeeperKey, db)
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up authentication: ", err)
 	}
