@@ -67,8 +67,6 @@ func StartWebsite() {
 		loggers.ErrorLog.Fatalln("Failed to set up authentication: ", err)
 	}
 
-	// Set up renderer.
-
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer)
 	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, session, auth)

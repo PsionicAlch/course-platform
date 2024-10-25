@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/gob"
+	"net/http"
 )
 
 func newBytesSlice(length int) ([]byte, error) {
@@ -61,4 +62,27 @@ func newToken() (string, error) {
 	}
 
 	return bytesToString(tokenBytes), nil
+}
+
+// inSlice checks to see if an item is in a list of items.
+func inSlice[T comparable](item T, items []T) bool {
+	for _, i := range items {
+		if item == i {
+			return true
+		}
+	}
+
+	return false
+}
+
+func redirect(w http.ResponseWriter, r *http.Request, url string, status ...int) {
+	var statusCode int
+	if len(status) > 0 {
+		statusCode = status[0]
+	} else {
+		statusCode = http.StatusTemporaryRedirect
+	}
+
+	w.Header().Set("HX-Redirect", url)
+	http.Redirect(w, r, url, statusCode)
 }

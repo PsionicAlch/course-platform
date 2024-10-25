@@ -90,14 +90,17 @@ func (gatekeeper *Gatekeeper) SignUserIn(email, password, ipAddr string, remembe
 		return nil, createFailedToGenerateNewToken(err.Error())
 	}
 
-	// Set the token type to be "authentication".
-	tokenType := "authentication"
-
 	// Set the expiry time and date for the token based on the authentication token's lifetime.
 	validUntil := time.Now().Add(gatekeeper.lifetime)
 
 	// Save the token in the database.
-	err = gatekeeper.database.AddToken(token, tokenType, validUntil, userId, ipAddr)
+	tokenStruct, err := NewToken(token, authenticationTokenType, userId, ipAddr, validUntil)
+	if err != nil {
+		// TODO: Custom error.
+		return nil, err
+	}
+
+	err = gatekeeper.database.AddToken(tokenStruct)
 	if err != nil {
 		return nil, createFailedToAddTokenToDatabase(err.Error())
 	}
@@ -109,4 +112,50 @@ func (gatekeeper *Gatekeeper) SignUserIn(email, password, ipAddr string, remembe
 	}
 
 	return encodedCookie, nil
+}
+
+func (gatekeeper *Gatekeeper) ValidateAuthenticationToken(cookies []*http.Cookie) (bool, error) {
+	// TODO: Custom error.
+	// Loop through all the cookies to find the authentication cookie.
+	for _, cookie := range cookies {
+		if cookie.Name == gatekeeper.cookieManager.parameters.name {
+			// Decode the authentication cookie's value to get the authentication token.
+			var authToken string
+			if err := gatekeeper.cookieManager.Decode(cookie.Value, &authToken); err != nil {
+				return false, err
+			}
+
+			// Get all the details of the authentication cookie from the database.
+			token, err := gatekeeper.database.GetToken(authToken)
+			if err != nil {
+				return false, err
+			}
+
+			// Check to make sure that a token was passed back.
+			if token == nil {
+				return false, nil
+			}
+
+			// Make sure the authentication token isn't empty and that it's the same one we gave.
+			if token.Token == "" || token.Token != authToken {
+				return false, nil
+			}
+
+			// Make sure that the authentication token has the correct type.
+			if token.TokenType != authenticationTokenType {
+				return false, nil
+			}
+
+			// Make sure the token is hasn't expired yet.
+			if time.Now().After(token.ValidUntil) {
+				return false, nil
+			}
+
+			// TODO: send email if IP addresses are different.
+
+			return true, nil
+		}
+	}
+
+	return false, nil
 }

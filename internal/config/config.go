@@ -21,7 +21,7 @@ func SetupConfig() error {
 		"AUTH_TOKEN_LIFETIME":     validators.ChainValidators(validators.NotEmptyValidator, validators.IntValidator),
 		"EMAIL_TOKEN_LIFETIME":    validators.ChainValidators(validators.NotEmptyValidator, validators.IntValidator),
 		"GATEKEEPER_CURRENT_KEY":  validators.NotEmptyValidator,
-		"GATEKEEPER_PREVIOUS_KEY": validators.NotEmptyValidator,
+		"GATEKEEPER_PREVIOUS_KEY": validators.EmptyValidator,
 	}
 
 	return envloader.LoadEnvironment(variables)

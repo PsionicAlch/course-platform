@@ -11,7 +11,7 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	// router.Use(handlers.auth.AllowAuthenticated("/accounts/login"))
 
-	router.Get("/", handlers.ProfileGet)
+	router.With(handlers.auth.AllowAuthenticated("/accounts/login")).Get("/", handlers.ProfileGet)
 
 	return router
 }

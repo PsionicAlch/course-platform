@@ -6,9 +6,8 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/errors"
+	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 )
-
-const authTokenType = "authentication"
 
 // UserExists checks if a user with the given email address is in the database.
 func (db *SQLiteDatabase) UserExists(email string) (bool, error) {
@@ -48,7 +47,7 @@ func (db *SQLiteDatabase) AddUser(email, password string) (string, error) {
 }
 
 // CreateAuthenticationToken creates a new authentication token in the database and returns the token.
-func (db *SQLiteDatabase) AddToken(token, tokenType string, validUntil time.Time, userId, ipAddr string) error {
+func (db *SQLiteDatabase) AddToken(token *gatekeeper.Token) error {
 	query := `INSERT INTO tokens (id, token, token_type, valid_until, user_id, ip_address) VALUES (?, ?, ?, ?, ?, ?);`
 
 	// Create token ID.
@@ -58,10 +57,28 @@ func (db *SQLiteDatabase) AddToken(token, tokenType string, validUntil time.Time
 	}
 
 	// Save token to the database.
-	_, err = db.connection.Exec(query, id, token, authTokenType, validUntil, userId, ipAddr)
+	_, err = db.connection.Exec(query, id, token.Token, token.TokenType, token.ValidUntil, token.UserID, token.IPAddress)
 	if err != nil {
 		return errors.CreateFailedToCreateAuthenticationToken(err.Error())
 	}
 
 	return nil
+}
+
+func (db *SQLiteDatabase) GetToken(token string) (*gatekeeper.Token, error) {
+	query := `SELECT token, token_type, valid_until, user_id, ip_address  FROM tokens WHERE token = ?;`
+	row := db.connection.QueryRow(query, token)
+
+	var dbToken string
+	var tokenType string
+	var validUntil time.Time
+	var userId string
+	var ipAddr string
+
+	err := row.Scan(&dbToken, &tokenType, &validUntil, &userId, &ipAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	return gatekeeper.NewToken(dbToken, tokenType, userId, ipAddr, validUntil)
 }

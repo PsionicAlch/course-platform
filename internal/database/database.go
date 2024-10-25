@@ -1,9 +1,8 @@
 package database
 
 import (
-	"time"
-
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 )
 
 type Database interface {
@@ -18,7 +17,8 @@ type Database interface {
 	// Authentication functions.
 	UserExists(email string) (bool, error)
 	AddUser(email, password string) (string, error)
-	AddToken(token, tokenType string, validUntil time.Time, userId, ipAddr string) error
+	AddToken(token *gatekeeper.Token) error
+	GetToken(token string) (*gatekeeper.Token, error)
 
 	// User based functions.
 	FindUserByEmail(email string) (*models.UserModel, error)

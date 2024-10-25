@@ -1,7 +1,5 @@
 package gatekeeper
 
-import "time"
-
 type GatekeeperDatabase interface {
 	// UserExists takes a user string and returns a string that represents the
 	// user's ID and possibly and error if anything went wrong. This function's
@@ -22,5 +20,9 @@ type GatekeeperDatabase interface {
 	// this token is connected, and the IP address from which this user logged in. This
 	// function's responsibility is to add the new token, and associated data, to your
 	// database for later retrieval.
-	AddToken(token, tokenType string, validUntil time.Time, userId, ipAddr string) error
+	AddToken(token *Token) error
+
+	// TokenExists takes in a token and it's type then returns a bool or an error. This
+	// function's responsibility is to check if a token with that type exists in the database
+	GetToken(token string) (*Token, error)
 }
