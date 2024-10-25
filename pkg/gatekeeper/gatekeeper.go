@@ -114,6 +114,10 @@ func (gatekeeper *Gatekeeper) SignUserIn(email, password, ipAddr string, remembe
 	return encodedCookie, nil
 }
 
+func (gatekeeper *Gatekeeper) LogUserIn(email, password, ipAddr string, rememberMe bool) (*http.Cookie, error) {
+	return nil, nil
+}
+
 func (gatekeeper *Gatekeeper) ValidateAuthenticationToken(cookies []*http.Cookie) (bool, error) {
 	// TODO: Custom error.
 	// Loop through all the cookies to find the authentication cookie.
