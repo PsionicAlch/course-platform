@@ -15,18 +15,11 @@
     <section class="auth-section">
       <h1>Log In</h1>
 
-      <form method="post" class="auth-form" spellcheck="false">
-        {{ template "email-field" }}
-        {{ template "password-field" }}
-        {{ template "remember-field" }}
-
-        <button type="submit" class="gradient-btn">Log In</button>
-
-        <div class="auth-form-links">
-          <a href="/accounts/forgot">Forgot Your Password?</a>
-          <a href="/accounts/signup">Sign Up!</a>
-        </div>
-      </form>
+      {{ with .LoginForm }}
+        {{ template "login-form" . }}
+      {{ else }}
+        <p>LoginFormData was not set...</p>
+      {{ end }}
     </section>
   </header>
 {{ end }}

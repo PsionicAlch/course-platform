@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
@@ -45,7 +46,54 @@ func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	loginForm := forms.CreateLoginForm(r.Form)
+	valid := loginForm.Validate()
 
+	fmt.Printf("%#v\n", loginForm)
+
+	if !valid {
+		if utils.IsHTMX(r) {
+			h.renderers.Htmx.RenderHTML(w, "login-form.htmx.tmpl", &html.LoginFormComponentData{
+				Form:  loginForm,
+				Error: "",
+			})
+		} else {
+			h.session.StoreLoginFormData(r.Context(), loginForm)
+			utils.Redirect(w, r, "/accounts/login")
+		}
+
+		return
+	}
+
+	cookie, err := h.auth.LogUserIn(loginForm.Email, loginForm.Password, r.RemoteAddr, loginForm.RememberMe)
+	if err != nil {
+		formErr := ""
+		if _, ok := err.(gatekeeper.UserDoesNotExist); ok {
+			loginForm.AddError("email", "this email address is unregistered")
+		} else {
+			h.Loggers.ErrorLog.Println("failed to log user in: ", err)
+			formErr = "unexpected server error. please try again"
+		}
+
+		if utils.IsHTMX(r) {
+			err = h.renderers.Htmx.RenderHTML(w, "login-form.htmx.tmpl", &html.LoginFormComponentData{
+				Form:  loginForm,
+				Error: formErr,
+			})
+			if err != nil {
+				h.Loggers.WarningLog.Println("Failed to render HTML: ", err)
+			}
+		} else {
+			h.session.StoreLoginFormData(r.Context(), loginForm)
+			utils.Redirect(w, r, "/accounts/login")
+		}
+
+		return
+	}
+
+	http.SetCookie(w, cookie)
+	utils.Redirect(w, r, "/profile")
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +114,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 
 	if !valid {
 		if utils.IsHTMX(r) {
-			h.renderers.Htmx.RenderHTML(w, "signup-form.htmx", &html.SignupFormComponentData{
+			h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", &html.SignupFormComponentData{
 				Form:  signUpForm,
 				Error: "",
 			})
@@ -74,6 +122,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 			h.session.StoreSignUpFormData(r.Context(), signUpForm)
 			utils.Redirect(w, r, "/accounts/signup")
 		}
+
 		return
 	}
 

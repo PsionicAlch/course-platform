@@ -1,6 +1,7 @@
 package sqlite_database
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
@@ -15,8 +16,11 @@ func (db *SQLiteDatabase) GetUserInformation(email string) (*gatekeeper.UserInfo
 
 	userInfo := new(gatekeeper.UserInformation)
 	err := row.Scan(&userInfo.ID, &userInfo.Email, &userInfo.Password)
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
 
-	return userInfo, err
+	return userInfo, nil
 }
 
 // AddUser adds the user to the database and returns their ID.

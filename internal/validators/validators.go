@@ -120,7 +120,7 @@ func ValidatePasswordsMatch(password1, password2 string) error {
 }
 
 func ValidateNotEmpty(value string) error {
-	if value != "" && len(value) > 0 {
+	if value == "" || len(value) <= 0 {
 		return CreateValidationError([]string{"cannot be empty"})
 	}
 

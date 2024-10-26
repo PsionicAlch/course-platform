@@ -39,7 +39,7 @@ func passwordFromBytes(password []byte) (*GatekeeperPassword, error) {
 
 	passwordStruct := new(GatekeeperPassword)
 
-	err := dec.Decode(&password)
+	err := dec.Decode(passwordStruct)
 	if err != nil {
 		return nil, err
 	}
@@ -62,17 +62,6 @@ func newToken() (string, error) {
 	}
 
 	return bytesToString(tokenBytes), nil
-}
-
-// inSlice checks to see if an item is in a list of items.
-func inSlice[T comparable](item T, items []T) bool {
-	for _, i := range items {
-		if item == i {
-			return true
-		}
-	}
-
-	return false
 }
 
 func redirect(w http.ResponseWriter, r *http.Request, url string, status ...int) {
