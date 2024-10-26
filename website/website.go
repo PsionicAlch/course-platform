@@ -52,9 +52,6 @@ func StartWebsite() {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}
 
-	// Set up tutorials.
-	tuts := tutorials.SetupTutorials()
-
 	// Set up Gatekeeper.
 	authCookieName := config.GetWithoutError[string]("AUTH_COOKIE_NAME")
 	websiteDomain := config.GetWithoutError[string]("DOMAIN_NAME")
@@ -70,7 +67,7 @@ func StartWebsite() {
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer)
 	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, session, auth)
-	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, tuts)
+	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
 	profileHandlers := profile.SetupHandlers(pagesRenderer, auth)
 

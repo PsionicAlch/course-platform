@@ -5,6 +5,7 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -26,7 +27,7 @@ func SetupHandlers(pageRenderer render.Renderer) *Handlers {
 }
 
 func (h *Handlers) HomeGet(w http.ResponseWriter, r *http.Request) {
-	homePageData := CreateHomePageData()
+	homePageData := html.CreateHomePageData()
 
 	h.renderers.Page.RenderHTML(w, "home.page.tmpl", homePageData)
 }

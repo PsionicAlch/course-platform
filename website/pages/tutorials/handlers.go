@@ -11,21 +11,17 @@ import (
 type Handlers struct {
 	utils.Loggers
 	renderers *pages.Renderers
-	tutorials *Tutorials
 }
 
-func SetupHandlers(pageRenderer render.Renderer, tutorials *Tutorials) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer) *Handlers {
 	loggers := utils.CreateLoggers("TUTORIALS HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
 		renderers: pages.CreateRenderers(pageRenderer, nil),
-		tutorials: tutorials,
 	}
 }
 
 func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
-	tutorialsPageData := CreateTutorialsPageData(h.tutorials)
-
-	h.renderers.Page.RenderHTML(w, "tutorials.page.tmpl", tutorialsPageData)
+	utils.Redirect(w, r, "/")
 }

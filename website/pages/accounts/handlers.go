@@ -37,7 +37,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, s
 func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
 	loginForm := h.session.RetrieveLoginFormData(r.Context())
 
-	h.renderers.Page.RenderHTML(w, "login.page.tmpl", &LoginPageData{
+	h.renderers.Page.RenderHTML(w, "login.page.tmpl", &html.LoginPageData{
 		LoginForm: &html.LoginFormComponentData{
 			Form:  loginForm,
 			Error: "",
@@ -99,7 +99,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 	signUpForm := h.session.RetrieveSignUpFormData(r.Context())
 
-	h.renderers.Page.RenderHTML(w, "signup.page.tmpl", &SignUpPageData{
+	h.renderers.Page.RenderHTML(w, "signup.page.tmpl", &html.SignUpPageData{
 		SignUpForm: &html.SignupFormComponentData{
 			Form:  signUpForm,
 			Error: "",
