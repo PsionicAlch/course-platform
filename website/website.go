@@ -65,11 +65,11 @@ func StartWebsite() {
 	}
 
 	// Set up handlers.
-	generalHandlers := general.SetupHandlers(pagesRenderer)
+	generalHandlers := general.SetupHandlers(pagesRenderer, auth, db)
 	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, session, auth)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
-	profileHandlers := profile.SetupHandlers(pagesRenderer, auth)
+	profileHandlers := profile.SetupHandlers(pagesRenderer, auth, db)
 
 	// Create new router.
 	router := chi.NewRouter()

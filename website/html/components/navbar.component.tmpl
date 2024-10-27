@@ -7,7 +7,12 @@
         <ul class="navbar-links">
           <li><a href="/tutorials">Tutorials</a></li>
           <li><a href="/courses">Courses</a></li>
-          <li><a href="/accounts/login">Login</a></li>
+
+          {{ if .User }}
+            <li><a href="/profile">Profile</a></li>
+          {{ else }}
+            <li><a href="/accounts/login">Login</a></li>
+          {{ end }}
         </ul>
       </div>
     </div>

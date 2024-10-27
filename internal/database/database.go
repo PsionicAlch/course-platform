@@ -22,4 +22,5 @@ type Database interface {
 
 	// User based functions.
 	FindUserByEmail(email string) (*models.UserModel, error)
+	FindUserByID(id string) (*models.UserModel, error)
 }

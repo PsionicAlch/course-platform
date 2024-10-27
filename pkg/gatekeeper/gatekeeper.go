@@ -181,31 +181,41 @@ func (gatekeeper *Gatekeeper) ValidateAuthenticationToken(cookies []*http.Cookie
 				return false, err
 			}
 
-			// Check to make sure that a token was passed back.
-			if token == nil {
-				return false, nil
-			}
-
-			// Make sure the authentication token isn't empty and that it's the same one we gave.
-			if token.Token == "" || token.Token != authToken {
-				return false, nil
-			}
-
-			// Make sure that the authentication token has the correct type.
-			if token.TokenType != authenticationTokenType {
-				return false, nil
-			}
-
-			// Make sure the token is hasn't expired yet.
-			if time.Now().After(token.ValidUntil) {
-				return false, nil
-			}
+			valid := validateAuthenticationToken(authToken, token)
 
 			// TODO: send email if IP addresses are different.
 
-			return true, nil
+			return valid, nil
 		}
 	}
 
 	return false, nil
+}
+
+func (gatekeeper *Gatekeeper) GetUserIDFromAuthenticationToken(cookies []*http.Cookie) (string, error) {
+	// TODO: Custom errors.
+	for _, cookie := range cookies {
+		if cookie.Name == gatekeeper.cookieManager.parameters.name {
+			// Decode the authentication cookie's value to get the authentication token.
+			var authToken string
+			if err := gatekeeper.cookieManager.Decode(cookie.Value, &authToken); err != nil {
+				return "", err
+			}
+
+			// Get all the details of the authentication cookie from the database.
+			token, err := gatekeeper.database.GetToken(authToken)
+			if err != nil {
+				return "", err
+			}
+
+			valid := validateAuthenticationToken(authToken, token)
+			if !valid {
+				return "", errors.New("invalid authentication token")
+			}
+
+			return token.UserID, nil
+		}
+	}
+
+	return "", nil
 }

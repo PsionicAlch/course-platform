@@ -1,6 +1,6 @@
 {{ define "header" }}
   <header class="header">
-    {{ template "navbar" }}
+    {{ template "navbar" (props "User" .User) }}
 
     <!-- Hero Section -->
     <section id="hero" class="hero">
