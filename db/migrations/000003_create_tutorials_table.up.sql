@@ -22,12 +22,12 @@ CREATE TABLE IF NOT EXISTS tutorials (
     content TEXT NOT NULL,                                                                      -- HTML based contents of the tutorial.
     published INTEGER DEFAULT 0,                                                                -- BOOLEAN to represent whether or not the tutorial has been published.
 
-    author_id TEXT,                                                                             -- The user ID who published the tutorial (for when I have multiple authors).
+    author_id TEXT DEFAULT NULL,                                                                -- The user ID who published the tutorial (for when I have multiple authors).
 
     file_checksum TEXT NOT NULL,                                                                -- A SHA256 checksum to speed up the process of checking if a file has changed.
 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,                                              -- Timestamp for when the tutorial was initially created.
-    update_at DATETIME DEFAULT CURRENT_TIMESTAMP,                                               -- Timestamp for when the tutorial was updated.
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,                                              -- Timestamp for when the tutorial was updated.
 
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL                             -- Foreign key for users table. Set to null if the author is deleted.
 );

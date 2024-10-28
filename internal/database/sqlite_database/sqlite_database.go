@@ -5,16 +5,20 @@ import (
 	"fmt"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database/errors"
+	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	_ "modernc.org/sqlite"
 )
 
 type SQLiteDatabase struct {
+	utils.Loggers
 	fileName      string
 	migrationsDir string
 	connection    *sql.DB
 }
 
 func CreateSQLiteDatabase(fileName, migrationsDir string) (*SQLiteDatabase, error) {
+	loggers := utils.CreateLoggers("SQLITE DATABASE")
+
 	// Open a connection to the database.
 	conn, err := sql.Open("sqlite", fmt.Sprintf(".%s", fileName))
 	if err != nil {
@@ -44,6 +48,7 @@ func CreateSQLiteDatabase(fileName, migrationsDir string) (*SQLiteDatabase, erro
 	}
 
 	sqliteDatabase := &SQLiteDatabase{
+		Loggers:       loggers,
 		fileName:      fileName,
 		migrationsDir: migrationsDir,
 		connection:    conn,
@@ -53,5 +58,7 @@ func CreateSQLiteDatabase(fileName, migrationsDir string) (*SQLiteDatabase, erro
 }
 
 func (db *SQLiteDatabase) Close() error {
+	db.InfoLog.Println("Closing database connection")
+
 	return db.connection.Close()
 }

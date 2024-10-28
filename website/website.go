@@ -11,6 +11,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
+	"github.com/PsionicAlch/psionicalch-home/website/content"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/accounts"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/courses"
@@ -63,6 +64,9 @@ func StartWebsite() {
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up authentication: ", err)
 	}
+
+	// Load content into database.
+	content.RegisterContent(db)
 
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer, auth, db)

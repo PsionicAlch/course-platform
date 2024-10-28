@@ -16,6 +16,18 @@ func InSlice[T comparable](item T, items []T) bool {
 	return false
 }
 
+// InSliceFunc checks to see if an item is in a list of items and uses a user passed function
+// to do the comparison.
+func InSliceFunc[T, A any](item T, items []A, compareFunc func(itemA T, itemB A) bool) (int, bool) {
+	for index, i := range items {
+		if compareFunc(item, i) {
+			return index, true
+		}
+	}
+
+	return -1, false
+}
+
 func RandomByteSlice(length int) ([]byte, error) {
 	b := make([]byte, length)
 	_, err := rand.Read(b)

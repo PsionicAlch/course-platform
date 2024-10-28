@@ -2,7 +2,6 @@ package html
 
 import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/website/pages/tutorials"
 )
 
 type SignUpPageData struct {
@@ -37,10 +36,9 @@ func CreateHomePageData(user *models.UserModel) *HomePageData {
 
 type TutorialsPageData struct {
 	HeaderComponentData *HeaderComponentData
-	AllTutorials        []*tutorials.TutorialData
 }
 
-func CreateTutorialsPageData(user *models.UserModel, tutorials *tutorials.Tutorials) *TutorialsPageData {
+func CreateTutorialsPageData(user *models.UserModel) *TutorialsPageData {
 	headerComponentData := CreateHeaderComponent(
 		"Quick Tutorials, Real-World Skills",
 		"Our bite-sized tutorials give you the skills you need without the fluff. Each tutorial is a practical snippet from our in-depth courses, helping you build real-world projects one step at a time. Whether you're short on time or looking for focused learning, these tutorials get you up to speed fast.",
@@ -48,10 +46,8 @@ func CreateTutorialsPageData(user *models.UserModel, tutorials *tutorials.Tutori
 		"Start Learning",
 		user,
 	)
-	allTutorials := tutorials.GetAllTutorials()
 
 	return &TutorialsPageData{
 		HeaderComponentData: headerComponentData,
-		AllTutorials:        allTutorials,
 	}
 }
