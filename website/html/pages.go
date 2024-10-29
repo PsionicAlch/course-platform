@@ -36,9 +36,10 @@ func CreateHomePageData(user *models.UserModel) *HomePageData {
 
 type TutorialsPageData struct {
 	HeaderComponentData *HeaderComponentData
+	Tutorials           []*models.TutorialModel
 }
 
-func CreateTutorialsPageData(user *models.UserModel) *TutorialsPageData {
+func CreateTutorialsPageData(user *models.UserModel, tutorials []*models.TutorialModel) *TutorialsPageData {
 	headerComponentData := CreateHeaderComponent(
 		"Quick Tutorials, Real-World Skills",
 		"Our bite-sized tutorials give you the skills you need without the fluff. Each tutorial is a practical snippet from our in-depth courses, helping you build real-world projects one step at a time. Whether you're short on time or looking for focused learning, these tutorials get you up to speed fast.",
@@ -49,5 +50,6 @@ func CreateTutorialsPageData(user *models.UserModel) *TutorialsPageData {
 
 	return &TutorialsPageData{
 		HeaderComponentData: headerComponentData,
+		Tutorials:           tutorials,
 	}
 }

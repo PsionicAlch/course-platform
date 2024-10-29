@@ -12,7 +12,7 @@ import (
 
 func GetAllTutorials(dbFacade SqlDbFacade, loggers utils.Loggers) ([]*models.TutorialModel, error) {
 	// SQL query to get all tutorials from tutorials table.
-	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, created_at, updated_at FROM tutorials;`
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, created_at, updated_at FROM tutorials ORDER BY updated_at DESC, title ASC;`
 
 	// Query the database.
 	rows, err := dbFacade.Query(query)

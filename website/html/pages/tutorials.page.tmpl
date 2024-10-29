@@ -14,7 +14,7 @@
   <section id="tutorials" class="bg-dark">
     <div class="container">
       <div class="course-grid">
-        {{ range .AllTutorials }}
+        {{ range .Tutorials }}
           {{ template "tutorial-card" . }}
         {{ else }}
           <p>There aren't currently any tutorials here...</p>
