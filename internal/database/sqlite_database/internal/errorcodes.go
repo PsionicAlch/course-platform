@@ -1,0 +1,5 @@
+package internal
+
+const (
+	UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE = 2067
+)

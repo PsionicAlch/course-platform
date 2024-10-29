@@ -18,4 +18,5 @@ type TutorialModel struct {
 	FileChecksum string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+	Keywords     []*KeywordModel
 }

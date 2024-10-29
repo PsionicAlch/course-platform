@@ -25,7 +25,8 @@ type Database interface {
 	FindUserByID(id string) (*models.UserModel, error)
 
 	// Tutorial based functions.
-	AddKeyword(keyword string) (string, error)
+	FindKeyword(keyword string) (*models.KeywordModel, error)
+	AddKeyword(keyword string) (*models.KeywordModel, error)
 	GetAllTutorials() ([]*models.TutorialModel, error)
 	AddNewTutorial(title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum string) error
 	AddNewTutorialBulk(tutorials []*models.TutorialModel) error
