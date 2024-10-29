@@ -58,7 +58,7 @@ func AssociateKeywordsWithTutorial(dbFacade SqlDbFacade, loggers utils.Loggers, 
 }
 
 func GetAllKeywordsForTutorial(dbFacade SqlDbFacade, loggers utils.Loggers, tutorialId string) ([]*models.KeywordModel, error) {
-	query := `SELECT k.id, k.keyword FROM tutorials_keywords JOIN keywords k ON tk.keyword_id = k.id WHERE tk.tutorial_id = ?;`
+	query := `SELECT k.id, k.keyword FROM tutorials_keywords tk JOIN keywords k ON tk.keyword_id = k.id WHERE tk.tutorial_id = ?;`
 
 	rows, err := dbFacade.Query(query, tutorialId)
 	if err != nil {

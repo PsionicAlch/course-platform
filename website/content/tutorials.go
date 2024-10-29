@@ -96,6 +96,14 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 		tutData.Content = string(MarkdownToHTML(data))
 
 		if !slugFound {
+			var keywordModels []*models.KeywordModel
+			for _, keyword := range tutData.Keywords {
+				keywordModel := new(models.KeywordModel)
+				keywordModel.Keyword = keyword
+
+				keywordModels = append(keywordModels, keywordModel)
+			}
+
 			tutorialToAdd := new(models.TutorialModel)
 
 			tutorialToAdd.Title = tutData.Title
@@ -105,6 +113,7 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 			tutorialToAdd.BannerURL = tutData.BannerURL
 			tutorialToAdd.Content = tutData.Content
 			tutorialToAdd.FileChecksum = string(fileChecksum)
+			tutorialToAdd.Keywords = keywordModels
 
 			tutorialsToAdd = append(tutorialsToAdd, tutorialToAdd)
 
@@ -112,6 +121,14 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 		}
 
 		if !checksumFound {
+			var keywordModels []*models.KeywordModel
+			for _, keyword := range tutData.Keywords {
+				keywordModel := new(models.KeywordModel)
+				keywordModel.Keyword = keyword
+
+				keywordModels = append(keywordModels, keywordModel)
+			}
+
 			tutorialToUpdate := new(models.TutorialModel)
 			tutorialToUpdate.ID = tutorials[slugIndex].ID
 			tutorialToUpdate.Title = tutData.Title
@@ -123,6 +140,7 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 			tutorialToUpdate.Published = false
 			tutorialToUpdate.AuthorID = tutorials[slugIndex].AuthorID
 			tutorialToUpdate.FileChecksum = string(fileChecksum)
+			tutorialToUpdate.Keywords = keywordModels
 
 			tutorialsToUpdate = append(tutorialsToUpdate, tutorialToUpdate)
 
