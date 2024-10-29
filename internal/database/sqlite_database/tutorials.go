@@ -58,41 +58,6 @@ func (db *SQLiteDatabase) AddKeywordBulk(keywords []string) ([]*models.KeywordMo
 	return keywordModels, nil
 }
 
-func (db *SQLiteDatabase) AssociateKeywordWithTutorialBulk(tutorialID string, keywords []*models.KeywordModel) error {
-	// Start a transaction.
-	tx, err := db.connection.Begin()
-	if err != nil {
-		db.ErrorLog.Printf("Failed to start a new database transaction to bulk insert keywords: %s\n", err)
-		return err
-	}
-
-	err = internal.AssociateKeywordsWithTutorial(tx, db.Loggers, tutorialID, keywords)
-	if err != nil {
-		tx.Rollback()
-		db.ErrorLog.Printf("Failed to associate keywords with tutorial %s: %s\n", tutorialID, err)
-		return err
-	}
-
-	// Commit the transaction if all operations succeed
-	if err = tx.Commit(); err != nil {
-		tx.Rollback()
-		db.ErrorLog.Printf("Failed to commit bulk keyword to tutorial association transaction: %s\n", err)
-		return err
-	}
-
-	return nil
-}
-
-func (db *SQLiteDatabase) GetAllAssociateKeywords(tutorialId string) ([]*models.KeywordModel, error) {
-	keywords, err := internal.GetAllKeywordsForTutorial(db.connection, db.Loggers, tutorialId)
-	if err != nil {
-		db.ErrorLog.Printf("Failed to get all keywords associated with tutorial %s: %s\n", tutorialId, err)
-		return nil, err
-	}
-
-	return keywords, nil
-}
-
 func (db *SQLiteDatabase) GetAllTutorials() ([]*models.TutorialModel, error) {
 	tutorials, err := internal.GetAllTutorials(db.connection, db.Loggers)
 	if err != nil {

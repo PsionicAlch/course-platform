@@ -27,8 +27,9 @@ type Database interface {
 	// Tutorial based functions.
 	FindKeyword(keyword string) (*models.KeywordModel, error)
 	AddKeyword(keyword string) (*models.KeywordModel, error)
+	AddKeywordBulk(keywords []string) ([]*models.KeywordModel, error)
 	GetAllTutorials() ([]*models.TutorialModel, error)
-	AddNewTutorial(title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum string) error
+	AddNewTutorial(title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum string, keywords []string) error
 	AddNewTutorialBulk(tutorials []*models.TutorialModel) error
 	UpdateTutorial(id string, tutorial *models.TutorialModel) error
 	UpdateTutorialBulk(tutorials []*models.TutorialModel) error
