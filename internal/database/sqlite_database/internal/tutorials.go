@@ -74,6 +74,31 @@ func GetAllTutorials(dbFacade SqlDbFacade, loggers utils.Loggers) ([]*models.Tut
 	return tutorials, nil
 }
 
+func GetTutorialBySlug(dbFacade SqlDbFacade, loggers utils.Loggers, slug string) (*models.TutorialModel, error) {
+	// Get the tutorial.
+	tutorialModel, err := FindTutorialBySlugWithoutKeywords(dbFacade, loggers, slug)
+	if err != nil {
+		loggers.ErrorLog.Printf("Failed to find tutorial by slug: %s\n", err)
+		return nil, err
+	}
+
+	// Tutorial does not exist.
+	if tutorialModel.ID == "" {
+		return tutorialModel, nil
+	}
+
+	// Get all associated keywords.
+	keywordModels, err := GetAllKeywordsForTutorial(dbFacade, loggers, tutorialModel.ID)
+	if err != nil {
+		loggers.ErrorLog.Printf("Failed to find all keywords associated with the tutorial: %s\n", err)
+		return nil, err
+	}
+
+	tutorialModel.Keywords = keywordModels
+
+	return tutorialModel, nil
+}
+
 func FindTutorialBySlugWithoutKeywords(dbFacade SqlDbFacade, loggers utils.Loggers, slug string) (*models.TutorialModel, error) {
 	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, created_at, updated_at FROM tutorials WHERE slug = ?;`
 

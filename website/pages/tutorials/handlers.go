@@ -9,6 +9,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
+	"github.com/go-chi/chi/v5"
 )
 
 type Handlers struct {
@@ -46,5 +47,27 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 	err = h.renderers.Page.RenderHTML(w, "tutorials.page.tmpl", tutorialsPageData)
 	if err != nil {
 		h.ErrorLog.Println("Failed to render tutorials.page.tmpl: ", err)
+	}
+}
+
+func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
+	user, err := pages.GetUser(r.Cookies(), h.auth, h.db)
+	if err != nil {
+		h.WarningLog.Println(err)
+	}
+
+	slugParam := chi.URLParam(r, "slug")
+	tutorialModel, err := h.db.GetTutorialBySlug(slugParam)
+	if err != nil {
+		h.ErrorLog.Println("Failed to find tutorial by slug: ", err)
+		return
+	}
+
+	err = h.renderers.Page.RenderHTML(w, "tutorial.page.tmpl", html.TutorialPageData{
+		User:     user,
+		Tutorial: tutorialModel,
+	})
+	if err != nil {
+		h.ErrorLog.Println("Failed to render tutorial.page.tmpl: ", err)
 	}
 }

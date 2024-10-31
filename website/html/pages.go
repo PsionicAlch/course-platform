@@ -53,3 +53,8 @@ func CreateTutorialsPageData(user *models.UserModel, tutorials []*models.Tutoria
 		Tutorials:           tutorials,
 	}
 }
+
+type TutorialPageData struct {
+	User     *models.UserModel
+	Tutorial *models.TutorialModel
+}

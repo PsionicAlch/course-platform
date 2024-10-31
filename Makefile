@@ -2,7 +2,7 @@ MIGRATE_CMD = go run ./cmd/migrate
 MIGRATIONS_DIR=./db/migrations
 
 build:
-	@go build -o ./tmp/psionicalch ./cmd/web
+	@go build -ldflags="-s -w" -o ./tmp/psionicalch ./cmd/web
 
 run: build
 	./tmp/psionicalch
@@ -21,6 +21,9 @@ new-migration:
 
 new-keys:
 	@go run ./cmd/keys
+
+load-content:
+	@go run -tags content_loader ./cmd/content
 
 clean:
 	rm -rf ./tmp

@@ -8,7 +8,10 @@ import (
 
 func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
+
 	router.Get("/", handlers.TutorialsGet)
+
+	router.Get("/{slug}", handlers.TutorialGet)
 
 	return router
 }

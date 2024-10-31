@@ -29,6 +29,7 @@ type Database interface {
 	AddKeyword(keyword string) (*models.KeywordModel, error)
 	AddKeywordBulk(keywords []string) ([]*models.KeywordModel, error)
 	GetAllTutorials() ([]*models.TutorialModel, error)
+	GetTutorialBySlug(slug string) (*models.TutorialModel, error)
 	AddNewTutorial(title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum string, keywords []string) error
 	AddNewTutorialBulk(tutorials []*models.TutorialModel) error
 	UpdateTutorial(id string, tutorial *models.TutorialModel) error

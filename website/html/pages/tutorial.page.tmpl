@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="keywords" content="{{ keywords .Tutorial }}">
+  <title>{{ .Tutorial.Title }} - PsionicAlch</title>
+</head>
+<body>
+  <img src="{{ .Tutorial.BannerURL }}" alt="{{ .Tutorial.Title }}'s banner image">
+
+  <h1>{{ .Tutorial.Title }}</h1>
+
+  <main>
+    {{ html .Tutorial.Content }}
+  </main>
+</body>
+</html>

@@ -68,6 +68,16 @@ func (db *SQLiteDatabase) GetAllTutorials() ([]*models.TutorialModel, error) {
 	return tutorials, nil
 }
 
+func (db *SQLiteDatabase) GetTutorialBySlug(slug string) (*models.TutorialModel, error) {
+	tutorialModel, err := internal.GetTutorialBySlug(db.connection, db.Loggers, slug)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to find tutorial by slug: %s\n", err)
+		return nil, err
+	}
+
+	return tutorialModel, nil
+}
+
 func (db *SQLiteDatabase) AddNewTutorial(title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum string, keywords []string) error {
 	// Begin a transaction since this function will result in a lot of SELECT and INSERT statements.
 	tx, err := db.connection.Begin()
