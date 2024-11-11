@@ -29,15 +29,24 @@ func SetupHandlers(pageRenderer render.Renderer, auth *gatekeeper.Gatekeeper, db
 }
 
 func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "profile.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "profile.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) AffiliateHistoryGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "affiliate-history.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "affiliate-history.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "profile-courses.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "profile-courses.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
@@ -47,13 +56,22 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 	// Render the current chapter based off the course slug and chapter slug.
-	h.renderers.Page.RenderHTML(w, "profile-course.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "profile-course.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) TutorialsBookmarksGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "profile-tutorials-bookmarked.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "profile-tutorials-bookmarks.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) TutorialsLikedGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "profile-tutorials-liked.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "profile-tutorials-liked.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }

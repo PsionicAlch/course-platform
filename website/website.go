@@ -13,9 +13,11 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/accounts"
+	"github.com/PsionicAlch/psionicalch-home/website/pages/admin"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/courses"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/general"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/profile"
+	"github.com/PsionicAlch/psionicalch-home/website/pages/settings"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/tutorials"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -66,10 +68,12 @@ func StartWebsite() {
 
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer, auth, db)
-	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, session, auth)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, auth, db)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
+	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, session, auth)
 	profileHandlers := profile.SetupHandlers(pagesRenderer, auth, db)
+	settingsHandlers := settings.SetupHandlers(pagesRenderer)
+	adminHandlers := admin.SetupHandlers(pagesRenderer)
 
 	// Create new router.
 	router := chi.NewRouter()
@@ -94,6 +98,8 @@ func StartWebsite() {
 	router.Mount("/profile", profile.RegisterRoutes(profileHandlers))
 	router.Mount("/tutorials", tutorials.RegisterRoutes(tutorialHandlers))
 	router.Mount("/courses", courses.RegisterRoutes(courseHandlers))
+	router.Mount("/settings", settings.RegisterRoutes(settingsHandlers))
+	router.Mount("/admin", admin.RegisterRoutes(adminHandlers))
 
 	// Start server.
 	port := config.GetWithoutError[string]("PORT")
