@@ -17,7 +17,8 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.Get("/signup", handlers.SignupGet)
 	router.Post("/signup", handlers.SignupPost)
 
-	router.Get("/forgot", handlers.ForgotGet)
+	router.Get("/reset-password", handlers.ForgotGet)
+	router.Get("/reset-password/{email_token}", handlers.ResetPasswordGet)
 
 	router.Post("/validate/signup-form", handlers.ValidateSignupForm)
 
