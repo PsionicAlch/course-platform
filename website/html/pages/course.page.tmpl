@@ -1,0 +1,119 @@
+{{ template "base" .}}
+
+{{ define "meta-tags" }}
+  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/course.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>How to build a course platform with Golang - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <main class="course">
+    <div class="container">
+      <div class="course-container">
+        <div class="course-header">
+          <img src="/assets/img/banner-img.png" alt="Banner image for the course" class="shadow-sm">
+
+          <h1>Build Your Own Course Platform with Golang, HTMX, AlpineJS, and Bootstrap 5</h1>
+
+          <p>Made by <a href="/authors/insert-author-slug-here/courses">Jean-Jacques Strydom</a></p>
+
+          <p>Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience.</p>
+
+          <a href="/courses/course-slug-goes-here/purchase" class="btn btn-blue btn-buy shadow-sm">Buy Course - $150</a>
+        </div>
+
+        <hr>
+
+        <div class="course-body">
+          <h2>Course Overview</h2>
+
+          <p>This project-driven course will take you step-by-step through creating a real-world course platform from scratch. Unlike traditional courses that end in toy applications, this course empowers you to build a deployable, scalable, and reusable web application that can serve as the foundation for your own courses or business. By the end, you'll walk away with a complete platform - ready to be customized, launched, and monetized.</p>
+
+          <h2>What You'll Learn</h2>
+
+          <p>This course dives into the key technologies and techniques for building and launching a professional-grade course platform:</p>
+
+          <ul>
+            <li><b>Go for Web Development:</b> Learn how to leverage Golang's performance and simplicity to build fast, responsive web applications.</li>
+            <li><b>HTMX and AlpineJS:</b> Transform multi-page applications into responsive, SPA-like experiences without needing a complex JavaScript framework.</li>
+            <li><b>Database Integration:</b> Build efficient, robust database interactions in Go, tailored to your platform's needs.</li>
+            <li><b>Custom Authentication:</b> Develop a secure, reusable authentication and authorization system to protect your content.</li>
+            <li><b>Email Handling in Go:</b> Learn how to automate and send emails directly from your application.</li>
+            <li><b>Docker for Deployment:</b> Containerize your application for efficient, reproducible deployment on any environment.</li>
+            <li><b>VPS Deployment and Scaling:</b> Set up a VPS to host your platform in a scalable, cost-effective way.</li>
+            <li><b>Stripe Integration:</b> Add payment capabilities to monetize your courses, enabling students to make seamless transactions.</li>
+          </ul>
+
+          <p>Each module contributes to a cohesive platform that's ready for production and showcases your skills with real, deployable code.</p>
+
+          <h2>Who This Course Is For</h2>
+
+          <p>This course is designed for intermediate developers who:</p>
+
+          <ul>
+            <li><b>Know the Basics:</b> You're already comfortable with HTML, CSS, JavaScript, and Golang but want to bridge the gap between learning and launching.</li>
+            <li><b>Value Practical Learning:</b> If you're tired of “throwaway” example projects, this course will give you a portfolio-worthy platform you can immediately use.</li>
+            <li><b>Are Solopreneurs or Aspiring Educators:</b> Perfect for developers interested in creating, sharing, and monetizing their knowledge through their own course platform.</li>
+          </ul>
+
+          <h2>Why This Course is Different</h2>
+
+          <p><b>Real-World, Production-Ready Application:</b> Most courses walk you through hypothetical examples. Here, you'll build an application with features that mirror those used in professional web apps, including real-world deployment and scaling considerations.</p>
+
+          <p><b>No Heavy Frameworks Needed:</b> This course introduces you to building dynamic, responsive apps using Go, HTMX, and AlpineJS without leaning on large JavaScript frameworks. You'll learn modern techniques to achieve high performance with minimal dependencies.</p>
+
+          <p><b>Project-Driven and Modular:</b> With a strong focus on modular, reusable code, you'll gain skills to build applications from scratch and learn how to reuse core components like authentication and payment integrations in future projects.</p>
+
+          <h2>What You'll Walk Away With</h2>
+
+          <p>By the end of this course, you will have built a complete, functional course platform that includes:</p>
+
+          <ul>
+            <li><b>A Fully Deployed Platform:</b> Launch your application on your own VPS, backed by Docker for seamless scalability.</li>
+            <li><b>Reusable Components:</b> Code modular systems that can be adapted and used in future projects, including authentication, payment processing, and data tracking.</li>
+            <li><b>A Portfolio-Ready Project:</b> Showcase your work on your CV or website and impress potential clients or employers.</li>
+            <li><b>A Path to Monetization:</b> With Stripe integration, your platform is ready to accept payments from day one, allowing you to start selling your courses immediately.</li>
+          </ul>
+
+          <h2>Course Format</h2>
+
+          <ul>
+            <li><b>Self-Paced Written Tutorial:</b> Follow along at your own pace with clear, step-by-step instructions.</li>
+            <li><b>Lifetime Access:</b> Get access to all course materials, including future updates and new content.</li>
+            <li><b>Certificate of Completion:</b> Earn a certificate you can showcase after successfully building and deploying your course platform.</li>
+          </ul>
+
+          <h2>Requirements</h2>
+
+          <p>To follow this course, you'll need:</p>
+
+          <ul>
+            <li>A basic knowledge of HTML, CSS, JavaScript, and Golang.</li>
+            <li>Golang and Docker installed on your development machine.</li>
+          </ul>
+
+          <h2>Course Instructor</h2>
+
+          <p>With over eight years of experience in software development and a passion for practical, project-driven learning, I've designed this course to equip you with real-world skills you can use immediately. You'll be able to reach me directly via email, our course's dedicated Facebook page, or X (formerly Twitter) for any questions or additional guidance along the way.</p>
+
+          <h2>Pricing and Enrollment</h2>
+
+          <ul>
+            <li><b>Course Price:</b> $150 (with a 50% discount on your first course purchase)</li>
+            <li><b>Lifetime Access:</b> Buy once, keep learning with all future updates included.</li>
+          </ul>
+
+          <p>Ready to take your Golang skills to the next level? Enroll now and build a project that opens new doors in your career or business!</p>
+
+          <a href="/courses/course-slug-goes-here/purchase" class="btn btn-blue btn-buy shadow-sm">Buy Course - $150</a>
+        </div>
+      </div>
+    </div>
+  </main>
+{{ end }}

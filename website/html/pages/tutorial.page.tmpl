@@ -1,65 +1,7 @@
 {{ template "base" .}}
 
 {{ define "meta-tags" }}
-  <!-- TODO: Set up banner images -->
-  <meta name="description" content="{Tutorial Description}. Learn practical Golang skills with this in-depth tutorial on {Project Type or Skill Focus}.">
-  <meta name="keywords" content="Golang tutorial, {Tutorial Title keywords}, Golang projects, {Project Type keywords}}, practical Golang, PsionicAlch tutorials, build real-world applications in Golang">
-
-  <meta property="og:title" content="{Tutorial Title} | Golang Project Tutorial | PsionicAlch">
-  <meta property="og:description" content="{Tutorial Description}. Advance your skills with a real-world Golang project in {Project Type or Focus}.">
-  <meta property="og:image" content="https://www.psionicalch.com/path-to-tutorial-image.jpg">
-  <meta property="og:url" content="https://www.psionicalch.com/tutorials/{tutorial-slug-goes-here}">
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="PsionicAlch">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{Tutorial Title} | Golang Project Tutorial | PsionicAlch">
-  <meta name="twitter:description" content="{Tutorial Description}. Learn how to build a {Project Type} in Golang with hands-on guidance.">
-  <meta name="twitter:image" content="https://www.psionicalch.com/path-to-tutorial-image.jpg">
-  <meta name="twitter:site" content="@psionicalch">
-  <meta name="twitter:creator" content="@psionicalch">
-
-  <!-- TODO: Ensure that tutorials have a course that they link to. -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Course",
-      "name": "{Tutorial Title}",
-      "description": "{Tutorial Description}",
-      "provider": {
-        "@type": "Organization",
-        "name": "PsionicAlch",
-        "sameAs": "https://www.psionicalch.com"
-      },
-      "educationalCredentialAwarded": "Certificate of Completion",
-      "url": "https://www.psionicalch.com/tutorials/{tutorial-slug-goes-here}",
-      "learningResourceType": "Tutorial",
-      "image": "https://www.psionicalch.com/path-to-tutorial-image.jpg",
-      "audience": {
-        "@type": "Audience",
-        "audienceType": "Intermediate Golang Developers"
-      },
-      // Link to a specific course from here.
-      "hasCourseInstance": {
-        "@type": "CourseInstance",
-        "courseMode": "self-paced",
-        "inLanguage": "English",
-        "url": "https://www.psionicalch.com/courses/{course-slug-goes-here}",
-        "name": "{Related Course Title}",
-        "description": "{Related Course Description}",
-        "offers": {
-          "@type": "Offer",
-          "url": "https://www.psionicalch.com/courses/{course-slug-goes-here}",
-          "price": "{Course Price}",
-          "priceCurrency": "USD",
-          "eligibleRegion": {
-            "@type": "Country",
-            "name": "United States"
-          }
-        }
-      }
-    }
-  </script>
+  <!-- TODO: Generate SEO Tags with ChatGPT. -->
 {{ end }}
 
 {{ define "stylesheets" }}

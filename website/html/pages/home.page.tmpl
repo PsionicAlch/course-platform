@@ -1,10 +1,61 @@
 {{ template "base" .}}
 
+{{ define "meta-tags" }}
+  <meta name="description" content="PsionicAlch offers in-depth, project-based Golang courses designed for intermediate developers. Build real-world applications you can use in your portfolio or business. Learn to create robust software with Go, HTMX, AlpineJS, and Bootstrap 5." />
+  <meta name="keywords" content="Golang courses, Go programming, real-world Go projects, Golang course platform, build applications with Golang, project-based Go courses, intermediate Go development, Go web development, HTMX, AlpineJS, Bootstrap, software development in Go" />
+
+  <meta property="og:title" content="PsionicAlch - Master Real-World Golang Development" />
+  <meta property="og:description" content="Discover hands-on Golang courses at PsionicAlch. Learn by building real applications ready for use in your business or portfolio." />
+  <meta property="og:image" content="https://www.psionicalch.com/assets/img/og-banner-img.png" />
+  <meta property="og:url" content="https://www.psionicalch.com" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="PsionicAlch" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@psionicalch" />
+  <meta name="twitter:title" content="PsionicAlch - Master Real-World Golang Development" />
+  <meta name="twitter:description" content="Hands-on Golang courses at PsionicAlch. Build real, practical applications to enhance your coding skills and portfolio." />
+  <meta name="twitter:image" content="https://www.psionicalch.com/assets/img/og-banner-img.png" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://www.psionicalch.com",
+      "name": "PsionicAlch",
+      "description": "PsionicAlch offers intermediate developers in-depth Golang courses focused on real-world applications. Build robust, useful software with Go, HTMX, AlpineJS, and Bootstrap.",
+    }
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "PsionicAlch",
+      "url": "https://www.psionicalch.com",
+      "logo": "https://www.psionicalch.com/static/images/psionicalch_logo.png", // TODO: Create website logo.
+      "sameAs": [
+        "https://twitter.com/psionicalch"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Support",
+        "email": "support@psionicalch.com", // TODO: Create website support email.
+        "availableLanguage": "English"
+      }
+    }
+  </script>
+{{ end }}
+
 {{ define "stylesheets" }}
   <link rel="stylesheet" href="/assets/css/home.css">
   <link rel="stylesheet" href="/assets/css/hero.css">
   <link rel="stylesheet" href="/assets/css/projects.css">
   <link rel="stylesheet" href="/assets/css/interests.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>PsionicAlch - Master Real-World Golang Development with Hands-On Courses</title>
 {{ end }}
 
 {{ define "body" }}

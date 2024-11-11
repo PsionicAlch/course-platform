@@ -23,6 +23,22 @@ func SetupHandlers(pageRenderer render.Renderer) *Handlers {
 }
 
 func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
-	utils.Redirect(w, r, "/tutorials", http.StatusTemporaryRedirect)
-	// h.views.RenderHTML(w, "index.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "courses.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
+	err := h.renderers.Page.RenderHTML(w, "course.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
+	err := h.renderers.Page.RenderHTML(w, "course-purchase.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }

@@ -1,0 +1,79 @@
+{{ template "base" .}}
+
+{{ define "meta-tags" }}
+  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/purchase-course.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Buy Course - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <main class="course-purchase">
+    <div class="container">
+      <section class="course-purchase-container shadow-sm">
+        <div class="course-purchase-header">
+          <img src="/assets/img/banner-img.png" alt="Course banner image" class="shadow-sm">
+
+          <h2>Build a course platform with Golang, HTMX, AlpineJS and Bootstrap 5</h2>
+
+          <p>Made by <a href="/authors/author-slug-goes-here/courses"><b>Jean-Jacques Strydom</b></a></p>
+        </div>
+
+        <hr>
+
+        <div class="course-purchase-body">
+          <form>
+            <div class="form-control">
+              <label for="affiliate-code">Affiliate Code:</label>
+              <input class="shadow-sm" type="text" name="affiliate-code" id="affiliate-code" value="01JBC9HM3C160KYY6WE7KM8T20">
+            </div>
+
+            <div class="form-control">
+              <label for="affiliate-points">Affiliate Points (24 points available):</label>
+              <input class="shadow-sm" type="number" name="affiliate-points" id="affiliate-points" min="0" max="24" value="24">
+            </div>
+
+            <div class="form-control">
+              <label for="discount-code">Discount Code:</label>
+              <input class="shadow-sm" type="text" name="discount-code" id="discount-code" value="01JBC9HM3C9EXH42HDYFQJ95N4">
+            </div>
+
+            <div class="discounts">
+              <div class="discount">
+                <p>Affiliate Code Discount:</p>
+                <p><b>-10%</b></p>
+                <!-- -$15 -->
+              </div>
+
+              <div class="discount">
+                <p>Affiliate Points Discount:</p>
+                <p><b>-24%</b></p>
+                <!-- -$36 -->
+              </div>
+
+              <div class="discount">
+                <p>Discount Code:</p>
+                <p><b>-50%</b></p>
+                <!-- -$75 -->
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="total">
+              <p>Total Price:</p>
+              <p><b>$24</b></p>
+            </div>
+
+            <button type="submit" class="btn btn-blue shadow-sm">Buy Course</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+{{ end }}
