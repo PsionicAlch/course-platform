@@ -1,0 +1,104 @@
+{{ template "base" .}}
+
+{{ define "meta-tags" }}
+  <!-- TODO: Set up banner images -->
+  <meta name="description" content="Join PsionicAlch's affiliate program to earn discounts by promoting our Golang courses. Ideal for developers, educators, and tech enthusiasts looking to monetize their audience.">
+  <meta name="keywords" content="PsionicAlch affiliate program, earn discounts by promoting Golang courses, affiliate marketing Golang courses, Golang affiliate program, tech course affiliate program">
+
+  <meta property="og:title" content="Affiliate Program - PsionicAlch">
+  <meta property="og:description" content="Earn discounts by promoting PsionicAlch's Golang courses. Our affiliate program is perfect for tech enthusiasts, developers, and educators.">
+  <meta property="og:image" content="https://www.psionicalch.com/path-to-affiliate-banner.jpg">
+  <meta property="og:url" content="https://www.psionicalch.com/affiliate-program">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="PsionicAlch">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Affiliate Program - Earn Discounts by Promoting PsionicAlch Courses">
+  <meta name="twitter:description" content="Join PsionicAlch's affiliate program to earn discounts by sharing our Golang courses with your audience.">
+  <meta name="twitter:image" content="https://www.psionicalch.com/path-to-affiliate-banner.jpg">
+  <meta name="twitter:site" content="@psionicalch">
+  <meta name="twitter:creator" content="@psionicalch">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Affiliate Program",
+      "description": "Join PsionicAlch's affiliate program to earn discounts by promoting our Golang courses. Ideal for developers, educators, and tech enthusiasts looking to monetize their audience.",
+      "url": "https://www.psionicalch.com/affiliate-program"
+    }
+  </script>
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/affiliate-program.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Affiliate Program - Earn Points by Promoting PsionicAlch Courses</title>
+{{ end }}
+
+{{ define "body" }}
+  <main class="affiliate">
+    <div class="container">
+      <section class="affiliate-container">
+        <h1>Become an Affiliate & Earn Discounts on Every Course!</h1>
+
+        <p>When you join our platform, you're automatically part of our Affiliate Program! It's a simple way for you to share your passion for building real-world software applications in Go while earning points you can use to get discounts on future courses. Here's everything you need to know to start earning and saving!</p>
+
+        <div class="affiliate-section">
+          <h2>How the Affiliate Program Works</h2>
+
+          <p><b>1. Receive Your Affiliate Code:</b> Every user receives a unique affiliate code when they create an account. You'll find this code in your profile tab once you're logged in.</p>
+
+          <p><b>2. Share and Earn:</b> Share your affiliate code with friends, colleagues, or any programming enthusiast who wants to level up their Go skills. When someone uses your code, they'll get a <em>10% discount</em> on their next course purchase - and you'll earn <em>10 points</em> in return.</p>
+
+          <p><b>3. Accumulate Points:</b> Your points will accumulate in your account as long as your code is being used. Each point is worth a <em>1% discount</em>, which can be applied to future courses on the platform. There's no limit to how many points you can collect!</p>
+
+          <p><b>4. Redeem for Discounts:</b> Apply your points towards any current or future course and enjoy up to <em>100% off</em>. You can even combine your points with other discounts for maximum savings, as long as the total discount doesn't exceed 100%.</p>
+        </div>
+
+        <div class="affiliate-section">
+          <h2>How to Track Your Progress</h2>
+
+          <p>In your profile tab, you'll see:</p>
+
+          <p><b>- Your Points Balance:</b> Track how many points you've earned and saved.</p>
+
+          <p><b>- Affiliate Code Usage History:</b> View a list of times and dates when your affiliate code has been used. (To protect privacy, you'll only see date and time info.)</p>
+
+          <p>This way, you can keep an eye on your progress and see how often your code is helping others join and benefit from the platform!</p>
+        </div>
+
+        <div class="affiliate-section">
+          <h2>Important Guidelines</h2>
+
+          <p><b>1. Refund Policy:</b> If someone uses your affiliate code to buy a course but later requests a refund, the points you earned from that purchase will be removed from your account. This policy ensures a fair experience for everyone on the platform.</p>
+
+          <p><b>2. No Exclusive Content:</b> Every user has equal access to all courses on the platform, and points are the only reward given through our affiliate program. This ensures that all users, whether or not they share affiliate codes, have the same opportunities and access.</p>
+
+          <p><b>3. Combine Discounts with Confidence:</b> You're free to use as many points as you'd like along with other promotional discounts, up to a maximum of 100% off. This flexibility allows you to save big on each new course as you build your skills.</p>
+        </div>
+
+        <div class="affiliate-section">
+          <h2>Getting Started is Easy</h2>
+
+          <p><b>Step 1:</b> Log in to your account and visit the profile tab.</p>
+
+          <p><b>Step 2:</b> Copy your affiliate code.</p>
+
+          <p><b>Step 3:</b> Share it with anyone who would benefit from learning real-world application development in Go.</p>
+
+          <p><b>Step 4:</b> Watch your points grow and enjoy discounts on future courses!</p>
+        </div>
+
+        <div class="affiliate-section">
+          <h2>Start Sharing and Start Saving!</h2>
+
+          <p>Our Affiliate Program is a win-win: help others join a supportive community of Go developers, and save on the skills that matter most for your career growth. Share your code, earn points, and power up your learning journey with us.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+{{ end }}

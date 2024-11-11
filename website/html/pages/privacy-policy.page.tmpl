@@ -1,0 +1,143 @@
+{{ template "base" .}}
+
+{{ define "meta-tags" }}
+  <!-- TODO: Set up banner images -->
+  <meta name="description" content="PsionicAlch's privacy policy outlines how we handle and protect your personal information. Learn about data collection, usage, and security measures.">
+  <meta name="keywords" content="PsionicAlch privacy policy, data privacy, data protection, personal information policy, Golang course platform privacy policy">
+
+  <meta property="og:title" content="Privacy Policy - PsionicAlch">
+  <meta property="og:description" content="Read PsionicAlch's privacy policy to understand how we collect, use, and protect your personal data when you use our Golang course platform.">
+  <meta property="og:image" content="https://www.psionicalch.com/path-to-privacy-banner.jpg">
+  <meta property="og:url" content="https://www.psionicalch.com/privacy-policy">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="PsionicAlch">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Privacy Policy - PsionicAlch">
+  <meta name="twitter:description" content="Learn how PsionicAlch protects your personal information in our privacy policy.">
+  <meta name="twitter:image" content="https://www.psionicalch.com/path-to-privacy-banner.jpg">
+  <meta name="twitter:site" content="@psionicalch">
+  <meta name="twitter:creator" content="@psionicalch">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Privacy Policy",
+      "description": "PsionicAlch's privacy policy outlines how we handle and protect your personal information. Learn about data collection, usage, and security measures.",
+      "url": "https://www.psionicalch.com/privacy-policy"
+    }
+  </script>
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/privacy-policy.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Privacy Policy - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <!-- TODO: Add links to companies and software referenced -->
+  <main class="privacy">
+    <div class="container">
+      <section class="privacy-container">
+        <h1>Privacy Policy</h1>
+
+        <div class="privacy-policy">
+          <h2>1. Information We Collect</h2>
+
+          <p><b>Personal Data:</b> When you register on our platform, we collect your name, surname, email address, and IP address. We also track your course progress so that you can monitor your achievements on the platform.</p>
+
+          <p><b>Affiliate Tracking:</b> If you purchase a course using an affiliate link, we record this to attribute the referral accurately.</p>
+
+          <p><b>Anonymous Analytics:</b> We use Umami for anonymous site analytics to understand general usage patterns without tracking individual users.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>2. How We Collect Data</h2>
+
+          <p><b>Forms:</b> We collect your registration and login information via forms on our site.</p>
+
+          <p><b>Cookies:</b> We use essential cookies for session management and authentication. These cookies are strictly necessary for the operation of the website and are not used for tracking. As such, they cannot be disabled, as doing so would prevent key website functions (such as logging in) from working.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>3. Use of Collected Information</h2>
+
+          <p><b>User Authentication:</b> To verify and authenticate your identity when you log in.</p>
+
+          <p><b>Affiliate Attribution:</b> To accurately track and credit affiliate referrals.</p>
+
+          <p><b>Communications:</b> We may send you transactional emails for account activity, policy updates, course completion certificates, and refund status updates. These emails are essential for your account and cannot be opted out of.</p>
+
+          <p><b>Analytics:</b> We use Umami for anonymous analytics to understand general trends and improve our platform. Data is not attributed to specific users and is only used to inform us about overall usage patterns.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>4. Third-Party Services</h2>
+
+          <p><b>Stripe:</b> We use Stripe for secure payment processing. Stripe may collect information necessary to process payments. We do not store any financial information; all payment data is handled by Stripe. For more details, please refer to Stripe’s own privacy policy.</p>
+
+          <p><b>Umami:</b> We self-host Umami for anonymous analytics. No user-specific or personally identifiable information is collected through this service.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>5. Payment Information</h2>
+
+          <p>All payments are processed by Stripe, and we do not store any of your credit card or other payment information. We retain non-sensitive data related to each transaction (such as purchase date and amount) solely for bookkeeping purposes.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>6. Data Storage and Retention</h2>
+
+          <p><b>Storage Location:</b> User data is stored on our servers hosted by Hetzner in Germany.</p>
+
+          <p><b>Retention Policy:</b> We retain your data as long as you have an account on the platform. Upon account deletion, all personal information is permanently deleted, except for records related to payment transactions, which we retain for bookkeeping. Anonymous analytics data collected by Umami is also retained, as it cannot be linked back to individual users.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>7. Data Security</h2>
+
+          <p><b>Encryption:</b> Passwords are stored securely using a custom-built encryption method based on the Argon2 algorithm.</p>
+
+          <p><b>Breach Notification:</b> In the unlikely event of a data breach, we will promptly inform affected users via email. While we do not store sensitive financial information, we recommend users update their passwords if notified of a breach.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>8. User Rights and Data Control</h2>
+
+          <p><b>Account Deletion:</b> Users may delete their accounts at any time via the settings panel. Upon deletion, all personal data will be erased, with the exception of anonymized or transaction-specific data required for internal records.</p>
+
+          <p><b>Access to Data:</b> Users may request access to their personal data or make updates by contacting our support team.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>9. Cookies and Session Management</h2>
+
+          <p>We use essential cookies to manage sessions and provide necessary functionality, such as authentication and notifications. These cookies are essential for the platform's operation and cannot be disabled by the user.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>10. Data Privacy for Minors</h2>
+
+          <p>We do not knowingly collect information from children under the age of 13. Our platform is aimed at adults interested in software development, and we encourage any minors to seek parental consent before purchasing any courses.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>11. Changes to This Privacy Policy</h2>
+
+          <p>We may update this privacy policy from time to time. In the event of changes, we will notify users via email.</p>
+        </div>
+
+        <div class="privacy-policy">
+          <h2>12. Compliance with International Data Protection Laws</h2>
+
+          <p>We strive to comply with data protection laws, including GDPR and CCPA. You have the right to request deletion of your data, and we will promptly respond to such requests in compliance with these regulations. If you reside in a jurisdiction with specific data protection laws, please reach out if you have any questions about your rights.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+{{ end }}

@@ -1,0 +1,103 @@
+.course-purchase {
+  margin: 3rem auto;
+}
+
+.course-purchase-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  background: var(--secondary-background-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.course-purchase-container hr {
+  width: 100%;
+}
+
+.course-purchase-header {
+  width: 100%;
+  text-align: center;
+}
+
+.course-purchase-header img {
+  width: 100%;
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+}
+
+.course-purchase-header h2 {
+  margin-top: 2rem;
+  color: var(--primary-dark-text-color);
+}
+
+.course-purchase-header p {
+  margin-top: 1rem;
+}
+
+.course-purchase-header a:hover {
+  color: var(--primary-dark-text-color);
+}
+
+.course-purchase-body {
+  width: 100%;
+}
+
+.course-purchase-body form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.form-control {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-control>input {
+  display: block;
+  width: 100%;
+  height: 35px;
+  padding: 0.5rem 1rem;
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  outline: var(--primary-border-color);
+  color: var(--primary-text-color);
+}
+
+.discounts {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.discount,
+.total {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media screen and (min-width: 768px) {
+  .course-purchase-container {
+    padding: 1rem 2rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .course-purchase-container {
+    padding: 2rem 3rem;
+  }
+}

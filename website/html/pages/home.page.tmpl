@@ -1,207 +1,245 @@
 {{ template "base" .}}
 
-{{ define "head" }}
+{{ define "stylesheets" }}
   <link rel="stylesheet" href="/assets/css/home.css">
-
-  <title>PsionicAlch - Building Scalable, Secure Software with Golang for Startups</title>
+  <link rel="stylesheet" href="/assets/css/hero.css">
+  <link rel="stylesheet" href="/assets/css/projects.css">
+  <link rel="stylesheet" href="/assets/css/interests.css">
 {{ end }}
 
 {{ define "body" }}
-  {{ template "header" .HeaderComponentData }}
-
-  <section id="projects" class="bg-dark">
+  <section class="hero">
     <div class="container">
-      <h2 class="gradient-text heading">Build and Launch Real-World Applications with Golang</h2>
+      <div class="hero-container">
+        <div class="hero-text">
+          <h1>Build Real Projects, Launch Real Products</h1>
 
-      <div class="wrapper">
-        <p class="text-center">With PsionicAlch, you won't be wasting time on concepts that never see the light of day. You'll be building actual applications like:</p>
+          <p>
+            Tired of courses that teach theory but don't get <b class="emphasis">real-world results</b>?
+            Skip the fluff and dive into practical Golang courses designed to help you build projects you
+            can use for your portfolio or business <b class="emphasis">right now</b>.
+          </p>
 
-        <ul class="gradient-list">
-          <li>A video sharing platform like YouTube</li>
-          <li>An e-commerce store with integrated payments</li>
-          <li>A video analysis SaaS</li>
-          <li>AI-powered TikTok generators</li>
-          <li>A course platform (like PsionicAlch itself!)</li>
-        </ul>
-
-        <p class="text-center">By the end of each course, you'll have a fully functional project that you can use to showcase your skills or even launch your own business.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="interest" class="bg-dark-gray">
-    <div class="container">
-      <h2 class="gradient-text heading">What You'll Learn</h2>
-
-      <div class="wrapper">
-        <p class="text-center">No busywork. No theory overload. Just real projects that make a real impact.</p>
-
-        <div class="item-list">
-          <div class="item-outer">
-            <div class="item-inner">
-              <p>How to build real-world applications from scratch using Golang, HTML, CSS, Javascript, Docker, and more.</p>
-            </div>
-          </div>
-
-          <div class="item-outer">
-            <div class="item-inner">
-              <p>How to handle authentication systems, manage VPS, and set up DNS.</p>
-            </div>
-          </div>
-
-          <div class="item-outer">
-            <div class="item-inner">
-              <p>How to turn UI designs into fully functional, scalable web applications.</p>
-            </div>
-          </div>
-
-          <div class="item-outer">
-            <div class="item-inner">
-              <p>Skills that are immediately usable for your portfolio, a startup, or freelance projects.</p>
-            </div>
-          </div>
+          <a href="/courses" class="btn btn-blue shadow">Start Building Today</a>
+        </div>
+        <div class="hero-img">
+          <img src="/assets/img/hero-img.svg" alt="Gopher holding network cable" width="180px" height="180px">
         </div>
       </div>
     </div>
   </section>
 
-  <section id="desire" class="bg-gray">
+  <section id="projects" class="sections">
     <div class="container">
-      <h2 class="gradient-text heading heading">Affordable, Self-Paced Learning</h2>
+      <div class="sections-container">
+        <div class="sections-text">
+          <h2 class="section-header">Build and Launch Real-World Applications with Golang</h2>
 
-      <div class="wrapper">
-        <p class="text-center">Imagine completing a course and having an actual SaaS platform, video-sharing website, or e-commerce store ready to show clients, employers, or investors. You're not just learning to code — you're creating software that can launch your career or business.</p>
+          <div class="sections-text-wrapper">
+            <p>With PsionicAlch, you won't be wasting time on concepts that never see the light of day. You'll be building actual applications like:</p>
 
-        <h3 class="gradient-text text-center">Why PsionicAlch?</h3>
+            <ul>
+              <!-- TODO: Fill these in before launch -->
+              <li><b><a href="#" class="link-unavailable" title="This course is still under development">A video sharing platform like YouTube</a></b></li>
+              <li><b><a href="#" class="link-unavailable" title="This course is still under development">An e-commerce store with integrated payments</a></b></li>
+              <li><b><a href="#" class="link-unavailable" title="This course is still under development">A video analysis SaaS</a></b></li>
+              <li><b><a href="#" class="link-unavailable" title="This course is still under development">AI-powered TikTok generators</a></b></li>
+              <li><b><a href="#" class="link-available">A course platform (like PsionicAlch itself!)</a></b></li>
+            </ul>
 
-        <ul class="gradient-list">
-          <li><strong>Practical Focus</strong> - Unlike universities or bootcamps, PsionicAlch teaches you to build real projects. Each course ends with usable software.</li>
-          <li><strong>Up-to-date Knowledge</strong> - Technologies evolve, and so do our courses. You'll always be learning the latest tools and frameworks.</li>
-          <li><strong>Portfolio-Ready</strong> - The projects you build here are perfect for showcasing your skills to potential employers or investors.</li>
-        </ul>
-
-        <h3 class="gradient-text text-center">Affordable Prices</h3>
-
-        <p class="text-center">Courses starting at <strong>$79.99</strong>, with a 30-day money-back guarantee if you're not satisfied. You can learn at your own pace and get lifetime access to course updates.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="action" class="bg-dark-gray">
-    <div class="container">
-      <h2 class="gradient-text heading">Are You Ready to Build Something That Matters?</h2>
-
-      <div class="wrapper">
-        <p class="text-center">Don't waste time with theory. Start creating real-world applications that you can use today. Whether you're looking to boost your portfolio or launch your own SaaS business, PsionicAlch gives you the tools to make it happen.</p>
-
-        <a href="/courses" class="gradient-btn btn">Start Building Today</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="features" class="bg-dark">
-    <div class="container">
-      <h2 class="gradient-text heading">What You'll Get with PsionicAlch Courses:</h2>
-
-      <div class="wrapper">
-        <div class="item-list">
-          <div class="item-outer">
-            <div class="item-inner">
-              <h3>Step-by-Step Written Guides</h3>
-              <p>We walk you through the entire process, from start to finish</p>
-            </div>
+            <p>By the end of each course, you'll have a fully functional project that you can use to showcase your skills or even launch your own business.</p>
           </div>
+        </div>
 
-          <div class="item-outer">
-            <div class="item-inner">
-              <h3>Real-World Results</h3>
-              <p>By the end of each course, you'll have a complete, working project</p>
-            </div>
-          </div>
-
-          <div class="item-outer">
-            <div class="item-inner">
-              <h3>Certificate of Completion</h3>
-              <p>Add it to your resume, CV, or LinkedIn profile to show off your new skills</p>
-            </div>
-          </div>
+        <div class="sections-img">
+          <img src="/assets/img/projects-img.svg" alt="Gopher with a backpack" width="180px" height="180px">
         </div>
       </div>
     </div>
   </section>
 
-  <section id="courses" class="bg-dark-gray">
+  <section id="interest" class="sections">
     <div class="container">
-      <h2 class="gradient-text heading">Course Options Include:</h2>
+      <div class="sections-container-reverse">
+        <div class="sections-text">
+          <h2 class="section-header">What You'll Learn</h2>
 
-      <div class="wrapper">
-        <ul class="gradient-list">
-          <li>How to Build a Course Platform with Golang</li>
-          <li>How to Build a Video Sharing Platform (Like YouTube)</li>
-          <li>How to Create an E-Commerce Platform</li>
-          <li>How to Create a Video Analysis SaaS</li>
-          <li>How to Create an AI-Powered TikTok Generator</li>
-          <li>And many more!</li>
-        </ul>
-
-        <a href="/courses" class="gradient-btn btn">Enroll Now</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="faq" class="bg-gray">
-    <div class="container">
-      <h2 class="gradient-text heading">Frequently Asked Questions</h2>
-
-      <div class="wrapper">
-        <div class="details-list">
-          <div class="details-outer">
-            <details name="faqs" class="details-inner">
-              <summary>
-                <h3>Who is PsionicAlch for?</h3>
-              </summary>
-
-              <p>PsionicAlch is designed for intermediate developers who already know the basics of programming and want to start building real-world applications</p>
-            </details>
+          <div class="sections-text-wrapper">
+            <p>No busywork. No theory overload. Just real projects that make a real impact.</p>
+            <ul>
+              <li>
+                <p><b>How to build real-world applications from scratch using Golang, HTML, CSS, Javascript, Docker, and more.</b></p>
+              </li>
+              <li>
+                <p><b>How to handle authentication systems, manage VPS, and set up DNS.</b></p>
+              </li>
+              <li>
+                <p><b>How to turn UI designs into fully functional, scalable web applications.</b></p>
+              </li>
+              <li>
+                <p><b>Skills that are immediately usable for your portfolio, a startup, or freelance projects.</b></p>
+              </li>
+            </ul>
           </div>
+        </div>
 
-          <div class="details-outer">
-            <details name="faqs" class="details-inner">
-              <summary>
-                <h3>Do I need to be an expert in Golang?</h3>
-              </summary>
-
-              <p>No, you just need basic knowledge to follow along with the courses</p>
-            </details>
-          </div>
-
-          <div class="details-outer">
-            <details name="faqs" class="details-inner">
-              <summary>
-                <h3>Is there a money-back guarantee?</h3>
-              </summary>
-
-              <p>Yes! We offer a 30-day money-back guarantee if you're not satisfied with the course</p>
-            </details>
-          </div>
-
-          <div class="details-outer">
-            <details name="faqs" class="details-inner">
-              <summary>
-                <h3>Can I use the projects I build?</h3>
-              </summary>
-
-              <p>Absolutely! These are fully functional, real-world applications that can be reskinned and launched as your own product</p>
-            </details>
-          </div>
+        <div class="sections-img">
+          <img src="/assets/img/interests-img.svg" alt="Gopher wearing a witch's hat" width="180px" height="180px">
         </div>
       </div>
     </div>
   </section>
 
-  <script type="module">
-    import { applyGradientToAllLists } from '/assets/js/gradient.min.js';
+  <section id="desire" class="sections">
+    <div class="container">
+      <div class="sections-container">
+        <div class="sections-text">
+          <h2 class="section-header">Affordable, Self-Paced Learning</h2>
 
-    applyGradientToAllLists();
-  </script>
+          <div class="sections-text-wrapper">
+            <p>Imagine completing a course and having an actual SaaS platform, video-sharing website, or e-commerce store ready to show clients, employers, or investors. You're not just learning to code — you're creating software that can launch your career or business.</p>
+
+            <h3 class="section-subheader">Why PsionicAlch?</h3>
+
+            <ul>
+              <li><strong>Practical Focus</strong> - Unlike universities or bootcamps, PsionicAlch teaches you to build real projects. Each course ends with usable software.</li>
+
+              <li><strong>Up-to-date Knowledge</strong> - Technologies evolve, and so do our courses. You'll always be learning the latest tools and frameworks.</li>
+
+              <li><strong>Portfolio-Ready</strong> - The projects you build here are perfect for showcasing your skills to potential employers or investors.</li>
+            </ul>
+
+            <h3 class="section-subheader">Affordable Prices</h3>
+
+            <p>Courses starting at <strong>$79.99</strong>, with a 30-day money-back guarantee if you're not satisfied. You can learn at your own pace and get lifetime access to course updates.</p>
+          </div>
+        </div>
+
+        <div class="sections-img">
+          <img src="/assets/img/desires-img.svg" alt="Gopher crash test dummy" width="180px" height="180px">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="action" class="sections">
+    <div class="container">
+      <div class="sections-container-reverse">
+        <div class="sections-text">
+          <h2 class="section-header">Are You Ready to Build Something That Matters?</h2>
+
+          <div class="sections-text-wrapper">
+            <p>Don't waste time with theory. Start creating real-world applications that you can use today. Whether you're looking to boost your portfolio or launch your own SaaS business, PsionicAlch gives you the tools to make it happen.</p>
+
+            <a href="/courses" class="btn btn-blue shadow">Start Building Today</a>
+          </div>
+        </div>
+
+        <div class="sections-img">
+          <img src="/assets/img/action-img.svg" alt="Gopher in a ballerina outfit" width="180px" height="180px">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="sections">
+    <div class="container">
+      <div class="sections-container">
+        <div class="sections-text">
+          <h2 class="section-header">What You'll Get with PsionicAlch Courses:</h2>
+
+          <div class="sections-text-wrapper">
+            <div class="sections-list">
+              <div class="shadow">
+                <h3 class="section-subheader">Step-by-Step Written Guides</h3>
+                <p>We walk you through the entire process, from start to finish</p>
+              </div>
+
+              <div class="shadow">
+                <h3 class="section-subheader">Real-World Results</h3>
+                <p>By the end of each course, you'll have a complete, working project</p>
+              </div>
+
+              <div class="shadow">
+                <h3 class="section-subheader">Certificate of Completion</h3>
+                <p>Add it to your resume, CV, or LinkedIn profile to show off your new skills</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sections-img">
+          <img src="/assets/img/features-img.svg" alt="Gopher holding red heart" width="180px" height="180px">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="courses" class="sections">
+    <div class="container">
+      <div class="sections-container-reverse">
+        <div class="sections-text">
+          <h2 class="section-header">Course Options Include:</h2>
+
+          <div class="sections-text-wrapper">
+            <ul>
+              <!-- TODO: Fill these in before launch -->
+              <li><a href="/courses" class="link-available">How to Build a Course Platform with Golang</a></li>
+              <li><a href="javascript:void(0);" class="link-unavailable">How to Build a Video Sharing Platform (Like YouTube)</a></li>
+              <li><a href="javascript:void(0);" class="link-unavailable">How to Create an E-Commerce Platform</a></li>
+              <li><a href="javascript:void(0);" class="link-unavailable">How to Create a Video Analysis SaaS</a></li>
+              <li><a href="javascript:void(0);" class="link-unavailable">How to Create an AI-Powered TikTok Generator</a></li>
+              <li><a href="/courses" class="link-available">And many more!</a></li>
+            </ul>
+
+            <a href="/courses" class="btn btn-blue shadow">Enroll Now</a>
+          </div>
+        </div>
+
+        <div class="sections-img">
+          <img src="/assets/img/courses-img.svg" alt="Gopher going on a hike" width="180px" height="180px">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="sections">
+    <div class="container">
+      <h2 class="section-header">Frequently Asked Questions</h2>
+
+      <div class="faq-section-details-list">
+        <details name="faqs" class="faq shadow">
+          <summary>
+            <h3>Who is PsionicAlch for?</h3>
+          </summary>
+
+          <p>PsionicAlch is designed for intermediate developers who already know the basics of programming and want to start building real-world applications</p>
+        </details>
+
+        <details name="faqs" class="faq shadow">
+          <summary>
+            <h3>Do I need to be an expert in Golang?</h3>
+          </summary>
+
+          <p>No, you just need basic knowledge to follow along with the courses</p>
+        </details>
+
+        <details name="faqs" class="faq shadow">
+          <summary>
+            <h3>Is there a money-back guarantee?</h3>
+          </summary>
+
+          <p>Yes! We offer a 30-day money-back guarantee if you're not satisfied with the course</p>
+        </details>
+
+        <details name="faqs" class="faq shadow">
+          <summary>
+            <h3>Can I use the projects I build?</h3>
+          </summary>
+
+          <p>Absolutely! These are fully functional, real-world applications that can be reskinned and launched as your own product</p>
+        </details>
+      </div>
+    </div>
+  </section>
 {{ end }}

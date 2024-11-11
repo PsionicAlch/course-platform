@@ -1,0 +1,180 @@
+.hero-header {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.hero-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-text h1 {
+  color: var(--primary-dark-text-color);
+  margin-bottom: 1.3rem;
+  font-size: 2.1rem;
+}
+
+.hero-text p {
+  font-size: 0.8em;
+  margin-bottom: 2rem;
+}
+
+.hero-img {
+  width: fit-content;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-img img {
+  display: block;
+  aspect-ratio: 1;
+}
+
+@media screen and (min-width: 360px) {
+  .hero-text p {
+    font-size: 0.9em;
+  }
+}
+
+@media screen and (min-width: 362px) {
+  .hero-text h1 {
+    font-size: 2.4em;
+  }
+}
+
+@media screen and (min-width: 400px) {
+  .hero-text p {
+    font-size: 1em;
+  }
+}
+
+@media screen and (min-width: 442px) {
+  .hero-text p {
+    font-size: 1.2em;
+  }
+}
+
+@media screen and (min-width: 456px) {
+  .hero-text h1 {
+    font-size: 3em;
+  }
+}
+
+@media screen and (min-width: 524px) {
+  .hero-text p {
+    font-size: 1.4em;
+  }
+}
+
+@media screen and (min-width: 562px) {
+  .hero-text h1 {
+    font-size: 3.9em;
+  }
+}
+
+@media screen and (min-width: 606px) {
+  .hero-text p {
+    font-size: 1.6em;
+  }
+}
+
+@media screen and (min-width: 688px) {
+  .hero-text p {
+    font-size: 1.9em;
+  }
+}
+
+@media screen and (min-width: 722px) {
+  .hero-text h1 {
+    font-size: 4.4em;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .hero-container {
+    flex-direction: row-reverse;
+  }
+
+  .hero-text {
+    flex: 1;
+  }
+
+  .hero-text h1 {
+    font-size: 2.6em;
+  }
+
+  .hero-text p {
+    font-size: 1em;
+  }
+
+  .hero-img {
+    flex: 1;
+  }
+
+  .hero-img img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media screen and (min-width: 882px) {
+  .hero-text p {
+    font-size: 1.1em;
+  }
+}
+
+@media screen and (min-width: 964px) {
+  .hero-text p {
+    font-size: 1.3em;
+  }
+}
+
+@media screen and (min-width: 984px) {
+  .hero-text h1 {
+    font-size: 3.4em;
+  }
+}
+
+@media screen and (min-width: 1128px) {
+  .hero-text p {
+    font-size: 1.5em;
+  }
+}
+
+@media screen and (min-width: 1266px) {
+  .hero-text h1 {
+    font-size: 4.4em;
+  }
+}
+
+@media screen and (min-width: 1292px) {
+  .hero-text p {
+    font-size: 1.8em;
+  }
+}

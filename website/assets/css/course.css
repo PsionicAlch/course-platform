@@ -1,0 +1,161 @@
+.btn-buy {
+  margin-top: 2rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.course {
+  margin: 3rem auto;
+}
+
+.course-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.course-container h1 {
+  font-size: 1.5em;
+}
+
+.course-container h2 {
+  font-size: 1.2em;
+}
+
+.course-container p,
+.course-container li {
+  font-size: 0.8em;
+}
+
+.course-container hr {
+  width: 100%;
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: var(--primary-border);
+  padding: 0;
+}
+
+.course-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.course-header img {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  margin-bottom: 2rem;
+}
+
+.course-header h1 {
+  text-align: center;
+  margin-bottom: 0.8rem;
+  color: var(--primary-dark-text-color);
+}
+
+.course-header h1 + p {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.course-header p>a {
+  color: var(--primary-dark-text-color);
+  font-weight: bold;
+}
+
+.course-header p>a:hover {
+  text-decoration: underline;
+}
+
+.course-body h2 {
+  text-align: center;
+}
+
+.course-body li {
+  line-height: 1.2em;
+}
+
+.course-body h2 + p,
+.course-body p + h2,
+.course-body p + p {
+  margin-top: 1.5rem;
+}
+
+.course-body li + li {
+  margin-top: 1.2rem;
+}
+
+.course-body ul {
+  margin: 1.5rem 0;
+  padding: 0 1.5rem;
+  list-style-type: disc;
+}
+
+@media screen and (min-width: 550px) {
+  .course-container {
+    gap: 3rem;
+  }
+
+  .course-container h1 {
+    font-size: 2em;
+  }
+
+  .course-container h2 {
+    font-size: 1.7em;
+  }
+
+  .course-container p,
+  .course-container li {
+    font-size: 1em;
+  }
+
+  .course-header h1 {
+    margin-bottom: 1rem;
+  }
+
+  .course-body h2 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .course-body p + p {
+    margin-top: 2rem;
+  }
+
+  .course-body li + li {
+    margin-top: 1.7rem;
+  }
+
+  .course-body ul {
+    margin: 2rem 0;
+    padding: 0 2rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .course-header h1 {
+    font-size: 4em;
+  }
+
+  .course-header h1 + p {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .course-header p + p {
+    font-size: 2em;
+  }
+
+  .course-body h2 {
+    text-align: start;
+    margin-top: 3rem !important;
+    margin-bottom: 3rem !important;
+  }
+}

@@ -6,34 +6,104 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  {{ block "meta-tags" . }}
+    <meta name="description" content="Learn Golang by building portfolio-ready applications! PsionicAlch's practical courses guide you through real-world projects — from a course platform to e-commerce apps. Designed for intermediate developers, our affordable courses equip you with skills for your career or startup.">
+    <meta name="keywords" content="Golang practical courses, build real-world applications in Golang, intermediate Golang projects, Golang for career and portfolio, Golang course platform project, affordable Golang courses USA, Golang Docker VPS Nginx projects, Golang for startups">
+
+    <meta property="og:title" content="Build Real-World Golang Applications with PsionicAlch">
+    <meta property="og:description" content="Intermediate Golang developers — build real-world projects you can add to your portfolio. Affordable courses that teach by doing, with real applications for your career or startup.">
+    <meta property="og:image" content="https://yourwebsite.com/assets/img/og-banner-img.png">
+    <meta property="og:url" content="https://www.psionicalch.com">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="PsionicAlch">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Build Real-World Golang Applications with PsionicAlch">
+    <meta name="twitter:description" content="Learn Golang by creating portfolio-ready projects. Affordable, practical courses designed for intermediate developers. Start building real applications today.">
+    <meta name="twitter:image" content="https://yourwebsite.com/assets/img/og-banner-img.png">
+    <meta name="twitter:site" content="@psionicalch">
+    <meta name="twitter:creator" content="@psionicalch">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": "PsionicAlch Golang Courses",
+        "description": "Learn Golang by building real-world applications with affordable, practical, project-based courses for intermediate developers.",
+        "provider": {
+          "@type": "Organization",
+          "name": "PsionicAlch",
+          "sameAs": "https://www.psionicalch.com"
+        },
+        "courseMode": "Online",
+        "offers": {
+          "@type": "Offer",
+          "price": "200",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    </script>
+  {{ end }}
+
+  <link rel="stylesheet" href="/assets/css/variables.css">
   <link rel="stylesheet" href="/assets/css/reset.css">
-  <link rel="stylesheet" href="/assets/css/global.css">
-  <link rel="stylesheet" href="/assets/css/animations.css">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+
+  {{ block "stylesheets" . }}
+  {{ end }}
 
   <script src="/assets/js/alpine.min.js" defer></script>
   <script src="/assets/js/htmx.min.js" defer></script>
   <script src="/assets/js/htmx-head-support-ext.min.js" defer></script>
-  <!-- <script src="/assets/js/htmx-idiomorph-ext.min.js" defer></script> -->
 
-  {{ block "head" . }}
-    <title>Default Title - PsionicAlch</title>
+  {{ block "title" . }}
+    <title>Build Real-World Golang Applications - Practical Courses for Intermediate Developers</title>
   {{ end }}
 </head>
-<body hx-ext="head-support" hx-boost="true">
+<body
+  hx-ext="head-support"
+  hx-boost="true"
+  x-data="{ menuOpen: false }"
+  x-bind:class="{ 'noscroll': menuOpen }"
+>
   <noscript>
-    <h3>This website requires JavaScript to work as intended. Please enable JavaScript to have the full experience.</h3>
+    <section class="noscript-container shadow-sm">
+      <h2>This website does not work without Javascript enabled</h2>
+
+      <p>This website has a lot of functionality that relies on Javascript to work properly. Please re-enable Javascript and then reload the web page.</p>
+    </section>
   </noscript>
+
+  <!-- TODO: Pass navbar specific struct down to template -->
+  {{ template "navbar" . }}
 
   {{ block "body" . }}
     <h1>Default Body</h1>
   {{ end }}
 
-  <!-- Footer Section -->
-  <footer id="footer">
+  <footer class="footer">
     <div class="container">
-      <p>&copy; 2024 PsionicAlch. All rights reserved.</p>
+      <hr>
+
+      <p class="text-center">&copy; 2024 <a href="/">PsionicAlch</a>. All rights reserved. Art by <a href="https://github.com/egonelbre/gophers/tree/master"><b>@egonelbre</b></a> and <a href="https://github.com/MariaLetta/free-gophers-pack"><b>Maria Letta</b></a></p>
+
+      <div class="footer-links">
+        <a href="https://x.com/psionicalch">Twitter</a>
+        <a href="https://facebook.com">Facebook</a>
+        <a href="/affiliate-program">Affiliate Program</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/refund-policy">Refund Policy</a>
+      </div>
     </div>
   </footer>
+
+  <script src="/assets/js/script.js"></script>
+
+  {{ block "javascript" . }}
+  {{ end }}
 </body>
 </html>
 

@@ -1,20 +1,50 @@
 {{ define "navbar" }}
-  <nav>
-    <div class="container">
-      <div class="navbar">
-        <h2 class="navbar-header"><a href="/">PsionicAlch</a></h2>
+<nav class="navbar">
+  <div class="container">
+    <div class="main-navbar">
+      <h1><a href="/">PsionicAlch</a></h1>
 
-        <ul class="navbar-links">
-          <li><a href="/tutorials">Tutorials</a></li>
-          <li><a href="/courses">Courses</a></li>
+      <ul class="desktop-nav-links">
+        <li><a href="/tutorials.html">Tutorials</a></li>
+        <li><a href="/courses.html">Courses</a></li>
+        <li><a href="/profile.html">Profile</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/admin-tutorials.html">Admin</a></li>
+        <li><a href="#" class="btn-inline btn-red shadow-sm">Log Out</a></li>
+      </ul>
 
-          {{ if .User }}
-            <li><a href="/profile">Profile</a></li>
-          {{ else }}
-            <li><a href="/accounts/login">Login</a></li>
-          {{ end }}
-        </ul>
-      </div>
+      <button
+        x-on:click="menuOpen = true"
+        class="hamburger-btn"
+        aria-label="Toggle menu"
+      >
+        <span>&#9776;</span>
+      </button>
     </div>
-  </nav>
+  </div>
+  <div x-bind:class="{ 'hidden': !menuOpen, 'visible': menuOpen }" style="display: none;" class="dropdown-navbar">
+    <div class="container">
+      <div class="mobile-nav-head">
+        <h1><a href="/">PsionicAlch</a></h1>
+
+        <button
+          x-on:click="menuOpen = false"
+          class="hamburger-btn"
+          aria-label="Toggle menu"
+        >
+          <span>&#10005;</span>
+        </button>
+      </div>
+
+      <ul class="mobile-nav-links">
+        <li><a href="/tutorials.html">Tutorials</a></li>
+        <li><a href="/courses.html">Courses</a></li>
+        <li><a href="/profile.html">Profile</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/admin-tutorials.html">Admin</a></li>
+        <li><a href="#" class="btn-inline btn-red shadow-sm">Log Out</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 {{ end }}

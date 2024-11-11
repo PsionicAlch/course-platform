@@ -1,0 +1,18 @@
+.error {
+  margin: 3rem auto;
+}
+
+.error-container {
+  margin: 0 auto;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+}
+
+.error-container img {
+  width: 100%;
+  max-width: 400px;
+}

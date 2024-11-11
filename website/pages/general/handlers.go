@@ -7,7 +7,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
-	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -30,12 +29,24 @@ func SetupHandlers(pageRenderer render.Renderer, auth *gatekeeper.Gatekeeper, db
 }
 
 func (h *Handlers) HomeGet(w http.ResponseWriter, r *http.Request) {
-	user, err := pages.GetUser(r.Cookies(), h.auth, h.db)
-	if err != nil {
-		h.WarningLog.Println(err)
-	}
+	// user, err := pages.GetUser(r.Cookies(), h.auth, h.db)
+	// if err != nil {
+	// 	h.WarningLog.Println(err)
+	// }
 
-	homePageData := html.CreateHomePageData(user)
+	// homePageData := html.CreateHomePageData(user)
 
-	h.renderers.Page.RenderHTML(w, "home.page.tmpl", homePageData)
+	h.renderers.Page.RenderHTML(w, "home.page.tmpl", nil)
+}
+
+func (h *Handlers) AffiliateProgramGet(w http.ResponseWriter, r *http.Request) {
+	h.renderers.Page.RenderHTML(w, "affiliate-program.page.tmpl", nil)
+}
+
+func (h *Handlers) PrivacyPolicyGet(w http.ResponseWriter, r *http.Request) {
+	h.renderers.Page.RenderHTML(w, "privacy-policy.page.tmpl", nil)
+}
+
+func (h *Handlers) RefundPolicyGet(w http.ResponseWriter, r *http.Request) {
+	h.renderers.Page.RenderHTML(w, "refund-policy.page.tmpl", nil)
 }

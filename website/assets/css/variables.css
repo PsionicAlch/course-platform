@@ -1,0 +1,73 @@
+:root {
+  /* Text Sizes */
+  --base-text-size: 18px;
+
+  /* Font Weights */
+  --base-font-weight: 300;
+  --emphasis-font-weight: 400;
+
+  /* Fonts */
+  --font-family: 'Roboto', sans-serif;
+
+  /* Spacing */
+  --base-line-height: 1.3em;
+  --header-line-height: 1.1em;
+
+  /* Border Radius */
+  --primary-border-radius: 12px;
+
+  /* Background Colors */
+  --primary-background-color: #eee;
+  --secondary-background-color: #fafafa;
+
+  /* Text Colors */
+  --primary-text-color: #6a7a88;
+  --primary-dark-text-color: #394656;
+  --placeholder-text-color: rgb(0 0 0 / 0.3);
+
+  /* Red Button Settings */
+  --primary-red-color: #ef4444;
+  --primary-dark-red-color: #dc2626;
+  --primary-light-red-color: #fca5a5;
+  --primary-red-border: 1px solid var(--primary-dark-red-color);
+
+  /* Blue Button Settings */
+  --primary-blue-color: #61e0ee;
+  --primary-dark-blue-color: #3ec9de;
+  --primary-blue-border: 1px solid var(--primary-dark-blue-color);
+
+  /* Amber Button Settings */
+  --primary-amber-color: #fbbf24;
+  --primary-dark-amber-color: #f59e0b;
+  --primary-amber-border: 1px solid var(--primary-amber-color);
+
+  /* Green Button Settings */
+  --primary-green-color: #22c55e;
+  --primary-dark-green-color: #16a34a;
+  --primary-light-green-color: #86efac;
+  --primary-green-border: 1px solid var(--primary-green-color);
+
+  /* Shadow Settings */
+  --shadow-color-01: rgb(0 0 0 / 0.1);
+  --shadow-color-02: rgb(0 0 0 / 0.2);
+  --shadow-transition-time: 0.2s;
+  --shadow-easing-function: ease-in-out;
+  --shadow-sm: 1px 3px 3px 1px var(--shadow-color-01), -1px 3px 3px 1px var(--shadow-color-01);
+  --shadow-sm-dark: 1px 3px 3px 1px var(--shadow-color-02), -1px 3px 3px 1px var(--shadow-color-02);
+  --shadow: 3px 6px 6px 1px var(--shadow-color-01), -3px 6px 6px 1px var(--shadow-color-01);
+  --shadow-dark: 3px 6px 6px 1px var(--shadow-color-02), -3px 6px 6px 1px var(--shadow-color-02);
+  --shadow-transition: box-shadow var(--shadow-transition-time) var(--shadow-easing-function);
+
+  /* Border Settings */
+  --primary-border-color: #c5c5c5;
+  --primary-border: 1px solid var(--primary-border-color);
+
+  /* Card Settings */
+  --card-transition-time: 1s;
+  --card-easing-function: cubic-bezier(.4, 0, .2, 1);
+
+  /* Navbar Settings */
+  --navbar-transition-time: 1s;
+  --navbar-easing-function: ease-in-out;
+  --navbar-transition: transform var(--navbar-transition-time) var(--navbar-easing-function);
+}

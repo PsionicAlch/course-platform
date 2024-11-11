@@ -1,9 +1,0 @@
-@keyframes spiral-rotation {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg) scale(3);
-  }
-
-  to {
-    transform: translate(-50%, -50%) rotate(360deg) scale(3);
-  }
-}

@@ -1,0 +1,130 @@
+.tutorial-container {
+  margin: 3rem auto;
+  max-width: 1024px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.tutorial-container img {
+  border-radius: var(--primary-border-radius);
+  width: 100%;
+  height: auto;
+}
+
+.tutorial-header {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  border-bottom: var(--primary-border);
+  padding-bottom: 1rem;
+  gap: 2rem;
+}
+
+.tutorial-header h1 {
+  margin-bottom: 1rem;
+  color: var(--primary-dark-text-color);
+}
+
+.tutorial-header p {
+  font-size: 0.7em;
+}
+
+.tutorial-header p>a {
+  color: var(--primary-dark-text-color);
+  font-weight: bold;
+}
+
+.tutorial-header p>a:hover {
+  text-decoration: underline;
+}
+
+.tutorial-actions {
+  align-self: flex-end;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+}
+
+.tutorial-actions div {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.tutorial-actions button {
+  width: 30px;
+  height: 30px;
+  background: inherit;
+  border: none;
+}
+
+.tutorial-actions button p {
+  cursor: pointer;
+}
+
+.tutorial-actions button.like p {
+  color: var(--primary-text-color);
+}
+
+.tutorial-actions button.like p:hover {
+  color: var(--primary-red-color);
+}
+
+.tutorial-actions button.liked {
+  color: var(--primary-red-color);
+}
+
+.tutorial-actions button.liked p:hover {
+  color: var(--primary-red-color);
+}
+
+.tutorial-actions button.bookmark p {
+  color: var(--primary-text-color);
+}
+
+.tutorial-actions button.bookmark p:hover {
+  color: var(--primary-amber-color);
+}
+
+.tutorial-actions button.bookmarked p {
+  color: var(--primary-amber-color);
+}
+
+.tutorial-actions button.bookmarked p:hover {
+  color: var(--primary-dark-amber-color);
+}
+
+.tutorial-content .banner-img {
+  display: block;
+  margin: 2rem auto;
+}
+
+@media screen and (min-width: 550px) {
+  .tutorial-header h1 {
+    font-size: 2em;
+  }
+
+  .tutorial-header p {
+    font-size: 1em;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .tutorial-container {
+    align-items: start;
+  }
+
+  .tutorial-header {
+    width: 100%;
+    text-align: start;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

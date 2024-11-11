@@ -1,0 +1,46 @@
+.profile,
+.profile hr {
+  margin: 3rem auto;
+}
+
+.profile-section-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.profile-section-header {
+  display: block;
+  text-align: center;
+}
+
+.profile-section-header h2 {
+  color: var(--primary-dark-text-color);
+}
+
+.profile-section-header a {
+  display: none;
+}
+
+.profile-section-body p+p {
+  margin-top: 1rem;
+}
+
+@media screen and (min-width: 700px) {
+  .profile-section-header {
+    text-align: start;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .profile-section-header a {
+    display: block;
+    width: fit-content;
+  }
+
+  .profile-section-mobile {
+    display: none;
+  }
+}

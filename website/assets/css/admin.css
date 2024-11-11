@@ -1,0 +1,336 @@
+.admin {
+  margin: 3rem auto;
+}
+
+.admin-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.admin-container hr {
+  width: 100%;
+}
+
+.admin-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-header h2 {
+  text-align: center;
+  color: var(--primary-dark-text-color);
+}
+
+.admin-header-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-header-actions form {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-header-actions form input,
+.admin-header-actions form select,
+.admin-body table select,
+.admin-body table input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  outline: none;
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  background-color: var(--secondary-background-color);
+  color: var(--primary-text-color);
+  caret: var(--primary-text-color);
+  font-size: 1em;
+}
+
+.admin-body table select {
+  width: fit-content;
+}
+
+.admin-header-actions form input::placeholder {
+  color: var(--primary-text-color);
+}
+
+.admin-modal {
+  z-index: 300;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: var(--primary-background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.admin-modal-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 1rem;
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  background-color: var(--secondary-background-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.admin-modal-header {
+  width: 100%;
+  text-align: center;
+}
+
+.admin-modal-header h2 {
+  color: var(--primary-dark-text-color);
+}
+
+.admin-modal-header h2+p {
+  margin-top: 1rem;
+}
+
+.admin-modal-body {
+  width: 100%;
+}
+
+.admin-modal-body form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.admin-modal-body .form-control {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-control input,
+.form-control select {
+  outline: none;
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  font-size: 1em;
+  color: var(--primary-text-color);
+  caret-color: var(--primary-text-color);
+  padding: 0.5rem 1rem;
+}
+
+.admin-modal-body .admin-modal-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-control .password-control {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 0.5rem !important;
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  background-color: var(--secondary-background-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.password-control input {
+  display: block;
+  width: 100%;
+  outline: none;
+  border: none;
+  color: var(--primary-text-color);
+  background-color: var(--secondary-background-color);
+}
+
+.password-control .visibility-control {
+  width: 31px;
+  height: 31px;
+  margin-bottom: -3px;
+  color: var(--primary-text-color);
+}
+
+.visibility-control:hover {
+  color: var(--primary-dark-text-color);
+}
+
+.admin-body {
+  width: 100%;
+  overflow: auto;
+  padding: 1rem;
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  background-color: var(--secondary-background-color);
+  color: var(--primary-text-color);
+}
+
+.admin-body table {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.admin-body table thead {
+  border-bottom: var(--primary-border);
+}
+
+.admin-body table th,
+.admin-body table td {
+  text-align: start;
+  padding: 0.5rem 1rem;
+}
+
+.admin-body tbody tr:nth-child(odd) {
+  background-color: var(--primary-background-color);
+}
+
+.admin-body a:hover {
+  color: var(--primary-dark-text-color);
+}
+
+.admin-navbar-button {
+  position: fixed;
+  top: 5rem;
+  right: 0;
+  background-color: var(--secondary-background-color);
+  border: var(--primary-border);
+  border-right: none;
+  border-top-left-radius: var(--primary-border-radius);
+  border-bottom-left-radius: var(--primary-border-radius);
+  padding: 0.8rem;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-text-color);
+  cursor: pointer;
+}
+
+.admin-navbar {
+  z-index: 200;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--secondary-background-color);
+  transition: var(--navbar-transition);
+}
+
+.admin-navbar.hidden {
+  transform: translateX(100%);
+}
+
+.admin-navbar.visible {
+  transform: translateX(-0);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-navbar-container {
+  width: 100%;
+  padding: 3rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.admin-navbar-container hr {
+  width: 100%;
+}
+
+.admin-navbar-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-navbar-header h2 {
+  color: var(--primary-dark-text-color);
+}
+
+.admin-navbar-header button {
+  border: none;
+  background-color: var(--secondary-background-color);
+  font-size: 1.5em;
+  color: var(--primary-text-color);
+  cursor: pointer;
+}
+
+.admin-navbar-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-navbar-body a:hover {
+  color: var(--primary-dark-text-color);
+}
+
+@media screen and (min-width: 650px) {
+  .admin-header-actions {
+    flex-direction: row;
+  }
+
+  .admin-header-actions form {
+    flex-direction: row;
+  }
+
+  .admin-header-actions form select {
+    width: fit-content;
+  }
+
+  .admin-header-actions button {
+    width: fit-content;
+  }
+
+  .admin-header-actions form input,
+  .admin-header-actions form select {
+    width: auto;
+  }
+
+  .admin-navbar {
+    width: fit-content;
+  }
+
+  .admin-modal-container {
+    padding: 2rem;
+  }
+
+  .admin-modal-container .admin-modal-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .admin-modal-actions button {
+    width: fit-content;
+  }
+}
