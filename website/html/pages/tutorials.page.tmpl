@@ -1,0 +1,140 @@
+{{ template "base" .}}
+
+{{ define "meta-tags" }}
+  <!-- TODO: Set up banner images -->
+  <meta name="description" content="Explore a wide range of practical Golang tutorials designed to help developers build real-world applications. Gain hands-on skills to advance your portfolio and career.">
+  <meta name="keywords" content="Golang tutorials, Golang programming, real-world Golang applications, Golang projects, Golang development, practical Golang skills, PsionicAlch tutorials">
+
+  <!-- Open Graph (OG) Tags for Tutorials Page -->
+  <meta property="og:title" content="Golang Tutorials | Practical, Real-World Applications | PsionicAlch">
+  <meta property="og:description" content="Browse through our collection of Golang tutorials focused on building real-world applications. Perfect for developers looking to enhance their skills with hands-on projects.">
+  <meta property="og:image" content="https://www.psionicalch.com/path-to-tutorials-banner.jpg">
+  <meta property="og:url" content="https://www.psionicalch.com/tutorials">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PsionicAlch">
+
+  <!-- Twitter Tags for Tutorials Page -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Golang Tutorials | Practical, Real-World Applications | PsionicAlch">
+  <meta name="twitter:description" content="Discover practical Golang tutorials that teach you to build real-world projects. Enhance your skills and portfolio on PsionicAlch.">
+  <meta name="twitter:image" content="https://www.psionicalch.com/path-to-tutorials-banner.jpg">
+  <meta name="twitter:site" content="@psionicalch">
+  <meta name="twitter:creator" content="@psionicalch">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "PsionicAlch Golang Tutorials",
+      "description": "A curated collection of practical Golang tutorials on PsionicAlch for building real-world applications.",
+      "url": "https://www.psionicalch.com/tutorials",
+      "itemListElement": [
+        {
+          "@type": "CreativeWork",
+          "position": 1,
+          "name": "Tutorial Title 1",
+          "url": "https://www.psionicalch.com/tutorials/tutorial-title-1",
+          "description": "Learn how to build a real-world project in Golang with Tutorial Title 1."
+        },
+        {
+          "@type": "CreativeWork",
+          "position": 2,
+          "name": "Tutorial Title 2",
+          "url": "https://www.psionicalch.com/tutorials/tutorial-title-2",
+          "description": "Build hands-on skills in Golang with this practical tutorial, Tutorial Title 2."
+        }
+        // Continue adding individual tutorials dynamically here
+      ]
+    }
+  </script>
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/tutorials.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Golang Tutorials | Practical, Real-World Applications | PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <main class="tutorials">
+    <div class="container">
+      <form method="get">
+        <input class="shadow-sm" type="text" name="search" placeholder="What tutorial are you looking for?">
+      </form>
+
+      <hr>
+
+      <div class="tutorials-container">
+        <h2>Tutorials</h2>
+
+        <div class="cards-list">
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Tutorial Name</h2>
+              <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Tutorial Name</h2>
+              <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Tutorial Name</h2>
+              <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Tutorial Name</h2>
+              <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Tutorial Name</h2>
+              <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Tutorial Name</h2>
+              <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Tutorial Name</h2>
+              <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Tutorial Name</h2>
+              <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{{ end }}

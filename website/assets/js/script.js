@@ -14,9 +14,3 @@ document.addEventListener("alpine:init", () => {
     adminMenu.style = "";
   }
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-  if (typeof hljs !== 'undefined') {
-    hljs.highlightAll();
-  }
-});

@@ -10,7 +10,7 @@ func Redirect(w http.ResponseWriter, r *http.Request, url string, status ...int)
 	if len(status) > 0 {
 		statusCode = status[0]
 	} else {
-		statusCode = http.StatusOK
+		statusCode = http.StatusFound
 	}
 
 	w.Header().Set("HX-Redirect", url)

@@ -12,6 +12,7 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.Get("/", handlers.HomeGet)
 	router.Get("/affiliate-program", handlers.AffiliateProgramGet)
 	router.Get("/privacy-policy", handlers.PrivacyPolicyGet)
+	router.Get("/refund-policy", handlers.RefundPolicyGet)
 
 	return router
 }

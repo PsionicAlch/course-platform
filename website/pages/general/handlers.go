@@ -29,24 +29,29 @@ func SetupHandlers(pageRenderer render.Renderer, auth *gatekeeper.Gatekeeper, db
 }
 
 func (h *Handlers) HomeGet(w http.ResponseWriter, r *http.Request) {
-	// user, err := pages.GetUser(r.Cookies(), h.auth, h.db)
-	// if err != nil {
-	// 	h.WarningLog.Println(err)
-	// }
-
-	// homePageData := html.CreateHomePageData(user)
-
-	h.renderers.Page.RenderHTML(w, "home.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "home.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) AffiliateProgramGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "affiliate-program.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "affiliate-program.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) PrivacyPolicyGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "privacy-policy.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "privacy-policy.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) RefundPolicyGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "refund-policy.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "refund-policy.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }

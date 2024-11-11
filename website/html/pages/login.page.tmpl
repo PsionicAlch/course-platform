@@ -90,7 +90,7 @@
   </main>
 {{ end }}
 
-{{ block "javascript" }}
+{{ define "javascript" }}
   <script>
     document.addEventListener("alpine:init", () => {
       Alpine.data('auth', () => ({
