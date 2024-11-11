@@ -11,7 +11,16 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	// router.Use(handlers.auth.AllowAuthenticated("/accounts/login"))
 
-	router.With(handlers.auth.AllowAuthenticated("/accounts/login")).Get("/", handlers.ProfileGet)
+	router.Get("/", handlers.ProfileGet)
+
+	router.Get("/affiliate-history", handlers.AffiliateHistoryGet)
+
+	router.Get("/courses", handlers.CoursesGet)
+	router.Get("/courses/{slug}", handlers.CourseGet)
+	router.Get("/courses/{course_slug}/{chapter_slug}", handlers.CourseChapterGet)
+
+	router.Get("/profile/tutorials/bookmarks", handlers.TutorialsBookmarksGet)
+	router.Get("/profile/tutorials/liked", handlers.TutorialsLikedGet)
 
 	return router
 }

@@ -1,0 +1,129 @@
+{{ template "base" .}}
+
+{{ define "meta-tags" }}
+  <!-- TODO: Set up banner images -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Access all the Golang courses you've purchased on PsionicAlch. Continue your learning journey with practical, real-world applications in Golang.">
+  <meta name="keywords" content="purchased courses, access courses, Golang courses, real-world applications, course platform, PsionicAlch courses">
+
+  <meta property="og:title" content="Your Courses - Access Purchased Content on PsionicAlch">
+  <meta property="og:description" content="Quickly access all your purchased Golang courses and continue learning real-world applications with PsionicAlch.">
+  <meta property="og:image" content="https://www.psionicalch.com/path-to-courses-banner.jpg">
+  <meta property="og:url" content="https://www.psionicalch.com/profile/courses">
+  <meta property="og:type" content="profile">
+  <meta property="og:site_name" content="PsionicAlch">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Your Purchased Courses - Continue Learning on PsionicAlch">
+  <meta name="twitter:description" content="Access all your purchased Golang courses to continue your practical learning journey with PsionicAlch.">
+  <meta name="twitter:image" content="https://www.psionicalch.com/path-to-courses-banner.jpg">
+  <meta name="twitter:site" content="@psionicalch">
+  <meta name="twitter:creator" content="@psionicalch">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Courses Page",
+      "description": "View and access all purchased Golang courses on PsionicAlch. Continue learning with practical, real-world projects and build your skills.",
+      "url": "https://www.psionicalch.com/profile/courses",
+      "mainEntity": {
+        "@type": "Person",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "PsionicAlch"
+        }
+      }
+    }
+  </script>
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/courses.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Your Courses - Access Purchased Golang Courses | PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <main class="courses">
+    <div class="container">
+      <form method="get">
+        <input class="shadow-sm" type="text" name="search" placeholder="What course are you looking for?">
+      </form>
+
+      <hr>
+
+      <div class="courses-container">
+        <h2>My Courses</h2>
+
+        <div class="cards-list">
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Course Name</h2>
+              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Course Name</h2>
+              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Course Name</h2>
+              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Course Name</h2>
+              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Course Name</h2>
+              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Course Name</h2>
+              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Course Name</h2>
+              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+            </div>
+          </div>
+
+          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+            <div class="card-body">
+              <h2>Course Name</h2>
+              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{{ end }}

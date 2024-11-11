@@ -59,6 +59,9 @@
   <script src="/assets/js/htmx.min.js" defer></script>
   <script src="/assets/js/htmx-head-support-ext.min.js" defer></script>
 
+  {{ block "head-scripts" . }}
+  {{ end }}
+
   {{ block "title" . }}
     <title>Build Real-World Golang Applications - Practical Courses for Intermediate Developers</title>
   {{ end }}

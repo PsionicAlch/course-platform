@@ -1,9 +1,242 @@
-{{ template "base" . }}
+{{ template "base" .}}
 
-{{ define "head" }}
-  <title>Profile - PsionicAlch</title>
+{{ define "meta-tags" }}
+  <!-- TODO: Set up banner images -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Manage your PsionicAlch profile, track affiliate usage, view your purchased Golang courses, and access your saved tutorials. Keep up with your progress and affiliate rewards.">
+  <meta name="keywords" content="PsionicAlch profile, affiliate code, Golang courses purchased, saved tutorials, bookmarked tutorials, account management">
+
+  <meta property="og:title" content="Your Profile - Manage Affiliates, Courses, and Bookmarked Content">
+  <meta property="og:description" content="Access and manage your PsionicAlch profile. Track affiliate code usage, view your purchased courses, and easily find your liked or bookmarked tutorials.">
+  <meta property="og:image" content="https://www.psionicalch.com/path-to-profile-banner.jpg">
+  <meta property="og:url" content="https://www.psionicalch.com/profile">
+  <meta property="og:type" content="profile">
+  <meta property="og:site_name" content="PsionicAlch">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Your PsionicAlch Profile - Manage Courses, Affiliates, and More">
+  <meta name="twitter:description" content="Easily access your profile to manage affiliate code activity, view purchased courses, and find saved tutorials.">
+  <meta name="twitter:image" content="https://www.psionicalch.com/path-to-profile-banner.jpg">
+  <meta name="twitter:site" content="@psionicalch">
+  <meta name="twitter:creator" content="@psionicalch">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "name": "User Profile",
+      "description": "Manage your PsionicAlch profile to track affiliate usage, view purchased Golang courses, and access saved tutorials. Keep up with your course progress and affiliate rewards.",
+      "url": "https://www.psionicalch.com/profile",
+      "mainEntity": [
+        {
+          "@type": "Person",
+          "affiliation": {
+            "@type": "Organization",
+            "name": "PsionicAlch"
+          }
+        }
+      ]
+    }
+  </script>
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/profile.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Your Profile - Track Affiliates, View Courses, and More | PsionicAlch</title>
 {{ end }}
 
 {{ define "body" }}
-  <h1>You're currently logged in as: {{ .Email }}</h1>
+  <main class="profile">
+    <div class="container">
+      <section class="profile-section">
+        <div class="profile-section-container">
+          <div class="profile-section-header">
+            <h2>Affiliate Program</h2>
+
+            <a href="/profile/affiliate-history" class="btn btn-blue shadow-sm">View History</a>
+          </div>
+
+          <div class="profile-section-body">
+            <p>Available Affiliate Points: <b>23</b></p>
+            <p>Affiliate Link Code: <b>01JBC9HM3C160KYY6WE7KM8T20</b></p>
+          </div>
+
+          <div class="profile-section-mobile">
+            <a href="/profile/affiliate-history" class="btn btn-blue shadow-sm">View History</a>
+          </div>
+        </div>
+      </section>
+
+      <hr>
+
+      <section class="profile-section">
+        <div class="profile-section-container">
+          <div class="profile-section-header">
+            <h2>My Courses</h2>
+
+            <div class="actions">
+              <a href="/profile/courses" class="btn btn-blue shadow-sm">More</a>
+            </div>
+          </div>
+
+          <div class="profile-section-body">
+            <div class="cards-list">
+              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Course Name</h2>
+                  <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Course Name</h2>
+                  <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Course Name</h2>
+                  <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Course Name</h2>
+                  <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section-mobile">
+            <div class="actions">
+              <a href="/profile/courses" class="btn btn-blue shadow-sm">More</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr>
+
+      <section class="profile-section">
+        <div class="profile-section-container">
+          <div class="profile-section-header">
+            <h2>My Saved Tutorials</h2>
+
+            <div class="actions">
+              <a href="/profile/tutorials/bookmarks" class="btn btn-blue shadow-sm">More</a>
+            </div>
+          </div>
+
+          <div class="profile-section-body">
+            <div class="cards-list">
+              <div class="card shadow-sm" style="background-image: url('/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Tutorial Name</h2>
+                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm" style="background-image: url('/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Tutorial Name</h2>
+                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm" style="background-image: url('/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Tutorial Name</h2>
+                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm" style="background-image: url('/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Tutorial Name</h2>
+                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section-mobile">
+            <div class="actions">
+              <a href="/profile/tutorials/bookmarks" class="btn btn-blue shadow-sm">More</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr>
+
+      <section class="profile-section">
+        <div class="profile-section-container">
+          <div class="profile-section-header">
+            <h2>My Liked Tutorials</h2>
+
+            <div class="actions">
+              <a href="/profile/tutorials/liked" class="btn btn-blue shadow-sm">More</a>
+            </div>
+          </div>
+
+          <div class="profile-section-body">
+            <div class="cards-list">
+              <div class="card shadow-sm" style="background-image: url('/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Tutorial Name</h2>
+                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm" style="background-image: url('/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Tutorial Name</h2>
+                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm" style="background-image: url('/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Tutorial Name</h2>
+                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm" style="background-image: url('/img/golang-course-platform-image.png');">
+                <div class="card-body">
+                  <h2>Tutorial Name</h2>
+                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
+                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section-mobile">
+            <div class="actions">
+              <a href="/profile/tutorials/liked" class="btn btn-blue shadow-sm">More</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
 {{ end }}

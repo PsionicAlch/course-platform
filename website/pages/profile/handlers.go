@@ -1,14 +1,12 @@
 package profile
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
-	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -31,23 +29,31 @@ func SetupHandlers(pageRenderer render.Renderer, auth *gatekeeper.Gatekeeper, db
 }
 
 func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
-	userId, err := h.auth.GetUserIDFromAuthenticationToken(r.Cookies())
-	if err != nil {
-		// TODO: setup proper error page.
-		h.ErrorLog.Println(err)
-		return
-	}
+	h.renderers.Page.RenderHTML(w, "profile.page.tmpl", nil)
+}
 
-	user, err := h.db.FindUserByID(userId)
-	if err != nil {
-		// TODO: setup proper error page.
-		h.ErrorLog.Println(err)
-		return
-	}
+func (h *Handlers) AffiliateHistoryGet(w http.ResponseWriter, r *http.Request) {
+	h.renderers.Page.RenderHTML(w, "affiliate-history.page.tmpl", nil)
+}
 
-	fmt.Println(user)
+func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
+	h.renderers.Page.RenderHTML(w, "profile-courses.page.tmpl", nil)
+}
 
-	h.renderers.Page.RenderHTML(w, "profile.page.tmpl", html.ProfilePageData{
-		Email: "hello@me.com",
-	})
+func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
+	// Redirect to the first incomplete chapter or the last chapter if all are complete.
+	utils.Redirect(w, r, "/profile/courses/course-slug-goes-here/chapter-slug-goes-here")
+}
+
+func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
+	// Render the current chapter based off the course slug and chapter slug.
+	h.renderers.Page.RenderHTML(w, "profile-course.page.tmpl", nil)
+}
+
+func (h *Handlers) TutorialsBookmarksGet(w http.ResponseWriter, r *http.Request) {
+	h.renderers.Page.RenderHTML(w, "profile-tutorials-bookmarked.page.tmpl", nil)
+}
+
+func (h *Handlers) TutorialsLikedGet(w http.ResponseWriter, r *http.Request) {
+	h.renderers.Page.RenderHTML(w, "profile-tutorials-liked.page.tmpl", nil)
 }

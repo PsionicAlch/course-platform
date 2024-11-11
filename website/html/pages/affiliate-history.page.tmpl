@@ -1,0 +1,118 @@
+{{ template "base" .}}
+
+{{ define "meta-tags" }}
+  <!-- TODO: Set up banner images -->
+  <meta name="description" content="View your detailed affiliate history, including all earned and lost points on PsionicAlch. Keep track of your affiliate rewards progress.">
+  <meta name="keywords" content="affiliate history, affiliate points tracking, PsionicAlch affiliate rewards, earned points, lost points, affiliate program progress">
+
+  <meta property="og:title" content="Affiliate History - Track Your Points and Rewards">
+  <meta property="og:description" content="Easily view your complete affiliate points history, including all earnings and deductions, on PsionicAlch. Track your affiliate program progress.">
+  <meta property="og:image" content="https://www.psionicalch.com/path-to-affiliate-history-banner.jpg">
+  <meta property="og:url" content="https://www.psionicalch.com/profile/affiliate-history">
+  <meta property="og:type" content="profile">
+  <meta property="og:site_name" content="PsionicAlch">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Your Affiliate History - Track Points and Progress">
+  <meta name="twitter:description" content="Check your affiliate points history on PsionicAlch to track earnings and deductions. See your affiliate rewards progress in detail.">
+  <meta name="twitter:image" content="https://www.psionicalch.com/path-to-affiliate-history-banner.jpg">
+  <meta name="twitter:site" content="@psionicalch">
+  <meta name="twitter:creator" content="@psionicalch">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Affiliate History",
+      "description": "Access a complete history of your affiliate points on PsionicAlch, showing all points earned and lost. Track your affiliate rewards and program progress.",
+      "url": "https://www.psionicalch.com/profile/affiliate-history",
+      "mainEntity": {
+        "@type": "Person",
+        "affiliation": {
+          "@type": "Organization",
+          "name": "PsionicAlch"
+        }
+      }
+    }
+  </script>
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/affiliate-history.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Affiliate History - Track Your Points | PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <main class="affiliate">
+    <div class="container">
+      <section class="affiliate-container">
+        <div class="affiliate-header">
+          <h2>Affiliate Points History</h2>
+
+          <p>Current Affiliate Points: <b>24</b></p>
+        </div>
+
+        <hr>
+
+        <div class="affiliate-body">
+          <div class="affiliate-timestamp added shadow-sm">
+            <p>10 points added</p>
+
+            <time datetime="2024-11-08">2024-11-08</time>
+          </div>
+
+          <div class="affiliate-timestamp added shadow-sm">
+            <p>10 points added</p>
+
+            <time datetime="2024-11-08">2024-11-08</time>
+          </div>
+
+          <div class="affiliate-timestamp removed shadow-sm">
+            <p>10 points removed</p>
+
+            <time datetime="2024-11-08">2024-11-07</time>
+          </div>
+
+          <div class="affiliate-timestamp added shadow-sm">
+            <p>10 points added</p>
+
+            <time datetime="2024-11-08">2024-11-07</time>
+          </div>
+
+          <div class="affiliate-timestamp added shadow-sm">
+            <p>10 points added</p>
+
+            <time datetime="2024-11-08">2024-11-06</time>
+          </div>
+
+          <div class="affiliate-timestamp added shadow-sm">
+            <p>10 points added</p>
+
+            <time datetime="2024-11-08">2024-11-06</time>
+          </div>
+
+          <div class="affiliate-timestamp added shadow-sm">
+            <p>10 points added</p>
+
+            <time datetime="2024-11-08">2024-11-06</time>
+          </div>
+
+          <div class="affiliate-timestamp removed shadow-sm">
+            <p>10 points removed</p>
+
+            <time datetime="2024-11-08">2024-11-05</time>
+          </div>
+
+          <div class="affiliate-timestamp added shadow-sm">
+            <p>10 points added</p>
+
+            <time datetime="2024-11-08">2024-11-04</time>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+{{ end }}
