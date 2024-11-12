@@ -30,7 +30,7 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "authors-tutorials.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "authors-courses.page.tmpl", nil)
 	if err != nil {
 		h.ErrorLog.Println(err)
 	}
