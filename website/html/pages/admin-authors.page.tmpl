@@ -14,7 +14,7 @@
       <h2>Authors Administration</h2>
 
       <div class="admin-header-actions">
-        <form>
+        <form action="/">
           <input type="text" name="search-term" id="search-term" class="shadow-sm" placeholder="Search terms...">
         </form>
 
@@ -29,7 +29,7 @@
             </div>
 
             <div class="admin-modal-body">
-              <form>
+              <form action="/">
                 <div class="form-control">
                   <select name="user" id="user" class="shadow-sm">
                     <option value="">No Author</option>
@@ -101,7 +101,7 @@
             </div>
 
             <div class="admin-modal-body">
-              <form>
+              <form action="/">
                 <div class="admin-modal-actions">
                   <button
                     x-on:click.prevent="modalOpen = false"

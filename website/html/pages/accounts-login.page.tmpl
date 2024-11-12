@@ -38,19 +38,3 @@
     </div>
   </main>
 {{ end }}
-
-{{ define "javascript" }}
-  <script>
-    document.addEventListener("alpine:init", () => {
-      Alpine.data('auth', () => ({
-        passwordVisible: false,
-        inputType: 'password',
-        toggle() {
-          this.passwordVisible = !this.passwordVisible;
-
-          this.inputType = this.passwordVisible ? 'text' : 'password';
-        }
-      }));
-    });
-  </script>
-{{ end }}

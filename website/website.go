@@ -7,7 +7,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/config"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla"
-	scssession "github.com/PsionicAlch/psionicalch-home/internal/session/scs_session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
@@ -41,9 +40,6 @@ func StartWebsite() {
 	}
 	defer db.Close()
 
-	// Set up session.
-	session := scssession.NewSession()
-
 	// Set up renderers.
 	pagesRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
 	if err != nil {
@@ -71,7 +67,7 @@ func StartWebsite() {
 	generalHandlers := general.SetupHandlers(pagesRenderer, auth, db)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, auth, db)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
-	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, session, auth)
+	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth)
 	profileHandlers := profile.SetupHandlers(pagesRenderer, auth, db)
 	settingsHandlers := settings.SetupHandlers(pagesRenderer)
 	adminHandlers := admin.SetupHandlers(pagesRenderer)
@@ -82,7 +78,6 @@ func StartWebsite() {
 
 	// Set up middleware.
 	router.Use(middleware.RealIP)
-	router.Use(session.LoadSession)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 

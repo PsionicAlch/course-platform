@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
-	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
+	"github.com/PsionicAlch/psionicalch-home/website/forms"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
@@ -14,11 +14,10 @@ import (
 type Handlers struct {
 	utils.Loggers
 	renderers *pages.Renderers
-	session   session.Session
 	auth      *gatekeeper.Gatekeeper
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, session session.Session, auth *gatekeeper.Gatekeeper) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *gatekeeper.Gatekeeper) *Handlers {
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
@@ -27,15 +26,12 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, s
 			Page: pageRenderer,
 			Htmx: htmxRenderer,
 		},
-		session: session,
-		auth:    auth,
+		auth: auth,
 	}
 }
 
 func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
-	loginForm := new(html.LoginFormComponent)
-	loginForm.Email = "email@me.com"
-	loginForm.EmailErrors = append(loginForm.EmailErrors, "This is error 1", "This is error 2")
+	loginForm := forms.NewLoginForm(r)
 
 	err := h.renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", html.AccountsLoginPage{
 		LoginForm: loginForm,
@@ -46,14 +42,22 @@ func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("HX-Redirect", "/")
+	utils.Redirect(w, r, "/")
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", nil)
+	signupForm := forms.NewSignupForm(r)
+
+	err := h.renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
+		SignupForm: signupForm,
+	})
 	if err != nil {
 		h.ErrorLog.Println(err)
 	}
+}
+
+func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
+	utils.Redirect(w, r, "/")
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
@@ -71,12 +75,18 @@ func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) ValidateLoginPost(w http.ResponseWriter, r *http.Request) {
-	loginForm := new(html.LoginFormComponent)
-	loginForm.Email = "thisemailisvalid@emails.com"
-	loginForm.Password = "helloworld123"
-	loginForm.PasswordErrors = append(loginForm.PasswordErrors, "This is an error")
+	loginForm := forms.NewLoginForm(r)
 
 	err := h.renderers.Htmx.RenderHTML(w, "login-form.htmx.tmpl", loginForm)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) ValidateSignupPost(w http.ResponseWriter, r *http.Request) {
+	signupForm := forms.NewSignupForm(r)
+
+	err := h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", signupForm)
 	if err != nil {
 		h.ErrorLog.Println(err)
 	}

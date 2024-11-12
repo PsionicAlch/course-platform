@@ -1,0 +1,25 @@
+{{ define "form-control" }}
+  <div class="form-control {{ if .Errors }}has-errors{{ end }}">
+    <label for="{{.Name}}">{{.Label}}</label>
+
+    <input
+      type="{{.Type}}"
+      name="{{.Name}}"
+      id="{{.Name}}"
+      class="shadow-sm"
+      {{ if .Value }}value="{{.Value}}"{{ end }}
+      autocomplete="off"
+      {{ if .ValidationURL }}hx-post="{{.ValidationURL}}"{{ end }}
+      {{ if .ValidationURL }}hx-target="closest form"{{ end }}
+      {{ if .ValidationURL }}hx-swap="outerHTML"{{ end }}
+    >
+
+    {{ if .Errors }}
+      <ul class="errors">
+        {{ range $error := .Errors }}
+          <li><small>{{ $error }}</small></li>
+        {{ end }}
+      </ul>
+    {{ end }}
+  </div>
+{{ end }}

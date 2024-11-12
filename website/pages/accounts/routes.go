@@ -13,12 +13,14 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.Post("/login", handlers.LoginPost)
 
 	router.Get("/signup", handlers.SignupGet)
+	router.Post("/signup", handlers.SignupPost)
 
 	router.Get("/reset-password", handlers.ForgotGet)
 
 	router.Get("/reset-password/{email_token}", handlers.ResetPasswordGet)
 
 	router.Post("/validate/login", handlers.ValidateLoginPost)
+	router.Post("/validate/signup", handlers.ValidateSignupPost)
 
 	return router
 }

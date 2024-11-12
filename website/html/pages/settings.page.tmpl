@@ -18,7 +18,7 @@
       <section class="settings-container">
         <h2>Change My First Name</h2>
 
-        <form>
+        <form action="/">
           <div class="form-control">
             <label for="first-name">New First Name:</label>
             <input type="first-name" name="first-name" id="first-name" autocomplete="off">
@@ -33,7 +33,7 @@
       <section class="settings-container">
         <h2>Change My Last Name</h2>
 
-        <form>
+        <form action="/">
           <div class="form-control">
             <label for="last-name">New Last Name:</label>
             <input type="last-name" name="last-name" id="last-name" autocomplete="off">
@@ -48,7 +48,7 @@
       <section class="settings-container">
         <h2>Change My Email Address</h2>
 
-        <form>
+        <form action="/">
           <div class="form-control">
             <label for="email">New Email Address:</label>
             <input type="email" name="email" id="email" autocomplete="off">
@@ -63,7 +63,7 @@
       <section class="settings-container">
         <h2>Change My Password</h2>
 
-        <form>
+        <form action="/">
           <div class="form-control">
             <label for="old-password">Old Password:</label>
             <input type="password" name="old-password" id="old-password" autocomplete="off">
@@ -110,7 +110,7 @@
               <div class="modal-actions">
                 <button x-on:click="modalOpen = false" class="btn btn-gray shadow-sm">Cancel</button>
 
-                <form>
+                <form action="/">
                   <input type="hidden" name="course-id" x-bind:value="courseID">
                   <button type="submit" x-on:click="modalOpen = false" class="btn btn-red shadow-sm">Request Refund</button>
                 </form>
@@ -147,7 +147,7 @@
               <div class="modal-actions">
                 <button x-on:click="modalOpen = false" class="btn btn-gray shadow-sm">Cancel</button>
 
-                <form>
+                <form action="/">
                   <button type="submit" x-on:click="modalOpen = false" class="btn btn-red shadow-sm">Delete My Account</button>
                 </form>
               </div>

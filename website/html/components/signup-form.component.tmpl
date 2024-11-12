@@ -1,0 +1,11 @@
+{{ define "signup-form" }}
+  <form action="/accounts/signup" method="post" novalidate autocomplete="off" spellcheck="false">
+    {{ template "form-control" .FirstNameInput }}
+    {{ template "form-control" .LastNameInput }}
+    {{ template "form-control" .EmailInput }}
+    {{ template "password-control" .PasswordInput }}
+    {{ template "password-control" .ConfirmPasswordInput }}
+
+    <button type="submit" class="btn btn-blue shadow-sm">Sign Up</button>
+  </form>
+{{ end }}
