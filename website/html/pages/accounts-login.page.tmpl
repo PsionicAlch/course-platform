@@ -1,0 +1,56 @@
+{{ template "base" .}}
+
+{{ define "meta-tags" }}
+  <meta name="robots" content="noindex, nofollow" />
+
+  <meta name="description" content="Log in to PsionicAlch to continue your journey in building real-world applications with Golang. Access your courses and track your progress." />
+
+  <meta property="og:title" content="Log In - PsionicAlch" />
+  <meta property="og:description" content="Access your PsionicAlch account to continue learning and building with Golang." />
+  <meta property="og:url" content="https://www.psionicalch.com/accounts/login" />
+  <meta name="twitter:title" content="Log In - PsionicAlch" />
+  <meta name="twitter:description" content="Access your PsionicAlch account to continue learning and building with Golang." />
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/authentication.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Log In - PsionicAlch | Access Your Golang Courses</title>
+{{ end }}
+
+{{ define "body" }}
+  <main class="authentication">
+    <div class="container">
+      <section class="authentication-container shadow">
+        <h2>Log In</h2>
+
+        {{ template "login-form" .LoginForm }}
+
+        <hr>
+
+        <div class="links">
+          <a href="/accounts/reset-password">Forgot your password?</a>
+          <a href="/accounts/signup">Don't have an account yet?</a>
+        </div>
+      </section>
+    </div>
+  </main>
+{{ end }}
+
+{{ define "javascript" }}
+  <script>
+    document.addEventListener("alpine:init", () => {
+      Alpine.data('auth', () => ({
+        passwordVisible: false,
+        inputType: 'password',
+        toggle() {
+          this.passwordVisible = !this.passwordVisible;
+
+          this.inputType = this.passwordVisible ? 'text' : 'password';
+        }
+      }));
+    });
+  </script>
+{{ end }}

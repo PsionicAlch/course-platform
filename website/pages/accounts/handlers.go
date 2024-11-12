@@ -7,6 +7,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
+	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -32,148 +33,51 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, s
 }
 
 func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
-	// loginForm := h.session.RetrieveLoginFormData(r.Context())
+	loginForm := new(html.LoginFormComponent)
+	loginForm.Email = "email@me.com"
+	loginForm.EmailErrors = append(loginForm.EmailErrors, "This is error 1", "This is error 2")
 
-	// h.renderers.Page.RenderHTML(w, "login.page.tmpl", &html.LoginPageData{
-	// 	LoginForm: &html.LoginFormComponentData{
-	// 		Form:  loginForm,
-	// 		Error: "",
-	// 	},
-	// })
-
-	h.renderers.Page.RenderHTML(w, "login.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", html.AccountsLoginPage{
+		LoginForm: loginForm,
+	})
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
-	// r.ParseForm()
-	// loginForm := forms.CreateLoginForm(r.Form)
-	// valid := loginForm.Validate()
-
-	// fmt.Printf("%#v\n", loginForm)
-
-	// if !valid {
-	// 	if utils.IsHTMX(r) {
-	// 		h.renderers.Htmx.RenderHTML(w, "login-form.htmx.tmpl", &html.LoginFormComponentData{
-	// 			Form:  loginForm,
-	// 			Error: "",
-	// 		})
-	// 	} else {
-	// 		h.session.StoreLoginFormData(r.Context(), loginForm)
-	// 		utils.Redirect(w, r, "/accounts/login")
-	// 	}
-
-	// 	return
-	// }
-
-	// cookie, err := h.auth.LogUserIn(loginForm.Email, loginForm.Password, r.RemoteAddr, loginForm.RememberMe)
-	// if err != nil {
-	// 	formErr := ""
-	// 	if _, ok := err.(gatekeeper.UserDoesNotExist); ok {
-	// 		loginForm.AddError("email", "this email address is unregistered")
-	// 	} else {
-	// 		h.Loggers.ErrorLog.Println("failed to log user in: ", err)
-	// 		formErr = "unexpected server error. please try again"
-	// 	}
-
-	// 	if utils.IsHTMX(r) {
-	// 		err = h.renderers.Htmx.RenderHTML(w, "login-form.htmx.tmpl", &html.LoginFormComponentData{
-	// 			Form:  loginForm,
-	// 			Error: formErr,
-	// 		})
-	// 		if err != nil {
-	// 			h.Loggers.WarningLog.Println("Failed to render HTML: ", err)
-	// 		}
-	// 	} else {
-	// 		h.session.StoreLoginFormData(r.Context(), loginForm)
-	// 		utils.Redirect(w, r, "/accounts/login")
-	// 	}
-
-	// 	return
-	// }
-
-	// http.SetCookie(w, cookie)
-	// utils.Redirect(w, r, "/profile")
+	w.Header().Set("HX-Redirect", "/")
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
-	// signUpForm := h.session.RetrieveSignUpFormData(r.Context())
-
-	// h.renderers.Page.RenderHTML(w, "signup.page.tmpl", &html.SignUpPageData{
-	// 	SignUpForm: &html.SignupFormComponentData{
-	// 		Form:  signUpForm,
-	// 		Error: "",
-	// 	},
-	// })
-
-	h.renderers.Page.RenderHTML(w, "signup.page.tmpl", nil)
-}
-
-func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
-	// r.ParseForm()
-	// signUpForm := forms.CreateSignUpForm(r.Form)
-	// valid := signUpForm.Validate()
-
-	// if !valid {
-	// 	if utils.IsHTMX(r) {
-	// 		h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", &html.SignupFormComponentData{
-	// 			Form:  signUpForm,
-	// 			Error: "",
-	// 		})
-	// 	} else {
-	// 		h.session.StoreSignUpFormData(r.Context(), signUpForm)
-	// 		utils.Redirect(w, r, "/accounts/signup")
-	// 	}
-
-	// 	return
-	// }
-
-	// cookie, err := h.auth.SignUserIn(signUpForm.Email, signUpForm.Password, r.RemoteAddr, signUpForm.RememberMe)
-	// if err != nil {
-	// 	formErr := ""
-	// 	if _, ok := err.(gatekeeper.UserAlreadyExists); ok {
-	// 		signUpForm.AddError("email", "this email address is already in use")
-	// 	} else {
-	// 		h.Loggers.ErrorLog.Println("failed to sign user in: ", err)
-	// 		formErr = "unexpected server error. please try again"
-	// 	}
-
-	// 	if utils.IsHTMX(r) {
-	// 		err = h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", &html.SignupFormComponentData{
-	// 			Form:  signUpForm,
-	// 			Error: formErr,
-	// 		})
-	// 		if err != nil {
-	// 			h.Loggers.WarningLog.Println("Failed to render HTML: ", err)
-	// 		}
-	// 	} else {
-	// 		h.session.StoreSignUpFormData(r.Context(), signUpForm)
-	// 		utils.Redirect(w, r, "/accounts/signup")
-	// 	}
-
-	// 	return
-	// }
-
-	// http.SetCookie(w, cookie)
-	// utils.Redirect(w, r, "/profile")
+	err := h.renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
-	h.renderers.Page.RenderHTML(w, "forgot-password.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "accounts-forgot-password.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
-	// TODO: Check to make sure that the email token is valid.
-	h.renderers.Page.RenderHTML(w, "reset-password.page.tmpl", nil)
+	err := h.renderers.Page.RenderHTML(w, "accounts-reset-password.page.tmpl", nil)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
-func (h *Handlers) ValidateSignupForm(w http.ResponseWriter, r *http.Request) {
-	// r.ParseForm()
+func (h *Handlers) ValidateLoginPost(w http.ResponseWriter, r *http.Request) {
+	loginForm := new(html.LoginFormComponent)
+	loginForm.Email = "thisemailisvalid@emails.com"
+	loginForm.Password = "helloworld123"
+	loginForm.PasswordErrors = append(loginForm.PasswordErrors, "This is an error")
 
-	// signUpForm := forms.CreateSignUpForm(r.Form)
-	// signUpForm.ValidateWithoutEmpty()
-
-	// h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", &html.SignupFormComponentData{
-	// 	Form:  signUpForm,
-	// 	Error: "",
-	// })
+	err := h.renderers.Htmx.RenderHTML(w, "login-form.htmx.tmpl", loginForm)
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }

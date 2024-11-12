@@ -51,6 +51,7 @@
   border-radius: var(--primary-border-radius);
   outline: var(--primary-border-color);
   color: var(--primary-text-color);
+  font-size: 1em;
 }
 
 .form-control .password-control {
@@ -74,6 +75,7 @@
   border: none;
   color: var(--primary-text-color);
   background-color: var(--secondary-background-color);
+  font-size: 1em;
 }
 
 .password-control .visibility-control {
@@ -81,10 +83,43 @@
   height: 31px;
   margin-bottom: -3px;
   color: var(--primary-text-color);
+  cursor: pointer;
 }
 
 .visibility-control:hover {
   color: var(--primary-dark-text-color);
+}
+
+.form-control.has-errors label {
+  color: var(--primary-dark-red-color);
+}
+
+.form-control.has-errors>input {
+  border: var(--primary-red-border);
+  color: var(--primary-dark-red-color);
+  caret-color: var(--primary-dark-red-color);
+  background-color: var(--primary-light-red-color);
+}
+
+.form-control.has-errors ul.errors {
+  margin-left: 1rem;
+  color: var(--primary-dark-red-color);
+  list-style-type: disc;
+}
+
+.form-control.has-errors .password-control {
+  border: var(--primary-red-border);
+  background-color: var(--primary-light-red-color);
+}
+
+.form-control.has-errors .password-control input {
+  color: var(--primary-dark-red-color);
+  caret-color: var(--primary-dark-red-color);
+  background-color: var(--primary-light-red-color);
+}
+
+.form-control.has-errors .password-control .visibility-control {
+  color: var(--primary-dark-red-color);
 }
 
 .authentication-container .links {
