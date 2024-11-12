@@ -1,0 +1,223 @@
+{{ template "admin" .}}
+
+{{ define "meta-tags" }}
+  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
+{{ end }}
+
+{{ define "title" }}
+  <title>Courses - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <section class="admin-container">
+    <div class="admin-header">
+      <h2>Courses Administration</h2>
+
+      <div class="admin-header-actions">
+        <form>
+          <input type="text" name="search-term" id="search-term" class="shadow-sm" placeholder="Search terms...">
+
+          <select name="publish-status" id="publish-status" class="shadow-sm">
+            <option value="">Publish Status</option>
+            <option value="unpublished">Unpublished</option>
+            <option value="published">Published</option>
+          </select>
+
+          <select name="author" id="author" class="shadow-sm">
+            <option value="">Author</option>
+            <option value="null">No Author</option>
+            <option value="01JBC9HM3C160KYY6WE7KM8T20">Jean-Jacques Strydom</option>
+            <option value="01JBC9HM3C160KYY6WE7KM8T20">John Doe</option>
+            <option value="01JBC9HM3C160KYY6WE7KM8T20">Jane Smith</option>
+            <option value="01JBC9HM3C160KYY6WE7KM8T20">Alice Wonderland</option>
+          </select>
+        </form>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="admin-body shadow-sm">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Purchases</th>
+            <th>Published</th>
+            <th>Author</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+              <td>01JBC9HM3C160KYY6WE7KM8T20</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Introduction to Golang</td>
+              <td>Learn the basics of Golang programming</td>
+              <td><a href="/admin/purchases?course_id=INSERT_COURSE_ID">4532</a></td>
+              <td>Published</td>
+              <td><a href="/admin/courses?author=INSERT_USER_ID">John Doe</a></td>
+          </tr>
+          <tr>
+              <td>02JDC4HL6K170HXX9TE7KM4V10</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Concurrency with Goroutines</td>
+              <td>Master concurrency using Goroutines in Golang</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">3821</a></td>
+              <td>
+                <select name="edit-published" id="edit-published" class="shadow-sm">
+                  <option value="published" selected>Published</option>
+                  <option value="unpublished">Unpublished</option>
+                </select>
+              </td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Jane Smith</a></td>
+          </tr>
+          <tr>
+              <td>03KLC2IM8V210KYY5XE4LR9B30</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Building APIs in Go</td>
+              <td>Create RESTful APIs using Golang's net/http</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">2958</a></td>
+              <td>Unpublished</td>
+              <td>
+                <select name="edit-author" id="edit-author" class="shadow-sm">
+                  <option value="">Author</option>
+                  <option value="null">No Author</option>
+                  <option value="01JBC9HM3C160KYY6WE7KM8T20">Jean-Jacques Strydom</option>
+                  <option value="01JBC9HM3C160KYY6WE7KM8T20">John Doe</option>
+                  <option value="01JBC9HM3C160KYY6WE7KM8T20" selected>Jane Smith</option>
+                  <option value="01JBC9HM3C160KYY6WE7KM8T20">Alice Wonderland</option>
+                </select>
+              </td>
+          </tr>
+          <tr>
+              <td>04LGC7HM2F540KXX8WE9LM5C50</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Error Handling in Golang</td>
+              <td>Learn best practices for error handling in Go</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">1764</a></td>
+              <td>Published</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Jean-Jacques Strydom</a></td>
+          </tr>
+          <tr>
+              <td>05TMC8IM5J460HYY7VE6KR8U60</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>File Processing in Golang</td>
+              <td>Read and write files with Go efficiently</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">5892</a></td>
+              <td>Published</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">John Doe</a></td>
+          </tr>
+          <tr>
+              <td>06SDC3HL1M720JYY3ZE8LR2A40</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Web Development with Go</td>
+              <td>Create web applications with Golang templates</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">4387</a></td>
+              <td>Unpublished</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Jane Smith</a></td>
+          </tr>
+          <tr>
+              <td>07MBC6GL3L340KYY9TE9KM1Z70</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Intro to Golang Modules</td>
+              <td>Learn to manage packages and dependencies</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">2135</a></td>
+              <td>Published</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Alice Wonderland</a></td>
+          </tr>
+          <tr>
+              <td>08HMC2GM8N560JYY4XE4LM7U80</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>JSON Handling in Golang</td>
+              <td>Parse and generate JSON data in Go</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">3198</a></td>
+              <td>Unpublished</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Jean-Jacques Strydom</a></td>
+          </tr>
+          <tr>
+              <td>09BPC4IM7V610KXX1VE7LR6U90</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Building CLI Applications in Go</td>
+              <td>Develop powerful CLI tools with Golang</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">7641</a></td>
+              <td>Published</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">John Doe</a></td>
+          </tr>
+          <tr>
+              <td>10JDC9IM5P150HYY2UE9KR1V10</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Testing in Golang</td>
+              <td>Implement testing for your Go code</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">4130</a></td>
+              <td>Published</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Jane Smith</a></td>
+          </tr>
+          <tr>
+              <td>11TMC8GM3J340HYY6ZE6LM4B60</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Using Interfaces in Go</td>
+              <td>Explore interfaces for flexible code design</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">1783</a></td>
+              <td>Unpublished</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Alice Wonderland</a></td>
+          </tr>
+          <tr>
+              <td>12RGC3HL6F810JXX5VE7LM1C30</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Data Processing with Golang</td>
+              <td>Handle and process data efficiently</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">6842</a></td>
+              <td>Published</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Jean-Jacques Strydom</a></td>
+          </tr>
+          <tr>
+              <td>13LMC7IM2L650KYY8TE8KR5Z40</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Deploying Go with Docker</td>
+              <td>Containerize and deploy Golang applications</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">5621</a></td>
+              <td>Unpublished</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">John Doe</a></td>
+          </tr>
+          <tr>
+              <td>14SDC1HL7M920KYY3WE9LR2V50</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Introduction to Golang Channels</td>
+              <td>Learn channels for concurrency in Go</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">3499</a></td>
+              <td>Published</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Jane Smith</a></td>
+          </tr>
+          <tr>
+              <td>15MBC4GL8J750KYY7VE7KR3A90</td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td><time datetime="2024-12-24">2024-12-24</time></td>
+              <td>Secure Coding in Golang</td>
+              <td>Best practices for secure Go applications</td>
+              <td><a href="/admin-purchases.html?course_id=INSERT_COURSE_ID">2894</a></td>
+              <td>Published</td>
+              <td><a href="/admin-courses.html?author=INSERT_USER_ID">Alice Wonderland</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+{{ end }}

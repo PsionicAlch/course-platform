@@ -1,0 +1,284 @@
+{{ template "admin" .}}
+
+{{ define "meta-tags" }}
+  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
+{{ end }}
+
+{{ define "title" }}
+  <title>Purchases - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <section class="admin-container">
+    <div class="admin-header">
+      <h2>Purchases Administration</h2>
+
+      <div class="admin-header-actions">
+        <form>
+          <input type="text" name="search-term" id="search-term" class="shadow-sm" placeholder="Search terms...">
+
+          <select name="tutorial" id="tutorial" class="shadow-sm">
+            <option value="">Courses</option>
+            <option value="01JBC9HM3C160KYY6WE7KM8T20">How to render HTML in Golang</option>
+            <option value="01JBC9HM3C160KYY6WE7KM8T20">How to send emails in Golang</option>
+            <option value="01JBC9HM3C160KYY6WE7KM8T20">Getting Started with Golang</option>
+            <option value="02JKC2HG3G180JXX9TE7LR4T30">Building REST APIs in Go</option>
+            <option value="03AUC3HL2K270HYY3XE8KM9V10">Concurrency in Golang</option>
+            <option value="04BAC8HL1F490JXX6WE3LR4U50">Error Handling in Go</option>
+            <option value="05KDC3GM5P320KYY5UE7KR1B40">Structs and Interfaces in Go</option>
+            <option value="06LGC4HL6M660JYY2TE4LM8V80">Building CLI Applications with Golang</option>
+            <option value="07QHC5IM8N710KXX3VE6LR7Z30">Go Modules and Package Management</option>
+            <option value="08RMC6GL4F220HXX8ZE9KM2B50">Testing in Golang</option>
+            <option value="09JPC7GM1J950KYY4WE7KR1H90">Web Development with Go and HTML Templates</option>
+            <option value="10SGC8IM2V830HYY2YE8LR9C40">Working with JSON in Golang</option>
+            <option value="11TMC9HL7L550KXX7UE4LM1V70">File Handling in Go</option>
+            <option value="12KFC1GM3J420HYY6ZE7KR3A10">Introduction to Goroutines and Channels</option>
+            <option value="13LGC4IM6N680KYY9VE8LM9C80">Deploying Go Applications with Docker</option>
+          </select>
+
+          <select name="user" id="user" class="shadow-sm">
+            <option value="">Authors</option>
+            <option value="01A8E54F1RYQJYQGF4ZTWM16V8">John Doe</option>
+            <option value="01A8E8J7E2YMG98NKF3TQ84G1H">Jane Smith</option>
+            <option value="01A8EC3WZ4FJYP62PG6T0M5CBX">Michael Johnson</option>
+            <option value="01A8F2QW0ZGM3WXNQHC9R1SVDN">Emily Brown</option>
+            <option value="01A8F8YRQ7JQF8X0XCHN5WT4F9">Chris Davis</option>
+            <option value="01A8FESM8ZGFKP0YQDJ2XN9HJB">Sarah Miller</option>
+            <option value="01A8FTM3XMKZ6C8N0V6SD3ZYND">James Wilson</option>
+            <option value="01A8FXV0Q6P9Z9FJKM2TB8WQH4">Amanda Taylor</option>
+            <option value="01A8G2ZV7FGRX8ZQCBYKW5TY2L">David Anderson</option>
+            <option value="01A8G6XDRKJ8C3R1ZJN4Y2Q6P5">Laura Thomas</option>
+            <option value="01A8G9WEFK9ZMQ6JV8L9Z6C7QD">Brian Jackson</option>
+            <option value="01A8GJMW6P4H9F8WZJ6H5TL0YV">Jessica White</option>
+            <option value="01A8GLY9FT8MW8ZJ3NQ6ZYJVDX">Oliver Lee</option>
+            <option value="01A8GP3V9DJQY6MW6F4H8R5DZT">Sophia Martinez</option>
+            <option value="01A8GR5S1NZKW7TCQKH4G8V9PL">Daniel Lopez</option>
+          </select>
+
+          <select name="status" id="status" class="shadow-sm">
+            <option value="">Payment Status</option>
+            <option value="pending">Pending</option>
+            <option value="requires_action">Requires Action</option>
+            <option value="succeeded">Succeeded</option>
+            <option value="failed">Failed</option>
+            <option value="canceled">Canceled</option>
+            <option value="refunded">Refunded</option>
+          </select>
+
+          <select name="affiliate_code" id="affiliate_code" class="shadow-sm">
+            <option value="">Affiliate Code</option>
+            <option value="01A9C3P4K5QW7J8N6M5Z4Y9H8T">01A9C3P4K5QW7J8N6M5Z4Y9H8T</option>
+          </select>
+
+          <select name="discount_code" id="discount_code" class="shadow-sm">
+            <option value="">Discount Code</option>
+            <option value="01A9C3P4K5QW7J8N6M5Z4Y9H8T">SPRING20</option>
+          </select>
+        </form>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="admin-body shadow-sm">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Created At</th>
+            <th>Stripe Checkout Session ID</th>
+            <th>User</th>
+            <th>Course</th>
+            <th>Affiliate Code Used</th>
+            <th>Affiliate Points Used</th>
+            <th>Discount Code Used</th>
+            <th>Amount Paid</th>
+            <th>Payment Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>01A9B2RV4P8XZ1G8CJ9Y6Q7F3L</td>
+            <td>2024-01-18</td>
+            <td>cs_test_a1B9XyYz4K8Np7</td>
+            <td><a href="/admin/users?id=INSERT_USER_ID">Alex Johnson</a></td>
+            <td><a href="/admin/courses?id=INSERT_COURSE_ID">Golang for Beginners</a></td>
+            <td><a href="/admin/users?affiliate_code=INSERT_AFFILIATE_CODE">01A9C3P4K5QW7J8N6M5Z4Y9H8T</a></td>
+            <td>15</td>
+            <td><a href="/admindiscounts?id=INSERT_DISCOUNT_ID">SPRING20</a></td>
+            <td>349</td>
+            <td><a href="/admin/purchases?payment_status=INSERT_PAYMENT_STATUS">Succeeded</a></td>
+          </tr>
+          <tr>
+            <td>01A9B3S7D9P8J5X2V8C7Y4W9ZM</td>
+            <td>2024-02-10</td>
+            <td>cs_test_a1C2XoCk6G5Qz9</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Emma Davis</a></td>
+            <td>Mastering Concurrency in Golang</td>
+            <td><a href="/admin-users.html?affiliate_code=INSERT_AFFILIATE_CODE">01A9D6Q8T3F2K5P7L1Y3X8R5VQ</a></td>
+            <td>23</td>
+            <td>NEWYEAR15</td>
+            <td>270</td>
+            <td>Refunded</td>
+          </tr>
+          <tr>
+            <td>01A9B5W1F2G8M7Y9CK4J3Z0F5H</td>
+            <td>2024-03-22</td>
+            <td>cs_test_b3X4CpFk8Q9Ln2</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Michael Brown</a></td>
+            <td>Advanced Go Programming</td>
+            <td>01A9E9M0W8J2L5C3R7Y6X9T2KN</td>
+            <td>10</td>
+            <td>SUMMER10</td>
+            <td>599</td>
+            <td>Pending</td>
+          </tr>
+          <tr>
+            <td>01A9B7Y6J4M1K5P9CJ8Z7V6DF3</td>
+            <td>2024-04-15</td>
+            <td>cs_test_c1Z3VpTj5F9Nm3</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Olivia Miller</a></td>
+            <td>Introduction to Golang</td>
+            <td>01A9F8N4J7P9X2L4Q3C5W8R7ML</td>
+            <td>30</td>
+            <td>FLASH25</td>
+            <td>180</td>
+            <td>Cancelled</td>
+          </tr>
+          <tr>
+            <td>01A9B9Q3T8L2N4X6CJ5M8P0VGX</td>
+            <td>2024-05-09</td>
+            <td>cs_test_d2W7QyRk4N9Po5</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Noah Wilson</a></td>
+            <td>Effective Golang Testing</td>
+            <td>01A9G0X6N2L7R4Y5F9P6J3W8KN</td>
+            <td>5</td>
+            <td>AUTUMN5</td>
+            <td>450</td>
+            <td>Succeeded</td>
+          </tr>
+          <tr>
+            <td>01A9C0R2L8N5V6J9CK4T9X3WH2</td>
+            <td>2024-06-02</td>
+            <td>cs_test_f1B2VnFg5K6Np8</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Ava Martinez</a></td>
+            <td>Golang for Web Development</td>
+            <td>01A9H2L3P6M4X7T9K3F5Q8N2JL</td>
+            <td>12</td>
+            <td>WELCOME10</td>
+            <td>320</td>
+            <td>Succeeded</td>
+          </tr>
+          <tr>
+            <td>01A9C4T9V3M8K1G5NJ2W9L0PZR</td>
+            <td>2024-07-18</td>
+            <td>cs_test_g3C7RmHp6N2Yq0</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Lucas White</a></td>
+            <td>Understanding Goroutines</td>
+            <td>01A9J8L5N2P3F7X0K8R5M9J7DZ</td>
+            <td>45</td>
+            <td>DISCOUNT30</td>
+            <td>220</td>
+            <td>Requires Action</td>
+          </tr>
+          <tr>
+            <td>01A9C5M0F8L7P4V2X3J9Y5H6DJ</td>
+            <td>2024-08-05</td>
+            <td>cs_test_h2Z9BfQp7K5Np6</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Sophia Lee</a></td>
+            <td>Data Structures in Golang</td>
+            <td>01A9K3Y9T1V6N2P8X0J7L3M5WV</td>
+            <td>9</td>
+            <td>BACK2SCHOOL</td>
+            <td>150</td>
+            <td>Succeeded</td>
+          </tr>
+          <tr>
+            <td>01A9C7Y8K5L2V6N8J1M4Q3G0ZR</td>
+            <td>2024-08-22</td>
+            <td>cs_test_i1T8PqGn3L7Nk5</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Benjamin Scott</a></td>
+            <td>Concurrency in Golang</td>
+            <td>01A9L5R4N3J8P7X2T0M9L6Q8FR</td>
+            <td>7</td>
+            <td>GOFAST20</td>
+            <td>675</td>
+            <td>Succeeded</td>
+          </tr>
+          <tr>
+            <td>01A9C9R1J7K3N8X9L6P5Y2Q4VZ</td>
+            <td>2024-09-10</td>
+            <td>cs_test_j2R7YgNn5L8Mp9</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Mia King</a></td>
+            <td>Error Handling in Golang</td>
+            <td>01A9M8P2F6N7L5X3T9K0W2J6BR</td>
+            <td>21</td>
+            <td>EXTRA15</td>
+            <td>499</td>
+            <td>Succeeded</td>
+          </tr>
+          <tr>
+            <td>01A9D1Q8G5K7L9X3P8Y2N0Z7PL</td>
+            <td>2024-09-25</td>
+            <td>cs_test_k3F9LpVg2N7Xq1</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Ella Rivera</a></td>
+            <td>Structuring Go Applications</td>
+            <td>01A9N6Y1F7L5P4X2K3Q9M8W3NK</td>
+            <td>4</td>
+            <td>BIGSAVE25</td>
+            <td>599</td>
+            <td>Failed</td>
+          </tr>
+          <tr>
+            <td>01A9D3S2K9P7L1M3X4Y8J6F9ZL</td>
+            <td>2024-10-14</td>
+            <td>cs_test_l1R4YxVj5K9Wp3</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Jackson Young</a></td>
+            <td>Working with JSON in Golang</td>
+            <td>01A9P5X3N7L2T8J4Q1Y6V9G4RW</td>
+            <td>32</td>
+            <td>FIRST50</td>
+            <td>250</td>
+            <td>Cancelled</td>
+          </tr>
+          <tr>
+            <td>01A9D4Y9F5K2L6N1P8M7Q3W8XZ</td>
+            <td>2024-11-01</td>
+            <td>cs_test_m2C9GqTp7L4Nk0</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Lily Garcia</a></td>
+            <td>Concurrency Best Practices</td>
+            <td>01A9Q2F8N6M1J4X9P5L3Y7T0KV</td>
+            <td>26</td>
+            <td>SAVE30</td>
+            <td>750</td>
+            <td>Succeeded</td>
+          </tr>
+          <tr>
+            <td>01A9D6T2M8K3L9P0F5Y7V2R1WJ</td>
+            <td>2024-11-12</td>
+            <td>cs_test_n1L7VpTj5R9Lk6</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Aiden Hernandez</a></td>
+            <td>Golang for Server-Side Development</td>
+            <td>01A9R9L3T5M8K6N4P2Y3J0F5LH</td>
+            <td>38</td>
+            <td>WEEKEND25</td>
+            <td>349</td>
+            <td>Requires Action</td>
+          </tr>
+          <tr>
+            <td>01A9D8L4G2N5K8X7P3M1Y0R9QV</td>
+            <td>2024-11-20</td>
+            <td>cs_test_o3N2LkTp5Q8Vg7</td>
+            <td><a href="/admin-users.html?id=INSERT_USER_ID">Grace Walker</a></td>
+            <td>Go Modules & Dependency Management</td>
+            <td>01A9S1K4L9P6M3X2F7Y8T9J2RK</td>
+            <td>11</td>
+            <td>FALL20</td>
+            <td>700</td>
+            <td>Succeeded</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+{{ end }}

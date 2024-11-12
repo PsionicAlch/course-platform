@@ -1,75 +1,53 @@
 {{ define "base" }}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{ block "meta-tags" . }}
+    {{ end }}
 
-  {{ block "meta-tags" . }}
-  {{ end }}
+    <link rel="stylesheet" href="/assets/css/variables.css">
+    <link rel="stylesheet" href="/assets/css/reset.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/navbar.css">
 
-  <link rel="stylesheet" href="/assets/css/variables.css">
-  <link rel="stylesheet" href="/assets/css/reset.css">
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <link rel="stylesheet" href="/assets/css/navbar.css">
+    {{ block "stylesheets" . }}
+    {{ end }}
 
-  {{ block "stylesheets" . }}
-  {{ end }}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.js" integrity="sha384-BBDmZzVt6vjz5YbQqZPtFZW82o8QotoM7RUp5xOxV3nSJ8u2pSdtzFAbGKzTlKtg" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx-ext-head-support@2.0.1/head-support.js"></script>
 
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
-  <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/htmx-ext-head-support@2.0.1/head-support.js"></script>
+    {{ block "head-scripts" . }}
+    {{ end }}
 
-  {{ block "head-scripts" . }}
-  {{ end }}
+    {{ block "title" . }}
+      <title>Build Real-World Golang Applications - Practical Courses for Intermediate Developers</title>
+    {{ end }}
+  </head>
+  <body
+    hx-ext="head-support"
+    hx-boost="true"
+    x-data="{ menuOpen: false }"
+    x-bind:class="{ 'noscroll': menuOpen }"
+  >
+    {{ template "noscript" }}
 
-  {{ block "title" . }}
-    <title>Build Real-World Golang Applications - Practical Courses for Intermediate Developers</title>
-  {{ end }}
-</head>
-<body
-  hx-ext="head-support"
-  hx-boost="true"
-  x-data="{ menuOpen: false }"
-  x-bind:class="{ 'noscroll': menuOpen }"
->
-  <noscript>
-    <section class="noscript-container shadow-sm">
-      <h2>This website does not work without Javascript enabled</h2>
+    <!-- TODO: Pass navbar specific struct down to template -->
+    {{ template "navbar" . }}
 
-      <p>This website has a lot of functionality that relies on Javascript to work properly. Please re-enable Javascript and then reload the web page.</p>
-    </section>
-  </noscript>
+    {{ block "body" . }}
+      <h1>Default Body</h1>
+    {{ end }}
 
-  <!-- TODO: Pass navbar specific struct down to template -->
-  {{ template "navbar" . }}
+    {{ template "footer" . }}
 
-  {{ block "body" . }}
-    <h1>Default Body</h1>
-  {{ end }}
+    <script src="/assets/js/script.js"></script>
 
-  <footer class="footer">
-    <div class="container">
-      <hr>
-
-      <p class="text-center">&copy; 2024 <a href="/">PsionicAlch</a>. All rights reserved. Art by <a href="https://github.com/egonelbre/gophers/tree/master"><b>@egonelbre</b></a> and <a href="https://github.com/MariaLetta/free-gophers-pack"><b>Maria Letta</b></a></p>
-
-      <div class="footer-links">
-        <a href="https://x.com/psionicalch">Twitter</a>
-        <a href="https://facebook.com">Facebook</a>
-        <a href="/affiliate-program">Affiliate Program</a>
-        <a href="/privacy-policy">Privacy Policy</a>
-        <a href="/refund-policy">Refund Policy</a>
-      </div>
-    </div>
-  </footer>
-
-  <script src="/assets/js/script.js"></script>
-
-  {{ block "javascript" . }}
-  {{ end }}
-</body>
-</html>
-
+    {{ block "javascript" . }}
+    {{ end }}
+  </body>
+  </html>
 {{ end }}

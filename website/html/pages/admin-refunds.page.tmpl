@@ -1,0 +1,169 @@
+{{ template "admin" .}}
+
+{{ define "meta-tags" }}
+  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
+{{ end }}
+
+{{ define "title" }}
+  <title>Refunds - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <section class="admin-container">
+    <div class="admin-header">
+      <h2>Refunds Administration</h2>
+
+      <div class="admin-header-actions">
+        <form action="/unknown-path" method="get">
+          <input type="text" name="search-term" id="search-term" class="shadow-sm" placeholder="Search terms...">
+
+          <select name="status" id="status" class="shadow-sm">
+            <option value="">Refund Status</option>
+            <option value="requested">Requested</option>
+            <option value="successful">Successful</option>
+            <option value="denied">Denied</option>
+          </select>
+        </form>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="admin-body shadow-sm">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Created At</th>
+            <th>User</th>
+            <th>Purchase ID</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>01A9G2V4H9T7N5X3F6L7P8R1KJ</td>
+            <td>2024-01-11</td>
+            <td><a href="/admin/users?id=INSERT_USER_ID">Alex Johnson</a></td>
+            <td><a href="/admin/purchases?id=INSERT_PURCHASE_ID">01A9F5M8J3L4X9N7W6K2Y1P4ZT</a></td>
+            <td>Requested</td>
+            <td><button class="btn btn-blue shadow-sm">Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9G3S5J7R6L3X9F5K9N4V8QH</td>
+            <td>2024-02-03</td>
+            <td>Emma Davis</td>
+            <td>01A9H2N9J5T8K3W1P4M6L7R8XQ</td>
+            <td>Successful</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9G4R9M6T5N7X8J3P2L9F4WZ</td>
+            <td>2024-02-20</td>
+            <td>Michael Brown</td>
+            <td>01A9J7P6L3X2F9M1T5K4N8W2QY</td>
+            <td>Denied</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9G5T8J4L7X9P6N2M3V1K4YH</td>
+            <td>2024-03-10</td>
+            <td>Olivia Miller</td>
+            <td>01A9K8F3N5T4X2J9L6M7P1V0WY</td>
+            <td>Requested</td>
+            <td><button class="btn btn-blue shadow-sm">Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9G6Y2H5M8T1L9J4K7V3X6PR</td>
+            <td>2024-04-01</td>
+            <td>Noah Wilson</td>
+            <td>01A9L1P9T6M3X5J8F4K2V7N0ZP</td>
+            <td>Successful</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9G7N5T2M6L3J8F1P9X7K4QZ</td>
+            <td>2024-05-07</td>
+            <td>Ava Martinez</td>
+            <td>01A9M4X1T7J9P6L3N8F5V0K2YH</td>
+            <td>Denied</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9G8P9J6X4M3K2F8L7T1V5RW</td>
+            <td>2024-05-23</td>
+            <td>Lucas White</td>
+            <td>01A9N7T8L5X2J9M6F1P4K0V3YZ</td>
+            <td>Successful</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9G9T6M3L5K7J2F9X1V8P0QP</td>
+            <td>2024-06-15</td>
+            <td>Sophia Lee</td>
+            <td>01A9P1X6J7M5T9L8F2K4N0V3HW</td>
+            <td>Requested</td>
+            <td><button class="btn btn-blue shadow-sm">Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9H0M7L9X3J2T5F8K6P1V4NR</td>
+            <td>2024-07-03</td>
+            <td>Benjamin Scott</td>
+            <td>01A9Q8T2L5J9M3X7F1K4P6V0YQ</td>
+            <td>Denied</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9H1N2T7J5L3X9F6K8P0V4WY</td>
+            <td>2024-07-21</td>
+            <td>Mia King</td>
+            <td>01A9R4L8M3T6X1J5F2K9P0Y7ZN</td>
+            <td>Successful</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9H2J3X9L5T8K4F7M2P1V6QH</td>
+            <td>2024-08-11</td>
+            <td>Ella Rivera</td>
+            <td>01A9S6N9M1X5L8J4T3P7K2V0RW</td>
+            <td>Requested</td>
+            <td><button class="btn btn-blue shadow-sm">Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9H3V5M6T4L9K2F3P8X1N7QZ</td>
+            <td>2024-09-05</td>
+            <td>Jackson Young</td>
+            <td>01A9T7J1N8L4X2K6F5M9P3V0YH</td>
+            <td>Successful</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9H4X2L3M9T8K5F1P7V6J0WR</td>
+            <td>2024-09-25</td>
+            <td>Lily Garcia</td>
+            <td>01A9U8T3L6N5X1K9F7J4P2V0QP</td>
+            <td>Denied</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9H5N9J2L6K3T8F1M7X4V5YZ</td>
+            <td>2024-10-14</td>
+            <td>Aiden Hernandez</td>
+            <td>01A9V9M8T3L5X2K6J4P1N0V7RW</td>
+            <td>Requested</td>
+            <td><button class="btn btn-blue shadow-sm">Refund</button></td>
+          </tr>
+          <tr>
+            <td>01A9H6K7L2M4J9T5X8F3V1P0QY</td>
+            <td>2024-11-02</td>
+            <td>Grace Walker</td>
+            <td>01A9W0N5T8L9X4J6K2P7M3V1ZH</td>
+            <td>Successful</td>
+            <td><button class="btn btn-blue shadow-sm" disabled>Refund</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+{{ end }}

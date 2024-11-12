@@ -1,0 +1,94 @@
+{{ define "admin" }}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {{ block "meta-tags" . }}
+    {{ end }}
+
+    <link rel="stylesheet" href="/assets/css/variables.css">
+    <link rel="stylesheet" href="/assets/css/reset.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/navbar.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
+
+    {{ block "stylesheets" . }}
+    {{ end }}
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.js" integrity="sha384-BBDmZzVt6vjz5YbQqZPtFZW82o8QotoM7RUp5xOxV3nSJ8u2pSdtzFAbGKzTlKtg" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx-ext-head-support@2.0.1/head-support.js"></script>
+
+    {{ block "head-scripts" . }}
+    {{ end }}
+
+    {{ block "title" . }}
+      <title>Build Real-World Golang Applications - Practical Courses for Intermediate Developers</title>
+    {{ end }}
+  </head>
+  <body
+    hx-ext="head-support"
+    hx-boost="true"
+    x-data="{ menuOpen: false }"
+    x-bind:class="{ 'noscroll': menuOpen }"
+  >
+    {{ template "noscript" }}
+
+    <!-- TODO: Pass navbar specific struct down to template -->
+    {{ template "navbar" . }}
+
+    <main class="admin" x-data="{ adminNavOpen: false }">
+      <div class="container">
+        {{ block "body" . }}
+          <h1>Default Body</h1>
+        {{ end }}
+      </div>
+
+      <button class="admin-navbar-button shadow-sm" x-on:click="adminNavOpen = true">
+        &#9776;
+      </button>
+
+      <section
+        class="admin-navbar"
+        style="display: none;"
+        x-bind:class="{ 'visible': adminNavOpen, 'hidden': !adminNavOpen }"
+      >
+        <div class="admin-navbar-container">
+          <div class="admin-navbar-header">
+            <h2>Admin Links</h2>
+
+            <button
+              x-on:click="adminNavOpen = false, console.log('Admin Nav should close')"
+            >
+              &#10005;
+            </button>
+          </div>
+
+          <hr>
+
+          <div class="admin-navbar-body">
+            <p><a href="/admin/admins">Admins Management</a></p>
+            <p><a href="/admin/authors">Authors Management</a></p>
+            <p><a href="/admin/comments">Comment Management</a></p>
+            <p><a href="/admin/courses">Course Management</a></p>
+            <p><a href="/admin/discounts">Discounts Management</a></p>
+            <p><a href="/admin/purchases">Purchases Management</a></p>
+            <p><a href="/admin/refunds">Refunds Management</a></p>
+            <p><a href="/admin/tutorials">Tutorial Management</a></p>
+            <p><a href="/admin/users">Users Management</a></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {{ template "footer" }}
+
+    <script src="/assets/js/script.js"></script>
+
+    {{ block "javascript" . }}
+    {{ end }}
+  </body>
+  </html>
+{{ end }}
