@@ -54,6 +54,8 @@ func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// TODO: Consider adding a usage_amount to discounts so that they can only be used a set amount of times.
+
 func (h *Handlers) DiscountsGet(w http.ResponseWriter, r *http.Request) {
 	err := h.renderers.Page.RenderHTML(w, "admin-discounts.page.tmpl", nil)
 	if err != nil {
