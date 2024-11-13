@@ -5,7 +5,6 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 	"github.com/PsionicAlch/psionicalch-home/website/forms"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
@@ -14,10 +13,9 @@ import (
 type Handlers struct {
 	utils.Loggers
 	renderers *pages.Renderers
-	auth      *gatekeeper.Gatekeeper
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *gatekeeper.Gatekeeper) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer) *Handlers {
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
@@ -26,7 +24,6 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, a
 			Page: pageRenderer,
 			Htmx: htmxRenderer,
 		},
-		auth: auth,
 	}
 }
 
@@ -57,14 +54,20 @@ func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
-	signupForm := forms.NewSignupFormComponent(forms.NewSignupForm(r))
+	signupForm := forms.NewSignupForm(r)
 
-	err := h.renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
-		SignupForm: signupForm,
-	})
-	if err != nil {
-		h.ErrorLog.Println(err)
+	// Validate form. If it's invalid then we send the form back to the user with the errors.
+	if !signupForm.Validate() {
+		err := h.renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
+			SignupForm: forms.NewSignupFormComponent(signupForm),
+		})
+		if err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
 	}
+
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {

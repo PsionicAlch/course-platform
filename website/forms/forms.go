@@ -25,15 +25,19 @@ func NewForm(r *http.Request, validations map[FieldName]validators.ValidationFun
 	}
 }
 
-func (form *GenericForm) Validate() {
+func (form *GenericForm) Validate() bool {
+	valid := true
 	form.errors = make(map[FieldName][]string)
 
 	for fieldName, validatorFunc := range form.validations {
 		err := validatorFunc(form.values.Get(string(fieldName)), form.values)
 		if err != nil {
 			form.errors[fieldName] = append(form.errors[fieldName], err.Error())
+			valid = false
 		}
 	}
+
+	return valid
 }
 
 func (form *GenericForm) GetValue(field FieldName) string {

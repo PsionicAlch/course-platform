@@ -8,7 +8,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/pkg/gatekeeper"
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/accounts"
@@ -51,24 +50,14 @@ func StartWebsite() {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}
 
-	// Set up Gatekeeper.
-	authCookieName := config.GetWithoutError[string]("AUTH_COOKIE_NAME")
-	websiteDomain := config.GetWithoutError[string]("DOMAIN_NAME")
-	authLifetime := config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME")
-	currentGatekeeperKey := config.GetWithoutError[string]("GATEKEEPER_CURRENT_KEY")
-	prevGatekeeperKey := config.GetWithoutError[string]("GATEKEEPER_PREVIOUS_KEY")
-
-	auth, err := gatekeeper.NewGatekeeper(authCookieName, websiteDomain, authLifetime, currentGatekeeperKey, prevGatekeeperKey, db)
-	if err != nil {
-		loggers.ErrorLog.Fatalln("Failed to set up authentication: ", err)
-	}
+	// Set up authentication system.
 
 	// Set up handlers.
-	generalHandlers := general.SetupHandlers(pagesRenderer, auth, db)
-	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, auth, db)
+	generalHandlers := general.SetupHandlers(pagesRenderer, db)
+	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, db)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
-	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth)
-	profileHandlers := profile.SetupHandlers(pagesRenderer, auth, db)
+	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer)
+	profileHandlers := profile.SetupHandlers(pagesRenderer, db)
 	settingsHandlers := settings.SetupHandlers(pagesRenderer)
 	adminHandlers := admin.SetupHandlers(pagesRenderer)
 	authorsHandlers := authors.SetupHandlers(pagesRenderer)
