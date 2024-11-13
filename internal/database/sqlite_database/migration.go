@@ -1,7 +1,6 @@
 package sqlite_database
 
 import (
-	"github.com/PsionicAlch/psionicalch-home/internal/database/errors"
 	"github.com/golang-migrate/migrate/v4"
 )
 
@@ -13,7 +12,8 @@ func (db *SQLiteDatabase) MigrateUp() error {
 
 	// Apply all up migrations.
 	if err = m.Up(); err != nil && err != migrate.ErrNoChange {
-		return errors.CreateFailedToMigrate(err.Error())
+		db.ErrorLog.Printf("Failed to run up migrations: %s", err.Error())
+		return err
 	}
 
 	return nil
@@ -27,7 +27,8 @@ func (db *SQLiteDatabase) MigrateDown() error {
 
 	// Apply all down migrations.
 	if err = m.Down(); err != nil && err != migrate.ErrNoChange {
-		return errors.CreateFailedToMigrate(err.Error())
+		db.ErrorLog.Printf("Failed to run down migrations: %s", err.Error())
+		return err
 	}
 
 	return nil
@@ -40,7 +41,8 @@ func (db *SQLiteDatabase) Rollback(steps int) error {
 	}
 
 	if err = m.Steps(-1 * steps); err != nil && err != migrate.ErrNoChange {
-		return errors.CreateFailedToMigrate(err.Error())
+		db.ErrorLog.Printf("Failed to rollback migrations: %s", err.Error())
+		return err
 	}
 
 	return nil

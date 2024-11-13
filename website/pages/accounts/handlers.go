@@ -68,6 +68,13 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Try and authenticate user.
+
+	// TODO: Create sessions system so that we can redirect user back to the page that they were on before.
+
+	// Redirect user to courses page so that they can start buying courses.
+	// utils.Redirect(w, r, "/courses")
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {

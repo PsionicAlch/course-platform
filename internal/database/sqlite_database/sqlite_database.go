@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database/errors"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	_ "modernc.org/sqlite"
 )
@@ -22,13 +21,15 @@ func CreateSQLiteDatabase(fileName, migrationsDir string) (*SQLiteDatabase, erro
 	// Open a connection to the database.
 	conn, err := sql.Open("sqlite", fmt.Sprintf(".%s", fileName))
 	if err != nil {
-		return nil, errors.CreateFailedToConnectToDatabase(err.Error())
+		loggers.ErrorLog.Printf("Failed to connect to database: %s", err.Error())
+		return nil, err
 	}
 
 	// Verify that the connection was successful.
 	err = conn.Ping()
 	if err != nil {
-		return nil, errors.CreateFailedToConnectToDatabase(err.Error())
+		loggers.ErrorLog.Printf("Failed to ping database: %s", err.Error())
+		return nil, err
 	}
 
 	// Set maximum number of database connections to 1 to avoid database is locked error (or SQLITE_BUSY error).
@@ -44,7 +45,8 @@ func CreateSQLiteDatabase(fileName, migrationsDir string) (*SQLiteDatabase, erro
 	pragma optimize;
 	`)
 	if err != nil {
-		return nil, errors.CreateFailedToConnectToDatabase(err.Error())
+		loggers.ErrorLog.Printf("Failed to run database startup query: %s", err.Error())
+		return nil, err
 	}
 
 	sqliteDatabase := &SQLiteDatabase{

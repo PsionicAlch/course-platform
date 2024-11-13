@@ -3,16 +3,11 @@ package vanilla
 import (
 	"fmt"
 	"html/template"
-	"strings"
-
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
 func CreateFuncMap() template.FuncMap {
 	funcMap := template.FuncMap{
-		"props":    Props,
-		"keywords": Keywords,
-		"html":     HTML,
+		"props": Props,
 	}
 
 	return funcMap
@@ -35,17 +30,4 @@ func Props(values ...any) (map[string]any, error) {
 	}
 
 	return dict, nil
-}
-
-func Keywords(tutorial *models.TutorialModel) string {
-	var keywords []string
-	for _, keywordModel := range tutorial.Keywords {
-		keywords = append(keywords, keywordModel.Keyword)
-	}
-
-	return strings.Join(keywords, ", ")
-}
-
-func HTML(s string) template.HTML {
-	return template.HTML(s)
 }
