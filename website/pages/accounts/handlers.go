@@ -46,7 +46,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
-	signupForm := forms.NewSignupForm(r)
+	signupForm := forms.EmptySignupFormComponent()
 
 	err := h.renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
 		SignupForm: signupForm,
@@ -57,7 +57,14 @@ func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
-	utils.Redirect(w, r, "/")
+	signupForm := forms.NewSignupFormComponent(forms.NewSignupForm(r))
+
+	err := h.renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
+		SignupForm: signupForm,
+	})
+	if err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +91,7 @@ func (h *Handlers) ValidateLoginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) ValidateSignupPost(w http.ResponseWriter, r *http.Request) {
-	signupForm := forms.NewSignupForm(r)
+	signupForm := forms.NewSignupFormComponent(forms.SignupFormPartialValidation(r))
 
 	err := h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", signupForm)
 	if err != nil {
