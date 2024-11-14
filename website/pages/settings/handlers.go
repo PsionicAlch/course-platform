@@ -3,8 +3,10 @@ package settings
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -23,8 +25,12 @@ func SetupHandlers(pageRenderer render.Renderer) *Handlers {
 }
 
 func (h *Handlers) SettingsGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "settings.page.tmpl", nil)
-	if err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.SettingsPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "settings.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -29,22 +30,34 @@ func SetupHandlers(pageRenderer render.Renderer, auth *authentication.Authentica
 }
 
 func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "profile.page.tmpl", nil)
-	if err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.ProfilePage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "profile.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) AffiliateHistoryGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "affiliate-history.page.tmpl", nil)
-	if err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.ProfileAffiliateHistoryPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "profile-affiliate-history.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "profile-courses.page.tmpl", nil)
-	if err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.ProfileCourses{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "profile-courses.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -55,23 +68,35 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.ProfileCourse{
+		BasePage: html.NewBasePage(user),
+	}
+
 	// Render the current chapter based off the course slug and chapter slug.
-	err := h.renderers.Page.RenderHTML(w, "profile-course.page.tmpl", nil)
-	if err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "profile-course.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) TutorialsBookmarksGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "profile-tutorials-bookmarks.page.tmpl", nil)
-	if err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.ProfileTutorialsBookmarksPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "profile-tutorials-bookmarks.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) TutorialsLikedGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "profile-tutorials-liked.page.tmpl", nil)
-	if err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.ProfileTutorialsLikedPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "profile-tutorials-liked.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

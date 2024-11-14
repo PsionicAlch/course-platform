@@ -3,9 +3,11 @@ package tutorials
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -28,15 +30,23 @@ func SetupHandlers(pageRenderer render.Renderer, db database.Database) *Handlers
 // TODO: Set up logic for commenting, liking, and bookmarking.
 
 func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "tutorials.page.tmpl", nil)
-	if err != nil {
-		h.ErrorLog.Println("Failed to render tutorials.page.tmpl: ", err)
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.TutorialsPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "tutorials.page.tmpl", pageData); err != nil {
+		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "tutorial.page.tmpl", nil)
-	if err != nil {
-		h.ErrorLog.Println("Failed to render tutorial.page.tmpl: ", err)
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.TutorialsTutorialPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "tutorials-tutorial.page.tmpl", pageData); err != nil {
+		h.ErrorLog.Println(err)
 	}
 }

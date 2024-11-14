@@ -38,7 +38,7 @@
     {{ template "noscript" }}
 
     <!-- TODO: Pass navbar specific struct down to template -->
-    {{ template "navbar" . }}
+    {{ template "navbar" .Navbar }}
 
     <main class="admin" x-data="{ adminNavOpen: false }">
       <div class="container">

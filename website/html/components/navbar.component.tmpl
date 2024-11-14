@@ -7,10 +7,19 @@
       <ul class="desktop-nav-links">
         <li><a href="/tutorials">Tutorials</a></li>
         <li><a href="/courses">Courses</a></li>
-        <li><a href="/profile">Profile</a></li>
-        <li><a href="/settings">Settings</a></li>
-        <li><a href="/admin">Admin</a></li>
-        <li><a href="#" class="btn-inline btn-red shadow-sm">Log Out</a></li>
+
+        {{ if .User }}
+          <li><a href="/profile">Profile</a></li>
+          <li><a href="/settings">Settings</a></li>
+
+          {{ if .User.IsAdmin }}
+            <li><a href="/admin">Admin</a></li>
+          {{ end }}
+
+          <li><a href="#" class="btn-inline btn-red shadow-sm">Log Out</a></li>
+        {{ else }}
+          <li><a href="/accounts/login" class="btn-inline btn-blue shadow-sm">Login</a></li>
+        {{ end}}
       </ul>
 
       <button
@@ -39,10 +48,19 @@
       <ul class="mobile-nav-links">
         <li><a href="/tutorials">Tutorials</a></li>
         <li><a href="/courses">Courses</a></li>
-        <li><a href="/profile">Profile</a></li>
-        <li><a href="/settings">Settings</a></li>
-        <li><a href="/admin">Admin</a></li>
-        <li><a href="#" class="btn-inline btn-red shadow-sm">Log Out</a></li>
+
+        {{ if .User }}
+          <li><a href="/profile">Profile</a></li>
+          <li><a href="/settings">Settings</a></li>
+
+          {{ if .User.IsAdmin }}
+            <li><a href="/admin">Admin</a></li>
+          {{ end }}
+
+          <li><a href="#" class="btn-inline btn-red shadow-sm">Log Out</a></li>
+        {{ else }}
+          <li><a href="/accounts/login" class="btn-inline btn-blue shadow-sm">Login</a></li>
+        {{ end }}
       </ul>
     </div>
   </div>

@@ -1,7 +1,6 @@
 package accounts
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
@@ -32,23 +31,28 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, a
 }
 
 func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
-	loginForm := forms.EmptyLoginFormComponent()
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.AccountsLoginPage{
+		BasePage:  html.NewBasePage(user),
+		LoginForm: forms.EmptyLoginFormComponent(),
+	}
 
-	err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", html.AccountsLoginPage{
-		LoginForm: loginForm,
-	})
+	err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", pageData)
 	if err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
 	loginForm := forms.NewLoginForm(r)
+	pageData := html.AccountsLoginPage{
+		BasePage: html.NewBasePage(user),
+	}
 
 	if !loginForm.Validate() {
-		if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", html.AccountsLoginPage{
-			LoginForm: forms.NewLoginFormComponent(loginForm),
-		}); err != nil {
+		pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", pageData); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -60,19 +64,18 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == authentication.ErrInvalidCredentials {
 			loginForm.SetEmailError("invalid email or password")
+			pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
 
-			if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", html.AccountsLoginPage{
-				LoginForm: forms.NewLoginFormComponent(loginForm),
-			}); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		} else {
 			h.ErrorLog.Printf("Failed to log user (\"%s\") in: %s\n", email, err)
 
+			pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
+
 			// TODO: Set up flash message for unexpected server errors.
-			if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", html.AccountsLoginPage{
-				LoginForm: forms.NewLoginFormComponent(loginForm),
-			}); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		}
@@ -89,22 +92,28 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
 	signupForm := forms.EmptySignupFormComponent()
-
-	if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
+	pageData := html.AccountsSignupPage{
+		BasePage:   html.NewBasePage(user),
 		SignupForm: signupForm,
-	}); err != nil {
+	}
+
+	if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
 	signupForm := forms.NewSignupForm(r)
+	pageData := html.AccountsSignupPage{
+		BasePage: html.NewBasePage(user),
+	}
 
 	if !signupForm.Validate() {
-		if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
-			SignupForm: forms.NewSignupFormComponent(signupForm),
-		}); err != nil {
+		pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", pageData); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -115,21 +124,19 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	cookie, err := h.Auth.SignUserUp(firstName, lastName, email, password, r.RemoteAddr)
 	if err != nil {
 		if err == authentication.ErrUserExists {
-			fmt.Printf("What?")
 			signupForm.SetEmailError("this email has already been registered")
+			pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
 
-			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
-				SignupForm: forms.NewSignupFormComponent(signupForm),
-			}); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		} else {
 			h.ErrorLog.Printf("Failed to sign user up: %s\n", err)
 
+			pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
+
 			// TODO: Set flash message about unexpected server error.
-			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
-				SignupForm: forms.NewSignupFormComponent(signupForm),
-			}); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		}
@@ -146,13 +153,23 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
-	if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password.page.tmpl", nil); err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.AccountsForgotPasswordPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
-	if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password.page.tmpl", nil); err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.AccountsResetPasswordPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

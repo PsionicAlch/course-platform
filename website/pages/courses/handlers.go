@@ -3,8 +3,10 @@ package courses
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -23,22 +25,34 @@ func SetupHandlers(pageRenderer render.Renderer) *Handlers {
 }
 
 func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "courses.page.tmpl", nil)
-	if err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.CoursesPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "courses.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "course.page.tmpl", nil)
-	if err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.CoursesCoursePage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "courses-course.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "course-purchase.page.tmpl", nil)
-	if err != nil {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.CoursesPurchasesPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.renderers.Page.RenderHTML(w, "courses-purchase.page.tmpl", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

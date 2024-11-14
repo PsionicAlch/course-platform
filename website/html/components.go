@@ -1,7 +1,15 @@
 package html
 
+import "github.com/PsionicAlch/psionicalch-home/internal/database/models"
+
 type NavbarComponent struct {
-	// Insert information needed for the navbar to work here.
+	User *models.UserModel
+}
+
+func NewNavbarComponent(user *models.UserModel) *NavbarComponent {
+	return &NavbarComponent{
+		User: user,
+	}
 }
 
 /*
