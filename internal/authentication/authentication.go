@@ -84,6 +84,8 @@ func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr st
 		return nil, err
 	}
 
+	// TODO: Send email about new account creation.
+
 	return cookie, nil
 }
 
@@ -127,6 +129,8 @@ func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*http.Coo
 		auth.ErrorLog.Printf("Failed to encode authentication cookie: %s\n", err)
 		return nil, err
 	}
+
+	// TODO: Send email about new login just incase it wasn't the account holder who did it.
 
 	return cookie, nil
 }
