@@ -115,8 +115,6 @@ func EmptySignupFormComponent() *html.SignupFormComponent {
 }
 
 func NewSignupFormComponent(form *GenericForm) *html.SignupFormComponent {
-	form.Validate()
-
 	signupFormComponent := EmptySignupFormComponent()
 
 	signupFormComponent.FirstNameInput.Value = form.GetValue(FirstName)

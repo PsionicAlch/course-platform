@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
@@ -59,6 +60,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == authentication.ErrInvalidCredentials {
 			loginForm.SetEmailError("invalid email or password")
+
 			if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", html.AccountsLoginPage{
 				LoginForm: forms.NewLoginFormComponent(loginForm),
 			}); err != nil {
@@ -113,6 +115,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	cookie, err := h.Auth.SignUserUp(firstName, lastName, email, password, r.RemoteAddr)
 	if err != nil {
 		if err == authentication.ErrUserExists {
+			fmt.Printf("What?")
 			signupForm.SetEmailError("this email has already been registered")
 
 			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
@@ -155,9 +158,10 @@ func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) ValidateSignupPost(w http.ResponseWriter, r *http.Request) {
-	signupForm := forms.NewSignupFormComponent(forms.SignupFormPartialValidation(r))
+	signupForm := forms.SignupFormPartialValidation(r)
+	signupForm.Validate()
 
-	if err := h.Renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", signupForm); err != nil {
+	if err := h.Renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", forms.NewSignupFormComponent(signupForm)); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

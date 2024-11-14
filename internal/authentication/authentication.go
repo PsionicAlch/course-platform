@@ -1,6 +1,7 @@
 package authentication
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -51,6 +52,8 @@ func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr st
 	if exists {
 		return nil, ErrUserExists
 	}
+
+	fmt.Printf("User exists: ", exists)
 
 	hashedPassword, err := auth.PasswordParameters.HashPassword(password)
 	if err != nil {

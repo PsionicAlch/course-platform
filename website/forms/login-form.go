@@ -30,8 +30,6 @@ func EmptyLoginFormComponent() *html.LoginFormComponent {
 }
 
 func NewLoginFormComponent(form *GenericForm) *html.LoginFormComponent {
-	form.Validate()
-
 	loginFormComponent := EmptyLoginFormComponent()
 
 	loginFormComponent.EmailInput.Value = form.GetValue(EmailName)

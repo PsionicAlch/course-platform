@@ -23,7 +23,7 @@ func (db *SQLiteDatabase) UserExists(email string) (bool, error) {
 	}
 
 	// Just in case Scan didn't return an ErrNoRows check if id is empty.
-	return id == "", nil
+	return id != "", nil
 }
 
 func (db *SQLiteDatabase) AddUser(name, surname, email, password string) (string, error) {
@@ -44,7 +44,7 @@ func (db *SQLiteDatabase) AddUser(name, surname, email, password string) (string
 	result, err := db.connection.Exec(query, id, name, surname, email, password, affiliate_code)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to save new user (\"%s\") to the database: %s\n", email, err.Error())
-		return "", nil
+		return "", err
 	}
 
 	rowsAffected, err := result.RowsAffected()
