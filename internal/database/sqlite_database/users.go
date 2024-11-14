@@ -61,11 +61,16 @@ func (db *SQLiteDatabase) AddUser(name, surname, email, password string) (string
 }
 
 func (db *SQLiteDatabase) GetUser(email string) (*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, affiliate_code, created_at, updated_at FROM users WHERE email = ?;`
+	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, created_at, updated_at FROM users WHERE email = ?;`
+
+	var isAdminInt int
+	var isAuthorInt int
 	user := new(models.UserModel)
+	isAdmin := false
+	isAuthor := false
 
 	row := db.connection.QueryRow(query, email)
-	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &user.AffiliateCode, &user.CreatedAt, &user.UpdatedAt); err != nil {
+	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &isAdminInt, &isAuthorInt, &user.AffiliateCode, &user.CreatedAt, &user.UpdatedAt); err != nil {
 		if err == sql.ErrNoRows {
 			// Nothing was found so we can just send back nothing and handle it at the caller
 			// end.
@@ -75,6 +80,17 @@ func (db *SQLiteDatabase) GetUser(email string) (*models.UserModel, error) {
 		db.ErrorLog.Printf("Failed to query the database for user (\"%s\"): %s\n", email, err)
 		return nil, err
 	}
+
+	if isAdminInt == 1 {
+		isAdmin = true
+	}
+
+	if isAuthorInt == 1 {
+		isAuthor = true
+	}
+
+	user.IsAdmin = isAdmin
+	user.IsAuthor = isAuthor
 
 	return user, nil
 }

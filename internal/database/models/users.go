@@ -9,6 +9,8 @@ type UserModel struct {
 	Email         string
 	Password      string
 	AffiliateCode string
+	IsAdmin       bool
+	IsAuthor      bool
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
