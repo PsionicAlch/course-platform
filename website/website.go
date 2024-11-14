@@ -74,6 +74,7 @@ func StartWebsite() {
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
+	router.Use(auth.SetUserMiddleware)
 
 	// Set up 404 handler.
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {

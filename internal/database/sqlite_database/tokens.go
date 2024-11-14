@@ -1,9 +1,11 @@
 package sqlite_database
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
 func (db *SQLiteDatabase) AddToken(token, tokenType, userId, ipAddr string, validUntil time.Time) error {
@@ -33,4 +35,23 @@ func (db *SQLiteDatabase) AddToken(token, tokenType, userId, ipAddr string, vali
 	}
 
 	return nil
+}
+
+func (db *SQLiteDatabase) GetToken(token, tokenType string) (*models.TokenModel, error) {
+	query := `SELECT id, token, token_type, valid_until, created_at, user_id, ip_address FROM tokens WHERE token = ? AND token_type = ?;`
+
+	tokenStruct := new(models.TokenModel)
+
+	row := db.connection.QueryRow(query, token, tokenType)
+
+	if err := row.Scan(&tokenStruct.ID, &tokenStruct.Token, &tokenStruct.TokenType, &tokenStruct.ValidUntil, &tokenStruct.CreatedAt, &tokenStruct.UserID, &tokenStruct.IPAddr); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		db.ErrorLog.Printf("Failed to get %s token from the database: %s\n", tokenType, err)
+		return nil, err
+	}
+
+	return tokenStruct, nil
 }

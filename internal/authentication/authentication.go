@@ -6,6 +6,7 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/config"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 )
 
@@ -133,4 +134,37 @@ func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*http.Coo
 	// TODO: Send email about new login just incase it wasn't the account holder who did it.
 
 	return cookie, nil
+}
+
+func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*models.UserModel, error) {
+	for _, cookie := range cookies {
+		if cookie.Name == auth.CookiesManager.CookieParams.Name {
+			authToken, err := auth.CookiesManager.Decode(cookie.Value)
+			if err != nil {
+				auth.ErrorLog.Printf("Failed to decode auth cookie's value: %s\n", err)
+				return nil, err
+			}
+
+			token, err := auth.Database.GetToken(authToken, AuthenticationToken)
+			if err != nil {
+				auth.ErrorLog.Printf("Failed to get authentication token from database: %s\n", err)
+				return nil, err
+			}
+
+			valid := ValidateAuthenticationToken(token)
+			if !valid {
+				return nil, nil
+			}
+
+			user, err := auth.Database.GetUserByID(token.UserID)
+			if err != nil {
+				auth.ErrorLog.Printf("Failed to get user (\"%s\") from database: %s\n", token.UserID, err)
+				return nil, err
+			}
+
+			return user, nil
+		}
+	}
+
+	return nil, nil
 }
