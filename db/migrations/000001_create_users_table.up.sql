@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS users (
     surname TEXT NOT NULL,                              -- User's surname
     email TEXT NOT NULL,                                -- User email (unique and required)
     password TEXT NOT NULL,                             -- Hashed password (required)
-    authorization TEXT NOT NULL,                        -- The authorization level that this user has
 
     affiliate_code TEXT NOT NULL,                       -- User's affiliate code for discounts
 

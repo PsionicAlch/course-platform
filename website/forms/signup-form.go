@@ -8,37 +8,37 @@ import (
 )
 
 const (
-	firstName           = "first_name"
-	lastName            = "last_name"
-	emailName           = "email"
-	passwordName        = "password"
-	confirmPasswordName = "confirm_password"
-	validationURL       = "/accounts/validate/signup"
+	FirstName           = "first_name"
+	LastName            = "last_name"
+	EmailName           = "email"
+	PasswordName        = "password"
+	ConfirmPasswordName = "confirm_password"
+	ValidationURL       = "/accounts/validate/signup"
 )
 
 func NewSignupForm(r *http.Request) *GenericForm {
 	return NewForm(r, map[FieldName]validators.ValidationFunc{
-		firstName: validators.ChainValidators(
+		FirstName: validators.ChainValidators(
 			validators.NotEmpty,
 			validators.MaxLength(50),
 			validators.Profanities,
 			validators.NoSpecialCharacters,
 			validators.NoNumbers,
 		),
-		lastName: validators.ChainValidators(
+		LastName: validators.ChainValidators(
 			validators.NotEmpty,
 			validators.MaxLength(50),
 			validators.Profanities,
 			validators.NoSpecialCharacters,
 			validators.NoNumbers,
 		),
-		emailName: validators.ChainValidators(
+		EmailName: validators.ChainValidators(
 			validators.NotEmpty,
 			validators.MaxLength(255),
 			validators.IsEmail,
 			validators.IsNotDisposableEmail,
 		),
-		passwordName: validators.ChainValidators(
+		PasswordName: validators.ChainValidators(
 			validators.NotEmpty,
 			validators.MinLength(10),
 			validators.MaxLength(65),
@@ -46,40 +46,40 @@ func NewSignupForm(r *http.Request) *GenericForm {
 			validators.LowercaseCharacters,
 			validators.NumberCharacters,
 		),
-		confirmPasswordName: validators.ChainValidators(
-			validators.MatchesField(passwordName, "Password"),
+		ConfirmPasswordName: validators.ChainValidators(
+			validators.MatchesField(PasswordName, "Password"),
 		),
 	})
 }
 
 func SignupFormPartialValidation(r *http.Request) *GenericForm {
 	return NewForm(r, map[FieldName]validators.ValidationFunc{
-		firstName: validators.ChainValidators(
+		FirstName: validators.ChainValidators(
 			validators.MaxLength(50),
 			validators.Profanities,
 			validators.NoSpecialCharacters,
 			validators.NoNumbers,
 		),
-		lastName: validators.ChainValidators(
+		LastName: validators.ChainValidators(
 			validators.MaxLength(50),
 			validators.Profanities,
 			validators.NoSpecialCharacters,
 			validators.NoNumbers,
 		),
-		emailName: validators.ChainValidators(
+		EmailName: validators.ChainValidators(
 			validators.MaxLength(255),
 			validators.IsEmail,
 			validators.IsNotDisposableEmail,
 		),
-		passwordName: validators.ChainValidators(
+		PasswordName: validators.ChainValidators(
 			validators.MinLength(10),
 			validators.MaxLength(65),
 			validators.UppercaseCharacters,
 			validators.LowercaseCharacters,
 			validators.NumberCharacters,
 		),
-		confirmPasswordName: validators.ChainValidators(
-			validators.MatchesField(passwordName, "Password"),
+		ConfirmPasswordName: validators.ChainValidators(
+			validators.MatchesField(PasswordName, "Password"),
 		),
 	})
 }
@@ -87,31 +87,31 @@ func SignupFormPartialValidation(r *http.Request) *GenericForm {
 func EmptySignupFormComponent() *html.SignupFormComponent {
 	firstNameInput := new(html.FormControlComponent)
 	firstNameInput.Label = "First Name:"
-	firstNameInput.Name = firstName
+	firstNameInput.Name = FirstName
 	firstNameInput.Type = "text"
-	firstNameInput.ValidationURL = validationURL
+	firstNameInput.ValidationURL = ValidationURL
 
 	lastNameInput := new(html.FormControlComponent)
 	lastNameInput.Label = "Last Name:"
-	lastNameInput.Name = lastName
+	lastNameInput.Name = LastName
 	lastNameInput.Type = "text"
-	lastNameInput.ValidationURL = validationURL
+	lastNameInput.ValidationURL = ValidationURL
 
 	emailInput := new(html.FormControlComponent)
 	emailInput.Label = "Email:"
-	emailInput.Name = emailName
+	emailInput.Name = EmailName
 	emailInput.Type = "email"
-	emailInput.ValidationURL = validationURL
+	emailInput.ValidationURL = ValidationURL
 
 	passwordInput := new(html.PasswordControlComponent)
 	passwordInput.Label = "Password:"
-	passwordInput.Name = passwordName
-	passwordInput.ValidationURL = validationURL
+	passwordInput.Name = PasswordName
+	passwordInput.ValidationURL = ValidationURL
 
 	confirmPasswordInput := new(html.PasswordControlComponent)
 	confirmPasswordInput.Label = "Confirm Password:"
-	confirmPasswordInput.Name = confirmPasswordName
-	confirmPasswordInput.ValidationURL = validationURL
+	confirmPasswordInput.Name = ConfirmPasswordName
+	confirmPasswordInput.ValidationURL = ValidationURL
 
 	signupForm := new(html.SignupFormComponent)
 	signupForm.FirstNameInput = firstNameInput
@@ -128,20 +128,34 @@ func NewSignupFormComponent(form *GenericForm) *html.SignupFormComponent {
 
 	signupFormComponent := EmptySignupFormComponent()
 
-	signupFormComponent.FirstNameInput.Value = form.GetValue("first_name")
-	signupFormComponent.FirstNameInput.Errors = form.GetErrors("first_name")
+	signupFormComponent.FirstNameInput.Value = form.GetValue(FirstName)
+	signupFormComponent.FirstNameInput.Errors = form.GetErrors(FirstName)
 
-	signupFormComponent.LastNameInput.Value = form.GetValue("last_name")
-	signupFormComponent.LastNameInput.Errors = form.GetErrors("last_name")
+	signupFormComponent.LastNameInput.Value = form.GetValue(LastName)
+	signupFormComponent.LastNameInput.Errors = form.GetErrors(LastName)
 
-	signupFormComponent.EmailInput.Value = form.GetValue("email")
-	signupFormComponent.EmailInput.Errors = form.GetErrors("email")
+	signupFormComponent.EmailInput.Value = form.GetValue(EmailName)
+	signupFormComponent.EmailInput.Errors = form.GetErrors(EmailName)
 
-	signupFormComponent.PasswordInput.Value = form.GetValue("password")
-	signupFormComponent.PasswordInput.Errors = form.GetErrors("password")
+	signupFormComponent.PasswordInput.Value = form.GetValue(PasswordName)
+	signupFormComponent.PasswordInput.Errors = form.GetErrors(PasswordName)
 
-	signupFormComponent.ConfirmPasswordInput.Value = form.GetValue("confirm_password")
-	signupFormComponent.ConfirmPasswordInput.Errors = form.GetErrors("confirm_password")
+	signupFormComponent.ConfirmPasswordInput.Value = form.GetValue(ConfirmPasswordName)
+	signupFormComponent.ConfirmPasswordInput.Errors = form.GetErrors(ConfirmPasswordName)
 
 	return signupFormComponent
+}
+
+func GetFormValues(form *GenericForm) (firstName, lastName, email, password, confirmPassword string) {
+	firstName = form.GetValue(FirstName)
+	lastName = form.GetValue(LastName)
+	email = form.GetValue(EmailName)
+	password = form.GetValue(PasswordName)
+	confirmPassword = form.GetValue(ConfirmPasswordName)
+
+	return
+}
+
+func SetEmailError(form *GenericForm, err string) {
+	form.SetError(EmailName, err)
 }

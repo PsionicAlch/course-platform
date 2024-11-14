@@ -13,15 +13,15 @@ const (
 
 func SetupConfig() error {
 	variables := map[string]validators.ValidationFunc{
-		"PORT":                    validators.NotEmptyValidator,
-		"ENVIRONMENT":             validators.ChainValidators(validators.NotEmptyValidator, validators.InSliceValidator([]string{development, testing, production})),
-		"DOMAIN_NAME":             validators.NotEmptyValidator,
-		"SESSION_COOKIE_NAME":     validators.NotEmptyValidator,
-		"AUTH_COOKIE_NAME":        validators.NotEmptyValidator,
-		"AUTH_TOKEN_LIFETIME":     validators.ChainValidators(validators.NotEmptyValidator, validators.IntValidator),
-		"EMAIL_TOKEN_LIFETIME":    validators.ChainValidators(validators.NotEmptyValidator, validators.IntValidator),
-		"GATEKEEPER_CURRENT_KEY":  validators.NotEmptyValidator,
-		"GATEKEEPER_PREVIOUS_KEY": validators.EmptyValidator,
+		"PORT":                       validators.NotEmptyValidator,
+		"ENVIRONMENT":                validators.ChainValidators(validators.NotEmptyValidator, validators.InSliceValidator([]string{development, testing, production})),
+		"DOMAIN_NAME":                validators.NotEmptyValidator,
+		"SESSION_COOKIE_NAME":        validators.NotEmptyValidator,
+		"AUTH_COOKIE_NAME":           validators.NotEmptyValidator,
+		"AUTH_TOKEN_LIFETIME":        validators.ChainValidators(validators.NotEmptyValidator, validators.IntValidator),
+		"EMAIL_TOKEN_LIFETIME":       validators.ChainValidators(validators.NotEmptyValidator, validators.IntValidator),
+		"CURRENT_SECURE_COOKIE_KEY":  validators.NotEmptyValidator,
+		"PREVIOUS_SECURE_COOKIE_KEY": validators.EmptyValidator,
 	}
 
 	return envloader.LoadEnvironment(variables)

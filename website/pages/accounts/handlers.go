@@ -3,6 +3,7 @@ package accounts
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/forms"
@@ -12,25 +13,27 @@ import (
 
 type Handlers struct {
 	utils.Loggers
-	renderers *pages.Renderers
+	Renderers *pages.Renderers
+	Auth      *authentication.Authentication
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *authentication.Authentication) *Handlers {
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
 		Loggers: loggers,
-		renderers: &pages.Renderers{
+		Renderers: &pages.Renderers{
 			Page: pageRenderer,
 			Htmx: htmxRenderer,
 		},
+		Auth: auth,
 	}
 }
 
 func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
 	loginForm := forms.NewLoginForm(r)
 
-	err := h.renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", html.AccountsLoginPage{
+	err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", html.AccountsLoginPage{
 		LoginForm: loginForm,
 	})
 	if err != nil {
@@ -45,7 +48,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 	signupForm := forms.EmptySignupFormComponent()
 
-	err := h.renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
+	err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
 		SignupForm: signupForm,
 	})
 	if err != nil {
@@ -56,9 +59,8 @@ func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	signupForm := forms.NewSignupForm(r)
 
-	// Validate form. If it's invalid then we send the form back to the user with the errors.
 	if !signupForm.Validate() {
-		err := h.renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
+		err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
 			SignupForm: forms.NewSignupFormComponent(signupForm),
 		})
 		if err != nil {
@@ -68,24 +70,52 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Try and authenticate user.
+	firstName, lastName, email, password, _ := forms.GetFormValues(signupForm)
+	cookie, err := h.Auth.SignUserUp(firstName, lastName, email, password, r.RemoteAddr)
+	if err != nil {
+		if err == authentication.ErrUserExists {
+			forms.SetEmailError(signupForm, "this email has already been registered")
+
+			err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
+				SignupForm: forms.NewSignupFormComponent(signupForm),
+			})
+			if err != nil {
+				h.ErrorLog.Println(err)
+			}
+
+			return
+		}
+
+		h.ErrorLog.Printf("Failed to sign user up: %s\n", err)
+
+		// TODO: Set flash message about unexpected server error.
+		err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", html.AccountsSignupPage{
+			SignupForm: forms.NewSignupFormComponent(signupForm),
+		})
+		if err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	http.SetCookie(w, cookie)
 
 	// TODO: Create sessions system so that we can redirect user back to the page that they were on before.
 
 	// Redirect user to courses page so that they can start buying courses.
-	// utils.Redirect(w, r, "/courses")
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, "/courses", http.StatusFound)
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "accounts-forgot-password.page.tmpl", nil)
+	err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password.page.tmpl", nil)
 	if err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
-	err := h.renderers.Page.RenderHTML(w, "accounts-reset-password.page.tmpl", nil)
+	err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password.page.tmpl", nil)
 	if err != nil {
 		h.ErrorLog.Println(err)
 	}
@@ -94,7 +124,7 @@ func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) ValidateLoginPost(w http.ResponseWriter, r *http.Request) {
 	loginForm := forms.NewLoginForm(r)
 
-	err := h.renderers.Htmx.RenderHTML(w, "login-form.htmx.tmpl", loginForm)
+	err := h.Renderers.Htmx.RenderHTML(w, "login-form.htmx.tmpl", loginForm)
 	if err != nil {
 		h.ErrorLog.Println(err)
 	}
@@ -103,7 +133,7 @@ func (h *Handlers) ValidateLoginPost(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) ValidateSignupPost(w http.ResponseWriter, r *http.Request) {
 	signupForm := forms.NewSignupFormComponent(forms.SignupFormPartialValidation(r))
 
-	err := h.renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", signupForm)
+	err := h.Renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", signupForm)
 	if err != nil {
 		h.ErrorLog.Println(err)
 	}

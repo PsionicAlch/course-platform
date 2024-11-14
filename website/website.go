@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/config"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla"
@@ -51,12 +52,16 @@ func StartWebsite() {
 	}
 
 	// Set up authentication system.
+	auth, err := authentication.SetupAuthentication(db)
+	if err != nil {
+		loggers.ErrorLog.Fatalln("Failed to set up authentication: ", err)
+	}
 
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer, db)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, db)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
-	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer)
+	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth)
 	profileHandlers := profile.SetupHandlers(pagesRenderer, db)
 	settingsHandlers := settings.SetupHandlers(pagesRenderer)
 	adminHandlers := admin.SetupHandlers(pagesRenderer)

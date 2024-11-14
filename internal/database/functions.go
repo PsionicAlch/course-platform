@@ -1,11 +1,9 @@
 package database
 
 import (
-	"encoding/base64"
 	"math/rand"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/oklog/ulid/v2"
 )
 
@@ -17,14 +15,4 @@ func GenerateID() (string, error) {
 	id, err := ulid.New(ms, entropy)
 
 	return id.String(), err
-}
-
-// GenerateToken generates a new token.
-func GenerateToken() (string, error) {
-	tokenBytes, err := utils.RandomByteSlice(32)
-	if err != nil {
-		return "", err
-	}
-
-	return base64.RawStdEncoding.EncodeToString(tokenBytes), nil
 }
