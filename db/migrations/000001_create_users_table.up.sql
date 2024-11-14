@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS users (
     surname TEXT NOT NULL,                              -- User's surname
     email TEXT NOT NULL,                                -- User email (unique and required)
     password TEXT NOT NULL,                             -- Hashed password (required)
+    admin INTEGER DEFAULT 0                             -- Boolean for whether or not the user is an administrator
+    author INTEGER DEFAULT 0                            -- Boolean for whether or not the user is an author
 
     affiliate_code TEXT NOT NULL,                       -- User's affiliate code for discounts
 
