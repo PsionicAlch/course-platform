@@ -56,3 +56,7 @@ func (form *GenericForm) GetErrors(field FieldName) []string {
 func (form *GenericForm) SetError(field FieldName, err string) {
 	form.errors[field] = append(form.errors[field], err)
 }
+
+func (form *GenericForm) SetEmailError(err string) {
+	form.SetError(EmailName, err)
+}

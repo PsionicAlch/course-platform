@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
 func (db *SQLiteDatabase) UserExists(email string) (bool, error) {
@@ -11,8 +12,7 @@ func (db *SQLiteDatabase) UserExists(email string) (bool, error) {
 	row := db.connection.QueryRow(query, email)
 
 	var id string
-	err := row.Scan(&id)
-	if err != nil {
+	if err := row.Scan(&id); err != nil {
 		// User was not found so we can just return here.
 		if err == sql.ErrNoRows {
 			return false, nil
@@ -58,4 +58,23 @@ func (db *SQLiteDatabase) AddUser(name, surname, email, password string) (string
 	}
 
 	return id, nil
+}
+
+func (db *SQLiteDatabase) GetUser(email string) (*models.UserModel, error) {
+	query := `SELECT id, name, surname, email, password, affiliate_code, created_at, updated_at FROM users WHERE email = ?;`
+	user := new(models.UserModel)
+
+	row := db.connection.QueryRow(query, email)
+	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &user.AffiliateCode, &user.CreatedAt, &user.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			// Nothing was found so we can just send back nothing and handle it at the caller
+			// end.
+			return nil, nil
+		}
+
+		db.ErrorLog.Printf("Failed to query the database for user (\"%s\"): %s\n", email, err)
+		return nil, err
+	}
+
+	return user, nil
 }

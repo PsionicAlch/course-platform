@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"bytes"
+	"crypto/subtle"
 	"encoding/gob"
 	"runtime"
 
@@ -62,6 +63,30 @@ func (params *PasswordParameters) HashPassword(password string) (string, error) 
 	return BytesToString(passwordBytes), nil
 }
 
+func ComparePasswordAndHash(password, passwordHash string) (bool, error) {
+	passwordBytes, err := StringToBytes(passwordHash)
+	if err != nil {
+		return false, err
+	}
+
+	passwordStruct, err := PasswordFromBytes(passwordBytes)
+	if err != nil {
+		return false, err
+	}
+
+	if passwordStruct.ArgonVersion != argon2.Version {
+		return false, ErrMismatchedArgonVersion
+	}
+
+	newPasswordHash := argon2.IDKey([]byte(password), passwordStruct.Salt, uint32(passwordStruct.Iterations), passwordStruct.Memory, passwordStruct.Threads, uint32(passwordStruct.KeyLength))
+
+	if subtle.ConstantTimeCompare(passwordStruct.Hash, newPasswordHash) != 1 {
+		return false, nil
+	}
+
+	return true, nil
+}
+
 func PasswordToBytes(password *Password) ([]byte, error) {
 	hashedBytes := new(bytes.Buffer)
 	enc := gob.NewEncoder(hashedBytes)
@@ -71,6 +96,19 @@ func PasswordToBytes(password *Password) ([]byte, error) {
 	}
 
 	return hashedBytes.Bytes(), nil
+}
+
+func PasswordFromBytes(password []byte) (*Password, error) {
+	hashedReader := bytes.NewBuffer(password)
+	decoder := gob.NewDecoder(hashedReader)
+
+	passwordStruct := new(Password)
+
+	if err := decoder.Decode(passwordStruct); err != nil {
+		return nil, err
+	}
+
+	return passwordStruct, nil
 }
 
 func NewSalt(length int) ([]byte, error) {

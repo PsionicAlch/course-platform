@@ -7,15 +7,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 )
 
-const (
-	FirstName           = "first_name"
-	LastName            = "last_name"
-	EmailName           = "email"
-	PasswordName        = "password"
-	ConfirmPasswordName = "confirm_password"
-	ValidationURL       = "/accounts/validate/signup"
-)
-
 func NewSignupForm(r *http.Request) *GenericForm {
 	return NewForm(r, map[FieldName]validators.ValidationFunc{
 		FirstName: validators.ChainValidators(
@@ -89,29 +80,29 @@ func EmptySignupFormComponent() *html.SignupFormComponent {
 	firstNameInput.Label = "First Name:"
 	firstNameInput.Name = FirstName
 	firstNameInput.Type = "text"
-	firstNameInput.ValidationURL = ValidationURL
+	firstNameInput.ValidationURL = SignupValidationURL
 
 	lastNameInput := new(html.FormControlComponent)
 	lastNameInput.Label = "Last Name:"
 	lastNameInput.Name = LastName
 	lastNameInput.Type = "text"
-	lastNameInput.ValidationURL = ValidationURL
+	lastNameInput.ValidationURL = SignupValidationURL
 
 	emailInput := new(html.FormControlComponent)
 	emailInput.Label = "Email:"
 	emailInput.Name = EmailName
 	emailInput.Type = "email"
-	emailInput.ValidationURL = ValidationURL
+	emailInput.ValidationURL = SignupValidationURL
 
 	passwordInput := new(html.PasswordControlComponent)
 	passwordInput.Label = "Password:"
 	passwordInput.Name = PasswordName
-	passwordInput.ValidationURL = ValidationURL
+	passwordInput.ValidationURL = SignupValidationURL
 
 	confirmPasswordInput := new(html.PasswordControlComponent)
 	confirmPasswordInput.Label = "Confirm Password:"
 	confirmPasswordInput.Name = ConfirmPasswordName
-	confirmPasswordInput.ValidationURL = ValidationURL
+	confirmPasswordInput.ValidationURL = SignupValidationURL
 
 	signupForm := new(html.SignupFormComponent)
 	signupForm.FirstNameInput = firstNameInput
@@ -146,7 +137,7 @@ func NewSignupFormComponent(form *GenericForm) *html.SignupFormComponent {
 	return signupFormComponent
 }
 
-func GetFormValues(form *GenericForm) (firstName, lastName, email, password, confirmPassword string) {
+func GetSignupFormValues(form *GenericForm) (firstName, lastName, email, password, confirmPassword string) {
 	firstName = form.GetValue(FirstName)
 	lastName = form.GetValue(LastName)
 	email = form.GetValue(EmailName)
@@ -154,8 +145,4 @@ func GetFormValues(form *GenericForm) (firstName, lastName, email, password, con
 	confirmPassword = form.GetValue(ConfirmPasswordName)
 
 	return
-}
-
-func SetEmailError(form *GenericForm, err string) {
-	form.SetError(EmailName, err)
 }

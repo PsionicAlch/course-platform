@@ -3,27 +3,49 @@ package forms
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/website/forms/validators"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 )
 
-func NewLoginForm(r *http.Request) *html.LoginFormComponent {
-	r.ParseForm()
+func NewLoginForm(r *http.Request) *GenericForm {
+	// We're not filling it in because the only real validation
+	// will be whether or not the credentials match.
+	return NewForm(r, map[FieldName]validators.ValidationFunc{})
+}
 
+func EmptyLoginFormComponent() *html.LoginFormComponent {
 	emailInput := new(html.FormControlComponent)
 	emailInput.Label = "Email:"
-	emailInput.Name = "email"
+	emailInput.Name = EmailName
 	emailInput.Type = "email"
-	emailInput.ValidationURL = "/accounts/validate/login"
-	emailInput.Value = r.Form.Get("email")
 
 	passwordInput := new(html.PasswordControlComponent)
-	passwordInput.Name = "password"
+	passwordInput.Name = PasswordName
 	passwordInput.Label = "Password:"
-	passwordInput.ValidationURL = "/accounts/validate/login"
-	passwordInput.Value = r.Form.Get("password")
 
 	return &html.LoginFormComponent{
 		EmailInput:    emailInput,
 		PasswordInput: passwordInput,
 	}
+}
+
+func NewLoginFormComponent(form *GenericForm) *html.LoginFormComponent {
+	form.Validate()
+
+	loginFormComponent := EmptyLoginFormComponent()
+
+	loginFormComponent.EmailInput.Value = form.GetValue(EmailName)
+	loginFormComponent.EmailInput.Errors = form.GetErrors(EmailName)
+
+	loginFormComponent.PasswordInput.Value = form.GetValue(PasswordName)
+	loginFormComponent.PasswordInput.Errors = form.GetErrors(PasswordName)
+
+	return loginFormComponent
+}
+
+func GetLoginFormValues(form *GenericForm) (email, password string) {
+	email = form.GetValue(EmailName)
+	password = form.GetValue(PasswordName)
+
+	return
 }

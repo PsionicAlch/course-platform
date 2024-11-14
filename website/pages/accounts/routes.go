@@ -19,7 +19,6 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	router.Get("/reset-password/{email_token}", handlers.ResetPasswordGet)
 
-	router.Post("/validate/login", handlers.ValidateLoginPost)
 	router.Post("/validate/signup", handlers.ValidateSignupPost)
 
 	return router
