@@ -9,6 +9,8 @@ import (
 func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
 
+	router.Use(handlers.Auth.AllowUnauthenticated("/profile"))
+
 	router.Get("/login", handlers.LoginGet)
 	router.Post("/login", handlers.LoginPost)
 

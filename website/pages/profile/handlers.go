@@ -3,6 +3,7 @@ package profile
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
@@ -12,15 +13,17 @@ import (
 type Handlers struct {
 	utils.Loggers
 	renderers pages.Renderers
+	auth      *authentication.Authentication
 	db        database.Database
 }
 
-func SetupHandlers(pageRenderer render.Renderer, db database.Database) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, auth *authentication.Authentication, db database.Database) *Handlers {
 	loggers := utils.CreateLoggers("PROFILE HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
 		renderers: *pages.CreateRenderers(pageRenderer, nil),
+		auth:      auth,
 		db:        db,
 	}
 }

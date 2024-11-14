@@ -9,6 +9,8 @@ import (
 func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
 
+	router.Use(handlers.auth.AllowAdmin("/"))
+
 	router.Get("/", handlers.AdminGet)
 	router.Get("/admins", handlers.AdminsGet)
 	router.Get("/authors", handlers.AuthorsGet)
