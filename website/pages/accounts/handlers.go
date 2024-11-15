@@ -6,6 +6,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/emails"
 	"github.com/PsionicAlch/psionicalch-home/website/forms"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
@@ -15,9 +16,10 @@ type Handlers struct {
 	utils.Loggers
 	Renderers *pages.Renderers
 	Auth      *authentication.Authentication
+	Emailer   *emails.Emails
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *authentication.Authentication) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *authentication.Authentication, emailer *emails.Emails) *Handlers {
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
@@ -26,7 +28,8 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, a
 			Page: pageRenderer,
 			Htmx: htmxRenderer,
 		},
-		Auth: auth,
+		Auth:    auth,
+		Emailer: emailer,
 	}
 }
 
@@ -83,6 +86,8 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO: Send email about new login just incase it wasn't the account holder who did it.
+
 	http.SetCookie(w, cookie)
 
 	// TODO: Create sessions system so that we can redirect user back to the page that they were on before.
@@ -121,7 +126,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	firstName, lastName, email, password, _ := forms.GetSignupFormValues(signupForm)
-	cookie, err := h.Auth.SignUserUp(firstName, lastName, email, password, r.RemoteAddr)
+	user, cookie, err := h.Auth.SignUserUp(firstName, lastName, email, password, r.RemoteAddr)
 	if err != nil {
 		if err == authentication.ErrUserExists {
 			signupForm.SetEmailError("this email has already been registered")
@@ -144,6 +149,8 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	go h.Emailer.SendWelcomeEmail(user.Email, user.Name, user.AffiliateCode)
+
 	http.SetCookie(w, cookie)
 
 	// TODO: Create sessions system so that we can redirect user back to the page that they were on before.
@@ -159,6 +166,8 @@ func (h *Handlers) LogoutDelete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("An error occurred whilst logging user out: %s\n", err)
 	}
+
+	// TODO: Reset session.
 
 	http.SetCookie(w, cookie)
 

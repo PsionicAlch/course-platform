@@ -13,15 +13,26 @@ const (
 
 func SetupConfig() error {
 	variables := map[string]validators.ValidationFunc{
-		"PORT":                       validators.NotEmptyValidator,
-		"ENVIRONMENT":                validators.ChainValidators(validators.NotEmptyValidator, validators.InSliceValidator([]string{development, testing, production})),
-		"DOMAIN_NAME":                validators.NotEmptyValidator,
-		"SESSION_COOKIE_NAME":        validators.NotEmptyValidator,
-		"AUTH_COOKIE_NAME":           validators.NotEmptyValidator,
-		"AUTH_TOKEN_LIFETIME":        validators.ChainValidators(validators.NotEmptyValidator, validators.IntValidator),
-		"EMAIL_TOKEN_LIFETIME":       validators.ChainValidators(validators.NotEmptyValidator, validators.IntValidator),
-		"CURRENT_SECURE_COOKIE_KEY":  validators.NotEmptyValidator,
-		"PREVIOUS_SECURE_COOKIE_KEY": validators.EmptyValidator,
+		"PORT":                validators.NotEmpty,
+		"ENVIRONMENT":         validators.InSlice([]string{development, testing, production}),
+		"DOMAIN_NAME":         validators.NotEmpty,
+		"SESSION_COOKIE_NAME": validators.NotEmpty,
+		"AUTH_COOKIE_NAME":    validators.NotEmpty,
+		"AUTH_TOKEN_LIFETIME": validators.Chain(
+			validators.NotEmpty,
+			validators.Int,
+		),
+		"EMAIL_TOKEN_LIFETIME": validators.Chain(
+			validators.NotEmpty,
+			validators.Int,
+		),
+		"CURRENT_SECURE_COOKIE_KEY":  validators.NotEmpty,
+		"PREVIOUS_SECURE_COOKIE_KEY": validators.Empty,
+		"EMAIL_PROVIDER":             validators.InSlice([]string{"smtp"}),
+		"EMAIL_HOST":                 validators.NotEmpty,
+		"EMAIL_PORT":                 validators.NotEmpty,
+		"EMAIL_ADDRESS":              validators.NotEmpty,
+		"EMAIL_PASSWORD":             validators.Empty,
 	}
 
 	return envloader.LoadEnvironment(variables)

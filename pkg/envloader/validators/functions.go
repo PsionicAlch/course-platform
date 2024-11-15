@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func IntegerValidator(name, data string, bitSize int) error {
+func Integer(name, data string, bitSize int) error {
 	if _, err := strconv.ParseInt(data, 10, bitSize); err != nil {
 		if bitSize == 0 {
 			return fmt.Errorf("failed to convert %s to int: %s", name, err)
@@ -17,7 +17,7 @@ func IntegerValidator(name, data string, bitSize int) error {
 	return nil
 }
 
-func UnsignedIntegerValidator(name, data string, bitSize int) error {
+func UnsignedInteger(name, data string, bitSize int) error {
 	if _, err := strconv.ParseUint(data, 10, bitSize); err != nil {
 		return fmt.Errorf("failed to convert %s to uint%d: %s", name, bitSize, err)
 	}
@@ -25,7 +25,7 @@ func UnsignedIntegerValidator(name, data string, bitSize int) error {
 	return nil
 }
 
-func FloatValidator(name, data string, bitSize int) error {
+func Float(name, data string, bitSize int) error {
 	if _, err := strconv.ParseFloat(data, bitSize); err != nil {
 		return fmt.Errorf("failed to convert %s to float%d: %s", name, bitSize, err)
 	}
@@ -33,7 +33,7 @@ func FloatValidator(name, data string, bitSize int) error {
 	return nil
 }
 
-func ComplexValidator(name, data string, bitSize int) error {
+func Complex(name, data string, bitSize int) error {
 	if _, err := strconv.ParseComplex(data, bitSize); err != nil {
 		return fmt.Errorf("failed to convert %s to complex%d: %s", name, bitSize, err)
 	}

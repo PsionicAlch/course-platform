@@ -1,0 +1,39 @@
+{{ template "email" . }}
+
+{{ define "content" }}
+  <p>Hello {{.FirstName}},</p>
+
+  <p>Welcome to PsionicAlch, your go-to place for unlocking the power of programming! We're excited to have you on board, and we can't wait to see you grow and level up with our tutorials.</p>
+
+  <p>Now that you're officially a member, it's time to dive in! We've got a fantastic range of tutorials that cover everything from the basics to more advanced topics. Here's a quick peek at some of our latest courses:</p>
+
+  {{if .LatestCourses}}
+    <ul>
+      {{range .LatestCourses}}
+        <li><strong>{{.Name}}</strong>: {{.Description}} <a href="https://www.psionicalch.com/courses/{{.Slug}}">Start learning</a></li>
+      {{end}}
+    </ul>
+  {{end}}
+
+  <p>Feeling curious? Check out all our available tutorials at <a href="https://www.psionicalch.com/courses">our Courses page</a>.</p>
+
+  <p>But wait, there's more! We're excited to introduce you to your very own affiliate code:</p>
+
+  <p><strong>Your affiliate code: {{.AffiliateCode}}</strong></p>
+
+  <p>With this affiliate code, you can earn affiliate points every time someone purchases a course using your link. Each time someone buys a course, you'll get 10% of the purchase value in points. These points can be redeemed for discounts on your future courses!</p>
+
+  <p>To learn more about how you can start earning points and discounts, visit our <a href="https://www.psionicalch.com/affiliate-program">Affiliate Program page</a>.</p>
+
+  <p>Need help or have any questions? Feel free to reach out to me directly:</p>
+  <p>
+    <a href="https://x.com/psionicalch">Twitter</a> | <a href="mailto:contact@psionicalch.com">Email</a>
+  </p>
+
+  <p>Oh, and here's something to get you started! You can get a 50% discount on your first course purchase—no code needed, just choose your first course and the discount will automatically apply.</p>
+
+  <p>We're thrilled to have you with us, {{.FirstName}}. Start exploring, start learning, and start coding!</p>
+
+  <p>Happy learning,</p>
+  <p>The PsionicAlch Team</p>
+{{ end }}

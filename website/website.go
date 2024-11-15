@@ -3,13 +3,15 @@ package website
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/config"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
+	"github.com/PsionicAlch/psionicalch-home/website/config"
+	"github.com/PsionicAlch/psionicalch-home/website/emails"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/accounts"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/admin"
@@ -51,17 +53,30 @@ func StartWebsite() {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}
 
+	emailRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, ".email.tmpl", "emails", "layouts/email.layout.tmpl")
+	if err != nil {
+		loggers.ErrorLog.Fatalln("Failed to set up email renderer: ", err)
+	}
+
 	// Set up authentication system.
-	auth, err := authentication.SetupAuthentication(db)
+	lifetime := time.Duration(config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME")) * time.Minute
+	cookieName := config.GetWithoutError[string]("AUTH_COOKIE_NAME")
+	domainName := config.GetWithoutError[string]("DOMAIN_NAME")
+	currentKey := config.GetWithoutError[string]("CURRENT_SECURE_COOKIE_KEY")
+	previousKey := config.GetWithoutError[string]("PREVIOUS_SECURE_COOKIE_KEY")
+	auth, err := authentication.SetupAuthentication(db, lifetime, cookieName, domainName, currentKey, previousKey)
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up authentication: ", err)
 	}
+
+	// Set up emails.
+	emailer := emails.SetupEmails(emailRenderer)
 
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer, db)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, db)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
-	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth)
+	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth, emailer)
 	profileHandlers := profile.SetupHandlers(pagesRenderer, auth, db)
 	settingsHandlers := settings.SetupHandlers(pagesRenderer)
 	adminHandlers := admin.SetupHandlers(pagesRenderer, auth)

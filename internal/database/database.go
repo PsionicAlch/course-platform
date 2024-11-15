@@ -17,7 +17,7 @@ type Database interface {
 
 	// Users functions.
 	UserExists(email string) (bool, error)
-	AddUser(name, surname, email, password string) (string, error)
+	AddUser(name, surname, email, password string) (*models.UserModel, error)
 	GetUser(email string) (*models.UserModel, error)
 	GetUserByID(id string) (*models.UserModel, error)
 

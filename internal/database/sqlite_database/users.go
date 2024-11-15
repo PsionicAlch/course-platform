@@ -2,6 +2,7 @@ package sqlite_database
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
@@ -26,38 +27,49 @@ func (db *SQLiteDatabase) UserExists(email string) (bool, error) {
 	return id != "", nil
 }
 
-func (db *SQLiteDatabase) AddUser(name, surname, email, password string) (string, error) {
-	query := `INSERT INTO users (id, name, surname, email, password, affiliate_code) VALUES (?, ?, ?, ?, ?, ?);`
+func (db *SQLiteDatabase) AddUser(name, surname, email, password string) (*models.UserModel, error) {
+	query := `INSERT INTO users (id, name, surname, email, password, affiliate_code, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`
 
 	id, err := database.GenerateID()
 	if err != nil {
 		db.ErrorLog.Printf("Failed to generate new ID for user (\"%s\"): %s\n", email, err.Error())
-		return "", err
+		return nil, err
 	}
 
 	affiliate_code, err := database.GenerateID()
 	if err != nil {
 		db.ErrorLog.Printf("Failed to generate new affiliate code for user (\"%s\"): %s\n", email, err.Error())
-		return "", err
+		return nil, err
 	}
 
-	result, err := db.connection.Exec(query, id, name, surname, email, password, affiliate_code)
+	user := new(models.UserModel)
+	user.ID = id
+	user.Name = name
+	user.Surname = surname
+	user.Email = email
+	user.AffiliateCode = affiliate_code
+	user.IsAdmin = false
+	user.IsAuthor = false
+	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
+
+	result, err := db.connection.Exec(query, user.ID, user.Name, user.Surname, user.Email, user.Password, user.AffiliateCode, user.CreatedAt, user.UpdatedAt)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to save new user (\"%s\") to the database: %s\n", email, err.Error())
-		return "", err
+		return nil, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		db.ErrorLog.Printf("Failed to see how many rows were affected after saving new user (\"%s\") to the database: %s\n", email, err)
-		return "", err
+		return nil, err
 	}
 
 	if rowsAffected == 0 {
-		return "", database.ErrNoRowsAffected
+		return nil, database.ErrNoRowsAffected
 	}
 
-	return id, nil
+	return user, nil
 }
 
 func (db *SQLiteDatabase) GetUser(email string) (*models.UserModel, error) {

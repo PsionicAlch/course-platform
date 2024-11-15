@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/config"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
@@ -18,14 +17,12 @@ type Authentication struct {
 	Database           database.Database
 }
 
-func SetupAuthentication(db database.Database) (*Authentication, error) {
+func SetupAuthentication(db database.Database, lifetime time.Duration, cookieName, domainName, currentSecureCookieKey, previousSecureCookieKey string) (*Authentication, error) {
 	loggers := utils.CreateLoggers("AUTHENTICATION")
-
-	lifetime := time.Duration(config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME")) * time.Minute
 
 	passwordParameters := DefaultPasswordParameters()
 
-	cookiesManager, err := CreateCookieManager(lifetime)
+	cookiesManager, err := CreateCookieManager(lifetime, cookieName, domainName, currentSecureCookieKey, previousSecureCookieKey)
 	if err != nil {
 		loggers.ErrorLog.Printf("Failed to create cookie manager: %s\n", err)
 		return nil, err
@@ -42,53 +39,51 @@ func SetupAuthentication(db database.Database) (*Authentication, error) {
 	return auth, nil
 }
 
-func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr string) (*http.Cookie, error) {
+func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr string) (*models.UserModel, *http.Cookie, error) {
 	// TODO: Switch to using database level uniqueness checks for whether the user exists or not.
 	exists, err := auth.Database.UserExists(email)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to check if user with email \"%s\" already exists: %s\n", email, err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	if exists {
-		return nil, ErrUserExists
+		return nil, nil, ErrUserExists
 	}
 
 	hashedPassword, err := auth.PasswordParameters.HashPassword(password)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to hash user's password: %s\n", err)
-		return nil, err
+		return nil, nil, err
 	}
 
-	userId, err := auth.Database.AddUser(name, surname, email, hashedPassword)
+	user, err := auth.Database.AddUser(name, surname, email, hashedPassword)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to save new user to the database: %s\n", err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	token, err := NewToken()
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to generate new token: %s\n", err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	validUntil := time.Now().Add(auth.Lifetime)
 
-	err = auth.Database.AddToken(token, AuthenticationToken, userId, ipAddr, validUntil)
+	err = auth.Database.AddToken(token, AuthenticationToken, user.ID, ipAddr, validUntil)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to add %s token to the database: %s\n", AuthenticationToken, err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	cookie, err := auth.CookiesManager.Encode(token)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to encode authentication cookie: %s\n", err)
-		return nil, err
+		return nil, nil, err
 	}
 
-	// TODO: Send email about new account creation.
-
-	return cookie, nil
+	return user, cookie, nil
 }
 
 func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*http.Cookie, error) {
@@ -132,8 +127,6 @@ func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*http.Coo
 		return nil, err
 	}
 
-	// TODO: Send email about new login just incase it wasn't the account holder who did it.
-
 	return cookie, nil
 }
 
@@ -155,8 +148,6 @@ func (auth *Authentication) LogUserOut(cookies []*http.Cookie) (*http.Cookie, er
 					return cookie, err
 				}
 			}
-
-			// TODO: Reset session.
 
 			return emptyCookie, nil
 		}

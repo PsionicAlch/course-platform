@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/config"
 	"github.com/gorilla/securecookie"
 )
 
@@ -24,13 +23,13 @@ type CookieManager struct {
 	PreviousSecureCookie *securecookie.SecureCookie
 }
 
-func CreateCookieManager(lifetime time.Duration) (*CookieManager, error) {
-	currentKeys, err := CreateSecureCookieKeys(config.GetWithoutError[string]("CURRENT_SECURE_COOKIE_KEY"))
+func CreateCookieManager(lifetime time.Duration, cookieName, domainName, currentSecureCookieKey, previousSecureCookieKey string) (*CookieManager, error) {
+	currentKeys, err := CreateSecureCookieKeys(currentSecureCookieKey)
 	if err != nil {
 		return nil, err
 	}
 
-	prevKeys, err := CreateSecureCookieKeys(config.GetWithoutError[string]("PREVIOUS_SECURE_COOKIE_KEY"))
+	prevKeys, err := CreateSecureCookieKeys(previousSecureCookieKey)
 	if err != nil {
 		return nil, err
 	}
@@ -39,8 +38,8 @@ func CreateCookieManager(lifetime time.Duration) (*CookieManager, error) {
 	previousSecureCookie := securecookie.New(prevKeys.HashKey, prevKeys.BlockKey)
 
 	cookieParams := &CookieParameters{
-		Name:     config.GetWithoutError[string]("AUTH_COOKIE_NAME"),
-		Domain:   config.GetWithoutError[string]("DOMAIN_NAME"),
+		Name:     cookieName,
+		Domain:   domainName,
 		Path:     "/",
 		SameSite: http.SameSiteLaxMode,
 		Secure:   true,
