@@ -35,7 +35,7 @@ func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "profile.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "profile", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -46,7 +46,7 @@ func (h *Handlers) AffiliateHistoryGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "profile-affiliate-history.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "profile-affiliate-history", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -57,7 +57,7 @@ func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "profile-courses.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "profile-courses", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -74,7 +74,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Render the current chapter based off the course slug and chapter slug.
-	if err := h.renderers.Page.RenderHTML(w, "profile-course.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "profile-course", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -85,7 +85,7 @@ func (h *Handlers) TutorialsBookmarksGet(w http.ResponseWriter, r *http.Request)
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "profile-tutorials-bookmarks.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "profile-tutorials-bookmarks", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -96,7 +96,7 @@ func (h *Handlers) TutorialsLikedGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "profile-tutorials-liked.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "profile-tutorials-liked", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

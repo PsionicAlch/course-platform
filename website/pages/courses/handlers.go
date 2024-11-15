@@ -30,7 +30,7 @@ func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "courses.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "courses", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -41,7 +41,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "courses-course.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "courses-course", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -52,7 +52,7 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "courses-purchase.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "courses-purchase", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

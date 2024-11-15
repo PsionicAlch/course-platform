@@ -30,7 +30,7 @@ func (h *Handlers) SettingsGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "settings.page.tmpl", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, "settings", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

@@ -37,7 +37,7 @@ func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
 		LoginForm: forms.EmptyLoginFormComponent(),
 	}
 
-	err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", pageData)
+	err := h.Renderers.Page.RenderHTML(w, "accounts-login", pageData)
 	if err != nil {
 		h.ErrorLog.Println(err)
 	}
@@ -52,7 +52,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 
 	if !loginForm.Validate() {
 		pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
-		if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", pageData); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-login", pageData); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -66,7 +66,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 			loginForm.SetEmailError("invalid email or password")
 			pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
 
-			if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", pageData); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, "accounts-login", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		} else {
@@ -75,7 +75,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 			pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
 
 			// TODO: Set up flash message for unexpected server errors.
-			if err := h.Renderers.Page.RenderHTML(w, "accounts-login.page.tmpl", pageData); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, "accounts-login", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		}
@@ -99,7 +99,7 @@ func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 		SignupForm: signupForm,
 	}
 
-	if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", pageData); err != nil {
+	if err := h.Renderers.Page.RenderHTML(w, "accounts-signup", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -113,7 +113,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 
 	if !signupForm.Validate() {
 		pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
-		if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", pageData); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-signup", pageData); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -127,7 +127,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 			signupForm.SetEmailError("this email has already been registered")
 			pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
 
-			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", pageData); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		} else {
@@ -136,7 +136,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 			pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
 
 			// TODO: Set flash message about unexpected server error.
-			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup.page.tmpl", pageData); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		}
@@ -171,7 +171,7 @@ func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password.page.tmpl", pageData); err != nil {
+	if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -182,7 +182,7 @@ func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password.page.tmpl", pageData); err != nil {
+	if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -191,7 +191,7 @@ func (h *Handlers) ValidateSignupPost(w http.ResponseWriter, r *http.Request) {
 	signupForm := forms.SignupFormPartialValidation(r)
 	signupForm.Validate()
 
-	if err := h.Renderers.Htmx.RenderHTML(w, "signup-form.htmx.tmpl", forms.NewSignupFormComponent(signupForm)); err != nil {
+	if err := h.Renderers.Htmx.RenderHTML(w, "signup-form", forms.NewSignupFormComponent(signupForm)); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

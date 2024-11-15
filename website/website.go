@@ -41,12 +41,12 @@ func StartWebsite() {
 	defer db.Close()
 
 	// Set up renderers.
-	pagesRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
+	pagesRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, ".page.tmpl", "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up pages renderer: ", err)
 	}
 
-	htmxRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, "htmx", "components/*.component.tmpl")
+	htmxRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, ".htmx.tmpl", "htmx", "components/*.component.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}

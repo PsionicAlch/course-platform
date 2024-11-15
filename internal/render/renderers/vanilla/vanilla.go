@@ -9,24 +9,26 @@ import (
 )
 
 type VanillaRenderer struct {
-	templates *Templates
+	templates     *Templates
+	fileExtension string
 }
 
-func SetupVanillaRenderer(embeddedFS embed.FS, directory string, otherDirectories ...string) (*VanillaRenderer, error) {
+func SetupVanillaRenderer(embeddedFS embed.FS, fileExtension, directory string, otherDirectories ...string) (*VanillaRenderer, error) {
 	templates, err := CreateTemplates(embeddedFS, directory, otherDirectories...)
 	if err != nil {
 		return nil, err
 	}
 
 	vanillaRenderer := &VanillaRenderer{
-		templates: templates,
+		templates:     templates,
+		fileExtension: fileExtension,
 	}
 
 	return vanillaRenderer, nil
 }
 
-func (renderer *VanillaRenderer) Render(w io.Writer, tmpl string, data any) error {
-	tmplBuffer, err := renderer.templates.Compile(tmpl, data)
+func (renderer *VanillaRenderer) Render(w io.Writer, file string, data any) error {
+	tmplBuffer, err := renderer.templates.Compile(file+renderer.fileExtension, data)
 	if err != nil {
 		return err
 	}
@@ -39,8 +41,8 @@ func (renderer *VanillaRenderer) Render(w io.Writer, tmpl string, data any) erro
 	return nil
 }
 
-func (renderer *VanillaRenderer) RenderHTML(w http.ResponseWriter, tmpl string, data any, status ...int) error {
-	tmplBuffer, err := renderer.templates.Compile(tmpl, data)
+func (renderer *VanillaRenderer) RenderHTML(w http.ResponseWriter, file string, data any, status ...int) error {
+	tmplBuffer, err := renderer.templates.Compile(file+renderer.fileExtension, data)
 	if err != nil {
 		return err
 	}
