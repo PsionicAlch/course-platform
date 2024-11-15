@@ -149,7 +149,20 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	// TODO: Create sessions system so that we can redirect user back to the page that they were on before.
 
 	// Redirect user to courses page so that they can start buying courses.
-	http.Redirect(w, r, "/courses", http.StatusFound)
+	utils.Redirect(w, r, "/courses")
+}
+
+func (h *Handlers) LogoutDelete(w http.ResponseWriter, r *http.Request) {
+	h.InfoLog.Printf("Logging user (%#v) out", authentication.GetUserFromRequest(r))
+
+	cookie, err := h.Auth.LogUserOut(r.Cookies())
+	if err != nil {
+		h.ErrorLog.Printf("An error occurred whilst logging user out: %s\n", err)
+	}
+
+	http.SetCookie(w, cookie)
+
+	utils.Redirect(w, r, "/")
 }
 
 func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {

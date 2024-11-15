@@ -43,6 +43,7 @@ func SetupAuthentication(db database.Database) (*Authentication, error) {
 }
 
 func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr string) (*http.Cookie, error) {
+	// TODO: Switch to using database level uniqueness checks for whether the user exists or not.
 	exists, err := auth.Database.UserExists(email)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to check if user with email \"%s\" already exists: %s\n", email, err)
@@ -134,6 +135,34 @@ func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*http.Coo
 	// TODO: Send email about new login just incase it wasn't the account holder who did it.
 
 	return cookie, nil
+}
+
+func (auth *Authentication) LogUserOut(cookies []*http.Cookie) (*http.Cookie, error) {
+	emptyCookie := auth.CookiesManager.EmptyCookie()
+
+	for _, cookie := range cookies {
+		if cookie.Name == auth.CookiesManager.CookieParams.Name {
+			authToken, err := auth.CookiesManager.Decode(cookie.Value)
+			if err != nil {
+				auth.ErrorLog.Printf("Failed to decode auth cookie's value: %s\n", err)
+				return emptyCookie, err
+			}
+
+			err = auth.Database.DeleteToken(authToken, AuthenticationToken)
+			if err != nil {
+				if err != database.ErrNoRowsAffected {
+					auth.ErrorLog.Printf("Failed to delete authentication token: %s\n", err)
+					return cookie, err
+				}
+			}
+
+			// TODO: Reset session.
+
+			return emptyCookie, nil
+		}
+	}
+
+	return emptyCookie, nil
 }
 
 func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*models.UserModel, error) {

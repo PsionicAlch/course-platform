@@ -16,7 +16,7 @@
             <li><a href="/admin">Admin</a></li>
           {{ end }}
 
-          <li><a href="#" class="btn-inline btn-red shadow-sm">Log Out</a></li>
+          <li><p class="btn-inline btn-red shadow-sm" hx-delete="/accounts/logout" hx-trigger="click">Log Out</p></li>
         {{ else }}
           <li><a href="/accounts/login" class="btn-inline btn-blue shadow-sm">Login</a></li>
         {{ end}}
@@ -57,7 +57,7 @@
             <li><a href="/admin">Admin</a></li>
           {{ end }}
 
-          <li><a href="#" class="btn-inline btn-red shadow-sm">Log Out</a></li>
+          <li><p class="btn-inline btn-red shadow-sm" hx-delete="/accounts/logout" hx-trigger="click">Log Out</p></li>
         {{ else }}
           <li><a href="/accounts/login" class="btn-inline btn-blue shadow-sm">Login</a></li>
         {{ end }}

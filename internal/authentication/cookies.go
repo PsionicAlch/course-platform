@@ -12,6 +12,7 @@ import (
 type CookieParameters struct {
 	Name     string
 	Domain   string
+	Path     string
 	SameSite http.SameSite
 	Secure   bool
 	LifeTime time.Duration
@@ -40,6 +41,7 @@ func CreateCookieManager(lifetime time.Duration) (*CookieManager, error) {
 	cookieParams := &CookieParameters{
 		Name:     config.GetWithoutError[string]("AUTH_COOKIE_NAME"),
 		Domain:   config.GetWithoutError[string]("DOMAIN_NAME"),
+		Path:     "/",
 		SameSite: http.SameSiteLaxMode,
 		Secure:   true,
 		LifeTime: lifetime,
@@ -63,7 +65,7 @@ func (manager *CookieManager) Encode(token string) (*http.Cookie, error) {
 	cookie := new(http.Cookie)
 	cookie.Name = manager.CookieParams.Name
 	cookie.Value = encoded
-	cookie.Path = "/"
+	cookie.Path = manager.CookieParams.Path
 	cookie.Domain = manager.CookieParams.Domain
 	cookie.HttpOnly = true
 	cookie.SameSite = manager.CookieParams.SameSite
@@ -82,4 +84,18 @@ func (manager *CookieManager) Decode(value string) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (manager *CookieManager) EmptyCookie() *http.Cookie {
+	cookie := new(http.Cookie)
+	cookie.Name = manager.CookieParams.Name
+	cookie.Value = ""
+	cookie.Path = manager.CookieParams.Path
+	cookie.Domain = manager.CookieParams.Domain
+	cookie.HttpOnly = true
+	cookie.SameSite = manager.CookieParams.SameSite
+	cookie.Secure = manager.CookieParams.Secure
+	cookie.Expires = time.Now().Add(-24 * time.Hour)
+
+	return cookie
 }

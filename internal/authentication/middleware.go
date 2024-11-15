@@ -6,7 +6,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 )
 
-func (auth *Authentication) SetUserMiddleware(next http.Handler) http.Handler {
+func (auth *Authentication) SetUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user, err := auth.GetUserFromAuthCookie(r.Cookies())
 		if err != nil {
@@ -24,6 +24,7 @@ func (auth *Authentication) AllowAuthenticated(redirectURL string) func(next htt
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			user := GetUserFromRequest(r)
+
 			if user == nil {
 				utils.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
 				return

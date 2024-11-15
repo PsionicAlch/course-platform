@@ -24,4 +24,5 @@ type Database interface {
 	// Tokens functions.
 	AddToken(token, tokenType, userId, ipAddr string, validUntil time.Time) error
 	GetToken(token, tokenType string) (*models.TokenModel, error)
+	DeleteToken(token, tokenType string) error
 }

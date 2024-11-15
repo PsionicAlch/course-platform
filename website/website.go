@@ -74,7 +74,6 @@ func StartWebsite() {
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
-	router.Use(auth.SetUserMiddleware)
 
 	// Set up 404 handler.
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
@@ -85,14 +84,14 @@ func StartWebsite() {
 	router.Mount("/assets", http.StripPrefix("/assets", http.FileServerFS(assets.AssetFiles)))
 
 	// Set up routes.
-	router.Mount("/", general.RegisterRoutes(generalHandlers))
-	router.Mount("/accounts", accounts.RegisterRoutes(accountHandlers))
-	router.Mount("/profile", profile.RegisterRoutes(profileHandlers))
-	router.Mount("/tutorials", tutorials.RegisterRoutes(tutorialHandlers))
-	router.Mount("/courses", courses.RegisterRoutes(courseHandlers))
-	router.Mount("/settings", settings.RegisterRoutes(settingsHandlers))
-	router.Mount("/admin", admin.RegisterRoutes(adminHandlers))
-	router.Mount("/authors", authors.RegisterRoutes(authorsHandlers))
+	router.With(auth.SetUser).Mount("/", general.RegisterRoutes(generalHandlers))
+	router.With(auth.SetUser).Mount("/accounts", accounts.RegisterRoutes(accountHandlers))
+	router.With(auth.SetUser).Mount("/profile", profile.RegisterRoutes(profileHandlers))
+	router.With(auth.SetUser).Mount("/tutorials", tutorials.RegisterRoutes(tutorialHandlers))
+	router.With(auth.SetUser).Mount("/courses", courses.RegisterRoutes(courseHandlers))
+	router.With(auth.SetUser).Mount("/settings", settings.RegisterRoutes(settingsHandlers))
+	router.With(auth.SetUser).Mount("/admin", admin.RegisterRoutes(adminHandlers))
+	router.With(auth.SetUser).Mount("/authors", authors.RegisterRoutes(authorsHandlers))
 
 	// Start server.
 	port := config.GetWithoutError[string]("PORT")

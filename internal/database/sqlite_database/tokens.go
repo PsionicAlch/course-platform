@@ -55,3 +55,26 @@ func (db *SQLiteDatabase) GetToken(token, tokenType string) (*models.TokenModel,
 
 	return tokenStruct, nil
 }
+
+func (db *SQLiteDatabase) DeleteToken(token, tokenType string) error {
+	query := `DELETE FROM tokens WHERE token = ? AND token_type = ?;`
+
+	result, err := db.connection.Exec(query, token, tokenType)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to delete token from database: %s\n", err)
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get rows affected after deleting token: %s\n", err)
+		return err
+	}
+
+	if rowsAffected == 0 {
+		db.ErrorLog.Println("No rows were affected after deleting token")
+		return database.ErrNoRowsAffected
+	}
+
+	return nil
+}
