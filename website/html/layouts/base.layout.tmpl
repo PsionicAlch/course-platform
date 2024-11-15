@@ -18,7 +18,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js" defer></script>
     <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.js" integrity="sha384-BBDmZzVt6vjz5YbQqZPtFZW82o8QotoM7RUp5xOxV3nSJ8u2pSdtzFAbGKzTlKtg" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/htmx-ext-head-support@2.0.1/head-support.js"></script>
 
     {{ block "head-scripts" . }}
     {{ end }}
@@ -28,9 +27,6 @@
     {{ end }}
   </head>
   <body
-    hx-ext="head-support"
-    hx-boost="true"
-    hx-history="false"
     x-data="{ menuOpen: false }"
     x-bind:class="{ 'noscroll': menuOpen }"
   >
