@@ -24,6 +24,7 @@ type AccountsSignupPage struct {
 
 type AccountsForgotPasswordPage struct {
 	BasePage
+	ForgotPasswordForm *ForgotPasswordFormComponent
 }
 
 type AccountsResetPasswordPage struct {

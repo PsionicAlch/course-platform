@@ -11,29 +11,31 @@ import (
 
 type Authentication struct {
 	utils.Loggers
-	Lifetime           time.Duration
-	PasswordParameters *PasswordParameters
-	CookiesManager     *CookieManager
-	Database           database.Database
+	AuthenticationLifetime time.Duration
+	PasswordResetLifetime  time.Duration
+	PasswordParameters     *PasswordParameters
+	CookiesManager         *CookieManager
+	Database               database.Database
 }
 
-func SetupAuthentication(db database.Database, lifetime time.Duration, cookieName, domainName, currentSecureCookieKey, previousSecureCookieKey string) (*Authentication, error) {
+func SetupAuthentication(db database.Database, authLifetime, pwdResetLifetime time.Duration, cookieName, domainName, currentSecureCookieKey, previousSecureCookieKey string) (*Authentication, error) {
 	loggers := utils.CreateLoggers("AUTHENTICATION")
 
 	passwordParameters := DefaultPasswordParameters()
 
-	cookiesManager, err := CreateCookieManager(lifetime, cookieName, domainName, currentSecureCookieKey, previousSecureCookieKey)
+	cookiesManager, err := CreateCookieManager(authLifetime, cookieName, domainName, currentSecureCookieKey, previousSecureCookieKey)
 	if err != nil {
 		loggers.ErrorLog.Printf("Failed to create cookie manager: %s\n", err)
 		return nil, err
 	}
 
 	auth := &Authentication{
-		Loggers:            loggers,
-		Lifetime:           lifetime,
-		PasswordParameters: passwordParameters,
-		CookiesManager:     cookiesManager,
-		Database:           db,
+		Loggers:                loggers,
+		AuthenticationLifetime: authLifetime,
+		PasswordResetLifetime:  pwdResetLifetime,
+		PasswordParameters:     passwordParameters,
+		CookiesManager:         cookiesManager,
+		Database:               db,
 	}
 
 	return auth, nil
@@ -69,7 +71,7 @@ func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr st
 		return nil, nil, err
 	}
 
-	validUntil := time.Now().Add(auth.Lifetime)
+	validUntil := time.Now().Add(auth.AuthenticationLifetime)
 
 	err = auth.Database.AddToken(token, AuthenticationToken, user.ID, ipAddr, validUntil)
 	if err != nil {
@@ -113,7 +115,7 @@ func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*models.U
 		return nil, nil, err
 	}
 
-	validUntil := time.Now().Add(auth.Lifetime)
+	validUntil := time.Now().Add(auth.AuthenticationLifetime)
 
 	err = auth.Database.AddToken(token, AuthenticationToken, user.ID, ipAddr, validUntil)
 	if err != nil {
@@ -187,4 +189,32 @@ func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*mode
 	}
 
 	return nil, nil
+}
+
+func (auth *Authentication) GeneratePasswordResetToken(email, ipAddr string) (*models.UserModel, string, error) {
+	user, err := auth.Database.GetUser(email)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to find user (\"%s\") in database: %s\n", email, err)
+		return nil, "", err
+	}
+
+	if user == nil {
+		return nil, "", ErrUnregisteredEmail
+	}
+
+	token, err := NewToken()
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to generate new email token for user (\"%s\"): %s\n", email, err)
+		return nil, "", err
+	}
+
+	validUntil := time.Now().Add(auth.PasswordResetLifetime)
+
+	err = auth.Database.AddToken(token, EmailToken, user.ID, ipAddr, validUntil)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to add %s token to the database: %s\n", EmailToken, err)
+		return nil, "", err
+	}
+
+	return user, token, nil
 }

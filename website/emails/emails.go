@@ -66,3 +66,15 @@ func (e *Emails) SendLoginEmail(email, firstName, ipAddr string, date time.Time)
 
 	e.Client.SendEmail(email, emailData.Title, buf.String())
 }
+
+func (e *Emails) SendPasswordResetEmail(email, firstName, emailToken string) {
+	emailData := html.NewPasswordResetEmail(firstName, emailToken)
+
+	buf := new(bytes.Buffer)
+	if err := e.Render.Render(buf, "reset-password", emailData); err != nil {
+		e.ErrorLog.Printf("Failed to render reset-password email for %s: %s\n", email, err)
+		return
+	}
+
+	e.Client.SendEmail(email, emailData.Title, buf.String())
+}

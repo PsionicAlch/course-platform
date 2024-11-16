@@ -59,12 +59,13 @@ func StartWebsite() {
 	}
 
 	// Set up authentication system.
-	lifetime := time.Duration(config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME")) * time.Minute
+	authLifetime := time.Duration(config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME")) * time.Minute
+	pwdResetLifetime := time.Minute * 30
 	cookieName := config.GetWithoutError[string]("AUTH_COOKIE_NAME")
 	domainName := config.GetWithoutError[string]("DOMAIN_NAME")
 	currentKey := config.GetWithoutError[string]("CURRENT_SECURE_COOKIE_KEY")
 	previousKey := config.GetWithoutError[string]("PREVIOUS_SECURE_COOKIE_KEY")
-	auth, err := authentication.SetupAuthentication(db, lifetime, cookieName, domainName, currentKey, previousKey)
+	auth, err := authentication.SetupAuthentication(db, authLifetime, pwdResetLifetime, cookieName, domainName, currentKey, previousKey)
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up authentication: ", err)
 	}

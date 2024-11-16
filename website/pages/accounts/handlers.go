@@ -175,10 +175,41 @@ func (h *Handlers) LogoutDelete(w http.ResponseWriter, r *http.Request) {
 	utils.Redirect(w, r, "/")
 }
 
-func (h *Handlers) ForgotGet(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) ForgotPasswordGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
+	forgotPasswordForm := forms.NewForgotPasswordForm(r)
 	pageData := html.AccountsForgotPasswordPage{
-		BasePage: html.NewBasePage(user),
+		BasePage:           html.NewBasePage(user),
+		ForgotPasswordForm: forms.NewForgotPasswordFormComponent(forgotPasswordForm),
+	}
+
+	if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password", pageData); err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) ForgotPasswordPost(w http.ResponseWriter, r *http.Request) {
+	forgotPasswordForm := forms.NewForgotPasswordForm(r)
+	pageData := html.AccountsForgotPasswordPage{
+		BasePage:           html.NewBasePage(nil),
+		ForgotPasswordForm: nil,
+	}
+
+	email := forms.GetForgotPasswordFormValues(forgotPasswordForm)
+	user, resetToken, err := h.Auth.GeneratePasswordResetToken(email, r.RemoteAddr)
+	if err != nil && err != authentication.ErrUnregisteredEmail {
+		// TODO: Set flash message about unexpected server error.
+
+		pageData.ForgotPasswordForm = forms.NewForgotPasswordFormComponent(forgotPasswordForm)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if err == nil {
+		go h.Emailer.SendPasswordResetEmail(email, user.Name, resetToken)
 	}
 
 	if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password", pageData); err != nil {

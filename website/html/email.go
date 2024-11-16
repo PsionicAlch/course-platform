@@ -51,3 +51,17 @@ func NewLoginEmail(firstName, ipAddr string, loginDateTime time.Time) *LoginEmai
 		LoginDateTime: loginDateTime,
 	}
 }
+
+type PasswordResetEmail struct {
+	BaseEmail
+	FirstName  string
+	EmailToken string
+}
+
+func NewPasswordResetEmail(firstName, emailToken string) *PasswordResetEmail {
+	return &PasswordResetEmail{
+		BaseEmail:  NewBaseEmail("Password Reset Instructions"),
+		FirstName:  firstName,
+		EmailToken: emailToken,
+	}
+}
