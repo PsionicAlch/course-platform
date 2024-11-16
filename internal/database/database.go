@@ -20,6 +20,8 @@ type Database interface {
 	AddUser(name, surname, email, password string) (*models.UserModel, error)
 	GetUser(email string) (*models.UserModel, error)
 	GetUserByID(id string) (*models.UserModel, error)
+	GetUserByToken(token, tokenType string) (*models.UserModel, error)
+	UpdateUserPassword(userId, password string) error
 
 	// Tokens functions.
 	AddToken(token, tokenType, userId, ipAddr string, validUntil time.Time) error

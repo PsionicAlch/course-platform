@@ -9,5 +9,6 @@ const (
 	ConfirmPasswordName = "confirm_password"
 
 	// Validation URLs
-	SignupValidationURL = "/accounts/validate/signup"
+	SignupValidationURL        = "/accounts/validate/signup"
+	ResetPasswordValidationURL = "/accounts/validate/reset-password"
 )

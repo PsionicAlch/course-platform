@@ -79,3 +79,9 @@ type SignupFormComponent struct {
 type ForgotPasswordFormComponent struct {
 	EmailInput *FormControlComponent
 }
+
+type ResetPasswordFormComponent struct {
+	EmailToken           string
+	PasswordInput        *PasswordControlComponent
+	ConfirmPasswordInput *PasswordControlComponent
+}

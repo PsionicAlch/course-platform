@@ -65,3 +65,15 @@ func NewPasswordResetEmail(firstName, emailToken string) *PasswordResetEmail {
 		EmailToken: emailToken,
 	}
 }
+
+type PasswordResetConfirmationEmail struct {
+	BaseEmail
+	FirstName string
+}
+
+func NewPasswordResetConfirmationEmail(firstName string) *PasswordResetConfirmationEmail {
+	return &PasswordResetConfirmationEmail{
+		BaseEmail: NewBaseEmail("Password Update Confirmation"),
+		FirstName: firstName,
+	}
+}

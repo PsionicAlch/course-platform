@@ -173,7 +173,7 @@ func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*mode
 				return nil, err
 			}
 
-			valid := ValidateAuthenticationToken(token)
+			valid := ValidateToken(token, AuthenticationToken)
 			if !valid {
 				return nil, nil
 			}
@@ -217,4 +217,50 @@ func (auth *Authentication) GeneratePasswordResetToken(email, ipAddr string) (*m
 	}
 
 	return user, token, nil
+}
+
+func (auth *Authentication) ValidateEmailToken(emailToken string) (bool, error) {
+	token, err := auth.Database.GetToken(emailToken, EmailToken)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to get email token from database: %s\n", err)
+		return false, err
+	}
+
+	return ValidateToken(token, EmailToken), nil
+}
+
+func (auth *Authentication) GetUserFromEmailToken(emailToken string) (*models.UserModel, error) {
+	user, err := auth.Database.GetUserByToken(emailToken, EmailToken)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to get user using password reset token from database: %s\n", err)
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (auth *Authentication) ChangeUserPassword(user *models.UserModel, password string) error {
+	hashedPassword, err := auth.PasswordParameters.HashPassword(password)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to hash user's password: %s\n", err)
+		return err
+	}
+
+	err = auth.Database.UpdateUserPassword(user.ID, hashedPassword)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to update user's password in the database: %s\n", err)
+		return err
+	}
+
+	return nil
+}
+
+func (auth *Authentication) DeleteEmailToken(token string) error {
+	err := auth.Database.DeleteToken(token, EmailToken)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to email token from the database: %s\n", err)
+		return err
+	}
+
+	return nil
 }

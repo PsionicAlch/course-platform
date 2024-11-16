@@ -17,15 +17,15 @@ func NewToken() (string, error) {
 		return "", err
 	}
 
-	return BytesToString(tokenBytes), nil
+	return BytesToURLString(tokenBytes), nil
 }
 
-func ValidateAuthenticationToken(token *models.TokenModel) bool {
+func ValidateToken(token *models.TokenModel, tokenType string) bool {
 	if token == nil {
 		return false
 	}
 
-	if token.Token == "" || token.TokenType != AuthenticationToken {
+	if token.Token == "" || token.TokenType != tokenType {
 		return false
 	}
 

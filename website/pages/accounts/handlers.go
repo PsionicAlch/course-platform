@@ -11,6 +11,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/forms"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
+	"github.com/go-chi/chi/v5"
 )
 
 type Handlers struct {
@@ -35,9 +36,8 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, a
 }
 
 func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
-	user := authentication.GetUserFromRequest(r)
 	pageData := html.AccountsLoginPage{
-		BasePage:  html.NewBasePage(user),
+		BasePage:  html.NewBasePage(nil),
 		LoginForm: forms.EmptyLoginFormComponent(),
 	}
 
@@ -48,10 +48,9 @@ func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
-	user := authentication.GetUserFromRequest(r)
 	loginForm := forms.NewLoginForm(r)
 	pageData := html.AccountsLoginPage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(nil),
 	}
 
 	if !loginForm.Validate() {
@@ -98,10 +97,9 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
-	user := authentication.GetUserFromRequest(r)
 	signupForm := forms.EmptySignupFormComponent()
 	pageData := html.AccountsSignupPage{
-		BasePage:   html.NewBasePage(user),
+		BasePage:   html.NewBasePage(nil),
 		SignupForm: signupForm,
 	}
 
@@ -111,10 +109,9 @@ func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
-	user := authentication.GetUserFromRequest(r)
 	signupForm := forms.NewSignupForm(r)
 	pageData := html.AccountsSignupPage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(nil),
 	}
 
 	if !signupForm.Validate() {
@@ -176,10 +173,9 @@ func (h *Handlers) LogoutDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) ForgotPasswordGet(w http.ResponseWriter, r *http.Request) {
-	user := authentication.GetUserFromRequest(r)
 	forgotPasswordForm := forms.NewForgotPasswordForm(r)
 	pageData := html.AccountsForgotPasswordPage{
-		BasePage:           html.NewBasePage(user),
+		BasePage:           html.NewBasePage(nil),
 		ForgotPasswordForm: forms.NewForgotPasswordFormComponent(forgotPasswordForm),
 	}
 
@@ -218,14 +214,112 @@ func (h *Handlers) ForgotPasswordPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
-	user := authentication.GetUserFromRequest(r)
+	emailToken := chi.URLParam(r, "email_token")
 	pageData := html.AccountsResetPasswordPage{
-		BasePage: html.NewBasePage(user),
+		BasePage:          html.NewBasePage(nil),
+		ResetPasswordForm: forms.EmptyResetPasswordFormComponent(emailToken),
 	}
 
+	valid, err := h.Auth.ValidateEmailToken(emailToken)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to validate password reset token: %s\n", err)
+
+		// TODO: Set flash message about unexpected server error.
+
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if !valid {
+		// TODO: Set flash message about invalid or expired token.
+		utils.Redirect(w, r, "/accounts/reset-password")
+		return
+	}
+
+	pageData.ResetPasswordForm = forms.EmptyResetPasswordFormComponent(emailToken)
 	if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
+}
+
+func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
+	emailToken := chi.URLParam(r, "email_token")
+	resetPasswordForm := forms.NewResetPasswordForm(r)
+	pageData := html.AccountsResetPasswordPage{
+		BasePage: html.NewBasePage(nil),
+	}
+
+	if !resetPasswordForm.Validate() {
+		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	valid, err := h.Auth.ValidateEmailToken(emailToken)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to validate password reset token: %s\n", err)
+
+		// TODO: Set flash message about unexpected server error.
+
+		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if !valid {
+		// TODO: Set flash message about invalid or expired token.
+		utils.Redirect(w, r, "/accounts/reset-password")
+		return
+	}
+
+	user, err := h.Auth.GetUserFromEmailToken(emailToken)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get user from password reset token: %s\n", err)
+
+		// TODO: Set flash message about unexpected server error.
+
+		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	password, _ := forms.GetResetPasswordFormValues(resetPasswordForm)
+	err = h.Auth.ChangeUserPassword(user, password)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get user from password reset token: %s\n", err)
+
+		// TODO: Set flash message about unexpected server error.
+
+		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	err = h.Auth.DeleteEmailToken(emailToken)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to delete password reset token: %s\n", err)
+	}
+
+	go h.Emailer.SendPasswordResetConfirmationEmail(user.Email, user.Name)
+
+	// TODO: Set up flash message to inform the user that their password has been changed.
+
+	utils.Redirect(w, r, "/accounts/login")
 }
 
 func (h *Handlers) ValidateSignupPost(w http.ResponseWriter, r *http.Request) {
@@ -233,6 +327,16 @@ func (h *Handlers) ValidateSignupPost(w http.ResponseWriter, r *http.Request) {
 	signupForm.Validate()
 
 	if err := h.Renderers.Htmx.RenderHTML(w, "signup-form", forms.NewSignupFormComponent(signupForm)); err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) ValidateResetPasswordPost(w http.ResponseWriter, r *http.Request) {
+	emailToken := chi.URLParam(r, "email_token")
+	resetPasswordForm := forms.ResetPasswordFormPartialValidation(r)
+	resetPasswordForm.Validate()
+
+	if err := h.Renderers.Htmx.RenderHTML(w, "reset-password-form", forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

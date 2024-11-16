@@ -72,7 +72,19 @@ func (e *Emails) SendPasswordResetEmail(email, firstName, emailToken string) {
 
 	buf := new(bytes.Buffer)
 	if err := e.Render.Render(buf, "reset-password", emailData); err != nil {
-		e.ErrorLog.Printf("Failed to render reset-password email for %s: %s\n", email, err)
+		e.ErrorLog.Printf("Failed to render reset password email for %s: %s\n", email, err)
+		return
+	}
+
+	e.Client.SendEmail(email, emailData.Title, buf.String())
+}
+
+func (e *Emails) SendPasswordResetConfirmationEmail(email, firstName string) {
+	emailData := html.NewPasswordResetConfirmationEmail(firstName)
+
+	buf := new(bytes.Buffer)
+	if err := e.Render.Render(buf, "password-reset-confirmation", emailData); err != nil {
+		e.ErrorLog.Printf("Failed to render password reset confirmation email for %s: %s\n", email, err)
 		return
 	}
 

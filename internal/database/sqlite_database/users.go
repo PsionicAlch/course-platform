@@ -141,3 +141,61 @@ func (db *SQLiteDatabase) GetUserByID(id string) (*models.UserModel, error) {
 
 	return user, nil
 }
+
+func (db *SQLiteDatabase) GetUserByToken(token, tokenType string) (*models.UserModel, error) {
+	query := `SELECT users.id, users.name, users.surname, users.email, users.password, users.is_admin, users.is_author, users.affiliate_code, users.created_at, users.updated_at FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token = ? AND tokens.token_type = ? AND tokens.valid_until > CURRENT_TIMESTAMP;`
+
+	var isAdminInt int
+	var isAuthorInt int
+	user := new(models.UserModel)
+	isAdmin := false
+	isAuthor := false
+
+	row := db.connection.QueryRow(query, token, tokenType)
+	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &isAdminInt, &isAuthorInt, &user.AffiliateCode, &user.CreatedAt, &user.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			// Nothing was found so we can just send back nothing and handle it at the caller
+			// end.
+			return nil, nil
+		}
+
+		db.ErrorLog.Printf("Failed to query the database for user using token (\"%s\"): %s\n", token, err)
+		return nil, err
+	}
+
+	if isAdminInt == 1 {
+		isAdmin = true
+	}
+
+	if isAuthorInt == 1 {
+		isAuthor = true
+	}
+
+	user.IsAdmin = isAdmin
+	user.IsAuthor = isAuthor
+
+	return user, nil
+}
+
+func (db *SQLiteDatabase) UpdateUserPassword(userId, password string) error {
+	query := `UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
+
+	result, err := db.connection.Exec(query, password, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to update user's (\"%s\") password: %s\n", userId, err)
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get rows affected after updating user's (\"%s\") password: %s\n", userId, err)
+		return err
+	}
+
+	if rowsAffected == 0 {
+		db.ErrorLog.Printf("0 rows were affected after updating user's (\"%s\") password\n", userId)
+		return database.ErrNoRowsAffected
+	}
+
+	return nil
+}

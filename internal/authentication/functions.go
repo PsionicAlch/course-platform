@@ -19,6 +19,10 @@ func BytesToString(src []byte) string {
 	return base64.RawStdEncoding.EncodeToString(src)
 }
 
+func BytesToURLString(src []byte) string {
+	return base64.RawURLEncoding.EncodeToString(src)
+}
+
 func StringToBytes(src string) ([]byte, error) {
 	return base64.RawStdEncoding.Strict().DecodeString(src)
 }
