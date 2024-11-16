@@ -47,6 +47,7 @@ func (db *SQLiteDatabase) AddUser(name, surname, email, password string) (*model
 	user.Name = name
 	user.Surname = surname
 	user.Email = email
+	user.Password = password
 	user.AffiliateCode = affiliate_code
 	user.IsAdmin = false
 	user.IsAuthor = false
