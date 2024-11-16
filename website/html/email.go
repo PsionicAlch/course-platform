@@ -1,5 +1,7 @@
 package html
 
+import "time"
+
 type BaseEmail struct {
 	Title string
 }
@@ -31,5 +33,21 @@ func NewGreetingEmail(firstName, affiliateCode string) *GreetingEmail {
 			Slug        string
 		}{},
 		AffiliateCode: affiliateCode,
+	}
+}
+
+type LoginEmail struct {
+	BaseEmail
+	FirstName     string
+	IPAddress     string
+	LoginDateTime time.Time
+}
+
+func NewLoginEmail(firstName, ipAddr string, loginDateTime time.Time) *LoginEmail {
+	return &LoginEmail{
+		BaseEmail:     NewBaseEmail("Account Login Detected"),
+		FirstName:     firstName,
+		IPAddress:     ipAddr,
+		LoginDateTime: loginDateTime,
 	}
 }

@@ -2,6 +2,7 @@ package accounts
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
@@ -63,7 +64,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	email, password := forms.GetLoginFormValues(loginForm)
-	cookie, err := h.Auth.LogUserIn(email, password, r.RemoteAddr)
+	user, cookie, err := h.Auth.LogUserIn(email, password, r.RemoteAddr)
 	if err != nil {
 		if err == authentication.ErrInvalidCredentials {
 			loginForm.SetEmailError("invalid email or password")
@@ -86,7 +87,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: Send email about new login just incase it wasn't the account holder who did it.
+	go h.Emailer.SendLoginEmail(email, user.Name, r.RemoteAddr, time.Now())
 
 	http.SetCookie(w, cookie)
 

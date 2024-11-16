@@ -1,0 +1,29 @@
+{{ template "email" . }}
+
+{{ define "content" }}
+  <p>Hello {{.FirstName}},</p>
+
+  <p>We noticed a login to your PsionicAlch account just now. As a part of our commitment to keeping your account safe, we're sending you these details to ensure everything looks good on your end:</p>
+
+  <p><strong>Login Details:</strong></p>
+  <ul>
+    <li><strong>IP Address:</strong> {{.IPAddress}}</li>
+    <li><strong>Date & Time:</strong> {{.LoginDateTime | pretty_date}}</li>
+  </ul>
+
+  <p>If this login was you, no further action is required. Feel free to continue exploring, coding, and learning with PsionicAlch!</p>
+
+  <p>However, if you don't recognize this login, it might be a good idea to secure your account right away. You can reset your password by following this link:</p>
+
+  <p><a href="https://www.psionicalch.com/accounts/reset-password" class="cta-button">Reset Your Password</a></p>
+
+  <p>If you have any questions or need assistance, you can always reach out to us:</p>
+  <p>
+    <a href="https://twitter.com/psionicalch">Twitter</a> |
+    <a href="mailto:contact@psionicalch.com">Email</a>
+  </p>
+
+  <p>We're here to ensure your experience with PsionicAlch is as smooth and secure as possible.</p>
+
+  <p>Happy learning,<br>The PsionicAlch Team</p>
+{{ end }}

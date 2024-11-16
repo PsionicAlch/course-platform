@@ -27,16 +27,12 @@ func SetupSMTPEmailClient(host, port, email, password string) *SMTPEmailClient {
 }
 
 func (client *SMTPEmailClient) SendEmail(recipient, subject, body string) {
-	client.InfoLog.Println("Sending email to: ", recipient)
-
-	msg := "MIME-Version: 1.0\r\n" + "Content-Type: text/html; charset=\"UTF-8\"\r\n" + subject + "\r\n" + body
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	msg := []byte("Subject: " + subject + "\n" + mime + body)
 
 	auth := smtp.PlainAuth("", client.SenderEmail, client.Password, client.Host)
-
-	err := smtp.SendMail(client.Host+":"+client.Port, auth, client.SenderEmail, []string{recipient}, []byte(msg))
+	err := smtp.SendMail(client.Host+":"+client.Port, auth, client.SenderEmail, []string{recipient}, msg)
 	if err != nil {
 		client.ErrorLog.Printf("Failed to send email to %s: %s\n", recipient, err)
 	}
-
-	client.InfoLog.Println("Sent email to: ", recipient)
 }

@@ -2,6 +2,7 @@ package emails
 
 import (
 	"bytes"
+	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/email"
 	smtp_email_client "github.com/PsionicAlch/psionicalch-home/internal/email/clients/SMTP"
@@ -51,5 +52,17 @@ func (e *Emails) SendWelcomeEmail(email, firstName, affiliateCode string) {
 		return
 	}
 
-	e.Client.SendEmail(email, "Welcome to PsionicAlch", buf.String())
+	e.Client.SendEmail(email, emailData.Title, buf.String())
+}
+
+func (e *Emails) SendLoginEmail(email, firstName, ipAddr string, date time.Time) {
+	emailData := html.NewLoginEmail(firstName, ipAddr, date)
+
+	buf := new(bytes.Buffer)
+	if err := e.Render.Render(buf, "login", emailData); err != nil {
+		e.ErrorLog.Printf("Failed to render login email for %s: %s\n", email, err)
+		return
+	}
+
+	e.Client.SendEmail(email, emailData.Title, buf.String())
 }

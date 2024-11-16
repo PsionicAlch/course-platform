@@ -86,31 +86,31 @@ func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr st
 	return user, cookie, nil
 }
 
-func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*http.Cookie, error) {
+func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*models.UserModel, *http.Cookie, error) {
 	user, err := auth.Database.GetUser(email)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to find user (\"%s\") in database: %s\n", email, err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	if user == nil {
-		return nil, ErrInvalidCredentials
+		return nil, nil, ErrInvalidCredentials
 	}
 
 	match, err := ComparePasswordAndHash(password, user.Password)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to compare user (\"%s\") password: %s\n", email, err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	if !match {
-		return nil, ErrInvalidCredentials
+		return nil, nil, ErrInvalidCredentials
 	}
 
 	token, err := NewToken()
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to generate new authentication token for user (\"%s\"): %s\n", email, err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	validUntil := time.Now().Add(auth.Lifetime)
@@ -118,16 +118,16 @@ func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*http.Coo
 	err = auth.Database.AddToken(token, AuthenticationToken, user.ID, ipAddr, validUntil)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to add %s token to the database: %s\n", AuthenticationToken, err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	cookie, err := auth.CookiesManager.Encode(token)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to encode authentication cookie: %s\n", err)
-		return nil, err
+		return nil, nil, err
 	}
 
-	return cookie, nil
+	return user, cookie, nil
 }
 
 func (auth *Authentication) LogUserOut(cookies []*http.Cookie) (*http.Cookie, error) {

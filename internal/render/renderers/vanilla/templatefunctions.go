@@ -3,11 +3,13 @@ package vanilla
 import (
 	"fmt"
 	"html/template"
+	"time"
 )
 
 func CreateFuncMap() template.FuncMap {
 	funcMap := template.FuncMap{
-		"props": Props,
+		"props":       Props,
+		"pretty_date": PrettyDate,
 	}
 
 	return funcMap
@@ -30,4 +32,8 @@ func Props(values ...any) (map[string]any, error) {
 	}
 
 	return dict, nil
+}
+
+func PrettyDate(t time.Time) string {
+	return t.Format("Monday, January 2, 2006 at 3:04 PM")
 }

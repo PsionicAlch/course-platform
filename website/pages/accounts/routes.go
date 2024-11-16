@@ -17,11 +17,11 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.With(handlers.Auth.AllowUnauthenticated("/profile")).Get("/signup", handlers.SignupGet)
 	router.With(handlers.Auth.AllowUnauthenticated("/profile")).Post("/signup", handlers.SignupPost)
 
-	router.With(handlers.Auth.AllowUnauthenticated("/profile")).Get("/reset-password", handlers.ForgotGet)
+	router.With(handlers.Auth.AllowUnauthenticated("/settings#change-password")).Get("/reset-password", handlers.ForgotGet)
 
-	router.With(handlers.Auth.AllowUnauthenticated("/profile")).Get("/reset-password/{email_token}", handlers.ResetPasswordGet)
+	router.With(handlers.Auth.AllowUnauthenticated("/settings#change-password")).Get("/reset-password/{email_token}", handlers.ResetPasswordGet)
 
-	router.With(handlers.Auth.AllowUnauthenticated("/profile")).Post("/validate/signup", handlers.ValidateSignupPost)
+	router.With(handlers.Auth.AllowUnauthenticated("/")).Post("/validate/signup", handlers.ValidateSignupPost)
 
 	return router
 }
