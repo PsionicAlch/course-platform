@@ -42,25 +42,9 @@ func SetupAuthentication(db database.Database, authLifetime, pwdResetLifetime ti
 }
 
 func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr string) (*models.UserModel, *http.Cookie, error) {
-	exists, err := auth.Database.UserExists(email)
-	if err != nil {
-		auth.ErrorLog.Printf("Failed to check if user with email \"%s\" already exists: %s\n", email, err)
-		return nil, nil, err
-	}
-
-	if exists {
-		return nil, nil, ErrUserExists
-	}
-
 	hashedPassword, err := auth.PasswordParameters.HashPassword(password)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to hash user's password: %s\n", err)
-		return nil, nil, err
-	}
-
-	user, err := auth.Database.AddUser(name, surname, email, hashedPassword)
-	if err != nil {
-		auth.ErrorLog.Printf("Failed to save new user to the database: %s\n", err)
 		return nil, nil, err
 	}
 
@@ -72,9 +56,13 @@ func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr st
 
 	validUntil := time.Now().Add(auth.AuthenticationLifetime)
 
-	err = auth.Database.AddToken(token, AuthenticationToken, user.ID, ipAddr, validUntil)
+	user, err := auth.Database.AddNewUser(name, surname, email, hashedPassword, token, AuthenticationToken, ipAddr, validUntil)
 	if err != nil {
-		auth.ErrorLog.Printf("Failed to add %s token to the database: %s\n", AuthenticationToken, err)
+		if err == database.ErrUserAlreadyExists {
+			return nil, nil, ErrUserExists
+		}
+
+		auth.ErrorLog.Printf("Failed to save new user (\"%s\") to the database: %s\n", email, err)
 		return nil, nil, err
 	}
 
@@ -87,7 +75,7 @@ func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr st
 	return user, cookie, nil
 }
 
-func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*models.UserModel, *http.Cookie, error) {
+func (auth *Authentication) LogUserIn(email, password string) (*models.UserModel, *http.Cookie, error) {
 	user, err := auth.Database.GetUser(email)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to find user (\"%s\") in database: %s\n", email, err)
@@ -116,7 +104,7 @@ func (auth *Authentication) LogUserIn(email, password, ipAddr string) (*models.U
 
 	validUntil := time.Now().Add(auth.AuthenticationLifetime)
 
-	err = auth.Database.AddToken(token, AuthenticationToken, user.ID, ipAddr, validUntil)
+	err = auth.Database.AddToken(token, AuthenticationToken, user.ID, validUntil)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to add %s token to the database: %s\n", AuthenticationToken, err)
 		return nil, nil, err
@@ -157,40 +145,40 @@ func (auth *Authentication) LogUserOut(cookies []*http.Cookie) (*http.Cookie, er
 	return emptyCookie, nil
 }
 
-func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*models.UserModel, *models.TokenModel, error) {
+func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*models.UserModel, error) {
 	for _, cookie := range cookies {
 		if cookie.Name == auth.CookiesManager.CookieParams.Name {
 			authToken, err := auth.CookiesManager.Decode(cookie.Value)
 			if err != nil {
 				auth.ErrorLog.Printf("Failed to decode auth cookie's value: %s\n", err)
-				return nil, nil, err
+				return nil, err
 			}
 
 			token, err := auth.Database.GetToken(authToken, AuthenticationToken)
 			if err != nil {
 				auth.ErrorLog.Printf("Failed to get authentication token from database: %s\n", err)
-				return nil, nil, err
+				return nil, err
 			}
 
 			valid := ValidateToken(token, AuthenticationToken)
 			if !valid {
-				return nil, nil, nil
+				return nil, nil
 			}
 
 			user, err := auth.Database.GetUserByID(token.UserID)
 			if err != nil {
 				auth.ErrorLog.Printf("Failed to get user (\"%s\") from database: %s\n", token.UserID, err)
-				return nil, nil, err
+				return nil, err
 			}
 
-			return user, token, nil
+			return user, nil
 		}
 	}
 
-	return nil, nil, nil
+	return nil, nil
 }
 
-func (auth *Authentication) GeneratePasswordResetToken(email, ipAddr string) (*models.UserModel, string, error) {
+func (auth *Authentication) GeneratePasswordResetToken(email string) (*models.UserModel, string, error) {
 	user, err := auth.Database.GetUser(email)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to find user (\"%s\") in database: %s\n", email, err)
@@ -209,7 +197,7 @@ func (auth *Authentication) GeneratePasswordResetToken(email, ipAddr string) (*m
 
 	validUntil := time.Now().Add(auth.PasswordResetLifetime)
 
-	err = auth.Database.AddToken(token, EmailToken, user.ID, ipAddr, validUntil)
+	err = auth.Database.AddToken(token, EmailToken, user.ID, validUntil)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to add %s token to the database: %s\n", EmailToken, err)
 		return nil, "", err

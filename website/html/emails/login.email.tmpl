@@ -3,7 +3,7 @@
 {{ define "content" }}
   <p>Hello {{.FirstName}},</p>
 
-  <p>We noticed a login to your PsionicAlch account just now. As a part of our commitment to keeping your account safe, we're sending you these details to ensure everything looks good on your end:</p>
+  <p>We noticed a login to your PsionicAlch account from a non-whitelisted IP address. As a part of our commitment to keeping your account safe, we're sending you these details to ensure everything looks good on your end:</p>
 
   <p><strong>Login Details:</strong></p>
   <ul>
@@ -11,7 +11,9 @@
     <li><strong>Date & Time:</strong> {{.LoginDateTime | pretty_date}}</li>
   </ul>
 
-  <p>If this login was you, no further action is required. Feel free to continue exploring, coding, and learning with PsionicAlch!</p>
+  <p>If this login was you then you can add this IP address to your profile's whitelist so that you won't be notified about this again:</p>
+
+  <p><a href="https://www.psionicalch.com/profile/whitelist/{{.URLSafeIPAddress}}" class="cta-button">Whitelist IP Address</a></p>
 
   <p>However, if you don't recognize this login, it might be a good idea to secure your account right away. You can reset your password by following this link:</p>
 

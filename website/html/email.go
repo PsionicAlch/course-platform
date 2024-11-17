@@ -1,6 +1,9 @@
 package html
 
-import "time"
+import (
+	"net/url"
+	"time"
+)
 
 type BaseEmail struct {
 	Title string
@@ -38,17 +41,19 @@ func NewGreetingEmail(firstName, affiliateCode string) *GreetingEmail {
 
 type LoginEmail struct {
 	BaseEmail
-	FirstName     string
-	IPAddress     string
-	LoginDateTime time.Time
+	FirstName        string
+	IPAddress        string
+	URLSafeIPAddress string
+	LoginDateTime    time.Time
 }
 
 func NewLoginEmail(firstName, ipAddr string, loginDateTime time.Time) *LoginEmail {
 	return &LoginEmail{
-		BaseEmail:     NewBaseEmail("Account Login Detected"),
-		FirstName:     firstName,
-		IPAddress:     ipAddr,
-		LoginDateTime: loginDateTime,
+		BaseEmail:        NewBaseEmail("Account Login Detected"),
+		FirstName:        firstName,
+		IPAddress:        ipAddr,
+		URLSafeIPAddress: url.QueryEscape(ipAddr),
+		LoginDateTime:    loginDateTime,
 	}
 }
 
@@ -80,16 +85,18 @@ func NewPasswordResetConfirmationEmail(firstName string) *PasswordResetConfirmat
 
 type SuspiciousActivityEmail struct {
 	BaseEmail
-	FirstName     string
-	IPAddress     string
-	LoginDateTime time.Time
+	FirstName        string
+	IPAddress        string
+	URLSafeIPAddress string
+	LoginDateTime    time.Time
 }
 
 func NewSuspiciousActivityEmail(firstName, ipAddr string, dateTime time.Time) *SuspiciousActivityEmail {
 	return &SuspiciousActivityEmail{
-		BaseEmail:     NewBaseEmail("Suspicious Account Activity"),
-		FirstName:     firstName,
-		IPAddress:     ipAddr,
-		LoginDateTime: dateTime,
+		BaseEmail:        NewBaseEmail("Suspicious Account Activity"),
+		FirstName:        firstName,
+		IPAddress:        ipAddr,
+		URLSafeIPAddress: url.QueryEscape(ipAddr),
+		LoginDateTime:    dateTime,
 	}
 }

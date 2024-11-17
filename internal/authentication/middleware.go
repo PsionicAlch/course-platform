@@ -15,7 +15,7 @@ type AuthenticationEmail interface {
 func (auth *Authentication) SetUserWithEmail(email AuthenticationEmail) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			user, token, err := auth.GetUserFromAuthCookie(r.Cookies())
+			user, err := auth.GetUserFromAuthCookie(r.Cookies())
 			if err != nil {
 				auth.ErrorLog.Printf("Failed to get user from cookies: %s\n", err)
 				user = nil
@@ -23,11 +23,18 @@ func (auth *Authentication) SetUserWithEmail(email AuthenticationEmail) func(nex
 
 			// In case this account was accessed from a different IP address send the user
 			// so that they can take any actions required to secure their account.
-			ipAddr, _, err := net.SplitHostPort(r.RemoteAddr)
-			if err != nil {
-				auth.ErrorLog.Printf("Failed to get ip address from r.RemoteAddr: %s\n", err)
-			} else {
-				if user != nil && ipAddr != token.IPAddr {
+			if user != nil {
+				ipAddr, _, err := net.SplitHostPort(r.RemoteAddr)
+				if err != nil {
+					auth.ErrorLog.Printf("Failed to get ip address from r.RemoteAddr: %s\n", err)
+				}
+
+				userIpAddresses, err := auth.Database.GetUserIpAddresses(user.ID)
+				if err != nil {
+					auth.ErrorLog.Printf("Failed to get user's (\"%s\") whitelisted IP addresses: %s\n", user.Email, err)
+				}
+
+				if userIpAddresses != nil && !utils.InSlice(ipAddr, userIpAddresses) {
 					go email.SendSuspiciousActivityEmail(user.Email, user.Name, ipAddr, time.Now())
 				}
 			}
@@ -41,7 +48,7 @@ func (auth *Authentication) SetUserWithEmail(email AuthenticationEmail) func(nex
 
 func (auth *Authentication) SetUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user, _, err := auth.GetUserFromAuthCookie(r.Cookies())
+		user, err := auth.GetUserFromAuthCookie(r.Cookies())
 		if err != nil {
 			auth.ErrorLog.Printf("Failed to get user from cookies: %s\n", err)
 			user = nil

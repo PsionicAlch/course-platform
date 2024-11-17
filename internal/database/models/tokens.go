@@ -8,6 +8,5 @@ type TokenModel struct {
 	TokenType  string
 	ValidUntil time.Time
 	UserID     string
-	IPAddr     string
 	CreatedAt  time.Time
 }

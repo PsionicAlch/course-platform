@@ -3,15 +3,17 @@
 {{ define "content" }}
   <p>Hello {{.FirstName}},</p>
 
-  <p>We've detected access to your PsionicAlch account from an IP address that's different from the one you've previously used. Here are the details:</p>
+  <p>We've detected access to your PsionicAlch account from an IP address that's not part of your profile's IP address whitelist. Here are the details:</p>
 
-  <p><strong>Login Details:</strong></p>
+  <p><strong>Details:</strong></p>
   <ul>
     <li><strong>IP Address:</strong> {{.IPAddress}}</li>
     <li><strong>Date & Time:</strong> {{.LoginDateTime | pretty_date}}</li>
   </ul>
 
-  <p>If you recognize this activity, there's nothing to worry about, and no action is required. You can continue learning and exploring as usual!</p>
+  <p>If you recognize this activity then you can add your current IP address to your profile's whitelist so that you won't get notified about this again:</p>
+
+  <p><a href="https://www.psionicalch.com/profile/whitelist/{{.URLSafeIPAddress}}" class="cta-button">Whitelist IP Address</a></p>
 
   <p>However, if this login seems suspicious or unfamiliar, we strongly recommend securing your account immediately by resetting your password:</p>
 

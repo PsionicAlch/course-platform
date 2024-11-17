@@ -15,6 +15,9 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	router.Get("/affiliate-history", handlers.AffiliateHistoryGet)
 
+	// TODO: Set up the logic for this.
+	// router.Get("/whitelist/{ip_address}", )
+
 	router.Get("/courses", handlers.CoursesGet)
 	router.Get("/courses/{slug}", handlers.CourseGet)
 	router.Get("/courses/{course_slug}/{chapter_slug}", handlers.CourseChapterGet)

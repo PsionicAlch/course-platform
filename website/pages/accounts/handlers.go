@@ -78,7 +78,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, cookie, err := h.Auth.LogUserIn(email, password, ipAddr)
+	user, cookie, err := h.Auth.LogUserIn(email, password)
 	if err != nil {
 		if err == authentication.ErrInvalidCredentials {
 			loginForm.SetEmailError("invalid email or password")
@@ -101,7 +101,14 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go h.Emailer.SendLoginEmail(email, user.Name, ipAddr, time.Now())
+	userIpAddresses, err := h.Auth.Database.GetUserIpAddresses(user.ID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get user's (\"%s\") whitelisted IP addresses: %s\n", user.Email, err)
+	}
+
+	if userIpAddresses != nil && !utils.InSlice(ipAddr, userIpAddresses) {
+		go h.Emailer.SendLoginEmail(email, user.Name, ipAddr, time.Now())
+	}
 
 	http.SetCookie(w, cookie)
 
@@ -221,21 +228,8 @@ func (h *Handlers) ForgotPasswordPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	email := forms.GetForgotPasswordFormValues(forgotPasswordForm)
-	ipAddr, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err != nil {
-		h.ErrorLog.Printf("Failed to get IP address from r.RemoteAddr: %s\n", err)
 
-		// TODO: Set flash message about unexpected server error.
-
-		pageData.ForgotPasswordForm = forms.NewForgotPasswordFormComponent(forgotPasswordForm)
-		if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password", pageData); err != nil {
-			h.ErrorLog.Println(err)
-		}
-
-		return
-	}
-
-	user, resetToken, err := h.Auth.GeneratePasswordResetToken(email, ipAddr)
+	user, resetToken, err := h.Auth.GeneratePasswordResetToken(email)
 	if err != nil && err != authentication.ErrUnregisteredEmail {
 		h.ErrorLog.Printf("Failed to generate new password reset token: %s\n", err)
 
