@@ -90,3 +90,15 @@ func (e *Emails) SendPasswordResetConfirmationEmail(email, firstName string) {
 
 	e.Client.SendEmail(email, emailData.Title, buf.String())
 }
+
+func (e *Emails) SendSuspiciousActivityEmail(email, firstName, ipAddr string, dateTime time.Time) {
+	emailData := html.NewSuspiciousActivityEmail(firstName, ipAddr, dateTime)
+
+	buf := new(bytes.Buffer)
+	if err := e.Render.Render(buf, "suspicious-activity", emailData); err != nil {
+		e.ErrorLog.Printf("Failed to render suspicious activity email for %s: %s\n", email, err)
+		return
+	}
+
+	e.Client.SendEmail(email, emailData.Title, buf.String())
+}

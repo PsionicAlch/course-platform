@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	"net"
 	"net/http"
 	"time"
 
@@ -63,7 +64,21 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	email, password := forms.GetLoginFormValues(loginForm)
-	user, cookie, err := h.Auth.LogUserIn(email, password, r.RemoteAddr)
+	ipAddr, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get IP address from r.RemoteAddr: %s\n", err)
+
+		// TODO: Set up flash message for unexpected server errors.
+
+		pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-login", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	user, cookie, err := h.Auth.LogUserIn(email, password, ipAddr)
 	if err != nil {
 		if err == authentication.ErrInvalidCredentials {
 			loginForm.SetEmailError("invalid email or password")
@@ -75,9 +90,9 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		} else {
 			h.ErrorLog.Printf("Failed to log user (\"%s\") in: %s\n", email, err)
 
-			pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
-
 			// TODO: Set up flash message for unexpected server errors.
+
+			pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
 			if err := h.Renderers.Page.RenderHTML(w, "accounts-login", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
@@ -86,7 +101,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go h.Emailer.SendLoginEmail(email, user.Name, r.RemoteAddr, time.Now())
+	go h.Emailer.SendLoginEmail(email, user.Name, ipAddr, time.Now())
 
 	http.SetCookie(w, cookie)
 
@@ -124,7 +139,21 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	firstName, lastName, email, password, _ := forms.GetSignupFormValues(signupForm)
-	user, cookie, err := h.Auth.SignUserUp(firstName, lastName, email, password, r.RemoteAddr)
+	ipAddr, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get IP address from r.RemoteAddr: %s\n", err)
+
+		// TODO: Set flash message about unexpected server error.
+
+		pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-signup", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	user, cookie, err := h.Auth.SignUserUp(firstName, lastName, email, password, ipAddr)
 	if err != nil {
 		if err == authentication.ErrUserExists {
 			signupForm.SetEmailError("this email has already been registered")
@@ -136,9 +165,9 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		} else {
 			h.ErrorLog.Printf("Failed to sign user up: %s\n", err)
 
-			pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
-
 			// TODO: Set flash message about unexpected server error.
+
+			pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
 			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup", pageData); err != nil {
 				h.ErrorLog.Println(err)
 			}
@@ -192,8 +221,24 @@ func (h *Handlers) ForgotPasswordPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	email := forms.GetForgotPasswordFormValues(forgotPasswordForm)
-	user, resetToken, err := h.Auth.GeneratePasswordResetToken(email, r.RemoteAddr)
+	ipAddr, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get IP address from r.RemoteAddr: %s\n", err)
+
+		// TODO: Set flash message about unexpected server error.
+
+		pageData.ForgotPasswordForm = forms.NewForgotPasswordFormComponent(forgotPasswordForm)
+		if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	user, resetToken, err := h.Auth.GeneratePasswordResetToken(email, ipAddr)
 	if err != nil && err != authentication.ErrUnregisteredEmail {
+		h.ErrorLog.Printf("Failed to generate new password reset token: %s\n", err)
+
 		// TODO: Set flash message about unexpected server error.
 
 		pageData.ForgotPasswordForm = forms.NewForgotPasswordFormComponent(forgotPasswordForm)
@@ -308,11 +353,6 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 		}
 
 		return
-	}
-
-	err = h.Auth.DeleteEmailToken(emailToken)
-	if err != nil {
-		h.ErrorLog.Printf("Failed to delete password reset token: %s\n", err)
 	}
 
 	go h.Emailer.SendPasswordResetConfirmationEmail(user.Email, user.Name)

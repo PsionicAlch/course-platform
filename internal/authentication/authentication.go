@@ -157,37 +157,37 @@ func (auth *Authentication) LogUserOut(cookies []*http.Cookie) (*http.Cookie, er
 	return emptyCookie, nil
 }
 
-func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*models.UserModel, error) {
+func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*models.UserModel, *models.TokenModel, error) {
 	for _, cookie := range cookies {
 		if cookie.Name == auth.CookiesManager.CookieParams.Name {
 			authToken, err := auth.CookiesManager.Decode(cookie.Value)
 			if err != nil {
 				auth.ErrorLog.Printf("Failed to decode auth cookie's value: %s\n", err)
-				return nil, err
+				return nil, nil, err
 			}
 
 			token, err := auth.Database.GetToken(authToken, AuthenticationToken)
 			if err != nil {
 				auth.ErrorLog.Printf("Failed to get authentication token from database: %s\n", err)
-				return nil, err
+				return nil, nil, err
 			}
 
 			valid := ValidateToken(token, AuthenticationToken)
 			if !valid {
-				return nil, nil
+				return nil, nil, nil
 			}
 
 			user, err := auth.Database.GetUserByID(token.UserID)
 			if err != nil {
 				auth.ErrorLog.Printf("Failed to get user (\"%s\") from database: %s\n", token.UserID, err)
-				return nil, err
+				return nil, nil, err
 			}
 
-			return user, nil
+			return user, token, nil
 		}
 	}
 
-	return nil, nil
+	return nil, nil, nil
 }
 
 func (auth *Authentication) GeneratePasswordResetToken(email, ipAddr string) (*models.UserModel, string, error) {
@@ -248,6 +248,18 @@ func (auth *Authentication) ChangeUserPassword(user *models.UserModel, password 
 	err = auth.Database.UpdateUserPassword(user.ID, hashedPassword)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to update user's password in the database: %s\n", err)
+		return err
+	}
+
+	err = auth.Database.DeleteAllTokens(user.Email, AuthenticationToken)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to delete all of the user's (\"%s\") %s tokens: %s\n", user.Email, AuthenticationToken, err)
+		return err
+	}
+
+	err = auth.Database.DeleteAllTokens(user.Email, EmailToken)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to delete all of the user's (\"%s\") %s tokens: %s\n", user.Email, EmailToken, err)
 		return err
 	}
 

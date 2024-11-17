@@ -77,3 +77,19 @@ func NewPasswordResetConfirmationEmail(firstName string) *PasswordResetConfirmat
 		FirstName: firstName,
 	}
 }
+
+type SuspiciousActivityEmail struct {
+	BaseEmail
+	FirstName     string
+	IPAddress     string
+	LoginDateTime time.Time
+}
+
+func NewSuspiciousActivityEmail(firstName, ipAddr string, dateTime time.Time) *SuspiciousActivityEmail {
+	return &SuspiciousActivityEmail{
+		BaseEmail:     NewBaseEmail("Suspicious Account Activity"),
+		FirstName:     firstName,
+		IPAddress:     ipAddr,
+		LoginDateTime: dateTime,
+	}
+}

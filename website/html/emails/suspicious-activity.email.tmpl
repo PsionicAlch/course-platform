@@ -1,0 +1,29 @@
+{{ template "email" . }}
+
+{{ define "content" }}
+  <p>Hello {{.FirstName}},</p>
+
+  <p>We've detected access to your PsionicAlch account from an IP address that's different from the one you've previously used. Here are the details:</p>
+
+  <p><strong>Login Details:</strong></p>
+  <ul>
+    <li><strong>IP Address:</strong> {{.IPAddress}}</li>
+    <li><strong>Date & Time:</strong> {{.LoginDateTime | pretty_date}}</li>
+  </ul>
+
+  <p>If you recognize this activity, there's nothing to worry about, and no action is required. You can continue learning and exploring as usual!</p>
+
+  <p>However, if this login seems suspicious or unfamiliar, we strongly recommend securing your account immediately by resetting your password:</p>
+
+  <p><a href="https://www.psionicalch.com/accounts/reset-password" class="cta-button">Reset Your Password</a></p>
+
+  <p>If you need assistance or have concerns about your account's security, please don't hesitate to reach out to us:</p>
+  <p>
+    <a href="https://twitter.com/psionicalch">Twitter</a> |
+    <a href="mailto:contact@psionicalch.com">Email</a>
+  </p>
+
+  <p>Your account's security is our top priority, and we're here to help if needed.</p>
+
+  <p>Stay safe and keep coding,<br>The PsionicAlch Team</p>
+{{ end }}

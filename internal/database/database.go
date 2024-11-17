@@ -27,4 +27,5 @@ type Database interface {
 	AddToken(token, tokenType, userId, ipAddr string, validUntil time.Time) error
 	GetToken(token, tokenType string) (*models.TokenModel, error)
 	DeleteToken(token, tokenType string) error
+	DeleteAllTokens(email, tokenType string) error
 }

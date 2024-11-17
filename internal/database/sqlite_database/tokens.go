@@ -78,3 +78,25 @@ func (db *SQLiteDatabase) DeleteToken(token, tokenType string) error {
 
 	return nil
 }
+
+func (db *SQLiteDatabase) DeleteAllTokens(email, tokenType string) error {
+	query := `DELETE tokens FROM tokens JOIN users on tokens.user_id = users.id WHERE tokens.token_type = ? AND users.email = ?;`
+
+	result, err := db.connection.Exec(query, tokenType, email)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to delete all user's (\"%s\") %s tokens from database: %s\n", email, tokenType, err)
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get rows affected after deleting all user's (\"%s\") %s tokens: %s\n", email, tokenType, err)
+		return err
+	}
+
+	if rowsAffected == 0 {
+		db.ErrorLog.Printf("No rows were affected after deleting all user's (\"%s\") %s tokens", email, tokenType)
+	}
+
+	return nil
+}
