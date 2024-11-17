@@ -8,6 +8,8 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
+// TODO: Switch to using database level uniqueness checks for whether the user exists or not.
+
 func (db *SQLiteDatabase) UserExists(email string) (bool, error) {
 	query := `SELECT id FROM users WHERE email = ?;`
 	row := db.connection.QueryRow(query, email)

@@ -42,7 +42,6 @@ func SetupAuthentication(db database.Database, authLifetime, pwdResetLifetime ti
 }
 
 func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr string) (*models.UserModel, *http.Cookie, error) {
-	// TODO: Switch to using database level uniqueness checks for whether the user exists or not.
 	exists, err := auth.Database.UserExists(email)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to check if user with email \"%s\" already exists: %s\n", email, err)
