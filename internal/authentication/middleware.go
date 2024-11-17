@@ -21,8 +21,8 @@ func (auth *Authentication) SetUserWithEmail(email AuthenticationEmail) func(nex
 				user = nil
 			}
 
-			// In case this account was accessed from a different IP address send the user
-			// so that they can take any actions required to secure their account.
+			// In case this account was accessed from a IP address that's not in their
+			// whitelist we want to notify them of the suspicious behavior.
 			if user != nil {
 				ipAddr, _, err := net.SplitHostPort(r.RemoteAddr)
 				if err != nil {
