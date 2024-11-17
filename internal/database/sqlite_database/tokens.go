@@ -80,7 +80,7 @@ func (db *SQLiteDatabase) DeleteToken(token, tokenType string) error {
 }
 
 func (db *SQLiteDatabase) DeleteAllTokens(email, tokenType string) error {
-	query := `DELETE tokens FROM tokens JOIN users on tokens.user_id = users.id WHERE tokens.token_type = ? AND users.email = ?;`
+	query := `DELETE FROM tokens WHERE token_type = ? AND user_id IN (SELECT id FROM users WHERE email = ?);`
 
 	result, err := db.connection.Exec(query, tokenType, email)
 	if err != nil {
