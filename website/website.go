@@ -8,6 +8,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla"
+	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
 	"github.com/PsionicAlch/psionicalch-home/website/config"
@@ -42,6 +43,11 @@ func StartWebsite() {
 	}
 	defer db.Close()
 
+	// Set up notifications.
+	cookieName := config.GetWithoutError[string]("NOTIFICATION_COOKIE_NAME")
+	domainName := config.GetWithoutError[string]("DOMAIN_NAME")
+	sessions := session.SetupSession(cookieName, domainName)
+
 	// Set up renderers.
 	pagesRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, ".page.tmpl", "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
 	if err != nil {
@@ -61,11 +67,10 @@ func StartWebsite() {
 	// Set up authentication system.
 	authLifetime := time.Duration(config.GetWithoutError[int]("AUTH_TOKEN_LIFETIME")) * time.Minute
 	pwdResetLifetime := time.Minute * 30
-	cookieName := config.GetWithoutError[string]("AUTH_COOKIE_NAME")
-	domainName := config.GetWithoutError[string]("DOMAIN_NAME")
+	cookieName = config.GetWithoutError[string]("AUTH_COOKIE_NAME")
 	currentKey := config.GetWithoutError[string]("CURRENT_SECURE_COOKIE_KEY")
 	previousKey := config.GetWithoutError[string]("PREVIOUS_SECURE_COOKIE_KEY")
-	auth, err := authentication.SetupAuthentication(db, authLifetime, pwdResetLifetime, cookieName, domainName, currentKey, previousKey)
+	auth, err := authentication.SetupAuthentication(db, sessions, authLifetime, pwdResetLifetime, cookieName, domainName, currentKey, previousKey)
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up authentication: ", err)
 	}
@@ -77,7 +82,7 @@ func StartWebsite() {
 	generalHandlers := general.SetupHandlers(pagesRenderer, db)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, db)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
-	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth, emailer)
+	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth, emailer, sessions)
 	profileHandlers := profile.SetupHandlers(pagesRenderer, auth, db)
 	settingsHandlers := settings.SetupHandlers(pagesRenderer)
 	adminHandlers := admin.SetupHandlers(pagesRenderer, auth)
@@ -101,14 +106,14 @@ func StartWebsite() {
 	router.Mount("/assets", http.StripPrefix("/assets", http.FileServerFS(assets.AssetFiles)))
 
 	// Set up routes.
-	router.With(auth.SetUser).Mount("/", general.RegisterRoutes(generalHandlers))
-	router.With(auth.SetUser).Mount("/accounts", accounts.RegisterRoutes(accountHandlers))
-	router.With(auth.SetUser).Mount("/profile", profile.RegisterRoutes(profileHandlers))
-	router.With(auth.SetUser).Mount("/tutorials", tutorials.RegisterRoutes(tutorialHandlers))
-	router.With(auth.SetUser).Mount("/courses", courses.RegisterRoutes(courseHandlers))
-	router.With(auth.SetUserWithEmail(emailer)).Mount("/settings", settings.RegisterRoutes(settingsHandlers))
-	router.With(auth.SetUserWithEmail(emailer)).Mount("/admin", admin.RegisterRoutes(adminHandlers))
-	router.With(auth.SetUser).Mount("/authors", authors.RegisterRoutes(authorsHandlers))
+	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/", general.RegisterRoutes(generalHandlers))
+	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/accounts", accounts.RegisterRoutes(accountHandlers))
+	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/profile", profile.RegisterRoutes(profileHandlers))
+	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/tutorials", tutorials.RegisterRoutes(tutorialHandlers))
+	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/courses", courses.RegisterRoutes(courseHandlers))
+	router.With(auth.SetUserWithEmail(emailer), sessions.SessionMiddleware).Mount("/settings", settings.RegisterRoutes(settingsHandlers))
+	router.With(auth.SetUserWithEmail(emailer), sessions.SessionMiddleware).Mount("/admin", admin.RegisterRoutes(adminHandlers))
+	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/authors", authors.RegisterRoutes(authorsHandlers))
 
 	// Start server.
 	port := config.GetWithoutError[string]("PORT")

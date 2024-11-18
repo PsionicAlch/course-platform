@@ -7,6 +7,7 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
+	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/emails"
 	"github.com/PsionicAlch/psionicalch-home/website/forms"
@@ -20,9 +21,10 @@ type Handlers struct {
 	Renderers *pages.Renderers
 	Auth      *authentication.Authentication
 	Emailer   *emails.Emails
+	Session   *session.Session
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *authentication.Authentication, emailer *emails.Emails) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *authentication.Authentication, emailer *emails.Emails, sessions *session.Session) *Handlers {
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
@@ -33,6 +35,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, a
 		},
 		Auth:    auth,
 		Emailer: emailer,
+		Session: sessions,
 	}
 }
 
@@ -68,7 +71,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get IP address from r.RemoteAddr: %s\n", err)
 
-		// TODO: Set up flash message for unexpected server errors.
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
 		pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
 		if err := h.Renderers.Page.RenderHTML(w, "accounts-login", pageData); err != nil {
@@ -90,7 +93,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		} else {
 			h.ErrorLog.Printf("Failed to log user (\"%s\") in: %s\n", email, err)
 
-			// TODO: Set up flash message for unexpected server errors.
+			h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
 			pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
 			if err := h.Renderers.Page.RenderHTML(w, "accounts-login", pageData); err != nil {
@@ -112,10 +115,12 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, cookie)
 
-	// TODO: Create sessions system so that we can redirect user back to the page that they were on before.
-
-	// In case we weren't redirected to login, redirect user to their profile page.
-	http.Redirect(w, r, "/profile", http.StatusFound)
+	redirectUrl := h.Session.GetRedirectURL(r.Context())
+	if redirectUrl != "" {
+		http.Redirect(w, r, redirectUrl, http.StatusFound)
+	} else {
+		http.Redirect(w, r, "/profile", http.StatusFound)
+	}
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
@@ -150,7 +155,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get IP address from r.RemoteAddr: %s\n", err)
 
-		// TODO: Set flash message about unexpected server error.
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
 		pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
 		if err := h.Renderers.Page.RenderHTML(w, "accounts-signup", pageData); err != nil {
@@ -172,7 +177,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		} else {
 			h.ErrorLog.Printf("Failed to sign user up: %s\n", err)
 
-			// TODO: Set flash message about unexpected server error.
+			h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
 			pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
 			if err := h.Renderers.Page.RenderHTML(w, "accounts-signup", pageData); err != nil {
@@ -187,10 +192,12 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, cookie)
 
-	// TODO: Create sessions system so that we can redirect user back to the page that they were on before.
-
-	// Redirect user to courses page so that they can start buying courses.
-	utils.Redirect(w, r, "/courses")
+	redirectUrl := h.Session.GetRedirectURL(r.Context())
+	if redirectUrl != "" {
+		http.Redirect(w, r, redirectUrl, http.StatusFound)
+	} else {
+		utils.Redirect(w, r, "/courses")
+	}
 }
 
 func (h *Handlers) LogoutDelete(w http.ResponseWriter, r *http.Request) {
@@ -201,7 +208,7 @@ func (h *Handlers) LogoutDelete(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("An error occurred whilst logging user out: %s\n", err)
 	}
 
-	// TODO: Reset session.
+	h.Session.Reset(r.Context())
 
 	http.SetCookie(w, cookie)
 
@@ -233,7 +240,7 @@ func (h *Handlers) ForgotPasswordPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil && err != authentication.ErrUnregisteredEmail {
 		h.ErrorLog.Printf("Failed to generate new password reset token: %s\n", err)
 
-		// TODO: Set flash message about unexpected server error.
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
 		pageData.ForgotPasswordForm = forms.NewForgotPasswordFormComponent(forgotPasswordForm)
 		if err := h.Renderers.Page.RenderHTML(w, "accounts-forgot-password", pageData); err != nil {
@@ -263,7 +270,7 @@ func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to validate password reset token: %s\n", err)
 
-		// TODO: Set flash message about unexpected server error.
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
 		if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
 			h.ErrorLog.Println(err)
@@ -273,7 +280,7 @@ func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !valid {
-		// TODO: Set flash message about invalid or expired token.
+		h.Session.SetErrorMessage(r.Context(), "The password token is invalid or expired.")
 		utils.Redirect(w, r, "/accounts/reset-password")
 		return
 	}
@@ -304,7 +311,7 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to validate password reset token: %s\n", err)
 
-		// TODO: Set flash message about unexpected server error.
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
 		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
 		if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
@@ -315,7 +322,7 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !valid {
-		// TODO: Set flash message about invalid or expired token.
+		h.Session.SetErrorMessage(r.Context(), "The password reset token is invalid or expired.")
 		utils.Redirect(w, r, "/accounts/reset-password")
 		return
 	}
@@ -324,7 +331,7 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user from password reset token: %s\n", err)
 
-		// TODO: Set flash message about unexpected server error.
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
 		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
 		if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
@@ -339,7 +346,7 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user from password reset token: %s\n", err)
 
-		// TODO: Set flash message about unexpected server error.
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
 		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
 		if err := h.Renderers.Page.RenderHTML(w, "accounts-reset-password", pageData); err != nil {
@@ -351,7 +358,7 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 
 	go h.Emailer.SendPasswordResetConfirmationEmail(user.Email, user.Name)
 
-	// TODO: Set up flash message to inform the user that their password has been changed.
+	h.Session.SetInfoMessage(r.Context(), "Your password has been successfully changed. You can now log in using your new credentials.")
 
 	utils.Redirect(w, r, "/accounts/login")
 }

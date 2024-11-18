@@ -41,7 +41,7 @@ func CreateCookieManager(lifetime time.Duration, cookieName, domainName, current
 		Name:     cookieName,
 		Domain:   domainName,
 		Path:     "/",
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteStrictMode,
 		Secure:   true,
 		LifeTime: lifetime,
 	}

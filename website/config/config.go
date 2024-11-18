@@ -13,11 +13,11 @@ const (
 
 func SetupConfig() error {
 	variables := map[string]validators.ValidationFunc{
-		"PORT":                validators.NotEmpty,
-		"ENVIRONMENT":         validators.InSlice([]string{development, testing, production}),
-		"DOMAIN_NAME":         validators.NotEmpty,
-		"SESSION_COOKIE_NAME": validators.NotEmpty,
-		"AUTH_COOKIE_NAME":    validators.NotEmpty,
+		"PORT":                     validators.NotEmpty,
+		"ENVIRONMENT":              validators.InSlice([]string{development, testing, production}),
+		"DOMAIN_NAME":              validators.NotEmpty,
+		"NOTIFICATION_COOKIE_NAME": validators.NotEmpty,
+		"AUTH_COOKIE_NAME":         validators.NotEmpty,
 		"AUTH_TOKEN_LIFETIME": validators.Chain(
 			validators.NotEmpty,
 			validators.Int,

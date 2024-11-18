@@ -6,6 +6,7 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 )
 
@@ -16,9 +17,10 @@ type Authentication struct {
 	PasswordParameters     *PasswordParameters
 	CookiesManager         *CookieManager
 	Database               database.Database
+	Session                *session.Session
 }
 
-func SetupAuthentication(db database.Database, authLifetime, pwdResetLifetime time.Duration, cookieName, domainName, currentSecureCookieKey, previousSecureCookieKey string) (*Authentication, error) {
+func SetupAuthentication(db database.Database, ses *session.Session, authLifetime, pwdResetLifetime time.Duration, cookieName, domainName, currentSecureCookieKey, previousSecureCookieKey string) (*Authentication, error) {
 	loggers := utils.CreateLoggers("AUTHENTICATION")
 
 	passwordParameters := DefaultPasswordParameters()
@@ -36,6 +38,7 @@ func SetupAuthentication(db database.Database, authLifetime, pwdResetLifetime ti
 		PasswordParameters:     passwordParameters,
 		CookiesManager:         cookiesManager,
 		Database:               db,
+		Session:                ses,
 	}
 
 	return auth, nil
