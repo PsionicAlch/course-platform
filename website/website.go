@@ -101,14 +101,14 @@ func StartWebsite() {
 	router.Mount("/assets", http.StripPrefix("/assets", http.FileServerFS(assets.AssetFiles)))
 
 	// Set up routes.
-	router.With(auth.SetUserWithEmail(emailer)).Mount("/", general.RegisterRoutes(generalHandlers))
-	router.With(auth.SetUserWithEmail(emailer)).Mount("/accounts", accounts.RegisterRoutes(accountHandlers))
-	router.With(auth.SetUserWithEmail(emailer)).Mount("/profile", profile.RegisterRoutes(profileHandlers))
-	router.With(auth.SetUserWithEmail(emailer)).Mount("/tutorials", tutorials.RegisterRoutes(tutorialHandlers))
-	router.With(auth.SetUserWithEmail(emailer)).Mount("/courses", courses.RegisterRoutes(courseHandlers))
+	router.With(auth.SetUser).Mount("/", general.RegisterRoutes(generalHandlers))
+	router.With(auth.SetUser).Mount("/accounts", accounts.RegisterRoutes(accountHandlers))
+	router.With(auth.SetUser).Mount("/profile", profile.RegisterRoutes(profileHandlers))
+	router.With(auth.SetUser).Mount("/tutorials", tutorials.RegisterRoutes(tutorialHandlers))
+	router.With(auth.SetUser).Mount("/courses", courses.RegisterRoutes(courseHandlers))
 	router.With(auth.SetUserWithEmail(emailer)).Mount("/settings", settings.RegisterRoutes(settingsHandlers))
 	router.With(auth.SetUserWithEmail(emailer)).Mount("/admin", admin.RegisterRoutes(adminHandlers))
-	router.With(auth.SetUserWithEmail(emailer)).Mount("/authors", authors.RegisterRoutes(authorsHandlers))
+	router.With(auth.SetUser).Mount("/authors", authors.RegisterRoutes(authorsHandlers))
 
 	// Start server.
 	port := config.GetWithoutError[string]("PORT")
