@@ -17,8 +17,7 @@ require (
 )
 
 require (
-	github.com/alexedwards/scs v1.4.1
-	github.com/alexedwards/scs/v2 v2.8.0 // indirect
+	github.com/alexedwards/scs/v2 v2.8.0
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
