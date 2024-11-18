@@ -1,0 +1,49 @@
+{{ define "notyf" }}
+  <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+  <script>
+    const notyf = new Notyf({
+      duration: 5000,
+      position: {
+        x: 'right',
+        y: 'top',
+      },
+      icon: false,
+      dismissible: true,
+      types: [
+        {
+          type: 'flash-info',
+          className: 'flash info'
+        },
+        {
+          type: 'flash-warning',
+          className: 'flash warning'
+        },
+        {
+          type: 'flash-error',
+          className: 'flash error'
+        },
+      ]
+    });
+
+    {{ range .InfoMessages }}
+      notyf.open({
+        type: 'flash-info',
+        message: '{{.}}'
+      });
+    {{ end }}
+
+    {{ range .WarningMessages }}
+      notyf.open({
+        type: 'flash-warning',
+        message: '{{.}}'
+      });
+    {{ end }}
+
+    {{ range .ErrorMessages }}
+      notyf.open({
+        type: 'flash-error',
+        message: '{{.}}'
+      });
+    {{ end }}
+  </script>
+{{ end }}

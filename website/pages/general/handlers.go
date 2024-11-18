@@ -33,7 +33,7 @@ func (h *Handlers) HomeGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "general-home", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "general-home", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -44,7 +44,7 @@ func (h *Handlers) AffiliateProgramGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "general-affiliate-program", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "general-affiliate-program", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -55,7 +55,7 @@ func (h *Handlers) PrivacyPolicyGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "general-privacy-policy", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "general-privacy-policy", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -66,7 +66,7 @@ func (h *Handlers) RefundPolicyGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "general-refund-policy", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "general-refund-policy", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

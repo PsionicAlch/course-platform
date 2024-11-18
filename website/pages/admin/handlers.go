@@ -36,7 +36,7 @@ func (h *Handlers) AdminsGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "admin-admins", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "admin-admins", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -47,7 +47,7 @@ func (h *Handlers) AuthorsGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "admin-authors", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "admin-authors", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -58,7 +58,7 @@ func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "admin-comments", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "admin-comments", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -69,7 +69,7 @@ func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "admin-courses", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "admin-courses", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -82,7 +82,7 @@ func (h *Handlers) DiscountsGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "admin-discounts", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "admin-discounts", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -93,7 +93,7 @@ func (h *Handlers) PurchasesGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "admin-purchases", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "admin-purchases", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -104,7 +104,7 @@ func (h *Handlers) RefundsGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "admin-refunds", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "admin-refunds", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -115,7 +115,7 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "admin-tutorials", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "admin-tutorials", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -126,7 +126,7 @@ func (h *Handlers) UsersGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "admin-users", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "admin-users", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

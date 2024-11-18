@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {{ block "meta-tags" . }}
+    {{ block "meta-tags" .UserData }}
     {{ end }}
 
     <link rel="stylesheet" href="/assets/css/variables.css">
@@ -13,13 +13,15 @@
     <link rel="stylesheet" href="/assets/css/styles.css">
     <link rel="stylesheet" href="/assets/css/navbar.css">
 
-    {{ block "stylesheets" . }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
+    {{ block "stylesheets" .UserData }}
     {{ end }}
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js" defer></script>
     <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.js" integrity="sha384-BBDmZzVt6vjz5YbQqZPtFZW82o8QotoM7RUp5xOxV3nSJ8u2pSdtzFAbGKzTlKtg" crossorigin="anonymous"></script>
 
-    {{ block "head-scripts" . }}
+    {{ block "head-scripts" .UserData }}
     {{ end }}
 
     {{ block "title" . }}
@@ -32,17 +34,19 @@
   >
     {{ template "noscript" }}
 
-    {{ template "navbar" .Navbar }}
+    {{ template "navbar" .UserData.Navbar }}
 
-    {{ block "body" . }}
+    {{ block "body" .UserData }}
       <h1>Default Body</h1>
     {{ end }}
 
-    {{ template "footer" . }}
+    {{ template "footer" .UserData }}
 
     <script src="/assets/js/script.js"></script>
 
-    {{ block "javascript" . }}
+    {{ template "notyf" . }}
+
+    {{ block "javascript" .UserData }}
     {{ end }}
   </body>
   </html>

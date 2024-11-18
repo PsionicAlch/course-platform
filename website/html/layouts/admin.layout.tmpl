@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {{ block "meta-tags" . }}
+    {{ block "meta-tags" .UserData }}
     {{ end }}
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 
     <link rel="stylesheet" href="/assets/css/variables.css">
     <link rel="stylesheet" href="/assets/css/reset.css">
@@ -14,17 +16,17 @@
     <link rel="stylesheet" href="/assets/css/navbar.css">
     <link rel="stylesheet" href="/assets/css/admin.css">
 
-    {{ block "stylesheets" . }}
+    {{ block "stylesheets" .UserData }}
     {{ end }}
 
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.js" integrity="sha384-BBDmZzVt6vjz5YbQqZPtFZW82o8QotoM7RUp5xOxV3nSJ8u2pSdtzFAbGKzTlKtg" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/htmx-ext-head-support@2.0.1/head-support.js"></script>
 
-    {{ block "head-scripts" . }}
+    {{ block "head-scripts" .UserData }}
     {{ end }}
 
-    {{ block "title" . }}
+    {{ block "title" .UserData }}
       <title>Build Real-World Golang Applications - Practical Courses for Intermediate Developers</title>
     {{ end }}
   </head>
@@ -37,12 +39,11 @@
   >
     {{ template "noscript" }}
 
-    <!-- TODO: Pass navbar specific struct down to template -->
-    {{ template "navbar" .Navbar }}
+    {{ template "navbar" .UserData.Navbar }}
 
     <main class="admin" x-data="{ adminNavOpen: false }">
       <div class="container">
-        {{ block "body" . }}
+        {{ block "body" .UserData }}
           <h1>Default Body</h1>
         {{ end }}
       </div>
@@ -88,7 +89,9 @@
 
     <script src="/assets/js/script.js"></script>
 
-    {{ block "javascript" . }}
+    {{ template "notyf" . }}
+
+    {{ block "javascript" .UserData }}
     {{ end }}
   </body>
   </html>

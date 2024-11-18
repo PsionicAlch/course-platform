@@ -26,6 +26,63 @@ noscript .noscript-container {
   text-align: center;
 }
 
+.flash {
+  border-radius: var(--primary-border-radius) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.flash:hover {
+  box-shadow: var(--shadow-sm-dark) !important;
+}
+
+.flash.info {
+  background: var(--primary-light-green-color) !important;
+  border: 1px solid var(--primary-green-color) !important;
+  color: var(--primary-dark-green-color) !important;
+}
+
+.flash.info .notyf__dismiss-btn {
+  background-color: var(--primary-green-color) !important;
+  transition: background-color .2s ease !important;
+  opacity: 1 !important;
+}
+
+.flash.info .notyf__dismiss-btn:hover {
+  background-color: var(--primary-dark-amber-color) !important;
+}
+
+.flash.warning {
+  background: var(--primary-light-amber-color) !important;
+  border: 1px solid var(--primary-amber-color) !important;
+  color: var(--primary-dark-amber-color) !important;
+}
+
+.flash.warning .notyf__dismiss-btn {
+  background-color: var(--primary-amber-color) !important;
+  transition: background-color .2s ease !important;
+  opacity: 1 !important;
+}
+
+.flash.warning .notyf__dismiss-btn:hover {
+  background-color: var(--primary-dark-amber-color) !important;
+}
+
+.flash.error {
+  background: var(--primary-light-red-color) !important;
+  border: 1px solid var(--primary-red-color) !important;
+  color: var(--primary-dark-red-color) !important;
+}
+
+.flash.error .notyf__dismiss-btn {
+  background-color: var(--primary-red-color) !important;
+  transition: background-color .2s ease !important;
+  opacity: 1 !important;
+}
+
+.flash.error .notyf__dismiss-btn:hover {
+  background-color: var(--primary-dark-red-color) !important;
+}
+
 .shadow-sm {
   box-shadow: var(--shadow-sm);
   transition: var(--shadow-transition);

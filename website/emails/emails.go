@@ -47,7 +47,7 @@ func (e *Emails) SendWelcomeEmail(email, firstName, affiliateCode string) {
 	emailData := html.NewGreetingEmail(firstName, affiliateCode)
 
 	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, "greeting", emailData); err != nil {
+	if err := e.Render.Render(buf, nil, "greeting", emailData); err != nil {
 		e.ErrorLog.Printf("Failed to render greeting email for %s: %s\n", email, err)
 		return
 	}
@@ -59,7 +59,7 @@ func (e *Emails) SendLoginEmail(email, firstName, ipAddr string, date time.Time)
 	emailData := html.NewLoginEmail(firstName, ipAddr, date)
 
 	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, "login", emailData); err != nil {
+	if err := e.Render.Render(buf, nil, "login", emailData); err != nil {
 		e.ErrorLog.Printf("Failed to render login email for %s: %s\n", email, err)
 		return
 	}
@@ -71,7 +71,7 @@ func (e *Emails) SendPasswordResetEmail(email, firstName, emailToken string) {
 	emailData := html.NewPasswordResetEmail(firstName, emailToken)
 
 	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, "reset-password", emailData); err != nil {
+	if err := e.Render.Render(buf, nil, "reset-password", emailData); err != nil {
 		e.ErrorLog.Printf("Failed to render reset password email for %s: %s\n", email, err)
 		return
 	}
@@ -83,7 +83,7 @@ func (e *Emails) SendPasswordResetConfirmationEmail(email, firstName string) {
 	emailData := html.NewPasswordResetConfirmationEmail(firstName)
 
 	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, "password-reset-confirmation", emailData); err != nil {
+	if err := e.Render.Render(buf, nil, "password-reset-confirmation", emailData); err != nil {
 		e.ErrorLog.Printf("Failed to render password reset confirmation email for %s: %s\n", email, err)
 		return
 	}
@@ -95,7 +95,7 @@ func (e *Emails) SendSuspiciousActivityEmail(email, firstName, ipAddr string, da
 	emailData := html.NewSuspiciousActivityEmail(firstName, ipAddr, dateTime)
 
 	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, "suspicious-activity", emailData); err != nil {
+	if err := e.Render.Render(buf, nil, "suspicious-activity", emailData); err != nil {
 		e.ErrorLog.Printf("Failed to render suspicious activity email for %s: %s\n", email, err)
 		return
 	}

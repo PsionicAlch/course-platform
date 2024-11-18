@@ -49,17 +49,17 @@ func StartWebsite() {
 	sessions := session.SetupSession(cookieName, domainName)
 
 	// Set up renderers.
-	pagesRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, ".page.tmpl", "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
+	pagesRenderer, err := vanilla.SetupVanillaRenderer(sessions, html.HTMLFiles, ".page.tmpl", "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up pages renderer: ", err)
 	}
 
-	htmxRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, ".htmx.tmpl", "htmx", "components/*.component.tmpl")
+	htmxRenderer, err := vanilla.SetupVanillaRenderer(sessions, html.HTMLFiles, ".htmx.tmpl", "htmx", "components/*.component.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}
 
-	emailRenderer, err := vanilla.SetupVanillaRenderer(html.HTMLFiles, ".email.tmpl", "emails", "layouts/email.layout.tmpl")
+	emailRenderer, err := vanilla.SetupVanillaRenderer(nil, html.HTMLFiles, ".email.tmpl", "emails", "layouts/email.layout.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up email renderer: ", err)
 	}
@@ -99,7 +99,7 @@ func StartWebsite() {
 	// Set up 404 handler.
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		// TODO: Set up 404 page.
-		pagesRenderer.RenderHTML(w, "404.page.tmpl", nil, http.StatusNotFound)
+		pagesRenderer.RenderHTML(w, r.Context(), "404.page.tmpl", nil, http.StatusNotFound)
 	})
 
 	// Set up asset routes.

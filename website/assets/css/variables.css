@@ -39,6 +39,7 @@
   /* Amber Button Settings */
   --primary-amber-color: #fbbf24;
   --primary-dark-amber-color: #f59e0b;
+  --primary-light-amber-color: #fde68a;
   --primary-amber-border: 1px solid var(--primary-amber-color);
 
   /* Green Button Settings */

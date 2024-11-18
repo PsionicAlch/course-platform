@@ -35,7 +35,7 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "tutorials", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "tutorials", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -46,7 +46,7 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, "tutorials-tutorial", pageData); err != nil {
+	if err := h.renderers.Page.RenderHTML(w, r.Context(), "tutorials-tutorial", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
