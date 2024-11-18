@@ -1,13 +1,13 @@
 ---
-title: "Lorem Ipsum Dolor Sit Amet 0"
-slug: "lorem-ipsum-dolor-sit-amet-0"
-description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+title: "Your First Go Program: A Step-by-Step Guide"
+slug: "your-first-go-program-a-step-by-step-guide"
+description: "Learn how to set up your Go environment and write your first Go program."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
 ---
 
-# Main Title
+## Lorem Ipsum Dolor Sit Amet
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer placerat ante ut sodales venenatis. Donec non aliquam ligula, sit amet sollicitudin ligula. Mauris ornare neque consequat, viverra quam non, fermentum leo. Nullam feugiat ullamcorper ipsum, vel dapibus elit porttitor eget. Cras rutrum, lacus at laoreet convallis, erat libero gravida ex, id accumsan augue magna id nunc. Proin semper elit eu arcu elementum, non aliquet massa scelerisque. Duis porta commodo dapibus. Nulla vestibulum tristique blandit. Suspendisse pulvinar tortor purus, sit amet varius urna vehicula sit amet. Aenean congue mi mi, a blandit lectus maximus efficitur. Nunc quis metus lorem. Morbi et diam in elit laoreet bibendum. Morbi ultrices ligula at massa accumsan, a congue enim ullamcorper. Phasellus sit amet ultricies dolor.
 
@@ -155,4 +155,3 @@ Fusce vehicula justo vitae lectus porttitor porttitor. Aenean id augue eu lacus 
 ### Tersary Title
 
 Pellentesque vitae tellus elit. Nunc faucibus tincidunt ante sit amet porta. Vestibulum imperdiet mauris pretium arcu tincidunt, eu rhoncus lectus condimentum. Nulla bibendum porta augue, vel facilisis ipsum sodales id. Phasellus interdum commodo nisl sed elementum. Nullam in rutrum ex, at euismod sapien. Aliquam ullamcorper dolor a enim sagittis, quis varius ipsum sodales. Nullam vel tincidunt lectus, eget placerat felis. Sed ac quam mi. Vestibulum et tortor id ante viverra feugiat. In mollis venenatis massa eget vehicula. Nam pretium risus elit, eu porttitor sapien tempor ut.
-
