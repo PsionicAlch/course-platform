@@ -31,4 +31,8 @@ type Database interface {
 	// IP Addresses functions.
 	AddIPAddress(userId, ipAddr string) error
 	GetUserIpAddresses(userId string) ([]string, error)
+
+	// Tutorials functions.
+	GetAllTutorials() ([]*models.TutorialModel, error)
+	BulkAddTutorials(tutorials []*models.TutorialModel) error
 }

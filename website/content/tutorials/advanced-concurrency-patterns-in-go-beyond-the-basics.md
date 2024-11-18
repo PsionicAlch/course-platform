@@ -1,9 +1,9 @@
 ---
-title: "Advanced Concurrency Patterns in Go: Beyond the Basics"
-description: "Explore advanced concurrency patterns and best practices in Go."
+title: "Advanced Concurrency Patterns in Go: Beyond the Basics part 1"
+description: "Explore advanced concurrency patterns and best practices in Go. This is an updated description"
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
-keywords: ["keyword 1", "keyword 2", "keyword 3"]
+keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 ---
 
 ## Lorem Ipsum Dolor Sit Amet
