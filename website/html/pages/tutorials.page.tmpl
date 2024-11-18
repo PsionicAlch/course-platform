@@ -1,7 +1,46 @@
 {{ template "base" .}}
 
 {{ define "meta-tags" }}
-  <!-- TODO: Generate SEO Tags with ChatGPT. -->
+  <meta name="description" content="Explore free Golang tutorials by PsionicAlch. Learn Go programming through step-by-step guides and real-world examples. Perfect for intermediate developers looking to master practical skills." />
+  <meta name="keywords" content="Golang tutorials, Go programming tutorials, free Golang guides, learn Go programming, Golang step-by-step, real-world Go projects, Go web development tutorials, HTMX, AlpineJS, Bootstrap with Golang" />
+
+  <meta property="og:title" content="Free Golang Tutorials - PsionicAlch" />
+  <meta property="og:description" content="Master Go programming with PsionicAlch's free Golang tutorials. Step-by-step guides for real-world projects designed for intermediate developers." />
+  <meta property="og:image" content="https://www.psionicalch.com/assets/img/tutorials_page_og_image.jpg" /> <!-- TODO: Replace with actual image -->
+  <meta property="og:url" content="https://www.psionicalch.com/tutorials" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="PsionicAlch" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@psionicalch" />
+  <meta name="twitter:title" content="Free Golang Tutorials - PsionicAlch" />
+  <meta name="twitter:description" content="Discover free Golang tutorials by PsionicAlch. Learn practical Go programming with real-world project examples and guides." />
+  <meta name="twitter:image" content="https://www.psionicalch.com/assets/img/tutorials_page_twitter_image.jpg" /> <!-- TODO: Replace with actual image -->
+
+  <!-- TODO: Add tutorial data here -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Free Golang Tutorials - PsionicAlch",
+      "url": "https://www.psionicalch.com/tutorials",
+      "description": "PsionicAlch's free tutorials for intermediate Go developers. Learn Golang through real-world examples and practical guides.",
+      "hasPart": [
+        {
+          "@type": "CreativeWork",
+          "name": "Building a Simple API with Golang and HTMX",
+          "url": "https://www.psionicalch.com/tutorials/building-a-simple-api",
+          "description": "Learn how to create a simple API using Golang and HTMX, with a focus on real-world applications."
+        },
+        {
+          "@type": "CreativeWork",
+          "name": "Using AlpineJS with Go Templates",
+          "url": "https://www.psionicalch.com/tutorials/alpinejs-go-templates",
+          "description": "Step-by-step guide to using AlpineJS with Go templates for dynamic front-end interactions."
+        }
+      ]
+    }
+  </script>
 {{ end }}
 
 {{ define "stylesheets" }}
@@ -9,7 +48,7 @@
 {{ end }}
 
 {{ define "title" }}
-  <title>Golang Tutorials | Practical, Real-World Applications | PsionicAlch</title>
+  <title>Free Golang Tutorials - PsionicAlch | Learn Go Programming with Real-World Examples</title>
 {{ end }}
 
 {{ define "body" }}
