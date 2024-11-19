@@ -4,6 +4,8 @@ description: "Explore the future of Go and the latest trends in the language."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "aqeEamtbZMfutfvpymfrjagdjgZPK7P0--YBlB6g6cnvOUDsH_R5Q-c-1XcBAbNlFV1-eYVE8OPPRgyURs732w"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

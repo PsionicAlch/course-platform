@@ -4,6 +4,8 @@ description: "Build high-performance systems with Go."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "lVInH6acJgumTtT56jfSBJhTNg-DHue-NN624jvCFgKU06tolNWeVgkE9xR8OTr5BsE6Qcx1n3eWvAG9zMo4wQ"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

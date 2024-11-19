@@ -4,6 +4,8 @@ description: "Understand the fundamental building blocks of Go: variables, data 
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "VJpIQX8Fqgf5aMMb4IzwrN0f864f-vVi9Bv5MPGtQ7Gg3LY_nFVEbKWbE6eyB_n-_VhvJcUl862Out4fnac8wg"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

@@ -4,6 +4,8 @@ description: "Explore the concept of pointers in Go and how to use them effectiv
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "ND0obdR-y6_6c0iqRjqA1rVjUkD3B_FPJIq09i0PXXlhp5iCRIATnADToZ-zLxGHO0vkyP_TVd2tRL0QHrCr2g"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

@@ -4,6 +4,8 @@ description: "Build scalable distributed systems with Go."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "1lPBf4nDY1hwVS4Ec7dfyBLMfSUMbjEX_WGHEtxZ5PLqM58paHftDn901kt0UxviyO5y3WXR0Fb23smw9w7dpg"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

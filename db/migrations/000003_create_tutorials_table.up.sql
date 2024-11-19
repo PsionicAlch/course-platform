@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS tutorials (
     author_id TEXT DEFAULT NULL,                                                                -- The user ID who published the tutorial (for when I have multiple authors).
 
     file_checksum TEXT NOT NULL,                                                                -- A SHA256 checksum to speed up the process of checking if a file has changed.
+    file_key TEXT NOT NULL,                                                                     -- Unique file key.
 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,                                              -- Timestamp for when the tutorial was initially created.
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,                                              -- Timestamp for when the tutorial was updated.
@@ -32,8 +33,9 @@ CREATE TABLE IF NOT EXISTS tutorials (
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL                             -- Foreign key for users table. Set to null if the author is deleted.
 );
 
--- A unique index to help speed up searching via slugs.
+-- A unique index to help speed up searching via slugs and/or file_key.
 CREATE UNIQUE INDEX idx_tutorials_slug ON tutorials(slug);
+CREATE UNIQUE INDEX idx_tutorials_file_key ON tutorials(file_key);
 
 -- Tutorials Keywords is a pivot table since a tutorial can have multiple keywords whilst
 -- a keyword can belong to multiple tutorials.

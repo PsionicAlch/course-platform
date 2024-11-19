@@ -4,6 +4,8 @@ description: "Manage dependencies in your Go projects effectively."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "YVDJ1hfTTxs3PZn9-kRqUv1YYziGvIcnyEYOs6FOL0s6pNmL3C-Nx-fg6-SX6Nn4qi7wUP3wp-SjXI4p5DhTmA"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

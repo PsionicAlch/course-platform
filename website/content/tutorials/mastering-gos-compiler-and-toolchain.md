@@ -4,6 +4,8 @@ description: "Learn how to use the Go compiler and toolchain to build efficient 
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "GOV1wYsBtdVh4uejxB05TDTBZ1tSZsrKfQadI2aXVXHX_yxclLJk-ZJhIJdAT_9f_x4LNpXcINnQUsVGwG1Fyw"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

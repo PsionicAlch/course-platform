@@ -4,6 +4,8 @@ description: "Learn how to handle errors gracefully in your Go programs."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "JjoCZo6DmlC4t4ic6j1pTQvXepVJtjg_cM6p_tSi8du2drkPwlu_rAYCckopGyyaN8z-4R2AXqTHEVfzD8msgw"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

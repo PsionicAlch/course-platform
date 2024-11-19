@@ -4,6 +4,8 @@ description: "Harness the power of concurrency in Go with goroutines and channel
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "rePxWEIboKUOC3XXMkIKFB5DQ8wKPppHjKt3lG5XqItRZF9mDxYq_L07TGBvmnVmioIYcc2nBVzLXyHvZuMNlg"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

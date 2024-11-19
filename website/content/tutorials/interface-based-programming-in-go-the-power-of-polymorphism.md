@@ -4,6 +4,8 @@ description: "Leverage the power of interfaces to create flexible and reusable G
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "-LXOiho0gmf9PVPxq4I7hA7bHw1O1pYqLCWUf5OX8bwdP72m0b7Hc-gIaWiYT39ylZ73qEbe8HQ7u0jLd4IDDA"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

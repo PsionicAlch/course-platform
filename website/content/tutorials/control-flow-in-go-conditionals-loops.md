@@ -4,6 +4,8 @@ description: "Learn how to control the flow of your Go programs using conditiona
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "FEuRCT_GQLI_xlnAKgcYz_AbqMFwCM72m1woUWrXn1ZcY4hywnzkVA0qF8kgURFqqHkrtG-VLkFJEA2KmJD23w"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

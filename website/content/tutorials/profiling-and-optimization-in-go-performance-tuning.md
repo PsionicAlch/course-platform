@@ -4,6 +4,8 @@ description: "Optimize the performance of your Go applications."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "sz0I2ToOQroHeAwI7lX88MaeG6WVnPa82E-74VaxnKZwxaqZl1FVlMJ9UHHO1bkF0M50KFz9Ex__4-wAHDP7qw"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

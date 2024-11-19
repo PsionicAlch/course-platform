@@ -4,6 +4,8 @@ description: "Use Go for data science and machine learning tasks."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "DD1aXz8fBPOrCbSv6u8QNxt8k5ThpeowPZbDR0GKDu6bbafX0Y-YgujhL5gCHiVgyMAB6Fi1R6M2wy4pRf0yNg"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

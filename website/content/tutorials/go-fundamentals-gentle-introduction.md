@@ -5,6 +5,8 @@ description: "A beginner-friendly guide to the core concepts of Go programming."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "MxZTdqYVB5diNpqtfbG-jt2wFgU4KRy84U4JW-YxrxX3L7orJb3YZbIaJ06mQWBFd5oga8f2a0C7duQPCEjirg"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

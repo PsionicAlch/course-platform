@@ -4,6 +4,8 @@ description: "Build robust and scalable RESTful APIs using Go."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "rca8K57MqGD3DFLAy9uWtB_nWUsd9eGufmNELOXIbQbTg7Ys3WxuCk1B8LRUr3iuU1iiVhZ7Jw_rTrXW80nU2w"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

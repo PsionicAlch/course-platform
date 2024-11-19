@@ -49,7 +49,6 @@ func (db *SQLiteDatabase) GetAllTutorials() ([]*models.TutorialModel, error) {
 	return tutorials, nil
 }
 
-// TODO: The update logic is broken and needs to be fixed
 func (db *SQLiteDatabase) BulkAddTutorials(tutorials []*models.TutorialModel) error {
 	tx, err := db.connection.Begin()
 	if err != nil {
@@ -58,85 +57,54 @@ func (db *SQLiteDatabase) BulkAddTutorials(tutorials []*models.TutorialModel) er
 	}
 
 	for _, tutorial := range tutorials {
-		// Try to insert the tutorial into the database.
-		id, err := database.GenerateID()
+		tutorialId, err := database.GenerateID()
 		if err != nil {
 			if err := tx.Rollback(); err != nil {
 				db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
 			}
 
-			db.ErrorLog.Printf("Failed to generate ID for new tutorial: %s\n", err)
+			db.ErrorLog.Printf("Failed generate ID for new tutorial: %s\n", err)
 			return err
 		}
 
-		// Just in case we end up grabbing a new copy of the tutorial from the database we want to keep a local copy
-		// of the new keywords.
-		keywords := tutorial.Keywords
-
-		if err := internal.AddTutorial(tx, id, tutorial.Title, tutorial.Slug, tutorial.Description, tutorial.ThumbnailURL, tutorial.BannerURL, tutorial.Content, tutorial.FileChecksum); err != nil {
-			if err == database.ErrTutorialAlreadyExists {
-				tutorial, err = internal.GetTutorialBySlug(tx, tutorial.Slug)
-				if err != nil {
-					if err := tx.Rollback(); err != nil {
-						db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
-					}
-
-					db.ErrorLog.Printf("Failed to get tutorial from the database: %s\n", err)
-					return err
-				}
-			} else {
-				if err := tx.Rollback(); err != nil {
-					db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
-				}
-
-				db.ErrorLog.Printf("Failed to add new tutorial to the database: %s\n", err)
-				return err
-			}
-		}
-
-		// In case this tutorial is getting updated we want to remove all keyword connections from the database.
-		if err := internal.DeleteAllKeywordsFromTutorial(tx, tutorial.ID); err != nil {
+		if err := internal.AddTutorial(tx, tutorialId, tutorial.Title, tutorial.Slug, tutorial.Description, tutorial.ThumbnailURL, tutorial.BannerURL, tutorial.Content, tutorial.FileChecksum, tutorial.FileKey); err != nil {
 			if err := tx.Rollback(); err != nil {
 				db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
 			}
 
-			db.ErrorLog.Printf("Failed to remove keywords from tutorial \"%s\": %s\n", tutorial.Title, err)
+			db.ErrorLog.Printf("Failed insert new tutorial in the database: %s\n", err)
 			return err
 		}
 
-		for _, keyword := range keywords {
-			// Generate a new ID for the new tutorials_keywords row.
+		for _, keyword := range tutorial.Keywords {
 			id, err := database.GenerateID()
 			if err != nil {
 				if err := tx.Rollback(); err != nil {
 					db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
 				}
 
-				db.ErrorLog.Printf("Failed to generate ID for new tutorials_keywords row: %s\n", err)
+				db.ErrorLog.Printf("Failed generate ID new tutorials_keywords row: %s\n", err)
 				return err
 			}
 
-			// Assume the keyword doesn't exist yet so generate a new ID.
 			keywordId, err := database.GenerateID()
 			if err != nil {
 				if err := tx.Rollback(); err != nil {
 					db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
 				}
 
-				db.ErrorLog.Printf("Failed to generate ID for new keyword: %s\n", err)
+				db.ErrorLog.Printf("Failed generate ID for (possibly) new keyword: %s\n", err)
 				return err
 			}
 
 			keyword.ID = keywordId
 
-			// Add the keyword to the tutorial via the pivot table. This function will work even if the keyword
-			// already exists in the database.
-			if err := internal.AddKeywordToTutorial(tx, id, tutorial.ID, keyword); err != nil {
+			if err := internal.AddKeywordToTutorial(tx, id, tutorialId, keyword); err != nil {
 				if err := tx.Rollback(); err != nil {
 					db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
 				}
 
-				db.ErrorLog.Printf("Failed to add new tutorials_keywords row: %s\n", err)
+				db.ErrorLog.Printf("Failed to add keyword to tutorials_keywords table: %s\n", err)
 				return err
 			}
 		}
@@ -148,6 +116,78 @@ func (db *SQLiteDatabase) BulkAddTutorials(tutorials []*models.TutorialModel) er
 		}
 
 		db.ErrorLog.Printf("Failed commit transaction after bulk inserting tutorials: %s\n", err)
+		return err
+	}
+
+	return nil
+}
+
+func (db *SQLiteDatabase) BulkUpdateTutorials(tutorials []*models.TutorialModel) error {
+	tx, err := db.connection.Begin()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to start transaction to bulk update tutorials: %s\n", err)
+		return err
+	}
+
+	for _, tutorial := range tutorials {
+		if err := internal.UpdateTutorial(tx, tutorial.ID, tutorial.Title, tutorial.Slug, tutorial.Description, tutorial.ThumbnailURL, tutorial.BannerURL, tutorial.Content, tutorial.FileChecksum, tutorial.FileKey, tutorial.AuthorID); err != nil {
+			if err := tx.Rollback(); err != nil {
+				db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
+			}
+
+			db.ErrorLog.Printf("Failed to update tutorial in the database: %s\n", err)
+			return err
+		}
+
+		if err := internal.DeleteAllKeywordsFromTutorial(tx, tutorial.ID); err != nil {
+			if err := tx.Rollback(); err != nil {
+				db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
+			}
+
+			db.ErrorLog.Printf("Failed to remove all keywords from tutorial in tutorials_keywords table: %s\n", err)
+			return err
+		}
+
+		for _, keyword := range tutorial.Keywords {
+			id, err := database.GenerateID()
+			if err != nil {
+				if err := tx.Rollback(); err != nil {
+					db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
+				}
+
+				db.ErrorLog.Printf("Failed generate ID new tutorials_keywords row: %s\n", err)
+				return err
+			}
+
+			keywordId, err := database.GenerateID()
+			if err != nil {
+				if err := tx.Rollback(); err != nil {
+					db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
+				}
+
+				db.ErrorLog.Printf("Failed generate ID for (possibly) new keyword: %s\n", err)
+				return err
+			}
+
+			keyword.ID = keywordId
+
+			if err := internal.AddKeywordToTutorial(tx, id, tutorial.ID, keyword); err != nil {
+				if err := tx.Rollback(); err != nil {
+					db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
+				}
+
+				db.ErrorLog.Printf("Failed to add keyword to tutorials_keywords table: %s\n", err)
+				return err
+			}
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		if err := tx.Rollback(); err != nil {
+			db.ErrorLog.Printf("Failed to rollback transaction after an error occurred: %s\n", err)
+		}
+
+		db.ErrorLog.Printf("Failed commit transaction after bulk updating tutorials: %s\n", err)
 		return err
 	}
 

@@ -4,6 +4,8 @@ description: "Write high-quality Go code by learning how to write unit and integ
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "5Bvw_NQ8fpvsB4_ao2DysGKzz_7BnfI3926YWejIdMR3L0-nsa-eiDieuryzrbncToSSzkIMOnUdct8BUk87Xw"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

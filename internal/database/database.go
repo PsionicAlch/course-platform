@@ -35,4 +35,5 @@ type Database interface {
 	// Tutorials functions.
 	GetAllTutorials() ([]*models.TutorialModel, error)
 	BulkAddTutorials(tutorials []*models.TutorialModel) error
+	BulkUpdateTutorials(tutorials []*models.TutorialModel) error
 }

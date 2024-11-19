@@ -4,6 +4,8 @@ description: "Organize your Go code effectively using packages and modules."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "McE9_9K6HQvDT4CX7dQDcajrI4gltWyDVkgu--4uuEkosUNXPEWKOSbWFRWC7Xwwy2-JmMwE1BgTfj8jH9YGYg"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

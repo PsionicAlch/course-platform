@@ -4,6 +4,8 @@ description: "Learn about different data structures in Go and how to use them to
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "sPeMMkNOeHfXBJd2R_V2qI5eRUll0O6Ne29qwgxGCqRe8g2ckrG5875_1TkS0WWobbidE_EiMuKuvyO_KyTkKQ"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

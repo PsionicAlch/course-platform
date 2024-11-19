@@ -4,6 +4,8 @@ description: "Learn how to use the reflection package to inspect and manipulate 
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "HCgb_Owx3QrpHPnAam0qD-q9n2R6YxFS5ShbxyRW-SXgccLWpOwoN2Imqc7PYUmMNJTjINcAwUdYBNOa3EhUSQ"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

@@ -16,6 +16,7 @@ type TutorialModel struct {
 	Published    bool
 	AuthorID     sql.NullString
 	FileChecksum string
+	FileKey      string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 

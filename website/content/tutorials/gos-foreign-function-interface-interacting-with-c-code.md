@@ -4,6 +4,8 @@ description: "Interoperate with C code from your Go programs."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "LJ0m3SlzRBhw3ACstdRjklOkmAsoDwOmJSHzUf2fUD1WhCvD7rdtc1M6g6kGmp5PSvtC-qYXTzc0uqSRn3zXsw"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

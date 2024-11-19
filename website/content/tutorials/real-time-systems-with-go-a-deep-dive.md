@@ -4,6 +4,8 @@ description: "Build real-time systems with Go."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "CcreWjJT6O-L-phaoACL-B2EA37a64Y94qS-96EEZmg6oeuWxWTQyOhuU8Fhln487L6plQNIUqQ7FagTPkC5ew"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

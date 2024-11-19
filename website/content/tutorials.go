@@ -17,6 +17,7 @@ import (
 //go:embed tutorials/*.md
 var tutorialsFS embed.FS
 
+// TODO: Implement unique key for each tutorial so that the tutorial uniqueness is not reliant on data that can change
 // TutorialMatter is a struct representation of the metadata found in each tutorial markdown file.
 type TutorialMatter struct {
 	Title        string   `yaml:"title"`
@@ -24,6 +25,7 @@ type TutorialMatter struct {
 	ThumbnailURL string   `yaml:"thumbnail_url"`
 	BannerURL    string   `yaml:"banner_url"`
 	Keywords     []string `yaml:"keywords"`
+	Key          string   `yaml:"key"`
 }
 
 // TutorialData is a struct representation for the information contained in a tutorial.
@@ -32,10 +34,11 @@ type TutorialData struct {
 	Content string
 }
 
+// TODO: Fix tutorial updating.
 func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db database.Database) {
 	defer waitGroup.Done()
 
-	var parsedTutorials []*models.TutorialModel
+	var newTutorials, updatedTutorials []*models.TutorialModel
 
 	timerStart := time.Now()
 
@@ -79,17 +82,17 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 		fileChecksum := hex.EncodeToString(hasher.Sum(nil))
 
 		// Slugs need to be unique so we can use it as a way to find individual tutorials.
-		slugIndex, slugFound := utils.InSliceFunc(TitleToSlug(matter.Title), tutorials, func(slug string, tutorial *models.TutorialModel) bool {
-			return slug == tutorial.Slug
+		fileKeyIndex, fileKeyFound := utils.InSliceFunc(matter.Key, tutorials, func(fileKey string, tutorial *models.TutorialModel) bool {
+			return fileKey == tutorial.FileKey
 		})
 
 		checksumMatch := false
-		if slugFound {
-			checksumMatch = tutorials[slugIndex].FileChecksum == string(fileChecksum)
+		if fileKeyFound {
+			checksumMatch = tutorials[fileKeyIndex].FileChecksum == string(fileChecksum)
 		}
 
 		// Skip the tutorial if it's already in the database and hasn't changed yet.
-		if slugFound && checksumMatch {
+		if fileKeyFound && checksumMatch {
 			continue
 		}
 
@@ -97,7 +100,7 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 		tutData.Content = string(MarkdownToHTML(data))
 
 		// This tutorial is new.
-		if !slugFound {
+		if !fileKeyFound {
 			var keywordModels []*models.KeywordModel
 			for _, keyword := range tutData.Keywords {
 				keywordModel := new(models.KeywordModel)
@@ -115,9 +118,10 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 			tutorialToAdd.BannerURL = tutData.BannerURL
 			tutorialToAdd.Content = tutData.Content
 			tutorialToAdd.FileChecksum = string(fileChecksum)
+			tutorialToAdd.FileKey = tutData.Key
 			tutorialToAdd.Keywords = keywordModels
 
-			parsedTutorials = append(parsedTutorials, tutorialToAdd)
+			newTutorials = append(newTutorials, tutorialToAdd)
 
 			continue
 		}
@@ -133,7 +137,7 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 			}
 
 			tutorialToUpdate := new(models.TutorialModel)
-			tutorialToUpdate.ID = tutorials[slugIndex].ID
+			tutorialToUpdate.ID = tutorials[fileKeyIndex].ID
 			tutorialToUpdate.Title = tutData.Title
 			tutorialToUpdate.Slug = TitleToSlug(tutData.Title)
 			tutorialToUpdate.Description = tutData.Description
@@ -141,19 +145,26 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 			tutorialToUpdate.BannerURL = tutData.BannerURL
 			tutorialToUpdate.Content = tutData.Content
 			tutorialToUpdate.Published = false
-			tutorialToUpdate.AuthorID = tutorials[slugIndex].AuthorID
+			tutorialToUpdate.AuthorID = tutorials[fileKeyIndex].AuthorID
 			tutorialToUpdate.FileChecksum = string(fileChecksum)
+			tutorialToUpdate.FileKey = tutData.Key
 			tutorialToUpdate.Keywords = keywordModels
 
-			parsedTutorials = append(parsedTutorials, tutorialToUpdate)
+			updatedTutorials = append(updatedTutorials, tutorialToUpdate)
 
 			continue
 		}
 	}
 
-	if len(parsedTutorials) > 0 {
-		if err := db.BulkAddTutorials(parsedTutorials); err != nil {
-			content.ErrorLog.Printf("Failed to bulk insert tutorials to database: %s\n", err)
+	if len(newTutorials) > 0 {
+		if err := db.BulkAddTutorials(newTutorials); err != nil {
+			content.ErrorLog.Printf("Failed to bulk add new tutorials to database: %s\n", err)
+		}
+	}
+
+	if len(updatedTutorials) > 0 {
+		if err := db.BulkUpdateTutorials(updatedTutorials); err != nil {
+			content.ErrorLog.Printf("Failed to bulk update tutorials in database: %s\n", err)
 		}
 	}
 

@@ -4,6 +4,8 @@ description: "Learn about the rich standard library that comes with Go."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "OQ2FuSah9dC4zuH4fKZWvVOeb5r76CRoakAjXEkLvGTU0rQeM6TaEnZnjpm32MhiuvQ246bSV4l4oEW3ke1kTg"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

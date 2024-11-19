@@ -4,6 +4,8 @@ description: "Learn advanced design patterns in Go to solve common programming p
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "VGb-3OgMfNtFdKnywnhKl2TDBk3JOVPEvH7aMJjQcsR2zKIOKzzhStQLSsBKl3nooTQ8XVh8hkWdzQLrgZVx0g"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

@@ -4,6 +4,8 @@ description: "Write clean, readable, and efficient Go code."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "mPdo-WVKzl3f_SL8kvC9xpTnAKc-671oELmI93LlSyAEs2q3g-O51qK7PErpjRKx025ezdFUzi3T6kCuW3Otlg"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

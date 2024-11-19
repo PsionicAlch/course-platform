@@ -4,6 +4,8 @@ description: "Explore the new generics feature in Go to write more flexible and 
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "YvBI3TBR2wYiwwWowBL06N9i0_XwKCMU8uqR0maGxCDuWG62sMexBXWPbwKiFHfQPlF5htnC5f5uTZKVEn-SQw"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

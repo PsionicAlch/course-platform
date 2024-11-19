@@ -12,6 +12,8 @@ DROP TABLE IF EXISTS tutorials_keywords;
 
 DROP INDEX IF EXISTS idx_tutorials_slug;
 
+DROP INDEX IF EXISTS idx_tutorials_file_key;
+
 DROP TABLE IF EXISTS tutorials;
 
 DROP INDEX IF EXISTS idx_keywords_keyword;

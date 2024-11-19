@@ -4,6 +4,8 @@ description: "Learn how to write secure Go applications."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "AgwWVBdN_eIrdq4wWeUogxUzEu5t-QE-rAkNZ1o8Pf3oMKeEhitwoEglPWiOpDBbgTetjm5p9C3mfKN8MX_aEw"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

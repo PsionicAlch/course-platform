@@ -4,6 +4,8 @@ description: "Discover how to create reusable functions and methods to organize 
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "O3xF_QVBxFPscPRFWOJNVmhlvYAAPHTO8IVdAkIAjEBHKKpE-Nb-enWXHoSQlwaf0X6YrQcvf7MuD_Vq1HG7wA"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

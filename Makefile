@@ -25,5 +25,8 @@ new-keys:
 load-content:
 	@go run -tags content_loader ./cmd/content
 
+generate-file-key:
+	@go run ./cmd/filekey
+
 clean:
 	rm -rf ./tmp

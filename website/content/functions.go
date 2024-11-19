@@ -1,6 +1,8 @@
 package content
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"regexp"
 	"strings"
 	"unicode"
@@ -57,4 +59,14 @@ func RemoveAccents(s string) string {
 		}
 	}
 	return t
+}
+
+func GenerateFileKey() (string, error) {
+	b := make([]byte, 64)
+	_, err := rand.Read(b)
+	if err != nil {
+		return "", err
+	}
+
+	return base64.RawURLEncoding.EncodeToString(b), nil
 }

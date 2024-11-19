@@ -5,6 +5,8 @@ description: "Learn how to set up your Go environment and write your first Go pr
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "30ABgeE8QLAcgmuEe8ZLjGc7iSWed6v70YnCHA9EvXU4cSkJX9A_Ad7hPqlI5IOj10wO23LDIBXYZPqCBbeB2A"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet

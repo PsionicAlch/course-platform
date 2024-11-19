@@ -4,6 +4,8 @@ description: "Build custom tools to extend the Go ecosystem."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+key: "4w0tyrVdIteKT_ZLwga-H4-sCMDfoH1yHk3mShJAcEidv-gbV9IPL6Y2euqJF_3CGZYk_E4Jf-fUrZavIgx-JA"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet
