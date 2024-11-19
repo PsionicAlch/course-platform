@@ -54,7 +54,7 @@ func StartWebsite() {
 		loggers.ErrorLog.Fatalln("Failed to set up pages renderer: ", err)
 	}
 
-	htmxRenderer, err := vanilla.SetupVanillaRenderer(sessions, html.HTMLFiles, ".htmx.tmpl", "htmx", "components/*.component.tmpl")
+	htmxRenderer, err := vanilla.SetupVanillaRenderer(nil, html.HTMLFiles, ".htmx.tmpl", "htmx", "components/*.component.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}
@@ -80,7 +80,7 @@ func StartWebsite() {
 
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer, db)
-	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, db)
+	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
 	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth, emailer, sessions)
 	profileHandlers := profile.SetupHandlers(pagesRenderer, auth, db)

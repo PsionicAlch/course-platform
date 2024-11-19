@@ -34,7 +34,6 @@ type TutorialData struct {
 	Content string
 }
 
-// TODO: Fix tutorial updating.
 func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db database.Database) {
 	defer waitGroup.Done()
 

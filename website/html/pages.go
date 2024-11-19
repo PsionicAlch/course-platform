@@ -134,6 +134,7 @@ type SettingsPage struct {
 
 type TutorialsPage struct {
 	BasePage
+	Tutorials *TutorialsListComponent
 }
 
 type TutorialsTutorialPage struct {

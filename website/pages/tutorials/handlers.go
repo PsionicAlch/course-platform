@@ -1,33 +1,41 @@
 package tutorials
 
 import (
+	"bytes"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
+	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
+	"github.com/go-chi/chi/v5"
 )
+
+const TutorialsPerPagination = 5
 
 type Handlers struct {
 	utils.Loggers
-	renderers *pages.Renderers
-	db        database.Database
+	Renderers *pages.Renderers
+	Database  database.Database
+	Session   *session.Session
 }
 
-func SetupHandlers(pageRenderer render.Renderer, db database.Database) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, sessions *session.Session) *Handlers {
 	loggers := utils.CreateLoggers("TUTORIALS HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
-		renderers: pages.CreateRenderers(pageRenderer, nil),
-		db:        db,
+		Renderers: pages.CreateRenderers(pageRenderer, htmxRenderer),
+		Database:  db,
+		Session:   sessions,
 	}
 }
-
-// TODO: Set up logic for commenting, liking, and bookmarking.
 
 func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
@@ -35,7 +43,85 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, r.Context(), "tutorials", pageData); err != nil {
+	tutorials, err := h.Database.GetAllTutorialsPaginated(1, TutorialsPerPagination)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get all tutorials (page 1) from the database: %s\n", err)
+
+		h.Session.SetErrorMessage(r.Context(), "Failed to load tutorials. Please try again")
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "tutorials", pageData); err != nil {
+			h.ErrorLog.Println(err)
+		}
+	}
+
+	var tutSlice []*models.TutorialModel
+	var lastTut *models.TutorialModel
+
+	if len(tutorials) < TutorialsPerPagination {
+		tutSlice = tutorials
+	} else {
+		tutSlice = tutorials[:len(tutorials)-1]
+		lastTut = tutorials[len(tutorials)-1]
+	}
+
+	pageData.Tutorials = &html.TutorialsListComponent{
+		Tutorials:    tutSlice,
+		LastTutorial: lastTut,
+		QueryURL:     fmt.Sprintf("/tutorials/page/%d", 2),
+	}
+
+	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "tutorials", pageData); err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) TutorialsPaginationGet(w http.ResponseWriter, r *http.Request) {
+	tutorialsComponent := &html.TutorialsListComponent{}
+
+	pageNumber, err := strconv.Atoi(chi.URLParam(r, "page-number"))
+	if err != nil {
+		h.ErrorLog.Printf("Failed to convert page-number to int: %s\n", err)
+		tutorialsComponent.ErrorMessage = "Unexpected server error. Please try again."
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", tutorialsComponent); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	tutorials, err := h.Database.GetAllTutorialsPaginated(pageNumber, TutorialsPerPagination)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get all tutorials (page %d) from the database: %s\n", pageNumber, err)
+		tutorialsComponent.ErrorMessage = "Failed to fetch next tutorials."
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", tutorialsComponent); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	var tutSlice []*models.TutorialModel
+	var lastTut *models.TutorialModel
+
+	if len(tutorials) < TutorialsPerPagination {
+		tutSlice = tutorials
+	} else {
+		tutSlice = tutorials[:len(tutorials)-1]
+		lastTut = tutorials[len(tutorials)-1]
+	}
+
+	tutorialsComponent.Tutorials = tutSlice
+	tutorialsComponent.LastTutorial = lastTut
+	tutorialsComponent.QueryURL = fmt.Sprintf("/tutorials/page/%d", pageNumber+1)
+
+	buf := new(bytes.Buffer)
+	if err := h.Renderers.Htmx.Render(buf, r.Context(), "tutorials", tutorialsComponent); err != nil {
+		h.ErrorLog.Println(err)
+	}
+
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", tutorialsComponent); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -46,7 +132,7 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.renderers.Page.RenderHTML(w, r.Context(), "tutorials-tutorial", pageData); err != nil {
+	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "tutorials-tutorial", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

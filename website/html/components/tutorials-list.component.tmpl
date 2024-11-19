@@ -1,0 +1,36 @@
+{{ define "tutorials-list" }}
+  {{ range .Tutorials }}
+    <div class="card shadow-sm" style="background-image: url('{{.ThumbnailURL}}');">
+      <div class="card-body">
+        <h2>{{.Title}}</h2>
+        <p>{{.Description}}</p>
+        <a href="/tutorials/{{.Slug}}" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+      </div>
+    </div>
+  {{ end }}
+
+  {{ if .LastTutorial }}
+    <div
+      hx-get="{{.QueryURL}}"
+      hx-trigger="revealed once"
+      hx-swap="afterend"
+      class="card shadow-sm"
+      style="background-image: url('{{.LastTutorial.ThumbnailURL}}');"
+    >
+      <div class="card-body">
+        <h2>{{.LastTutorial.Title}}</h2>
+        <p>{{.LastTutorial.Description}}</p>
+        <a href="/tutorials/{{.LastTutorial.Slug}}" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+      </div>
+    </div>
+  {{ end }}
+
+  {{ with .ErrorMessage }}
+      <script>
+        notyf.open({
+          type: 'flash-error',
+          message: '{{.}}'
+        });
+      </script>
+  {{ end }}
+{{ end }}

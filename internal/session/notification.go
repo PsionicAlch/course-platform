@@ -22,12 +22,16 @@ func (s *Session) SetMessage(ctx context.Context, key, msg string) {
 }
 
 func (s *Session) GetMessages(ctx context.Context, key string) []string {
-	messages, ok := s.session.Pop(ctx, key).([]string)
-	if !ok {
-		messages = []string{}
+	if s.session.Exists(ctx, key) {
+		messages, ok := s.session.Pop(ctx, key).([]string)
+		if !ok {
+			messages = []string{}
+		}
+
+		return messages
 	}
 
-	return messages
+	return []string{}
 }
 
 func (s *Session) SetInfoMessage(ctx context.Context, msg string) {

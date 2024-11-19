@@ -52,3 +52,30 @@ func DeleteAllKeywordsFromTutorial(dbFacade SqlDbFacade, tutorialId string) erro
 
 	return nil
 }
+
+func GetAllKeywordsForTutorial(dbFacade SqlDbFacade, tutorialId string) ([]*models.KeywordModel, error) {
+	query := `SELECT k.id, k.keyword FROM tutorials_keywords tk JOIN keywords k ON tk.keyword_id = k.id WHERE tk.tutorial_id = ?;`
+
+	var keywords []*models.KeywordModel
+
+	rows, err := dbFacade.Query(query, tutorialId)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var keyword models.KeywordModel
+
+		if err := rows.Scan(&keyword.ID, &keyword.Keyword); err != nil {
+			return nil, err
+		}
+
+		keywords = append(keywords, &keyword)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return keywords, nil
+}

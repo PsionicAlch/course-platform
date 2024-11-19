@@ -85,3 +85,10 @@ type ResetPasswordFormComponent struct {
 	PasswordInput        *PasswordControlComponent
 	ConfirmPasswordInput *PasswordControlComponent
 }
+
+type TutorialsListComponent struct {
+	Tutorials    []*models.TutorialModel
+	LastTutorial *models.TutorialModel
+	QueryURL     string
+	ErrorMessage string
+}
