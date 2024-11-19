@@ -1,9 +1,9 @@
 package tutorials
 
 import (
-	"bytes"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
@@ -116,10 +116,55 @@ func (h *Handlers) TutorialsPaginationGet(w http.ResponseWriter, r *http.Request
 	tutorialsComponent.LastTutorial = lastTut
 	tutorialsComponent.QueryURL = fmt.Sprintf("/tutorials/page/%d", pageNumber+1)
 
-	buf := new(bytes.Buffer)
-	if err := h.Renderers.Htmx.Render(buf, r.Context(), "tutorials", tutorialsComponent); err != nil {
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", tutorialsComponent); err != nil {
 		h.ErrorLog.Println(err)
 	}
+}
+
+func (h *Handlers) TutorialsSearchGet(w http.ResponseWriter, r *http.Request) {
+	var page int
+
+	queryPage := r.URL.Query().Get("page")
+	query := r.URL.Query().Get("query")
+	tutorialsComponent := &html.TutorialsListComponent{}
+
+	if queryPage == "" {
+		page = 1
+	} else {
+		pageNum, err := strconv.Atoi(queryPage)
+		if err != nil {
+			h.WarningLog.Printf("Failed to convert page to int: %s\n", err)
+			page = 1
+		} else {
+			page = pageNum
+		}
+	}
+
+	tutorials, err := h.Database.SearchTutorialsPaginated(query, page, TutorialsPerPagination)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to search for tutorials (page %d) from the database: %s\n", page, err)
+		tutorialsComponent.ErrorMessage = "Failed to get tutorials. Please try again."
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", tutorialsComponent); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	var tutSlice []*models.TutorialModel
+	var lastTut *models.TutorialModel
+
+	if len(tutorials) < TutorialsPerPagination {
+		tutSlice = tutorials
+	} else {
+		tutSlice = tutorials[:len(tutorials)-1]
+		lastTut = tutorials[len(tutorials)-1]
+	}
+
+	tutorialsComponent.Tutorials = tutSlice
+	tutorialsComponent.LastTutorial = lastTut
+	tutorialsComponent.QueryURL = fmt.Sprintf("/tutorials/search?page=%d&query=%s", page+1, url.QueryEscape(query))
 
 	if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", tutorialsComponent); err != nil {
 		h.ErrorLog.Println(err)

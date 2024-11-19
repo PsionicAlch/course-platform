@@ -69,6 +69,26 @@ func (db *SQLiteDatabase) GetAllTutorialsPaginated(page, elements int) ([]*model
 	return tutorials, nil
 }
 
+func (db *SQLiteDatabase) SearchTutorialsPaginated(term string, page, elements int) ([]*models.TutorialModel, error) {
+	tutorials, err := internal.SearchTutorialsPaginated(db.connection, term, page, elements)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to search for tutorials (paginated) from the database: %s\n", err)
+		return nil, err
+	}
+
+	for _, tutorial := range tutorials {
+		keywords, err := internal.GetAllKeywordsForTutorial(db.connection, tutorial.ID)
+		if err != nil {
+			db.ErrorLog.Printf("Failed to get all keywords for \"%s\" tutorial from the database: %s\n", tutorial.Title, err)
+			return nil, err
+		}
+
+		tutorial.Keywords = keywords
+	}
+
+	return tutorials, nil
+}
+
 func (db *SQLiteDatabase) BulkAddTutorials(tutorials []*models.TutorialModel) error {
 	tx, err := db.connection.Begin()
 	if err != nil {

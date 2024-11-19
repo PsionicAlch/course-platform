@@ -11,6 +11,7 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	router.Get("/", handlers.TutorialsGet)
 	router.Get("/page/{page-number}", handlers.TutorialsPaginationGet)
+	router.Get("/search", handlers.TutorialsSearchGet)
 
 	router.Get("/{slug}", handlers.TutorialGet)
 

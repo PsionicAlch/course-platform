@@ -54,8 +54,16 @@
 {{ define "body" }}
   <main class="tutorials">
     <div class="container">
-      <form method="get" action="/">
-        <input class="shadow-sm" type="text" name="search" placeholder="What tutorial are you looking for?">
+      <form>
+        <input
+          class="shadow-sm"
+          type="text"
+          name="query"
+          placeholder="What tutorial are you looking for?"
+          hx-trigger="keyup changed delay:500ms"
+          hx-get="/tutorials/search"
+          hx-target=".cards-list"
+        >
       </form>
 
       <hr>
