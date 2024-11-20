@@ -68,35 +68,35 @@
   cursor: pointer;
 }
 
-.tutorial-actions button.like p {
+.tutorial-actions button .like {
   color: var(--primary-text-color);
 }
 
-.tutorial-actions button.like p:hover {
+.tutorial-actions button .like:hover {
   color: var(--primary-red-color);
 }
 
-.tutorial-actions button.liked {
+.tutorial-actions button .liked {
   color: var(--primary-red-color);
 }
 
-.tutorial-actions button.liked p:hover {
+.tutorial-actions button .liked:hover {
   color: var(--primary-red-color);
 }
 
-.tutorial-actions button.bookmark p {
+.tutorial-actions button .bookmark {
   color: var(--primary-text-color);
 }
 
-.tutorial-actions button.bookmark p:hover {
+.tutorial-actions button .bookmark:hover {
   color: var(--primary-amber-color);
 }
 
-.tutorial-actions button.bookmarked p {
+.tutorial-actions button .bookmarked {
   color: var(--primary-amber-color);
 }
 
-.tutorial-actions button.bookmarked p:hover {
+.tutorial-actions button .bookmarked:hover {
   color: var(--primary-dark-amber-color);
 }
 

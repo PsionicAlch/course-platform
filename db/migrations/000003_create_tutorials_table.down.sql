@@ -1,6 +1,6 @@
-DROP INDEX IF EXISTS idx_tutorial_favorites_user_id;
+DROP INDEX IF EXISTS idx_tutorial_bookmarks_user_id;
 
-DROP TABLE IF EXISTS tutorials_favorites;
+DROP TABLE IF EXISTS tutorials_bookmarks;
 
 DROP INDEX IF EXISTS idx_tutorials_likes_user_id;
 

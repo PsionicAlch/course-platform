@@ -66,8 +66,11 @@ func (auth *Authentication) AllowAuthenticated(redirectURL string) func(next htt
 			user := GetUserFromRequest(r)
 
 			if user == nil {
-				auth.Session.SetRedirectURL(r.Context(), r.URL.Path)
-				utils.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
+				if redirectURL != "" {
+					auth.Session.SetRedirectURL(r.Context(), r.URL.Path)
+					utils.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
+				}
+
 				return
 			}
 
@@ -81,8 +84,11 @@ func (auth *Authentication) AllowUnauthenticated(redirectURL string) func(next h
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			user := GetUserFromRequest(r)
 			if user != nil {
-				auth.Session.SetRedirectURL(r.Context(), r.URL.Path)
-				utils.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
+				if redirectURL != "" {
+					auth.Session.SetRedirectURL(r.Context(), r.URL.Path)
+					utils.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
+				}
+
 				return
 			}
 
@@ -96,14 +102,20 @@ func (auth *Authentication) AllowAdmin(redirectURL string) func(next http.Handle
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			user := GetUserFromRequest(r)
 			if user == nil {
-				auth.Session.SetRedirectURL(r.Context(), r.URL.Path)
-				utils.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
+				if redirectURL != "" {
+					auth.Session.SetRedirectURL(r.Context(), r.URL.Path)
+					utils.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
+				}
+
 				return
 			}
 
 			if !user.IsAdmin {
-				auth.Session.SetRedirectURL(r.Context(), r.URL.Path)
-				utils.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
+				if redirectURL != "" {
+					auth.Session.SetRedirectURL(r.Context(), r.URL.Path)
+					utils.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
+				}
+
 				return
 			}
 

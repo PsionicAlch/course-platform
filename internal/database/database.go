@@ -37,6 +37,12 @@ type Database interface {
 	GetAllTutorialsPaginated(page, elements int) ([]*models.TutorialModel, error)
 	SearchTutorialsPaginated(term string, page, elements int) ([]*models.TutorialModel, error)
 	GetTutorialBySlug(slug string) (*models.TutorialModel, error)
+	UserLikedTutorial(userId, slug string) (bool, error)
+	UserLikeTutorial(userId, slug string) error
+	UserDislikeTutorial(userId, slug string) error
+	UserBookmarkedTutorial(userId, slug string) (bool, error)
+	UserBookmarkTutorial(userId, slug string) error
+	UserUnbookmarkTutorial(userId, slug string) error
 	BulkAddTutorials(tutorials []*models.TutorialModel) error
 	BulkUpdateTutorials(tutorials []*models.TutorialModel) error
 }

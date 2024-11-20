@@ -14,6 +14,8 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.Get("/search", handlers.TutorialsSearchGet)
 
 	router.Get("/{slug}", handlers.TutorialGet)
+	router.With(handlers.Auth.AllowAuthenticated("")).Post("/{slug}/like", handlers.LikeTutorialPost)
+	router.With(handlers.Auth.AllowAuthenticated("")).Post("/{slug}/bookmark", handlers.BookmarkTutorialPost)
 
 	return router
 }

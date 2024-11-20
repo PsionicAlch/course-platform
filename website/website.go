@@ -80,7 +80,7 @@ func StartWebsite() {
 
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer, db)
-	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions)
+	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions, auth)
 	courseHandlers := courses.SetupHandlers(pagesRenderer)
 	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth, emailer, sessions)
 	profileHandlers := profile.SetupHandlers(pagesRenderer, auth, db)

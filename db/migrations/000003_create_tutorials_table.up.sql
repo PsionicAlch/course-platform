@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS tutorials_likes (
 CREATE UNIQUE INDEX idx_tutorials_likes_user_id ON tutorials_likes(user_id, tutorial_id);
 
 -- Tutorials Favorites is a pivot table to keep track of which tutorials a user has favored.
-CREATE TABLE IF NOT EXISTS tutorials_favorites (
+CREATE TABLE IF NOT EXISTS tutorials_bookmarks (
     id TEXT PRIMARY KEY,                                                                        -- The ID for each tutorials users pair.
 
     user_id TEXT NOT NULL,                                                                      -- A reference to the user who favored this tutorial.
@@ -86,4 +86,4 @@ CREATE TABLE IF NOT EXISTS tutorials_favorites (
 
 -- Ensure that the user can only favor this tutorial once. It wouldn't make a lot of sense if
 -- the user could favor the same tutorial multiple times.
-CREATE UNIQUE INDEX idx_tutorials_favorites_user_id ON tutorials_favorites(user_id, tutorial_id);
+CREATE UNIQUE INDEX idx_tutorials_bookmarks_user_id ON tutorials_bookmarks(user_id, tutorial_id);

@@ -147,8 +147,11 @@ type TutorialsPage struct {
 
 type TutorialsTutorialPage struct {
 	BasePage
-	Tutorial    *models.TutorialModel
-	Author      *models.AuthorModel
-	ReadingTime string
-	Course      *models.CourseModel
+	User               *models.UserModel
+	Tutorial           *models.TutorialModel
+	Author             *models.AuthorModel
+	ReadingTime        string
+	Course             *models.CourseModel
+	TutorialLiked      bool
+	TutorialBookmarked bool
 }
