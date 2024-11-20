@@ -5,7 +5,6 @@ noscript {
   position: fixed;
   top: 0;
   left: 0;
-  /* background-color: var(--primary-background-color); */
   backdrop-filter: blur(16px);
   display: flex;
   align-items: center;

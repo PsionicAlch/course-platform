@@ -64,7 +64,6 @@
 {{ end }}
 
 {{ define "head-scripts" }}
-  <script src="/assets/js/alpine.min.js" defer></script>
   <script src="/assets/js/highlight.min.js" defer></script>
   <script src="/assets/js/apache.min.js" defer></script>
   <script src="/assets/js/bash.min.js" defer></script>
@@ -86,8 +85,6 @@
   <title>{{- .Tutorial.Title -}} - PsionicAlch | Learn Golang with Real-World Examples</title>
 {{ end }}
 
-<!-- TODO: Fix code highlighting -->
-
 {{ define "body" }}
   <main>
     <section class="container">
@@ -105,6 +102,7 @@
               <button
                 x-bind:class="{ 'liked': tutorialLiked, 'like': !tutorialLiked }"
                 x-on:click="tutorialLiked = !tutorialLiked"
+                aria-label="Like Tutorial"
               >
                 <p x-show="!tutorialLiked">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -121,6 +119,7 @@
               <button
                 x-bind:class="{ 'bookmarked': tutorialSaved, 'bookmark': !tutorialSaved }"
                 x-on:click="tutorialSaved = !tutorialSaved"
+                aria-label="Bookmark Tutorial"
               >
                 <p x-show="!tutorialSaved">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
