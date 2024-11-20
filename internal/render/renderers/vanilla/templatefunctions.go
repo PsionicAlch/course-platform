@@ -10,6 +10,7 @@ func CreateFuncMap() template.FuncMap {
 	funcMap := template.FuncMap{
 		"props":       Props,
 		"pretty_date": PrettyDate,
+		"html":        HTML,
 	}
 
 	return funcMap
@@ -36,4 +37,8 @@ func Props(values ...any) (map[string]any, error) {
 
 func PrettyDate(t time.Time) string {
 	return t.Format("Monday, January 2, 2006 at 3:04 PM")
+}
+
+func HTML(s string) template.HTML {
+	return template.HTML(s)
 }

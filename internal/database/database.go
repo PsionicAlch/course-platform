@@ -36,6 +36,7 @@ type Database interface {
 	GetAllTutorials() ([]*models.TutorialModel, error)
 	GetAllTutorialsPaginated(page, elements int) ([]*models.TutorialModel, error)
 	SearchTutorialsPaginated(term string, page, elements int) ([]*models.TutorialModel, error)
+	GetTutorialBySlug(slug string) (*models.TutorialModel, error)
 	BulkAddTutorials(tutorials []*models.TutorialModel) error
 	BulkUpdateTutorials(tutorials []*models.TutorialModel) error
 }

@@ -88,6 +88,14 @@ type CoursesPurchasesPage struct {
 	BasePage
 }
 
+type Errors404Page struct {
+	BasePage
+}
+
+type Errors500Page struct {
+	BasePage
+}
+
 type GeneralHomePage struct {
 	BasePage
 }
@@ -139,4 +147,8 @@ type TutorialsPage struct {
 
 type TutorialsTutorialPage struct {
 	BasePage
+	Tutorial    *models.TutorialModel
+	Author      *models.AuthorModel
+	ReadingTime string
+	Course      *models.CourseModel
 }

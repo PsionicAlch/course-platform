@@ -177,6 +177,27 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
+	tutorialSlug := chi.URLParam(r, "slug")
+
+	tutorial, err := h.Database.GetTutorialBySlug(tutorialSlug)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get tutorial (\"%s\") in the database: %s\n", tutorialSlug, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Tutorial = tutorial
+	pageData.Author = &models.AuthorModel{
+		Name:    "Jean-Jacques",
+		Surname: "Strydom",
+		Slug:    "jean-jacques-strydom",
+	}
+	pageData.Course = nil
+
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "tutorials-tutorial", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}

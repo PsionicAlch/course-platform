@@ -1,0 +1,23 @@
+{{ template "base" .}}
+
+{{ define "stylesheets" }}
+<link rel="stylesheet" href="/css/error.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Unexpected Server Error - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <main class="error">
+    <div class="container">
+      <section class="error-container">
+        <img src="/assets/img/desires-img.svg" alt="Crash test dummy gopher">
+
+        <h2>Internal Server Error</h2>
+
+        <p>We experienced an unexpected error on the server. We apologize for the inconvenience</p>
+      </section>
+    </div>
+  </main>
+{{ end }}
