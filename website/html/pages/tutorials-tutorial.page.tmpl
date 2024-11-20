@@ -138,15 +138,17 @@
   <section class="comment-section">
     <div class="container">
       <div class="comments-container shadow-sm">
-        <div class="comments-header">
-          <form action="/">
-            <textarea name="comment" id="comment" placeholder="Why not leave your thoughts?" rows="5"></textarea>
+        {{ if .User }}
+          <div class="comments-header">
+            <form action="/">
+              <textarea name="comment" id="comment" placeholder="Why not leave your thoughts?" rows="5"></textarea>
 
-            <button type="submit" class="btn btn-blue shadow-sm">Comment</button>
-          </form>
-        </div>
+              <button type="submit" class="btn btn-blue shadow-sm">Comment</button>
+            </form>
+          </div>
 
-        <hr>
+          <hr>
+        {{ end }}
 
         <div class="comments-body">
           <div class="comment shadow-sm-hover">
