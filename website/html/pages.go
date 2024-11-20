@@ -154,4 +154,5 @@ type TutorialsTutorialPage struct {
 	Course             *models.CourseModel
 	TutorialLiked      bool
 	TutorialBookmarked bool
+	Comments           *CommentsListComponent
 }

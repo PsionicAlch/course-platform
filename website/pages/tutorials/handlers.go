@@ -14,10 +14,12 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
+	goaway "github.com/TwiN/go-away"
 	"github.com/go-chi/chi/v5"
 )
 
 const TutorialsPerPagination = 5
+const CommentsPerPagination = 5
 
 type Handlers struct {
 	utils.Loggers
@@ -228,6 +230,35 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		pageData.TutorialBookmarked = userBookmarkedTutorial
 	}
 
+	comments, err := h.Database.GetAllCommentsPaginated(tutorial.ID, 1, CommentsPerPagination)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get comments for tutorial (\"%s\"): %s\n", tutorial.Title, err)
+		h.Session.SetErrorMessage(r.Context(), "Failed to get comments for tutorial.")
+	}
+
+	if comments != nil {
+		if err := h.Database.CommentsSetUser(comments); err != nil {
+			h.ErrorLog.Printf("Failed to get users of comments for tutorial (\"%s\"): %s\n", tutorial.Title, err)
+			h.Session.SetErrorMessage(r.Context(), "Failed to get comments for tutorial.")
+
+			comments = nil
+		}
+	}
+
+	if comments != nil {
+		h.Database.CommentsSetTimeAgo(comments)
+	}
+
+	var commentsSlice []*models.CommentModel
+	var lastComment *models.CommentModel
+
+	if len(comments) < CommentsPerPagination {
+		commentsSlice = comments
+	} else {
+		commentsSlice = comments[:len(comments)-1]
+		lastComment = comments[len(comments)-1]
+	}
+
 	pageData.Tutorial = tutorial
 	pageData.Author = &models.AuthorModel{
 		Name:    "Jean-Jacques",
@@ -235,6 +266,11 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		Slug:    "jean-jacques-strydom",
 	}
 	pageData.Course = nil
+	pageData.Comments = &html.CommentsListComponent{
+		Comments:    commentsSlice,
+		LastComment: lastComment,
+		QueryURL:    fmt.Sprintf("/tutorials/%s/comments?page=2", tutorial.Slug),
+	}
 
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "tutorials-tutorial", pageData); err != nil {
 		h.ErrorLog.Println(err)
@@ -338,6 +374,95 @@ func (h *Handlers) BookmarkTutorialPost(w http.ResponseWriter, r *http.Request) 
 		}
 
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "bookmark-filled", nil); err != nil {
+			h.ErrorLog.Println(err)
+		}
+	}
+}
+
+func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
+	commentsList := &html.CommentsListComponent{}
+
+	tutorialSlug := chi.URLParam(r, "slug")
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil {
+		h.ErrorLog.Printf("Failed to convert page URL query to int: %s\n", err)
+		commentsList.ErrorMessage = "Failed to load comments."
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "comments", commentsList, http.StatusBadRequest); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	comments, err := h.Database.GetAllCommentsBySlugPaginated(tutorialSlug, page, CommentsPerPagination)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get comments for tutorial (\"%s\"): %s\n", tutorialSlug, err)
+		commentsList.ErrorMessage = "Failed to load comments."
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "comments", commentsList, http.StatusBadRequest); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if comments != nil {
+		if err := h.Database.CommentsSetUser(comments); err != nil {
+			h.ErrorLog.Printf("Failed to get users of comments for tutorial (\"%s\"): %s\n", tutorialSlug, err)
+			h.Session.SetErrorMessage(r.Context(), "Failed to get comments for tutorial.")
+
+			comments = nil
+		}
+	}
+
+	if comments != nil {
+		h.Database.CommentsSetTimeAgo(comments)
+	}
+
+	var commentsSlice []*models.CommentModel
+	var lastComment *models.CommentModel
+
+	if len(comments) < CommentsPerPagination {
+		commentsSlice = comments
+	} else {
+		commentsSlice = comments[:len(comments)-1]
+		lastComment = comments[len(comments)-1]
+	}
+
+	commentsList.Comments = commentsSlice
+	commentsList.LastComment = lastComment
+	commentsList.QueryURL = fmt.Sprintf("/tutorials/%s/comments?page=%d", tutorialSlug, page+1)
+
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "comments", commentsList); err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) CommentsPost(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	tutorialSlug := chi.URLParam(r, "slug")
+	comment := r.Form.Get("comment")
+	user := authentication.GetUserFromRequest(r)
+
+	if user != nil && comment != "" {
+		if len(comment) > 500 {
+			comment = comment[:500]
+		}
+
+		comment = goaway.Censor(comment)
+
+		commentModel, err := h.Database.AddCommentBySlug(comment, user.ID, tutorialSlug)
+		if err != nil {
+			h.ErrorLog.Printf("Failed to add user's (\"%s\") comment on \"%s\" to the database: %s\n", user.ID, tutorialSlug, err)
+			return
+		}
+
+		commentModel.User = user
+		h.Database.CommentSetTimeAgo(commentModel)
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "single-comment", commentModel); err != nil {
 			h.ErrorLog.Println(err)
 		}
 	}

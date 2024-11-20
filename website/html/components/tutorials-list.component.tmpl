@@ -1,12 +1,14 @@
 {{ define "tutorials-list" }}
-  {{ range .Tutorials }}
-    <div class="card shadow-sm" style="background-image: url('{{.ThumbnailURL}}');">
-      <div class="card-body">
-        <h2>{{.Title}}</h2>
-        <p>{{.Description}}</p>
-        <a href="/tutorials/{{.Slug}}" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+  {{ if .Tutorials }}
+    {{ range .Tutorials }}
+      <div class="card shadow-sm" style="background-image: url('{{.ThumbnailURL}}');">
+        <div class="card-body">
+          <h2>{{.Title}}</h2>
+          <p>{{.Description}}</p>
+          <a href="/tutorials/{{.Slug}}" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+        </div>
       </div>
-    </div>
+    {{ end }}
   {{ end }}
 
   {{ if .LastTutorial }}

@@ -17,5 +17,8 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.With(handlers.Auth.AllowAuthenticated("")).Post("/{slug}/like", handlers.LikeTutorialPost)
 	router.With(handlers.Auth.AllowAuthenticated("")).Post("/{slug}/bookmark", handlers.BookmarkTutorialPost)
 
+	router.Get("/{slug}/comments", handlers.CommentsGet)
+	router.With(handlers.Auth.AllowAuthenticated("")).Post("/{slug}/comments", handlers.CommentsPost)
+
 	return router
 }

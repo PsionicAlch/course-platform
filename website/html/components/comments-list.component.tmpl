@@ -1,0 +1,37 @@
+{{ define "comments-list" }}
+  {{ if .Comments }}
+    {{ range .Comments }}
+      {{ template "comment" . }}
+    {{ end }}
+  {{ end }}
+
+  {{ if .LastComment }}
+    <div
+      hx-get="{{ .QueryURL }}"
+      hx-trigger="revealed once"
+      hx-swap="afterend"
+      class="comment shadow-sm-hover"
+    >
+      <div class="comment-header">
+        <p><b>{{- .LastComment.User.Name -}} {{- .LastComment.User.Surname -}}</b></p>
+
+        <p><small>{{- .LastComment.TimeAgo -}}</small></p>
+      </div>
+
+      <hr>
+
+      <div class="comment-body">
+        <p>{{- .LastComment.Content -}}</p>
+      </div>
+    </div>
+  {{ end }}
+
+  {{ with .ErrorMessage }}
+      <script>
+        notyf.open({
+          type: 'flash-error',
+          message: '{{.}}'
+        });
+      </script>
+  {{ end }}
+{{ end }}

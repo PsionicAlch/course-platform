@@ -89,6 +89,16 @@ func (db *SQLiteDatabase) SearchTutorialsPaginated(term string, page, elements i
 	return tutorials, nil
 }
 
+func (db *SQLiteDatabase) GetTutorialByID(id string) (*models.TutorialModel, error) {
+	tutorial, err := internal.GetTutorialByID(db.connection, id)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get tutorial by id (\"%s\") from the database: %s\n", id, err)
+		return nil, err
+	}
+
+	return tutorial, nil
+}
+
 func (db *SQLiteDatabase) GetTutorialBySlug(slug string) (*models.TutorialModel, error) {
 	tutorial, err := internal.GetTutorialBySlug(db.connection, slug)
 	if err != nil {
@@ -105,74 +115,6 @@ func (db *SQLiteDatabase) GetTutorialBySlug(slug string) (*models.TutorialModel,
 	tutorial.Keywords = keywords
 
 	return tutorial, nil
-}
-
-func (db *SQLiteDatabase) UserLikedTutorial(userId, slug string) (bool, error) {
-	liked, err := internal.UserLikedTutorial(db.connection, userId, slug)
-	if err != nil {
-		db.ErrorLog.Printf("Failed to see if user liked tutorial %s in the database: %s\n", slug, err)
-		return false, err
-	}
-
-	return liked, nil
-}
-
-func (db *SQLiteDatabase) UserLikeTutorial(userId, slug string) error {
-	id, err := database.GenerateID()
-	if err != nil {
-		db.ErrorLog.Printf("Failed to generate ID for new tutorials_likes database row: %s\n", err)
-		return err
-	}
-
-	if err := internal.UserLikeTutorial(db.connection, id, userId, slug); err != nil {
-		db.ErrorLog.Printf("Failed to insert new row into tutorials_likes database table: %s\n", err)
-		return err
-	}
-
-	return nil
-}
-
-func (db *SQLiteDatabase) UserDislikeTutorial(userId, slug string) error {
-	if err := internal.UserDislikeTutorial(db.connection, userId, slug); err != nil {
-		db.ErrorLog.Printf("Failed to delete row from tutorials_likes database table: %s\n", err)
-		return err
-	}
-
-	return nil
-}
-
-func (db *SQLiteDatabase) UserBookmarkedTutorial(userId, slug string) (bool, error) {
-	bookmarked, err := internal.UserBookmarkedTutorial(db.connection, userId, slug)
-	if err != nil {
-		db.ErrorLog.Printf("Failed to see if user bookmarked tutorial %s in the database: %s\n", slug, err)
-		return false, err
-	}
-
-	return bookmarked, nil
-}
-
-func (db *SQLiteDatabase) UserBookmarkTutorial(userId, slug string) error {
-	id, err := database.GenerateID()
-	if err != nil {
-		db.ErrorLog.Printf("Failed to generate ID for new tutorials_bookmarks database row: %s\n", err)
-		return err
-	}
-
-	if err := internal.UserBookmarkTutorial(db.connection, id, userId, slug); err != nil {
-		db.ErrorLog.Printf("Failed to insert new row into tutorials_bookmarks database table: %s\n", err)
-		return err
-	}
-
-	return nil
-}
-
-func (db *SQLiteDatabase) UserUnbookmarkTutorial(userId, slug string) error {
-	if err := internal.UserUnbookmarkTutorial(db.connection, userId, slug); err != nil {
-		db.ErrorLog.Printf("Failed to delete row from tutorials_bookmarks database table: %s\n", err)
-		return err
-	}
-
-	return nil
 }
 
 func (db *SQLiteDatabase) BulkAddTutorials(tutorials []*models.TutorialModel) error {

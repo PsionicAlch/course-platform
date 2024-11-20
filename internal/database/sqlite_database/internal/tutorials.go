@@ -114,6 +114,28 @@ func SearchTutorialsPaginated(dbFacade SqlDbFacade, term string, page, elements 
 	return tutorials, nil
 }
 
+func GetTutorialByID(dbFacade SqlDbFacade, id string) (*models.TutorialModel, error) {
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials WHERE id = ?;`
+
+	var tutorial models.TutorialModel
+	var publishedInt int
+
+	row := dbFacade.QueryRow(query, id)
+	if err := row.Scan(&tutorial.ID, &tutorial.Title, &tutorial.Slug, &tutorial.Description, &tutorial.ThumbnailURL, &tutorial.BannerURL, &tutorial.Content, &publishedInt, &tutorial.AuthorID, &tutorial.FileChecksum, &tutorial.FileKey, &tutorial.CreatedAt, &tutorial.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	if publishedInt == 1 {
+		tutorial.Published = true
+	}
+
+	return &tutorial, nil
+}
+
 func GetTutorialBySlug(dbFacade SqlDbFacade, slug string) (*models.TutorialModel, error) {
 	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials WHERE slug = ?;`
 

@@ -22,3 +22,15 @@ type TutorialModel struct {
 
 	Keywords []*KeywordModel
 }
+
+type Tutorial struct {
+	Title        string
+	Slug         string
+	Description  string
+	ThumbnailURL string
+	BannerURL    string
+	Content      string
+	Published    bool
+	Author       *User
+	Keywords     []Keyword
+}

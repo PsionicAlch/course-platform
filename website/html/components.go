@@ -92,3 +92,10 @@ type TutorialsListComponent struct {
 	QueryURL     string
 	ErrorMessage string
 }
+
+type CommentsListComponent struct {
+	Comments     []*models.CommentModel
+	LastComment  *models.CommentModel
+	QueryURL     string
+	ErrorMessage string
+}
