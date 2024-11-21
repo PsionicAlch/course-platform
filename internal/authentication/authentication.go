@@ -79,7 +79,7 @@ func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr st
 }
 
 func (auth *Authentication) LogUserIn(email, password string) (*models.UserModel, *http.Cookie, error) {
-	user, err := auth.Database.GetUser(email)
+	user, err := auth.Database.GetUserByEmail(email)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to find user (\"%s\") in database: %s\n", email, err)
 		return nil, nil, err
@@ -182,7 +182,7 @@ func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*mode
 }
 
 func (auth *Authentication) GeneratePasswordResetToken(email string) (*models.UserModel, string, error) {
-	user, err := auth.Database.GetUser(email)
+	user, err := auth.Database.GetUserByEmail(email)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to find user (\"%s\") in database: %s\n", email, err)
 		return nil, "", err

@@ -19,18 +19,4 @@ type TutorialModel struct {
 	FileKey      string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-
-	Keywords []*KeywordModel
-}
-
-type Tutorial struct {
-	Title        string
-	Slug         string
-	Description  string
-	ThumbnailURL string
-	BannerURL    string
-	Content      string
-	Published    bool
-	Author       *User
-	Keywords     []Keyword
 }

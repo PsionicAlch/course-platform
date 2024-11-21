@@ -8,40 +8,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
-func (db *SQLiteDatabase) GetAllComments(tutorialId string) ([]*models.CommentModel, error) {
-	query := `SELECT id, content, user_id, tutorial_id, created_at FROM comments WHERE tutorial_id = ?;`
-
-	var comments []*models.CommentModel
-
-	rows, err := db.connection.Query(query, tutorialId)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return comments, nil
-		}
-
-		db.ErrorLog.Printf("Failed to get all comments from the database: %s\n", err)
-		return nil, err
-	}
-
-	for rows.Next() {
-		var comment models.CommentModel
-
-		if err := rows.Scan(&comment.ID, &comment.Content, &comment.UserID, &comment.TutorialID, &comment.CreatedAt); err != nil {
-			db.ErrorLog.Printf("Failed to read individual row from comments table: %s\n", err)
-			return nil, err
-		}
-
-		comments = append(comments, &comment)
-	}
-
-	if rows.Err() != nil {
-		db.ErrorLog.Printf("Got an error after reading all rows from comments table: %s\n", err)
-		return nil, err
-	}
-
-	return comments, nil
-}
-
 func (db *SQLiteDatabase) GetAllCommentsPaginated(tutorialId string, page, elements int) ([]*models.CommentModel, error) {
 	query := `SELECT id, content, user_id, tutorial_id, created_at FROM comments WHERE tutorial_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?;`
 

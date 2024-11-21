@@ -7,4 +7,5 @@ var (
 	ErrUserAlreadyExists     = errors.New("user already exists")
 	ErrTutorialAlreadyExists = errors.New("tutorial already exists")
 	ErrKeywordAlreadyExists  = errors.New("keyword already exists")
+	ErrTokenAlreadyExists    = errors.New("token of that type already exists")
 )

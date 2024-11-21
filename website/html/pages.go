@@ -149,8 +149,8 @@ type TutorialsTutorialPage struct {
 	BasePage
 	User               *models.UserModel
 	Tutorial           *models.TutorialModel
+	Keywords           []string
 	Author             *models.AuthorModel
-	ReadingTime        string
 	Course             *models.CourseModel
 	TutorialLiked      bool
 	TutorialBookmarked bool

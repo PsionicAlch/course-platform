@@ -203,6 +203,21 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	pageData.Tutorial = tutorial
+
+	keywords, err := h.Database.GetAllKeywordsForTutorial(tutorial.ID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get keywords for tutorial (\"%s\") in the database: %s\n", tutorial.Title, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Keywords = keywords
+
 	if user != nil {
 		userLikedTutorial, err := h.Database.UserLikedTutorial(user.ID, tutorialSlug)
 		if err != nil {
@@ -229,6 +244,13 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		pageData.TutorialLiked = userLikedTutorial
 		pageData.TutorialBookmarked = userBookmarkedTutorial
 	}
+
+	pageData.Author = &models.AuthorModel{
+		Name:    "Jean-Jacques",
+		Surname: "Strydom",
+		Slug:    "jean-jacques-strydom",
+	}
+	pageData.Course = nil
 
 	comments, err := h.Database.GetAllCommentsPaginated(tutorial.ID, 1, CommentsPerPagination)
 	if err != nil {
@@ -259,13 +281,6 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		lastComment = comments[len(comments)-1]
 	}
 
-	pageData.Tutorial = tutorial
-	pageData.Author = &models.AuthorModel{
-		Name:    "Jean-Jacques",
-		Surname: "Strydom",
-		Slug:    "jean-jacques-strydom",
-	}
-	pageData.Course = nil
 	pageData.Comments = &html.CommentsListComponent{
 		Comments:    commentsSlice,
 		LastComment: lastComment,

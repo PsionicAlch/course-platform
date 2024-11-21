@@ -2,11 +2,7 @@
 
 {{ define "meta-tags" }}
   <meta name="description" content="{{- .Tutorial.Description -}} Learn how to master this aspect of Golang development with step-by-step instructions and practical examples by PsionicAlch." />
-  <meta name="keywords" content="
-    {{- range .Tutorial.Keywords -}}
-      {{- .Keyword -}},
-    {{- end -}}
-  " />
+  <meta name="keywords" content="{{- range .Keywords -}} {{- . -}}, {{- end -}}" />
 
   <meta property="og:title" content="{{- .Tutorial.Title -}} - PsionicAlch" />
   <meta property="og:description" content="{{- .Tutorial.Description -}} Learn this essential Golang skill with PsionicAlch's in-depth tutorial." />
@@ -33,7 +29,6 @@
         "name": "{{- .Author.Name -}} {{- .Author.Surname -}}"
       },
       "datePublished": "{{- .Tutorial.UpdatedAt | pretty_date -}}",
-      "timeRequired": "{{- .ReadingTime -}}",
       "mainEntityOfPage": "https://www.psionicalch.com/tutorials/{{- .Tutorial.Slug -}}",
       "publisher": {
         "@type": "Organization",

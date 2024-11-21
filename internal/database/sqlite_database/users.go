@@ -9,30 +9,40 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
 )
 
+// The only function that I believe has a viable reason to do transactions.
 func (db *SQLiteDatabase) AddNewUser(name, surname, email, password, token, tokenType, ipAddr string, validUntil time.Time) (*models.UserModel, error) {
-	tx, err := db.connection.Begin()
-	if err != nil {
-		db.ErrorLog.Printf("Failed to begin transaction to add user (\"%s\") to the database: %s\n", email, err)
-		return nil, err
-	}
-
+	// Generate all the IDs required for the database transaction first. I don't want the transaction to fail
+	// because I couldn't generate an ID.
 	userId, err := database.GenerateID()
 	if err != nil {
-		if err := tx.Rollback(); err != nil {
-			db.ErrorLog.Printf("Failed to rollback database changes: %s\n", err)
-		}
-
 		db.ErrorLog.Printf("Failed to generate new ID for user (\"%s\"): %s\n", email, err)
 		return nil, err
 	}
 
 	affiliateCode, err := database.GenerateID()
 	if err != nil {
-		if err := tx.Rollback(); err != nil {
-			db.ErrorLog.Printf("Failed to rollback database changes: %s\n", err)
-		}
-
 		db.ErrorLog.Printf("Failed to generate new affiliate code for user (\"%s\"): %s\n", email, err)
+		return nil, err
+	}
+
+	tokenId, err := database.GenerateID()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to generate new token ID for user (\"%s\"): %s\n", email, err)
+		return nil, err
+	}
+
+	addressId, err := database.GenerateID()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to generate new IP address ID for user (\"%s\"): %s\n", email, err)
+		return nil, err
+	}
+
+	// With all the setup out the way, start a new transaction. The only thing that can fail now is database calls.
+	// The reason for the transaction is that I don't want the user saved to the database if the token or the IP
+	// address couldn't have been saved. I'd rather the user start again than have my database contain fractured data.
+	tx, err := db.connection.Begin()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to begin transaction to add user (\"%s\") to the database: %s\n", email, err)
 		return nil, err
 	}
 
@@ -46,16 +56,6 @@ func (db *SQLiteDatabase) AddNewUser(name, surname, email, password, token, toke
 		return nil, err
 	}
 
-	tokenId, err := database.GenerateID()
-	if err != nil {
-		if err := tx.Rollback(); err != nil {
-			db.ErrorLog.Printf("Failed to rollback database changes: %s\n", err)
-		}
-
-		db.ErrorLog.Printf("Failed to generate new token ID for user (\"%s\"): %s\n", email, err)
-		return nil, err
-	}
-
 	err = internal.AddToken(tx, tokenId, token, tokenType, user.ID, validUntil)
 	if err != nil {
 		if err := tx.Rollback(); err != nil {
@@ -63,16 +63,6 @@ func (db *SQLiteDatabase) AddNewUser(name, surname, email, password, token, toke
 		}
 
 		db.ErrorLog.Printf("Failed to save user's (\"%s\") %s token to the database: %s\n", email, tokenType, err)
-		return nil, err
-	}
-
-	addressId, err := database.GenerateID()
-	if err != nil {
-		if err := tx.Rollback(); err != nil {
-			db.ErrorLog.Printf("Failed to rollback database changes: %s\n", err)
-		}
-
-		db.ErrorLog.Printf("Failed to generate new IP address ID for user (\"%s\"): %s\n", email, err)
 		return nil, err
 	}
 
@@ -86,6 +76,8 @@ func (db *SQLiteDatabase) AddNewUser(name, surname, email, password, token, toke
 		return nil, err
 	}
 
+	// Now that all the database calls have been successfully made we can commit the changes as one big chunk. Hopefully
+	// committing the changes won't fail but if it does the user can just resubmit the signup form.
 	if err := tx.Commit(); err != nil {
 		if err := tx.Rollback(); err != nil {
 			db.ErrorLog.Printf("Failed to rollback database changes: %s\n", err)
@@ -98,7 +90,7 @@ func (db *SQLiteDatabase) AddNewUser(name, surname, email, password, token, toke
 	return user, nil
 }
 
-func (db *SQLiteDatabase) GetUser(email string) (*models.UserModel, error) {
+func (db *SQLiteDatabase) GetUserByEmail(email string) (*models.UserModel, error) {
 	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, created_at, updated_at FROM users WHERE email = ?;`
 
 	var isAdminInt int

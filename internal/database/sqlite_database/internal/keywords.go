@@ -1,6 +1,8 @@
 package internal
 
 import (
+	"database/sql"
+
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"modernc.org/sqlite"
@@ -38,6 +40,10 @@ func GetKeywordByKeyword(dbFacade SqlDbFacade, keyword string) (*models.KeywordM
 
 	row := dbFacade.QueryRow(query, keyword)
 	if err := row.Scan(&keywordModel.ID, &keywordModel.Keyword); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 

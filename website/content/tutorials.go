@@ -17,7 +17,6 @@ import (
 //go:embed tutorials/*.md
 var tutorialsFS embed.FS
 
-// TODO: Implement unique key for each tutorial so that the tutorial uniqueness is not reliant on data that can change
 // TutorialMatter is a struct representation of the metadata found in each tutorial markdown file.
 type TutorialMatter struct {
 	Title        string   `yaml:"title"`
@@ -37,7 +36,7 @@ type TutorialData struct {
 func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db database.Database) {
 	defer waitGroup.Done()
 
-	var newTutorials, updatedTutorials []*models.TutorialModel
+	db.PrepareBulkTutorials()
 
 	timerStart := time.Now()
 
@@ -100,71 +99,21 @@ func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db d
 
 		// This tutorial is new.
 		if !fileKeyFound {
-			var keywordModels []*models.KeywordModel
-			for _, keyword := range tutData.Keywords {
-				keywordModel := new(models.KeywordModel)
-				keywordModel.Keyword = keyword
-
-				keywordModels = append(keywordModels, keywordModel)
-			}
-
-			tutorialToAdd := new(models.TutorialModel)
-
-			tutorialToAdd.Title = tutData.Title
-			tutorialToAdd.Slug = TitleToSlug(tutData.Title)
-			tutorialToAdd.Description = tutData.Description
-			tutorialToAdd.ThumbnailURL = tutData.ThumbnailURL
-			tutorialToAdd.BannerURL = tutData.BannerURL
-			tutorialToAdd.Content = tutData.Content
-			tutorialToAdd.FileChecksum = string(fileChecksum)
-			tutorialToAdd.FileKey = tutData.Key
-			tutorialToAdd.Keywords = keywordModels
-
-			newTutorials = append(newTutorials, tutorialToAdd)
+			db.InsertTutorial(tutData.Title, TitleToSlug(tutData.Title), tutData.Description, tutData.ThumbnailURL, tutData.BannerURL, tutData.Content, fileChecksum, tutData.Key, tutData.Keywords)
 
 			continue
 		}
 
 		// This tutorial has been updated.
 		if !checksumMatch {
-			var keywordModels []*models.KeywordModel
-			for _, keyword := range tutData.Keywords {
-				keywordModel := new(models.KeywordModel)
-				keywordModel.Keyword = keyword
-
-				keywordModels = append(keywordModels, keywordModel)
-			}
-
-			tutorialToUpdate := new(models.TutorialModel)
-			tutorialToUpdate.ID = tutorials[fileKeyIndex].ID
-			tutorialToUpdate.Title = tutData.Title
-			tutorialToUpdate.Slug = TitleToSlug(tutData.Title)
-			tutorialToUpdate.Description = tutData.Description
-			tutorialToUpdate.ThumbnailURL = tutData.ThumbnailURL
-			tutorialToUpdate.BannerURL = tutData.BannerURL
-			tutorialToUpdate.Content = tutData.Content
-			tutorialToUpdate.Published = false
-			tutorialToUpdate.AuthorID = tutorials[fileKeyIndex].AuthorID
-			tutorialToUpdate.FileChecksum = string(fileChecksum)
-			tutorialToUpdate.FileKey = tutData.Key
-			tutorialToUpdate.Keywords = keywordModels
-
-			updatedTutorials = append(updatedTutorials, tutorialToUpdate)
+			db.UpdateTutorial(tutorials[fileKeyIndex].ID, tutData.Title, TitleToSlug(tutData.Title), tutData.Description, tutData.ThumbnailURL, tutData.BannerURL, tutData.Content, string(fileChecksum), tutData.Key, tutData.Keywords, tutorials[fileKeyIndex].AuthorID)
 
 			continue
 		}
 	}
 
-	if len(newTutorials) > 0 {
-		if err := db.BulkAddTutorials(newTutorials); err != nil {
-			content.ErrorLog.Printf("Failed to bulk add new tutorials to database: %s\n", err)
-		}
-	}
-
-	if len(updatedTutorials) > 0 {
-		if err := db.BulkUpdateTutorials(updatedTutorials); err != nil {
-			content.ErrorLog.Printf("Failed to bulk update tutorials in database: %s\n", err)
-		}
+	if err := db.RunBulkTutorials(); err != nil {
+		content.ErrorLog.Fatalln(err)
 	}
 
 	timerEnd := time.Since(timerStart)

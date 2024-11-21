@@ -1,39 +1,76 @@
 package sqlite_database
 
 import (
+	"database/sql"
+
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
 )
 
 func (db *SQLiteDatabase) UserBookmarkedTutorial(userId, slug string) (bool, error) {
-	bookmarked, err := internal.UserBookmarkedTutorial(db.connection, userId, slug)
-	if err != nil {
-		db.ErrorLog.Printf("Failed to see if user bookmarked tutorial %s in the database: %s\n", slug, err)
+	query := `SELECT t.id FROM tutorials_bookmarks AS tb JOIN tutorials AS t ON tb.tutorial_id = t.id WHERE tb.user_id = ? AND t.slug = ?;`
+
+	var id string
+
+	row := db.connection.QueryRow(query, userId, slug)
+	if err := row.Scan(&id); err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+
+		db.ErrorLog.Printf("Failed to query row from tutorials_bookmarks table in the database: %s\n", err)
 		return false, err
 	}
 
-	return bookmarked, nil
+	return id != "", nil
 }
 
 func (db *SQLiteDatabase) UserBookmarkTutorial(userId, slug string) error {
+	query := `INSERT INTO tutorials_bookmarks (id, user_id, tutorial_id) VALUES (?, ?, (SELECT id FROM tutorials WHERE slug = ?));`
+
 	id, err := database.GenerateID()
 	if err != nil {
 		db.ErrorLog.Printf("Failed to generate ID for new tutorials_bookmarks database row: %s\n", err)
 		return err
 	}
 
-	if err := internal.UserBookmarkTutorial(db.connection, id, userId, slug); err != nil {
-		db.ErrorLog.Printf("Failed to insert new row into tutorials_bookmarks database table: %s\n", err)
+	result, err := db.connection.Exec(query, id, userId, slug)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to add new row to tutorials_bookmarks table in the database: %s\n", err)
 		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to query for the number of rows affected after adding new row to tutorials_bookmarks table: %s\n", err)
+		return err
+	}
+
+	if rowsAffected == 0 {
+		db.ErrorLog.Println("No rows were affected after adding new row to tutorials_bookmarks table in the database.")
+		return database.ErrNoRowsAffected
 	}
 
 	return nil
 }
 
 func (db *SQLiteDatabase) UserUnbookmarkTutorial(userId, slug string) error {
-	if err := internal.UserUnbookmarkTutorial(db.connection, userId, slug); err != nil {
-		db.ErrorLog.Printf("Failed to delete row from tutorials_bookmarks database table: %s\n", err)
+	query := `DELETE FROM tutorials_bookmarks WHERE user_id = ? AND tutorial_id = (SELECT id FROM tutorials WHERE slug = ?);`
+
+	result, err := db.connection.Exec(query, userId, slug)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to delete row from tutorials_bookmarks table in the database: %s\n", err)
 		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to query the number of rows affected after deleting row from tutorial_bookmarks table in the database: %s\n", err)
+		return err
+	}
+
+	if rowsAffected == 0 {
+		db.ErrorLog.Println("No rows were affected after deleting a row from the tutorials_bookmarks table in the database")
+		return database.ErrNoRowsAffected
 	}
 
 	return nil

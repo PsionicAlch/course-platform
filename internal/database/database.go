@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
@@ -18,7 +19,7 @@ type Database interface {
 
 	// Users functions.
 	AddNewUser(name, surname, email, password, token, tokenType, ipAddr string, validUntil time.Time) (*models.UserModel, error)
-	GetUser(email string) (*models.UserModel, error)
+	GetUserByEmail(email string) (*models.UserModel, error)
 	GetUserByID(id string) (*models.UserModel, error)
 	GetUserByToken(token, tokenType string) (*models.UserModel, error)
 	UpdateUserPassword(userId, password string) error
@@ -37,12 +38,10 @@ type Database interface {
 	GetAllTutorials() ([]*models.TutorialModel, error)
 	GetAllTutorialsPaginated(page, elements int) ([]*models.TutorialModel, error)
 	SearchTutorialsPaginated(term string, page, elements int) ([]*models.TutorialModel, error)
-	GetTutorialByID(id string) (*models.TutorialModel, error)
 	GetTutorialBySlug(slug string) (*models.TutorialModel, error)
-	BulkAddTutorials(tutorials []*models.TutorialModel) error
-	BulkUpdateTutorials(tutorials []*models.TutorialModel) error
 
 	// Tutorials-Keywords functions.
+	GetAllKeywordsForTutorial(tutorialId string) ([]string, error)
 
 	// Tutorials-Likes functions.
 	UserLikedTutorial(userId, slug string) (bool, error)
@@ -55,7 +54,6 @@ type Database interface {
 	UserUnbookmarkTutorial(userId, slug string) error
 
 	// Comments functions.
-	GetAllComments(tutorialId string) ([]*models.CommentModel, error)
 	GetAllCommentsPaginated(tutorialId string, page, elements int) ([]*models.CommentModel, error)
 	GetAllCommentsBySlugPaginated(slug string, page, elements int) ([]*models.CommentModel, error)
 	AddCommentBySlug(content, userId, slug string) (*models.CommentModel, error)
@@ -67,4 +65,10 @@ type Database interface {
 	CommentsSetTutorial(comments []*models.CommentModel) error
 	CommentSetTimeAgo(comment *models.CommentModel)
 	CommentsSetTimeAgo(comment []*models.CommentModel)
+
+	// Bulk functions.
+	PrepareBulkTutorials()
+	InsertTutorial(title, slug, description, thumbnailUrl, bannerUrl, content, checksum, fileKey string, keywords []string)
+	UpdateTutorial(id, title, slug, description, thumbnailUrl, bannerUrl, content, checksum, fileKey string, keywords []string, authorId sql.NullString)
+	RunBulkTutorials() error
 }
