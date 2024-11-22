@@ -165,6 +165,10 @@ func (db *SQLiteDatabase) GetTutorialByFileKey(fileKey string) (*models.Tutorial
 
 	row := db.connection.QueryRow(query, fileKey)
 	if err := row.Scan(&tutorial.ID, &tutorial.Title, &tutorial.Slug, &tutorial.Description, &tutorial.ThumbnailURL, &tutorial.BannerURL, &tutorial.Content, &publishedInt, &tutorial.AuthorID, &tutorial.FileChecksum, &tutorial.FileKey, &tutorial.CreatedAt, &tutorial.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
 		db.ErrorLog.Printf("Failed to get tutorial by file key from the database: %s\n", err)
 		return nil, err
 	}

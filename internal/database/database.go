@@ -7,7 +7,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
-// TODO: Make database functions more modular.
 type Database interface {
 	// General database functions.
 	Close() error

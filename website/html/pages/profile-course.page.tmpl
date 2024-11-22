@@ -5,14 +5,12 @@
 {{ end }}
 
 {{ define "stylesheets" }}
-  <link rel="stylesheet" href="/assets/css/profile-course.css">
   <link rel="stylesheet" href="/assets/css/article.css">
-
+  <link rel="stylesheet" href="/assets/css/profile-course.css">
   <link rel="stylesheet" href="/assets/css/atom-one-light.min.css">
 {{ end }}
 
 {{ define "head-scripts" }}
-  <script src="/assets/js/alpine.min.js" defer></script>
   <script src="/assets/js/highlight.min.js" defer></script>
   <script src="/assets/js/apache.min.js" defer></script>
   <script src="/assets/js/bash.min.js" defer></script>
@@ -68,7 +66,7 @@
 
         <p>This is what a code block would look like:</p>
 
-        <pre><code class="language-golang">
+        <pre><code class="language-go">
           package website
 
           import (
@@ -305,4 +303,12 @@
       </div>
     </section>
   </main>
+{{ end }}
+
+{{ define "javascript" }}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      hljs.highlightAll();
+    });
+  </script>
 {{ end }}

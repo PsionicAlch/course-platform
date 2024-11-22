@@ -21,7 +21,8 @@ func RegisterContent(db database.Database) error {
 
 	waitGroup.Add(1)
 
-	go content.RegisterTutorialsContent(&waitGroup, db)
+	// go content.RegisterTutorialsContent(&waitGroup, db)
+	go content.RegisterCourseContent(&waitGroup, db)
 
 	waitGroup.Wait()
 

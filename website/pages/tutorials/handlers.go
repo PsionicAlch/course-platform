@@ -265,9 +265,7 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 
 			comments = nil
 		}
-	}
 
-	if comments != nil {
 		h.Database.CommentsSetTimeAgo(comments)
 	}
 
