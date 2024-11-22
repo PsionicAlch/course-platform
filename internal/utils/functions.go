@@ -45,3 +45,15 @@ func EncodeString(src []byte) string {
 func DecodeString(src string) ([]byte, error) {
 	return base64.RawStdEncoding.Strict().DecodeString(src)
 }
+
+func Filter[S ~[]E, E any](items S, compareFunc func(E) bool) S {
+	var collection S
+
+	for _, item := range items {
+		if compareFunc(item) {
+			collection = append(collection, item)
+		}
+	}
+
+	return collection
+}

@@ -1,4 +1,8 @@
 ---
+title: "How to handle password resets"
+chapter: 6
+
+course_key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"
 key: "Sper5jTPpAbb_AzhMlxKHb2KVz90aZ8Otq57Mu8I224mJjBuL7xNT36R6dbeoYVk0xDBtCykMia9B2SHaPktsQ"
 ---
 

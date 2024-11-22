@@ -1,4 +1,8 @@
 ---
+title: "Your First Database"
+chapter: 3
+
+course_key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"
 key: "FP3LGh7I_V0WvSTRQU_2CLSqpROJRzMl5BJC5tiZzrQALpI-pA7NiS_Fetxfi2lltrRwVGaJd05kfe9hUD4wkg"
 ---
 

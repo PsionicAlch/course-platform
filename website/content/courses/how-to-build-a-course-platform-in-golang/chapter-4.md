@@ -1,4 +1,8 @@
 ---
+title: "Your First Session"
+chapter: 4
+
+course_key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"
 key: "iG83_amWQe5cnzjpOuIlkqs7RnRUJyrPJ7jZerLTpvy-T6yGa_wt5t7yuDuONe9lqhPI-dJQQtD2apLQ0DQfSw"
 ---
 

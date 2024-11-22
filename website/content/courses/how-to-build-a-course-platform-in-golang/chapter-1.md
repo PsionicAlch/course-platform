@@ -1,6 +1,8 @@
 ---
 title: "Introduction"
 chapter: 1
+
+course_key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"
 key: "xgbfVWTcEbiMVLUYcy70ZzR3G1xZRV2hiZVk17WVFb5t08RTO2pLlPTWfZ-hECdwTuBO-qEISXs3jZIwaHREGw"
 ---
 

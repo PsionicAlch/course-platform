@@ -5,8 +5,6 @@ thumbnail_url: "/assets/img/golang-course-platform-image.png"
 banner_url: "/assets/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
-directory: "how-to-build-a-course-platform-in-golang"
-
 key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"
 ---
 

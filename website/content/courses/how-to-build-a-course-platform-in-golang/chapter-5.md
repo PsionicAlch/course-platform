@@ -1,4 +1,8 @@
 ---
+title: "Your First Authentication System"
+chapter: 5
+
+course_key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"
 key: "p6UC2IeVQTQeohNxVOALkfYKGbkO4PzgQX-_qd81we9lEHb3HNVCeruvQMGo84N71uQ-TxZNjTMoLZ8xBeAXUA"
 ---
 

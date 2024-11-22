@@ -18,4 +18,4 @@ CREATE TABLE IF NOT EXISTS courses_chapters (
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX idx_courses_chapters_course_id_chapter ON courses(course_id, chapter);
+CREATE UNIQUE INDEX idx_courses_chapters_course_id_chapter ON courses_chapters(course_id, chapter);

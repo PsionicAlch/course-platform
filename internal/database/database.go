@@ -57,6 +57,12 @@ type Database interface {
 	GetAllCommentsBySlugPaginated(slug string, page, elements int) ([]*models.CommentModel, error)
 	AddCommentBySlug(content, userId, slug string) (*models.CommentModel, error)
 
+	// Courses functions.
+	GetAllCourses() ([]*models.CourseModel, error)
+
+	// Chapters functions.
+	GetAllChapters() ([]*models.ChapterModel, error)
+
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error
 	CommentsSetUser(comments []*models.CommentModel) error
@@ -70,4 +76,11 @@ type Database interface {
 	InsertTutorial(title, slug, description, thumbnailUrl, bannerUrl, content, checksum, fileKey string, keywords []string)
 	UpdateTutorial(id, title, slug, description, thumbnailUrl, bannerUrl, content, checksum, fileKey string, keywords []string, authorId sql.NullString)
 	RunBulkTutorials() error
+
+	PrepareBulkCourses()
+	InsertCourse(title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum, fileKey string, keywords []string)
+	UpdateCourse(id, title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum, fileKey string, keywords []string, authorId sql.NullString)
+	InsertChapter(title string, chapter int, content, fileChecksum, fileKey, courseKey string)
+	UpdateChapter(id, title string, chapter int, content, fileChecksum, fileKey, courseKey string)
+	RunBulkCourses() error
 }

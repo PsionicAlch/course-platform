@@ -108,7 +108,7 @@ func AddTutorials(tx *sql.Tx, tutorials []*intermediate_tutorial) error {
 			return err
 		}
 
-		if err := AddKeywords(tx, id, tutorial.Keywords); err != nil {
+		if err := AddKeywordsToTutorial(tx, id, tutorial.Keywords); err != nil {
 			return err
 		}
 	}
@@ -126,7 +126,7 @@ func UpdateTutorials(tx *sql.Tx, tutorials []*intermediate_tutorial) error {
 			return err
 		}
 
-		if err := AddKeywords(tx, tutorial.ID, tutorial.Keywords); err != nil {
+		if err := AddKeywordsToTutorial(tx, tutorial.ID, tutorial.Keywords); err != nil {
 			return err
 		}
 	}
@@ -134,7 +134,7 @@ func UpdateTutorials(tx *sql.Tx, tutorials []*intermediate_tutorial) error {
 	return nil
 }
 
-func AddKeywords(tx *sql.Tx, tutorialId string, keywords []string) error {
+func AddKeywordsToTutorial(tx *sql.Tx, tutorialId string, keywords []string) error {
 	for _, keyword := range keywords {
 		keywordId, err := database.GenerateID()
 		if err != nil {
