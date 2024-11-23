@@ -28,7 +28,17 @@ func main() {
 			loggers.ErrorLog.Fatalf("Failed to try and get tutorial by file key: %s\n", err)
 		}
 
-		if tutorial == nil {
+		course, err := db.GetCourseByFileKey(key)
+		if err != nil {
+			loggers.ErrorLog.Fatalf("Failed to try and get course by file key: %s\n", err)
+		}
+
+		chapter, err := db.GetChapterByFileKey(key)
+		if err != nil {
+			loggers.ErrorLog.Fatalf("Failed to try and get chapter by file key: %s\n", err)
+		}
+
+		if tutorial == nil && course == nil && chapter == nil {
 			loggers.InfoLog.Printf("File Key: %s\n", key)
 			break
 		}

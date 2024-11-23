@@ -1,6 +1,10 @@
 package sqlite_database
 
-import "github.com/PsionicAlch/psionicalch-home/internal/database/models"
+import (
+	"database/sql"
+
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+)
 
 func (db *SQLiteDatabase) GetAllChapters() ([]*models.ChapterModel, error) {
 	query := `SELECT id, title, chapter, content, course_id, file_checksum, file_key, created_at, updated_at FROM courses_chapters;`
@@ -30,4 +34,22 @@ func (db *SQLiteDatabase) GetAllChapters() ([]*models.ChapterModel, error) {
 	}
 
 	return chapters, nil
+}
+
+func (db *SQLiteDatabase) GetChapterByFileKey(fileKey string) (*models.ChapterModel, error) {
+	query := `SELECT id, title, chapter, content, course_id, file_checksum, file_key, created_at, updated_at FROM courses_chapters WHERE file_key = ?;`
+
+	var chapter models.ChapterModel
+
+	row := db.connection.QueryRow(query, fileKey)
+	if err := row.Scan(&chapter.ID, &chapter.Title, &chapter.Chapter, &chapter.Content, &chapter.CourseID, &chapter.FileChecksum, &chapter.FileKey, &chapter.CreatedAt, &chapter.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		db.ErrorLog.Printf("Failed to get chapter using file key from the database: %s\n", err)
+		return nil, err
+	}
+
+	return &chapter, nil
 }

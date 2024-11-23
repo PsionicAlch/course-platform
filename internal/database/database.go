@@ -61,9 +61,12 @@ type Database interface {
 	// Courses functions.
 	GetAllCourses() ([]*models.CourseModel, error)
 	GetAllCoursesPaginated(page, elements int) ([]*models.CourseModel, error)
+	GetCourseByFileKey(fileKey string) (*models.CourseModel, error)
+	SearchCoursesPaginated(term string, page, elements int) ([]*models.CourseModel, error)
 
 	// Chapters functions.
 	GetAllChapters() ([]*models.ChapterModel, error)
+	GetChapterByFileKey(fileKey string) (*models.ChapterModel, error)
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error

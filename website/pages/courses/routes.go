@@ -10,6 +10,9 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
 
 	router.Get("/", handlers.CoursesGet)
+	router.Get("/page/{page-number}", handlers.CoursesPaginationGet)
+	router.Get("/search", handlers.CoursesSearchGet)
+
 	router.Get("/{slug}", handlers.CourseGet)
 	router.With(handlers.Auth.AllowAuthenticated("/accounts/login")).Get("/{slug}/purchase", handlers.PurchaseCourseGet)
 

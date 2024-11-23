@@ -3,6 +3,7 @@ package courses
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
@@ -118,6 +119,58 @@ func (h *Handlers) CoursesPaginationGet(w http.ResponseWriter, r *http.Request) 
 	coursesComponent.Courses = courseSlice
 	coursesComponent.LastCourse = lastCourse
 	coursesComponent.QueryURL = fmt.Sprintf("/courses/page/%d", pageNumber+1)
+
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", coursesComponent); err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) CoursesSearchGet(w http.ResponseWriter, r *http.Request) {
+	var page int
+
+	queryPage := r.URL.Query().Get("page")
+	query := r.URL.Query().Get("query")
+	coursesComponent := &html.CoursesListComponent{}
+
+	if queryPage == "" {
+		page = 1
+	} else {
+		pageNum, err := strconv.Atoi(queryPage)
+		if err != nil {
+			h.WarningLog.Printf("Failed to convert page to int: %s\n", err)
+			page = 1
+		} else {
+			page = pageNum
+		}
+	}
+
+	courses, err := h.Database.SearchCoursesPaginated(query, page, CoursesPerPagination)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to search for courses (page %d) from the database: %s\n", page, err)
+		coursesComponent.ErrorMessage = "Failed to get courses. Please try again."
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", coursesComponent); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	h.InfoLog.Printf("Number of courses found for query \"%s\": %d\n", query, len(courses))
+
+	var courseSlice []*models.CourseModel
+	var lastCourse *models.CourseModel
+
+	if len(courses) < CoursesPerPagination {
+		courseSlice = courses
+	} else {
+		courseSlice = courses[:len(courses)-1]
+		lastCourse = courses[len(courses)-1]
+	}
+
+	coursesComponent.Courses = courseSlice
+	coursesComponent.LastCourse = lastCourse
+	coursesComponent.QueryURL = fmt.Sprintf("/courses/search?page=%d&query=%s", page+1, url.QueryEscape(query))
 
 	if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", coursesComponent); err != nil {
 		h.ErrorLog.Println(err)

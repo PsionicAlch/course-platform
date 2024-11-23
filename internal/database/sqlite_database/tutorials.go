@@ -54,6 +54,7 @@ func (db *SQLiteDatabase) GetAllTutorialsPaginated(page, elements int) ([]*model
 
 	rows, err := db.connection.Query(query, elements, offset)
 	if err != nil {
+		db.ErrorLog.Printf("Failed to get all tutorials (page %d) from the database: %s\n", page, err)
 		return nil, err
 	}
 
@@ -62,6 +63,7 @@ func (db *SQLiteDatabase) GetAllTutorialsPaginated(page, elements int) ([]*model
 		var published int
 
 		if err := rows.Scan(&tutorial.ID, &tutorial.Title, &tutorial.Slug, &tutorial.Description, &tutorial.ThumbnailURL, &tutorial.BannerURL, &tutorial.Content, &published, &tutorial.AuthorID, &tutorial.FileChecksum, &tutorial.FileKey, &tutorial.CreatedAt, &tutorial.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read row from tutorials table: %s\n", err)
 			return nil, err
 		}
 
@@ -73,6 +75,7 @@ func (db *SQLiteDatabase) GetAllTutorialsPaginated(page, elements int) ([]*model
 	}
 
 	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get all tutorials (page %d) from the database: %s\n", page, err)
 		return nil, err
 	}
 
@@ -88,6 +91,7 @@ func (db *SQLiteDatabase) SearchTutorialsPaginated(term string, page, elements i
 
 	rows, err := db.connection.Query(query, term, term, elements, offset)
 	if err != nil {
+		db.ErrorLog.Printf("Failed to get all tutorials (page %d), that match the search term \"%s\", from the database: %s\n", page, term, err)
 		return nil, err
 	}
 
@@ -96,6 +100,7 @@ func (db *SQLiteDatabase) SearchTutorialsPaginated(term string, page, elements i
 		var published int
 
 		if err := rows.Scan(&tutorial.ID, &tutorial.Title, &tutorial.Slug, &tutorial.Description, &tutorial.ThumbnailURL, &tutorial.BannerURL, &tutorial.Content, &published, &tutorial.AuthorID, &tutorial.FileChecksum, &tutorial.FileKey, &tutorial.CreatedAt, &tutorial.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read row from tutorials (page %d) table, that match the search term \"%s\": %s\n", page, term, err)
 			return nil, err
 		}
 
@@ -107,6 +112,7 @@ func (db *SQLiteDatabase) SearchTutorialsPaginated(term string, page, elements i
 	}
 
 	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get all tutorials (page %d), that match the search term \"%s\", from the database: %s\n", page, term, err)
 		return nil, err
 	}
 
@@ -125,6 +131,7 @@ func (db *SQLiteDatabase) GetTutorialByID(id string) (*models.TutorialModel, err
 			return nil, nil
 		}
 
+		db.ErrorLog.Printf("Failed to get tutorial by ID: %s\n", err)
 		return nil, err
 	}
 
@@ -147,6 +154,7 @@ func (db *SQLiteDatabase) GetTutorialBySlug(slug string) (*models.TutorialModel,
 			return nil, nil
 		}
 
+		db.ErrorLog.Printf("Failed to get tutorial by slug: %s\n", err)
 		return nil, err
 	}
 
