@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "Introduction to building your first course platform"
 chapter: 1
 
 course_key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"

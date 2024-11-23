@@ -11,7 +11,7 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	router.Get("/", handlers.CoursesGet)
 	router.Get("/{slug}", handlers.CourseGet)
-	router.Get("/{slug}/purchase", handlers.PurchaseCourseGet)
+	router.With(handlers.Auth.AllowAuthenticated("/accounts/login")).Get("/{slug}/purchase", handlers.PurchaseCourseGet)
 
 	return router
 }

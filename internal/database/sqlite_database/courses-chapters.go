@@ -16,7 +16,7 @@ func (db *SQLiteDatabase) GetAllChapters() ([]*models.ChapterModel, error) {
 	for rows.Next() {
 		var chapter models.ChapterModel
 
-		if err := rows.Scan(); err != nil {
+		if err := rows.Scan(&chapter.ID, &chapter.Title, &chapter.Chapter, &chapter.Content, &chapter.CourseID, &chapter.FileChecksum, &chapter.FileKey, &chapter.CreatedAt, &chapter.UpdatedAt); err != nil {
 			db.ErrorLog.Printf("Failed to read row from chapters table: %s\n", err)
 			return nil, err
 		}

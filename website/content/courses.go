@@ -5,7 +5,6 @@ import (
 	"embed"
 	"encoding/hex"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
@@ -44,9 +43,7 @@ type ChapterData struct {
 	Content string
 }
 
-func (content *Content) RegisterCourseContent(waitGroup *sync.WaitGroup, db database.Database) {
-	defer waitGroup.Done()
-
+func (content *Content) RegisterCourseContent(db database.Database) {
 	timerStart := time.Now()
 
 	courses, err := db.GetAllCourses()

@@ -1,8 +1,6 @@
 package content
 
 import (
-	"sync"
-
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 )
@@ -17,14 +15,8 @@ func RegisterContent(db database.Database) error {
 		Loggers: loggers,
 	}
 
-	var waitGroup sync.WaitGroup
-
-	waitGroup.Add(1)
-
-	// go content.RegisterTutorialsContent(&waitGroup, db)
-	go content.RegisterCourseContent(&waitGroup, db)
-
-	waitGroup.Wait()
+	content.RegisterTutorialsContent(db)
+	content.RegisterCourseContent(db)
 
 	return nil
 }

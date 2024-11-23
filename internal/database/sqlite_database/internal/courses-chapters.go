@@ -25,7 +25,7 @@ func AddChapter(dbFacade SqlDbFacade, id, title string, chapter int, content, fi
 func UpdateChapter(dbFacade SqlDbFacade, id, title string, chapter int, content, fileChecksum, fileKey, courseKey string) error {
 	query := `UPDATE courses_chapters SET title = ?, chapter = ?, content = ?, course_id = (SELECT id FROM courses WHERE file_key = ?), file_checksum = ?, file_key = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
 
-	result, err := dbFacade.Exec(query, title, content, courseKey, fileChecksum, fileKey, id)
+	result, err := dbFacade.Exec(query, title, chapter, content, courseKey, fileChecksum, fileKey, id)
 	if err != nil {
 		return err
 	}

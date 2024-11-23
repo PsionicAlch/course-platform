@@ -33,7 +33,7 @@ func CreateSQLiteDatabase(fileName, migrationsDir string) (*SQLiteDatabase, erro
 	}
 
 	// Set maximum number of database connections to 1 to avoid database is locked error (or SQLITE_BUSY error).
-	// conn.SetMaxOpenConns(1)
+	conn.SetMaxOpenConns(1)
 
 	// SQLite performance tuning according to https://phiresky.github.io/blog/2020/sqlite-performance-tuning/.
 	_, err = conn.Exec(`pragma journal_mode = WAL;

@@ -78,6 +78,7 @@ type AuthorsCoursesPage struct {
 
 type CoursesPage struct {
 	BasePage
+	Courses *CoursesListComponent
 }
 
 type CoursesCoursePage struct {

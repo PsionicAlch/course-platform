@@ -53,7 +53,9 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 
 		h.Session.SetErrorMessage(r.Context(), "Failed to load tutorials. Please try again")
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "tutorials", pageData); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
+			BasePage: html.NewBasePage(user),
+		}); err != nil {
 			h.ErrorLog.Println(err)
 		}
 	}

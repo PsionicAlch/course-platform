@@ -5,7 +5,6 @@ import (
 	"embed"
 	"encoding/hex"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
@@ -33,9 +32,7 @@ type TutorialData struct {
 	Content string
 }
 
-func (content *Content) RegisterTutorialsContent(waitGroup *sync.WaitGroup, db database.Database) {
-	defer waitGroup.Done()
-
+func (content *Content) RegisterTutorialsContent(db database.Database) {
 	db.PrepareBulkTutorials()
 
 	timerStart := time.Now()

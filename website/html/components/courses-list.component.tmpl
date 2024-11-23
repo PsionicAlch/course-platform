@@ -1,0 +1,38 @@
+{{ define "courses-list" }}
+  {{ if .Courses }}
+    {{ range .Courses }}
+      <div class="card shadow-sm" style="background-image: url('{{.ThumbnailURL}}');">
+        <div class="card-body">
+          <h2>{{.Title}}</h2>
+          <p>{{.Description}}</p>
+          <a href="/courses/{{.Slug}}" class="btn btn-blue shadow-sm"><small>View Course</small></a>
+        </div>
+      </div>
+    {{ end }}
+  {{ end }}
+
+  {{ if .LastCourse }}
+    <div
+      hx-get="{{.QueryURL}}"
+      hx-trigger="revealed once"
+      hx-swap="afterend"
+      class="card shadow-sm"
+      style="background-image: url('{{.LastCourse.ThumbnailURL}}');"
+    >
+      <div class="card-body">
+        <h2>{{.LastCourse.Title}}</h2>
+        <p>{{.LastCourse.Description}}</p>
+        <a href="/courses/{{.LastCourse.Slug}}" class="btn btn-blue shadow-sm"><small>View Course</small></a>
+      </div>
+    </div>
+  {{ end }}
+
+  {{ with .ErrorMessage }}
+      <script>
+        notyf.open({
+          type: 'flash-error',
+          message: '{{.}}'
+        });
+      </script>
+  {{ end }}
+{{ end }}

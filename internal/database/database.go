@@ -7,6 +7,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
+// TODO: Rewrite query functions for tutorials and courses to only show published tutorials and courses.
 type Database interface {
 	// General database functions.
 	Close() error
@@ -59,6 +60,7 @@ type Database interface {
 
 	// Courses functions.
 	GetAllCourses() ([]*models.CourseModel, error)
+	GetAllCoursesPaginated(page, elements int) ([]*models.CourseModel, error)
 
 	// Chapters functions.
 	GetAllChapters() ([]*models.ChapterModel, error)
