@@ -19,6 +19,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/adrg/frontmatter v0.2.0 // indirect
+	github.com/jaswdr/faker/v2 v2.3.3 // indirect
 	github.com/xeonx/timeago v1.0.0-rc5 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

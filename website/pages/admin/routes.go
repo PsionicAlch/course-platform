@@ -9,10 +9,13 @@ import (
 func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
 
-	router.Use(handlers.auth.AllowAdmin("/"))
+	router.Use(handlers.Auth.AllowAdmin("/"))
 
 	router.Get("/", handlers.AdminGet)
+
 	router.Get("/admins", handlers.AdminsGet)
+	router.Get("/admins/htmx", handlers.AdminsPaginationGet)
+
 	router.Get("/authors", handlers.AuthorsGet)
 	router.Get("/comments", handlers.CommentsGet)
 	router.Get("/courses", handlers.CoursesGet)

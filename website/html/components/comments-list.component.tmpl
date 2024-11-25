@@ -27,11 +27,11 @@
   {{ end }}
 
   {{ with .ErrorMessage }}
-      <script>
-        notyf.open({
-          type: 'flash-error',
-          message: '{{.}}'
-        });
-      </script>
+    <script>
+      notyf.open({
+        type: 'flash-error',
+        message: '{{.}}'
+      });
+    </script>
   {{ end }}
 {{ end }}

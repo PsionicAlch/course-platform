@@ -266,3 +266,33 @@ func (auth *Authentication) DeleteEmailToken(token string) error {
 
 	return nil
 }
+
+func (auth *Authentication) NewAdminUser(name, surname, email, password string) error {
+	hashedPassword, err := auth.PasswordParameters.HashPassword(password)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to hash user's password: %s\n", err)
+		return err
+	}
+
+	if err := auth.Database.NewAdminUser(name, surname, email, hashedPassword); err != nil {
+		auth.ErrorLog.Printf("Failed to add new admin user: %s\n", err)
+		return err
+	}
+
+	return nil
+}
+
+func (auth *Authentication) NewUser(name, surname, email, password string) error {
+	hashedPassword, err := auth.PasswordParameters.HashPassword(password)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to hash user's password: %s\n", err)
+		return err
+	}
+
+	if err := auth.Database.NewUser(name, surname, email, hashedPassword); err != nil {
+		auth.ErrorLog.Printf("Failed to add new user: %s\n", err)
+		return err
+	}
+
+	return nil
+}

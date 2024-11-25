@@ -106,3 +106,10 @@ type CoursesListComponent struct {
 	QueryURL     string
 	ErrorMessage string
 }
+
+type AdminUsersListComponent struct {
+	Admins       []*models.UserModel
+	LastAdmin    *models.UserModel
+	QueryURL     string
+	ErrorMessage string
+}

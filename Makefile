@@ -28,5 +28,8 @@ load-content:
 generate-file-key:
 	@go run ./cmd/filekey
 
+new-admin:
+	@go run ./cmd/add_admin_user -name="$(name)" -surname="$(surname)" -email="$(email)" -password="$(password)"
+
 clean:
 	rm -rf ./tmp

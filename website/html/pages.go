@@ -34,6 +34,7 @@ type AccountsResetPasswordPage struct {
 
 type AdminAdminsPage struct {
 	BasePage
+	Admins *AdminUsersListComponent
 }
 
 type AdminAuthorsPage struct {

@@ -74,16 +74,7 @@
         </tr>
       </thead>
       <tbody>
-        <template x-for="user in users">
-          <tr>
-            <td x-text="user.id"></td>
-            <td x-text="user.createdAt"></td>
-            <td x-text="user.updatedAt"></td>
-            <td x-text="user.firstName"></td>
-            <td x-text="user.lastName"></td>
-            <td><button class="btn btn-red shadow-sm" x-on:click="openModal(user.firstName, user.lastName, user.id)">Remove Admin</button></td>
-          </tr>
-        </template>
+        {{ template "admins-list" .Admins }}
       </tbody>
     </table>
 
@@ -120,113 +111,6 @@
     document.addEventListener("alpine:init", () => {
       Alpine.data('users_data', () => ({
         modalOpen: false,
-        users: [
-          {
-            id: "01A8E54F1RYQJYQGF4ZTWM16V8",
-            createdAt: "2023-01-15",
-            updatedAt: "2023-02-01",
-            firstName:  "John",
-            lastName:  "Doe",
-          },
-          {
-            id: "01A8E8J7E2YMG98NKF3TQ84G1H",
-            createdAt: "2023-03-12",
-            updatedAt: "2023-03-27",
-            firstName:  "Jane",
-            lastName:  "Smith",
-          },
-          {
-            id: "01A8EC3WZ4FJYP62PG6T0M5CBX",
-            createdAt: "2023-04-03",
-            updatedAt: "2023-04-22",
-            firstName: "Michael",
-            lastName: "Johnson",
-          },
-          {
-            id: "01A8F2QW0ZGM3WXNQHC9R1SVDN",
-            createdAt: "2023-05-10",
-            updatedAt: "2023-06-01",
-            firstName: "Emily",
-            lastName: "Brown",
-          },
-          {
-            id: "01A8F8YRQ7JQF8X0XCHN5WT4F9",
-            createdAt: "2023-06-15",
-            updatedAt: "2023-07-05",
-            firstName: "Chris",
-            lastName: "Davis",
-          },
-          {
-            id: "01A8FESM8ZGFKP0YQDJ2XN9HJB",
-            createdAt: "2023-07-18",
-            updatedAt: "2023-08-08",
-            firstName: "Sarah",
-            lastName: "Miller",
-          },
-          {
-            id: "01A8FTM3XMKZ6C8N0V6SD3ZYND",
-            createdAt: "2023-08-10",
-            updatedAt: "2023-08-25",
-            firstName: "James",
-            lastName: "Wilson",
-          },
-          {
-            id: "01A8FXV0Q6P9Z9FJKM2TB8WQH4",
-            createdAt: "2023-09-12",
-            updatedAt: "2023-10-01",
-            firstName: "Amanda",
-            lastName: "Taylor",
-          },
-          {
-            id: "01A8G2ZV7FGRX8ZQCBYKW5TY2L",
-            createdAt: "2023-10-07",
-            updatedAt: "2023-10-22",
-            firstName: "David",
-            lastName: "Anderson",
-          },
-          {
-            id: "01A8G6XDRKJ8C3R1ZJN4Y2Q6P5",
-            createdAt: "2023-10-20",
-            updatedAt: "2023-11-05",
-            firstName: "Laura",
-            lastName: "Thomas",
-          },
-          {
-            id: "01A8G9WEFK9ZMQ6JV8L9Z6C7QD",
-            createdAt: "2023-11-10",
-            updatedAt: "2023-11-30",
-            firstName: "Brian",
-            lastName: "Jackson",
-          },
-          {
-            id: "01A8GJMW6P4H9F8WZJ6H5TL0YV",
-            createdAt: "2023-11-20",
-            updatedAt: "2023-12-01",
-            firstName: "Jessica",
-            lastName: "White",
-          },
-          {
-            id: "01A8GLY9FT8MW8ZJ3NQ6ZYJVDX",
-            createdAt: "2023-12-03",
-            updatedAt: "2023-12-12",
-            firstName: "Oliver",
-            lastName: "Lee",
-          },
-          {
-            id: "01A8GP3V9DJQY6MW6F4H8R5DZT",
-            createdAt: "2023-12-10",
-            updatedAt: "2023-12-15",
-            firstName: "Sophia",
-            lastName: "Martinez",
-          },
-          {
-            id: "01A8GR5S1NZKW7TCQKH4G8V9PL",
-            createdAt: "2023-12-15",
-            updatedAt: "2023-12-20",
-            firstName: "Daniel",
-            lastName: "Lopez",
-          }
-        ],
         selectedFirstName: "",
         selectedLastName: "",
         selectedID: "",
