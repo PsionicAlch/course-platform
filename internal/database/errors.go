@@ -8,4 +8,5 @@ var (
 	ErrTutorialAlreadyExists = errors.New("tutorial already exists")
 	ErrKeywordAlreadyExists  = errors.New("keyword already exists")
 	ErrTokenAlreadyExists    = errors.New("token of that type already exists")
+	ErrChapterAlreadyExists  = errors.New("that chapter already exists")
 )

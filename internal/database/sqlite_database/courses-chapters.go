@@ -53,3 +53,21 @@ func (db *SQLiteDatabase) GetChapterByFileKey(fileKey string) (*models.ChapterMo
 
 	return &chapter, nil
 }
+
+func (db *SQLiteDatabase) CountChapters(courseId string) (int, error) {
+	query := `SELECT COUNT(id) FROM courses_chapters WHERE course_id = ?;`
+
+	var chapters int
+
+	row := db.connection.QueryRow(query, courseId)
+	if err := row.Scan(&chapters); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count all the chapters for course with ID \"%s\": %s\n", courseId, err)
+		return -1, err
+	}
+
+	return chapters, nil
+}

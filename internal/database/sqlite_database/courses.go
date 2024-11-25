@@ -129,3 +129,24 @@ func (db *SQLiteDatabase) GetCourseByFileKey(fileKey string) (*models.CourseMode
 
 	return &course, nil
 }
+
+func (db *SQLiteDatabase) GetCourseBySlug(slug string) (*models.CourseModel, error) {
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM courses WHERE slug = ?;`
+
+	var course models.CourseModel
+	var published int
+
+	row := db.connection.QueryRow(query, slug)
+	if err := row.Scan(&course.ID, &course.Title, &course.Slug, &course.Description, &course.ThumbnailURL, &course.BannerURL, &course.Content, &published, &course.AuthorID, &course.FileChecksum, &course.FileKey, &course.CreatedAt, &course.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		db.ErrorLog.Printf("Failed to get course by slug from the database: %s\n", err)
+		return nil, err
+	}
+
+	course.Published = published == 1
+
+	return &course, nil
+}

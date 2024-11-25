@@ -2,7 +2,7 @@
 title: "Build Your Own Course Platform with Golang, HTMX, AlpineJS and Bootstrap 5"
 description: "Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/golang-course-platform-image.png"
+banner_url: "/assets/img/banner-img.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
 key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"

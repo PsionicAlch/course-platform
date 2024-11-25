@@ -3,7 +3,7 @@ title: "How to handle password resets"
 chapter: 6
 
 course_key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"
-key: "Sper5jTPpAbb_AzhMlxKHb2KVz90aZ8Otq57Mu8I224mJjBuL7xNT36R6dbeoYVk0xDBtCykMia9B2SHaPktsQ"
+key: "O2HPFrLqLO6vxuwPAVXygHJMPZiQha9TAItIXEhuHaq_TsTKgtqeb4MGMS7T2gcbnSkycaqB3epS10BbqEBHag"
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec dui a massa tempus sollicitudin. In lobortis auctor ullamcorper. Aliquam erat volutpat. Morbi tincidunt nunc eget risus pretium, non porta felis ultrices. Aenean quam eros, sollicitudin vestibulum posuere nec, tincidunt quis lacus. Morbi laoreet ex lacinia ipsum malesuada feugiat id et enim. Vivamus sapien dolor, dictum vitae facilisis eget, dapibus a quam. Quisque vel purus in urna sagittis efficitur. Etiam sodales, felis vel iaculis vestibulum, mauris velit consectetur enim, vel rhoncus tortor sem in est. Suspendisse rhoncus consequat mi euismod efficitur. Phasellus congue nibh vitae nulla tempus scelerisque. Nunc sit amet lorem mi. Integer ut est tempus, faucibus eros nec, convallis leo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.

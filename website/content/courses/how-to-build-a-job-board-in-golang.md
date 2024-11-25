@@ -2,7 +2,7 @@
 title: "Build Your First Job Board using Golang"
 description: "Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/golang-course-platform-image.png"
+banner_url: "/assets/img/banner-img.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
 key: "Ed5Wu2Y3McxP0qir2iGks-KPSyL84uU_2RfayK8DeGbpsw_TNscYycWmQ791S-RFfIeG029nyM4LmD0JMknM1w"

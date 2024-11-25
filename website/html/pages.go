@@ -83,6 +83,9 @@ type CoursesPage struct {
 
 type CoursesCoursePage struct {
 	BasePage
+	Course   *models.CourseModel
+	Author   *models.AuthorModel
+	Chapters int
 }
 
 type CoursesPurchasesPage struct {

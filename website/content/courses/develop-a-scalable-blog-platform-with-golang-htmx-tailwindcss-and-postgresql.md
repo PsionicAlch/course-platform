@@ -2,7 +2,7 @@
 title: "Develop a Scalable Blog Platform with Golang, HTMX, Tailwind CSS, and PostgreSQL"
 description: "Learn how to build and deploy a fully-functional, scalable blog platform from scratch using Golang, HTMX, Tailwind CSS, and PostgreSQL. Create a production-ready application designed for real-world use."
 thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/golang-course-platform-image.png"
+banner_url: "/assets/img/banner-img.png"
 keywords: ["golang blog platform", "web development", "htmx", "tailwind css", "postgresql", "golang tutorials"]
 
 key: "pLVZT-7zan_D4Z5MmG18RPEzwl8rkuH_LYP1hBrSfnuass6Bgb6yO6ke1WNmGnr6AoBkFvA04pnGmuxQq2EHwg"

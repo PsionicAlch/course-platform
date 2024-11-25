@@ -49,13 +49,13 @@ func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all courses (page 1) from the database: %s\n", err)
 
-		h.Session.SetErrorMessage(r.Context(), "Failed to load courses. Please try again")
-
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
 			BasePage: html.NewBasePage(user),
-		}); err != nil {
+		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
+
+		return
 	}
 
 	var courseSlice []*models.CourseModel
@@ -156,8 +156,6 @@ func (h *Handlers) CoursesSearchGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.InfoLog.Printf("Number of courses found for query \"%s\": %d\n", query, len(courses))
-
 	var courseSlice []*models.CourseModel
 	var lastCourse *models.CourseModel
 
@@ -181,6 +179,63 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.CoursesCoursePage{
 		BasePage: html.NewBasePage(user),
+	}
+
+	courseSlug := chi.URLParam(r, "slug")
+
+	course, err := h.Database.GetCourseBySlug(courseSlug)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get course from the database with slug \"%s\": %s\n", courseSlug, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
+			BasePage: html.NewBasePage(user),
+		}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if course == nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors500Page{
+			BasePage: html.NewBasePage(user),
+		}, http.StatusNotFound); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Course = course
+
+	chapters, err := h.Database.CountChapters(course.ID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to count all the chapters, connected to course \"%s\", in the database: %s\n", course.Title, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
+			BasePage: html.NewBasePage(user),
+		}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Chapters = chapters
+
+	var authorID string
+	if course.AuthorID.Valid {
+		authorID = course.AuthorID.String
+	} else {
+		authorID = ""
+	}
+
+	// TODO: Implement author fetching logic.
+	pageData.Author = &models.AuthorModel{
+		ID:      authorID,
+		Name:    "Jean-Jacques",
+		Surname: "Strydom",
+		Slug:    "jean-jacques-strydom",
 	}
 
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "courses-course", pageData); err != nil {

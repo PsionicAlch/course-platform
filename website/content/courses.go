@@ -44,8 +44,6 @@ type ChapterData struct {
 }
 
 func (content *Content) RegisterCourseContent(db database.Database) {
-	timerStart := time.Now()
-
 	courses, err := db.GetAllCourses()
 	if err != nil {
 		content.ErrorLog.Fatalf("Failed to get all courses: %s\n", err)
@@ -63,7 +61,26 @@ func (content *Content) RegisterCourseContent(db database.Database) {
 
 	db.PrepareBulkCourses()
 
-	content.InfoLog.Printf("Parsing %d courses!\n", len(files)/2)
+	var coursesFileCount int
+	var chaptersFileCount int
+
+	for _, file := range files {
+		if file.IsDir() {
+			chapterFiles, err := coursesFS.ReadDir("courses/" + file.Name())
+			if err != nil {
+				content.ErrorLog.Fatalf("Failed to read chapter (\"%s\") files in courses embedded file system: %s\n", "courses/"+file.Name(), err)
+			}
+
+			chaptersFileCount = chaptersFileCount + len(chapterFiles)
+			continue
+		}
+
+		coursesFileCount += 1
+	}
+
+	content.InfoLog.Printf("Parsing %d courses and %d chapters!\n", coursesFileCount, chaptersFileCount)
+
+	timerStart := time.Now()
 
 	for _, file := range files {
 		if file.IsDir() {
@@ -88,7 +105,7 @@ func (content *Content) RegisterCourseContent(db database.Database) {
 
 	timerEnd := time.Since(timerStart)
 
-	content.InfoLog.Printf("Parsed %d courses in %s\n", len(files)/2, timerEnd)
+	content.InfoLog.Printf("Parsed %d courses and %d chapters in %s\n", coursesFileCount, chaptersFileCount, timerEnd)
 }
 
 func (content *Content) ParseChapterFile(filePath string, db database.Database, chapters []*models.ChapterModel) {
@@ -135,6 +152,7 @@ func (content *Content) ParseChapterFile(filePath string, db database.Database, 
 
 	// The chapter has been updated.
 	if !checksumMatch {
+		content.InfoLog.Printf("%s's file checksum didn't match.\nOld file checksum: %s\t New file checksum: %s\n", chapters[fileKeyIndex].FileKey, chapters[fileKeyIndex].FileChecksum, fileChecksum)
 		db.UpdateChapter(chapters[fileKeyIndex].ID, chapterData.Title, chapterData.Chapter, chapterData.Content, fileChecksum, chapterData.Key, chapterData.CourseKey)
 		return
 	}
