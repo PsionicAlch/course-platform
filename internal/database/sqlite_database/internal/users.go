@@ -28,6 +28,7 @@ func AddUser(dbFacade SqlDbFacade, id, name, surname, email, password, affiliate
 	user.IsAuthor = false
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
+	user.AffiliatePoints = 0
 
 	result, err := dbFacade.Exec(query, user.ID, user.Name, user.Surname, user.Email, user.Password, user.AffiliateCode, user.CreatedAt, user.UpdatedAt)
 	if err != nil {

@@ -91,7 +91,7 @@ func (db *SQLiteDatabase) AddNewUser(name, surname, email, password, token, toke
 }
 
 func (db *SQLiteDatabase) GetUserByEmail(email string) (*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, created_at, updated_at FROM users WHERE email = ?;`
+	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE email = ?;`
 
 	var isAdminInt int
 	var isAuthorInt int
@@ -100,7 +100,7 @@ func (db *SQLiteDatabase) GetUserByEmail(email string) (*models.UserModel, error
 	isAuthor := false
 
 	row := db.connection.QueryRow(query, email)
-	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &isAdminInt, &isAuthorInt, &user.AffiliateCode, &user.CreatedAt, &user.UpdatedAt); err != nil {
+	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &isAdminInt, &isAuthorInt, &user.AffiliateCode, &user.AffiliatePoints, &user.CreatedAt, &user.UpdatedAt); err != nil {
 		if err == sql.ErrNoRows {
 			// Nothing was found so we can just send back nothing and handle it at the caller
 			// end.
@@ -126,7 +126,7 @@ func (db *SQLiteDatabase) GetUserByEmail(email string) (*models.UserModel, error
 }
 
 func (db *SQLiteDatabase) GetUserByID(id string) (*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, created_at, updated_at FROM users WHERE id = ?;`
+	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE id = ?;`
 
 	var isAdminInt int
 	var isAuthorInt int
@@ -135,7 +135,7 @@ func (db *SQLiteDatabase) GetUserByID(id string) (*models.UserModel, error) {
 	isAuthor := false
 
 	row := db.connection.QueryRow(query, id)
-	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &isAdminInt, &isAuthorInt, &user.AffiliateCode, &user.CreatedAt, &user.UpdatedAt); err != nil {
+	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &isAdminInt, &isAuthorInt, &user.AffiliateCode, &user.AffiliatePoints, &user.CreatedAt, &user.UpdatedAt); err != nil {
 		if err == sql.ErrNoRows {
 			// Nothing was found so we can just send back nothing and handle it at the caller
 			// end.
@@ -161,7 +161,7 @@ func (db *SQLiteDatabase) GetUserByID(id string) (*models.UserModel, error) {
 }
 
 func (db *SQLiteDatabase) GetUserByToken(token, tokenType string) (*models.UserModel, error) {
-	query := `SELECT users.id, users.name, users.surname, users.email, users.password, users.is_admin, users.is_author, users.affiliate_code, users.created_at, users.updated_at FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token = ? AND tokens.token_type = ? AND tokens.valid_until > CURRENT_TIMESTAMP;`
+	query := `SELECT users.id, users.name, users.surname, users.email, users.password, users.is_admin, users.is_author, users.affiliate_code, users.affiliate_points, users.created_at, users.updated_at FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token = ? AND tokens.token_type = ? AND tokens.valid_until > CURRENT_TIMESTAMP;`
 
 	var isAdminInt int
 	var isAuthorInt int
