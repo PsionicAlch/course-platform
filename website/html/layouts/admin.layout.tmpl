@@ -36,8 +36,6 @@
   </head>
   <body
     hx-ext="head-support"
-    hx-boost="true"
-    hx-history="false"
     x-data="{ menuOpen: false }"
     x-bind:class="{ 'noscroll': menuOpen }"
   >
@@ -75,7 +73,6 @@
           <hr>
 
           <div class="admin-navbar-body">
-            <p><a href="/admin/admins">Admins Management</a></p>
             <p><a href="/admin/authors">Authors Management</a></p>
             <p><a href="/admin/comments">Comment Management</a></p>
             <p><a href="/admin/courses">Course Management</a></p>

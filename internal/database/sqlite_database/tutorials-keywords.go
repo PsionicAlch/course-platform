@@ -1,7 +1,7 @@
 package sqlite_database
 
 func (db *SQLiteDatabase) GetAllKeywordsForTutorial(tutorialId string) ([]string, error) {
-	query := `SELECT k.keyword FROM tutorials_keywords tk JOIN keywords k ON tk.keyword_id = k.id WHERE tk.tutorial_id = ?;`
+	query := `SELECT k.keyword FROM tutorials_keywords AS tk JOIN keywords AS k ON tk.keyword_id = k.id WHERE tk.tutorial_id = ?;`
 
 	var keywords []string
 

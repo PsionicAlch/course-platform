@@ -1,4 +1,4 @@
-package admin
+package comments
 
 import (
 	"net/http"
@@ -7,6 +7,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -28,6 +29,13 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 	}
 }
 
-func (h *Handlers) AdminGet(w http.ResponseWriter, r *http.Request) {
-	utils.Redirect(w, r, "/admin/users")
+func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.AdminCommentsPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "admin-comments", pageData); err != nil {
+		h.ErrorLog.Println(err)
+	}
 }

@@ -107,9 +107,9 @@ type CoursesListComponent struct {
 	ErrorMessage string
 }
 
-type AdminUsersListComponent struct {
-	Admins       []*models.UserModel
-	LastAdmin    *models.UserModel
+type UsersListComponent struct {
+	Users        []*models.UserModel
+	LastUser     *models.UserModel
 	QueryURL     string
 	ErrorMessage string
 }

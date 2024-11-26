@@ -1,0 +1,41 @@
+{{ define "users-list" }}
+  {{ range .Users }}
+    <tr id="{{- .ID -}}">
+      <td>{{- .ID -}}</td>
+      <td>{{- .Name -}}</td>
+      <td>{{- .Surname -}}</td>
+      <td>{{- .Email -}}</td>
+      <td>{{- .AffiliateCode -}}</td>
+      <td>{{- .AffiliatePoints -}}</td>
+      <td>{{- .CreatedAt | pretty_date -}}</td>
+      <td>{{- .UpdatedAt | pretty_date -}}</td>
+    </tr>
+  {{ end }}
+
+  {{ if .LastUser }}
+    <tr
+      id="{{- .LastUser.ID -}}"
+      hx-get="{{- .QueryURL }}"
+      hx-trigger="revealed once"
+      hx-swap="afterend"
+    >
+      <td>{{- .LastUser.ID -}}</td>
+      <td>{{- .LastUser.Name -}}</td>
+      <td>{{- .LastUser.Surname -}}</td>
+      <td>{{- .LastUser.Email -}}</td>
+      <td>{{- .LastUser.AffiliateCode -}}</td>
+      <td>{{- .LastUser.AffiliatePoints -}}</td>
+      <td>{{- .LastUser.CreatedAt | pretty_date -}}</td>
+      <td>{{- .LastUser.UpdatedAt | pretty_date -}}</td>
+    </tr>
+  {{ end }}
+
+  {{ with .ErrorMessage }}
+    <script>
+      notyf.open({
+        type: 'flash-error',
+        message: '{{.}}'
+      });
+    </script>
+  {{ end }}
+{{ end }}

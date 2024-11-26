@@ -11,53 +11,30 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
-func (db *SQLiteDatabase) GetAllAdminsPaginated(page, elements int) ([]*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE is_admin = 1 LIMIT ? OFFSET ?;`
+func (db *SQLiteDatabase) GetUsersPaginated(term string, level database.AuthorizationLevel, page, elements uint) ([]*models.UserModel, error) {
+	query := `SELECT id, name, surname, email, password, affiliate_code, affiliate_points, is_admin, is_author, created_at, updated_at FROM users WHERE (LOWER(id) LIKE '%' || ? || '%' OR LOWER(name) LIKE '%' || ? || '%' OR LOWER(surname) LIKE '%' || ? || '%' OR LOWER(email) LIKE '%' || ? || '%' OR LOWER(affiliate_code) LIKE '%' || ? || '%')`
 
 	offset := (page - 1) * elements
 
-	var admins []*models.UserModel
+	args := []any{term, term, term, term, term}
 
-	rows, err := db.connection.Query(query, elements, offset)
-	if err != nil {
-		db.ErrorLog.Printf("Failed to query database for all admin users (page %d): %s\n", page, err)
-		return nil, err
+	switch level {
+	case database.User:
+		query += ` AND is_admin = 0 AND is_author = 0`
+	case database.Admin:
+		query += ` AND is_admin = 1`
+	case database.Author:
+		query += ` AND is_author = 1`
 	}
 
-	for rows.Next() {
-		var admin models.UserModel
-		var isAdmin int
-		var isAuthor int
-
-		if err := rows.Scan(&admin.ID, &admin.Name, &admin.Surname, &admin.Email, &admin.Password, &isAdmin, &isAuthor, &admin.AffiliateCode, &admin.AffiliatePoints, &admin.CreatedAt, &admin.UpdatedAt); err != nil {
-			db.ErrorLog.Printf("Failed to read row from users table: %s\n", err)
-			return nil, err
-		}
-
-		admin.IsAdmin = isAdmin == 1
-		admin.IsAuthor = isAuthor == 1
-
-		admins = append(admins, &admin)
-	}
-
-	if err := rows.Err(); err != nil {
-		db.ErrorLog.Printf("Failed to query database for all admin users (page %d): %s\n", page, err)
-		return nil, err
-	}
-
-	return admins, nil
-}
-
-func (db *SQLiteDatabase) GetAllUsersPaginated(page, elements int) ([]*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE is_admin = 0 AND is_author = 0 LIMIT ? OFFSET ?;`
-
-	offset := (page - 1) * elements
+	query += ` LIMIT ? OFFSET ?;`
+	args = append(args, elements, offset)
 
 	var users []*models.UserModel
 
-	rows, err := db.connection.Query(query, elements, offset)
+	rows, err := db.connection.Query(query, args...)
 	if err != nil {
-		db.ErrorLog.Printf("Failed to query database for all non-admin and non-author users (page %d): %s\n", page, err)
+		db.ErrorLog.Printf("Failed to query database for all users (page %d) according to the search term \"%s\" and authorization level \"%s\": %s\n", page, term, level, err)
 		return nil, err
 	}
 
@@ -66,60 +43,20 @@ func (db *SQLiteDatabase) GetAllUsersPaginated(page, elements int) ([]*models.Us
 		var isAdmin int
 		var isAuthor int
 
-		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Password, &isAdmin, &isAuthor, &user.AffiliateCode, &user.AffiliatePoints, &user.CreatedAt, &user.UpdatedAt); err != nil {
+		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &user.AffiliateCode, &user.AffiliatePoints, &isAdmin, &isAuthor, &user.CreatedAt, &user.UpdatedAt); err != nil {
 			db.ErrorLog.Printf("Failed to read row from users table: %s\n", err)
 			return nil, err
 		}
-
-		user.IsAdmin = isAdmin == 1
-		user.IsAuthor = isAuthor == 1
 
 		users = append(users, &user)
 	}
 
 	if err := rows.Err(); err != nil {
-		db.ErrorLog.Printf("Failed to query database for all non-admin and non-author users (page %d): %s\n", page, err)
+		db.ErrorLog.Printf("Failed to query database for all users (page %d) according to the search term \"%s\" and authorization level \"%s\": %s\n", page, term, level, err)
 		return nil, err
 	}
 
 	return users, nil
-}
-
-func (db *SQLiteDatabase) GetAllAuthorsPaginated(page, elements int) ([]*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE is_author = 1 LIMIT ? OFFSET ?;`
-
-	offset := (page - 1) * elements
-
-	var authors []*models.UserModel
-
-	rows, err := db.connection.Query(query, elements, offset)
-	if err != nil {
-		db.ErrorLog.Printf("Failed to query database for all author users (page %d): %s\n", page, err)
-		return nil, err
-	}
-
-	for rows.Next() {
-		var author models.UserModel
-		var isAdmin int
-		var isAuthor int
-
-		if err := rows.Scan(&author.ID, &author.Name, &author.Surname, &author.Password, &isAdmin, &isAuthor, &author.AffiliateCode, &author.AffiliatePoints, &author.CreatedAt, &author.UpdatedAt); err != nil {
-			db.ErrorLog.Printf("Failed to read row from users table: %s\n", err)
-			return nil, err
-		}
-
-		author.IsAdmin = isAdmin == 1
-		author.IsAuthor = isAuthor == 1
-
-		authors = append(authors, &author)
-	}
-
-	if err := rows.Err(); err != nil {
-		db.ErrorLog.Printf("Failed to query database for all author users (page %d): %s\n", page, err)
-		return nil, err
-	}
-
-	return authors, nil
 }
 
 // The only function that I believe has a viable reason to do transactions.

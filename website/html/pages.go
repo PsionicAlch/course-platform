@@ -32,11 +32,6 @@ type AccountsResetPasswordPage struct {
 	ResetPasswordForm *ResetPasswordFormComponent
 }
 
-type AdminAdminsPage struct {
-	BasePage
-	Admins *AdminUsersListComponent
-}
-
 type AdminAuthorsPage struct {
 	BasePage
 }
@@ -67,6 +62,7 @@ type AdminTutorialsPage struct {
 
 type AdminUsersPage struct {
 	BasePage
+	Users *UsersListComponent
 }
 
 type AuthorsTutorialsPage struct {

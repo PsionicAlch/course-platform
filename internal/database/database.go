@@ -18,9 +18,7 @@ type Database interface {
 	Rollback(steps int) error
 
 	// Users functions.
-	GetAllAdminsPaginated(page, elements int) ([]*models.UserModel, error)
-	GetAllUsersPaginated(page, elements int) ([]*models.UserModel, error)
-	GetAllAuthorsPaginated(page, elements int) ([]*models.UserModel, error)
+	GetUsersPaginated(term string, level AuthorizationLevel, page, elements uint) ([]*models.UserModel, error)
 	AddNewUser(name, surname, email, password, token, tokenType, ipAddr string, validUntil time.Time) (*models.UserModel, error)
 	NewUser(name, surname, email, password string) error
 	NewAdminUser(name, surname, email, password string) error

@@ -1,4 +1,4 @@
-package admin
+package authors
 
 import (
 	"net/http"
@@ -7,6 +7,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
@@ -18,7 +19,7 @@ type Handlers struct {
 }
 
 func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, auth *authentication.Authentication) *Handlers {
-	loggers := utils.CreateLoggers("ADMIN HANDLERS")
+	loggers := utils.CreateLoggers("ADMIN AUTHORS HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
@@ -28,6 +29,13 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 	}
 }
 
-func (h *Handlers) AdminGet(w http.ResponseWriter, r *http.Request) {
-	utils.Redirect(w, r, "/admin/users")
+func (h *Handlers) AuthorsGet(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
+	pageData := html.AdminAuthorsPage{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "admin-authors", pageData); err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
