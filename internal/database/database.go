@@ -26,6 +26,9 @@ type Database interface {
 	GetUserByID(id string) (*models.UserModel, error)
 	GetUserByToken(token, tokenType string) (*models.UserModel, error)
 	UpdateUserPassword(userId, password string) error
+	CountUsers() (uint, error)
+	AddAuthorStatus(userId string) error
+	RemoveAuthorStatus(userId string) error
 
 	// Tokens functions.
 	AddToken(token, tokenType, userId string, validUntil time.Time) error
@@ -50,6 +53,7 @@ type Database interface {
 	UserLikedTutorial(userId, slug string) (bool, error)
 	UserLikeTutorial(userId, slug string) error
 	UserDislikeTutorial(userId, slug string) error
+	CountTutorialsLikedByUser(userId string) (uint, error)
 
 	// Tutorials-Bookmarks functions.
 	UserBookmarkedTutorial(userId, slug string) (bool, error)

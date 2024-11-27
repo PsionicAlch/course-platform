@@ -62,7 +62,9 @@ type AdminTutorialsPage struct {
 
 type AdminUsersPage struct {
 	BasePage
-	Users *UsersListComponent
+	NumUsers            uint
+	AuthorizationLevels []string
+	Users               *UsersListComponent
 }
 
 type AuthorsTutorialsPage struct {

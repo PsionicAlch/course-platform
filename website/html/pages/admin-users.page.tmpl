@@ -7,20 +7,28 @@
 {{ define "body" }}
   <section class="admin-container">
     <div class="admin-header">
-      <h2>Users Administration</h2>
+      <h2>Users Administration ({{- .NumUsers }} users)</h2>
 
       <div class="admin-header-actions">
-        <form>
+        <form
+          hx-get="/admin/users/htmx?page=1"
+          hx-target=".admin-body table tbody"
+          hx-trigger="change, keyup delay:500ms"
+        >
           <input
             type="text"
             name="query"
             id="query"
             class="shadow-sm"
             placeholder="Search terms..."
-            hx-trigger="keyup changed delay:500ms"
-            hx-get="/admin/users/htmx?page=1"
-            hx-target=".admin-body table tbody"
           >
+
+          <select name="level" id="level" class="shadow-sm">
+            <option value="" selected>Authorization Level</option>
+            {{ range .AuthorizationLevels }}
+              <option value="{{.}}">{{.}}</option>
+            {{ end }}
+          </select>
         </form>
       </div>
     </div>
@@ -37,9 +45,13 @@
             <th>Email</th>
             <th>Affiliate Code</th>
             <th>Affiliate Points</th>
+            <th>Author</th>
+            <th>Admin</th>
             <th>Tutorials Liked</th>
             <th>Tutorials Bookmarked</th>
             <th>Courses Owned</th>
+            <th>Tutorials Written</th>
+            <th>Courses Written</th>
             <th>Created At</th>
             <th>Updated at</th>
           </tr>

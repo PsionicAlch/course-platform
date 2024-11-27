@@ -12,5 +12,8 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.Get("/", handlers.UsersGet)
 	router.Get("/htmx", handlers.UsersPaginationGet)
 
+	router.Get("/htmx/change-author/{user-id}", handlers.AuthorEditGet)
+	router.Post("/htmx/change-author/{user-id}", handlers.AuthorEditPost)
+
 	return router
 }

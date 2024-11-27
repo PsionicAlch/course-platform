@@ -7,26 +7,40 @@
       <td>{{- .Email -}}</td>
       <td>{{- .AffiliateCode -}}</td>
       <td>{{- .AffiliatePoints -}}</td>
+      <td hx-get="{{- $.BaseURL -}}/change-author/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML">{{- if .IsAuthor -}}<p style="color: var(--primary-green-color);">&#10004;</p>{{- else -}}<p style="color: var(--primary-red-color);">&#10008;</p>{{- end -}}</td>
+      <td hx-get="{{- $.BaseURL -}}/change-admin/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML">{{- if .IsAdmin -}}<p style="color: var(--primary-green-color);">&#10004;</p>{{- else -}}<p style="color: var(--primary-red-color);">&#10008;</p>{{- end -}}</td>
+      <td>{{- index $.TutorialsLiked .ID  -}}</td>
+      <td>{{- index $.TutorialsBookmarked .ID  -}}</td>
+      <td>{{- index $.CoursesBought .ID  -}}</td>
+      <td>{{- index $.TutorialsWritten .ID  -}}</td>
+      <td>{{- index $.CoursesWritten .ID  -}}</td>
       <td>{{- .CreatedAt | pretty_date -}}</td>
       <td>{{- .UpdatedAt | pretty_date -}}</td>
     </tr>
   {{ end }}
 
-  {{ if .LastUser }}
+  {{ with .LastUser }}
     <tr
-      id="{{- .LastUser.ID -}}"
-      hx-get="{{- .QueryURL }}"
+      id="{{- .ID -}}"
+      hx-get="{{- $.QueryURL }}"
       hx-trigger="revealed once"
       hx-swap="afterend"
     >
-      <td>{{- .LastUser.ID -}}</td>
-      <td>{{- .LastUser.Name -}}</td>
-      <td>{{- .LastUser.Surname -}}</td>
-      <td>{{- .LastUser.Email -}}</td>
-      <td>{{- .LastUser.AffiliateCode -}}</td>
-      <td>{{- .LastUser.AffiliatePoints -}}</td>
-      <td>{{- .LastUser.CreatedAt | pretty_date -}}</td>
-      <td>{{- .LastUser.UpdatedAt | pretty_date -}}</td>
+      <td>{{- .ID -}}</td>
+      <td>{{- .Name -}}</td>
+      <td>{{- .Surname -}}</td>
+      <td>{{- .Email -}}</td>
+      <td>{{- .AffiliateCode -}}</td>
+      <td>{{- .AffiliatePoints -}}</td>
+      <td hx-get="{{- $.BaseURL -}}/change-author/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML">{{- if .IsAuthor -}}<p style="color: var(--primary-green-color);">&#10004;</p>{{- else -}}<p style="color: var(--primary-red-color);">&#10008;</p>{{- end -}}</td>
+      <td hx-get="{{- $.BaseURL -}}/change-admin/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML">{{- if .IsAdmin -}}<p style="color: var(--primary-green-color);">&#10004;</p>{{- else -}}<p style="color: var(--primary-red-color);">&#10008;</p>{{- end -}}</td>
+      <td>{{- index $.TutorialsLiked .ID  -}}</td>
+      <td>{{- index $.TutorialsBookmarked .ID  -}}</td>
+      <td>{{- index $.CoursesBought .ID  -}}</td>
+      <td>{{- index $.TutorialsWritten .ID  -}}</td>
+      <td>{{- index $.CoursesWritten .ID  -}}</td>
+      <td>{{- .CreatedAt | pretty_date -}}</td>
+      <td>{{- .UpdatedAt | pretty_date -}}</td>
     </tr>
   {{ end }}
 

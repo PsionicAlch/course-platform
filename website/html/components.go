@@ -108,8 +108,22 @@ type CoursesListComponent struct {
 }
 
 type UsersListComponent struct {
-	Users        []*models.UserModel
-	LastUser     *models.UserModel
-	QueryURL     string
+	Users               []*models.UserModel
+	LastUser            *models.UserModel
+	TutorialsLiked      map[string]uint
+	TutorialsBookmarked map[string]uint
+	CoursesBought       map[string]uint
+	TutorialsWritten    map[string]uint
+	CoursesWritten      map[string]uint
+	BaseURL             string
+	QueryURL            string
+	ErrorMessage        string
+}
+
+type SelectComponent struct {
+	Name         string
+	Options      []string
+	Selected     string
+	URL          string
 	ErrorMessage string
 }

@@ -1,0 +1,18 @@
+{{ define "select" }}
+  {{ with .ErrorMessage }}
+    <p>An error occurred</p>
+
+    <script>
+      notyf.open({
+        type: 'flash-error',
+        message: '{{.}}'
+      });
+    </script>
+  {{ else }}
+    <select name="{{- .Name -}}" id="{{- .Name -}}" hx-post="{{- .URL -}}" hx-trigger="change" hx-target="this" hx-swap="outerHTML" class="shadow-sm">
+      {{ range .Options }}
+        <option value="{{- . -}}" {{- if eq . $.Selected -}}selected{{- end -}}>{{- . -}}</option>
+      {{ end }}
+    </select>
+  {{ end }}
+{{ end }}

@@ -48,6 +48,9 @@ func (db *SQLiteDatabase) GetUsersPaginated(term string, level database.Authoriz
 			return nil, err
 		}
 
+		user.IsAdmin = isAdmin == 1
+		user.IsAuthor = isAuthor == 1
+
 		users = append(users, &user)
 	}
 
@@ -343,6 +346,48 @@ func (db *SQLiteDatabase) UpdateUserPassword(userId, password string) error {
 	if rowsAffected == 0 {
 		db.ErrorLog.Printf("0 rows were affected after updating user's (\"%s\") password\n", userId)
 		return database.ErrNoRowsAffected
+	}
+
+	return nil
+}
+
+func (db *SQLiteDatabase) CountUsers() (uint, error) {
+	query := `SELECT COUNT(id) FROM users;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query)
+	if err := row.Scan(&count); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count the number of users in the database: %s\n", err)
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (db *SQLiteDatabase) AddAuthorStatus(userId string) error {
+	query := `UPDATE users SET is_author = 1 WHERE id = ?;`
+
+	_, err := db.connection.Exec(query, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to update user's (\"%s\") author status: %s\n", userId, err)
+		return err
+	}
+
+	return nil
+}
+
+func (db *SQLiteDatabase) RemoveAuthorStatus(userId string) error {
+	query := `UPDATE users SET is_author = 0 WHERE id = ?;`
+
+	_, err := db.connection.Exec(query, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to update user's (\"%s\") author status: %s\n", userId, err)
+		return err
 	}
 
 	return nil
