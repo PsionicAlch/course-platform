@@ -115,14 +115,17 @@ func (h *Handlers) AuthorEditGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user by ID \"%s\": %s\n", userId, err)
 
-		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
-			Name: "author-status",
-			Options: []string{
-				"Author",
-				"User",
-			},
-			ErrorMessage: "Unable to find user by given ID.",
-		}, http.StatusInternalServerError); err != nil {
+		resp := "<p style=\"color: var(--primary-red-color);\">&#10008;</p>"
+		resp += `
+		<script>
+			notyf.open({
+				type: 'flash-error',
+				message: "Unexpected server error"
+			});
+		</script>
+		`
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -164,7 +167,7 @@ func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
 				"Author",
 				"User",
 			},
-			ErrorMessage: "Unable to find user by given ID.",
+			ErrorMessage: "Unexpected",
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
@@ -222,6 +225,164 @@ func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
 				Name: "author-status",
 				Options: []string{
 					"Author",
+					"User",
+				},
+				ErrorMessage: "Unexpected server error has occurred!",
+			}, http.StatusInternalServerError); err != nil {
+				h.ErrorLog.Println(err)
+			}
+
+			return
+		}
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", "<p style=\"color: var(--primary-red-color);\">&#10008;</p>"); err != nil {
+			h.ErrorLog.Println(err)
+		}
+	}
+}
+
+func (h *Handlers) AdminEditGet(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
+
+	userId := chi.URLParam(r, "user-id")
+	targetUser, err := h.Database.GetUserByID(userId)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get user by ID \"%s\": %s\n", userId, err)
+
+		resp := "<p style=\"color: var(--primary-red-color);\">&#10008;</p>"
+		resp += `
+		<script>
+			notyf.open({
+				type: 'flash-error',
+				message: "Unexpected server error"
+			});
+		</script>
+		`
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if targetUser.ID == user.ID || user.CreatedAt.After(targetUser.CreatedAt) {
+		var resp string
+		if targetUser.IsAdmin {
+			resp += "<p style=\"color: var(--primary-green-color);\">&#10004;</p>"
+		} else {
+			resp += "<p style=\"color: var(--primary-red-color);\">&#10008;</p>"
+		}
+
+		resp += `
+		<script>
+			notyf.open({
+				type: 'flash-warning',
+				message: "You can't edit this user's admin status."
+			});
+		</script>
+		`
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	var userStatus string
+	if targetUser.IsAdmin {
+		userStatus = "Admin"
+	} else {
+		userStatus = "User"
+	}
+
+	selectComponent := html.SelectComponent{
+		Name: "admin-status",
+		Options: []string{
+			"Admin",
+			"User",
+		},
+		Selected: userStatus,
+		URL:      fmt.Sprintf("/admin/users/htmx/change-admin/%s", targetUser.ID),
+	}
+
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", selectComponent); err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
+	userId := chi.URLParam(r, "user-id")
+
+	user, err := h.Database.GetUserByID(userId)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get user by ID \"%s\": %s\n", userId, err)
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
+			Name: "admin-status",
+			Options: []string{
+				"Admin",
+				"User",
+			},
+			ErrorMessage: "Unable to find user by given ID.",
+		}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	r.ParseForm()
+
+	adminStatus := r.Form.Get("admin-status")
+
+	if !utils.InSlice(adminStatus, []string{"Admin", "User"}) {
+		h.ErrorLog.Printf("Received invalid admin status option: %s\n", adminStatus)
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
+			Name: "admin-status",
+			Options: []string{
+				"Admin",
+				"User",
+			},
+			ErrorMessage: "Invalid option selected.",
+		}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if adminStatus == "Admin" {
+		if err := h.Database.AddAdminStatus(user.ID); err != nil {
+			h.ErrorLog.Printf("Failed to update user's (\"%s\") admin status: %s\n", user.ID, err)
+
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
+				Name: "admin-status",
+				Options: []string{
+					"Admin",
+					"User",
+				},
+				ErrorMessage: "Unexpected server error has occurred!",
+			}, http.StatusInternalServerError); err != nil {
+				h.ErrorLog.Println(err)
+			}
+
+			return
+		}
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", "<p style=\"color: var(--primary-green-color);\">&#10004;</p>"); err != nil {
+			h.ErrorLog.Println(err)
+		}
+	} else {
+		if err := h.Database.RemoveAdminStatus(user.ID); err != nil {
+			h.ErrorLog.Printf("Failed to update user's (\"%s\") admin status: %s\n", user.ID, err)
+
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
+				Name: "admin-status",
+				Options: []string{
+					"Admin",
 					"User",
 				},
 				ErrorMessage: "Unexpected server error has occurred!",

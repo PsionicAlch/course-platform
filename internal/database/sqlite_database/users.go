@@ -27,7 +27,7 @@ func (db *SQLiteDatabase) GetUsersPaginated(term string, level database.Authoriz
 		query += ` AND is_author = 1`
 	}
 
-	query += ` LIMIT ? OFFSET ?;`
+	query += ` ORDER BY created_at DESC LIMIT ? OFFSET ?;`
 	args = append(args, elements, offset)
 
 	var users []*models.UserModel
@@ -370,7 +370,7 @@ func (db *SQLiteDatabase) CountUsers() (uint, error) {
 }
 
 func (db *SQLiteDatabase) AddAuthorStatus(userId string) error {
-	query := `UPDATE users SET is_author = 1 WHERE id = ?;`
+	query := `UPDATE users SET is_author = 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
 
 	_, err := db.connection.Exec(query, userId)
 	if err != nil {
@@ -382,11 +382,35 @@ func (db *SQLiteDatabase) AddAuthorStatus(userId string) error {
 }
 
 func (db *SQLiteDatabase) RemoveAuthorStatus(userId string) error {
-	query := `UPDATE users SET is_author = 0 WHERE id = ?;`
+	query := `UPDATE users SET is_author = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
 
 	_, err := db.connection.Exec(query, userId)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to update user's (\"%s\") author status: %s\n", userId, err)
+		return err
+	}
+
+	return nil
+}
+
+func (db *SQLiteDatabase) AddAdminStatus(userId string) error {
+	query := `UPDATE users SET is_admin = 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
+
+	_, err := db.connection.Exec(query, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to update user's (\"%s\") admin status: %s\n", userId, err)
+		return err
+	}
+
+	return nil
+}
+
+func (db *SQLiteDatabase) RemoveAdminStatus(userId string) error {
+	query := `UPDATE users SET is_admin = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
+
+	_, err := db.connection.Exec(query, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to update user's (\"%s\") admin status: %s\n", userId, err)
 		return err
 	}
 

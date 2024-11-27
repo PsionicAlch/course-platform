@@ -29,6 +29,8 @@ type Database interface {
 	CountUsers() (uint, error)
 	AddAuthorStatus(userId string) error
 	RemoveAuthorStatus(userId string) error
+	AddAdminStatus(userId string) error
+	RemoveAdminStatus(userId string) error
 
 	// Tokens functions.
 	AddToken(token, tokenType, userId string, validUntil time.Time) error

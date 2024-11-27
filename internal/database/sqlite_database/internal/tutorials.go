@@ -2,7 +2,6 @@ package internal
 
 import (
 	"database/sql"
-	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"modernc.org/sqlite"
@@ -34,11 +33,9 @@ func AddTutorial(dbFacade SqlDbFacade, id, title, slug, description, thumbnailUr
 }
 
 func UpdateTutorial(dbFacade SqlDbFacade, id, title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum, fileKey string, authorId sql.NullString) error {
-	query := `UPDATE tutorials SET title = ?, slug = ?, description = ?, thumbnail_url = ?, banner_url = ?, content = ?, published = 0, author_id = ?, file_checksum = ?, file_key = ?, updated_at = ? WHERE id = ?;`
+	query := `UPDATE tutorials SET title = ?, slug = ?, description = ?, thumbnail_url = ?, banner_url = ?, content = ?, published = 0, author_id = ?, file_checksum = ?, file_key = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
 
-	updatedAt := time.Now()
-
-	result, err := dbFacade.Exec(query, title, slug, description, thumbnailUrl, bannerUrl, content, authorId, fileChecksum, fileKey, updatedAt, id)
+	result, err := dbFacade.Exec(query, title, slug, description, thumbnailUrl, bannerUrl, content, authorId, fileChecksum, fileKey, id)
 	if err != nil {
 		return err
 	}
