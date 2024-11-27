@@ -9,11 +9,11 @@
       <td>{{- .AffiliatePoints -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-author/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML">{{- if .IsAuthor -}}<p style="color: var(--primary-green-color);">&#10004;</p>{{- else -}}<p style="color: var(--primary-red-color);">&#10008;</p>{{- end -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-admin/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML">{{- if .IsAdmin -}}<p style="color: var(--primary-green-color);">&#10004;</p>{{- else -}}<p style="color: var(--primary-red-color);">&#10008;</p>{{- end -}}</td>
-      <td>{{- index $.TutorialsLiked .ID  -}}</td>
-      <td>{{- index $.TutorialsBookmarked .ID  -}}</td>
-      <td>{{- index $.CoursesBought .ID  -}}</td>
-      <td>{{- index $.TutorialsWritten .ID  -}}</td>
-      <td>{{- index $.CoursesWritten .ID  -}}</td>
+      <td><a href="/admin/tutorials?liked_by={{- .ID -}}">{{- index $.TutorialsLiked .ID  -}}</a></td>
+      <td><a href="/admin/tutorials?bookmarked_by={{- .ID -}}">{{- index $.TutorialsBookmarked .ID  -}}</a></td>
+      <td><a href="/admin/courses?bought_by={{- .ID -}}">{{- index $.CoursesBought .ID  -}}</a></td>
+      <td><a href="/admin/tutorials?author={{- .ID -}}">{{- index $.TutorialsWritten .ID  -}}</a></td>
+      <td><a href="/admin/courses?author={{- .ID -}}">{{- index $.CoursesWritten .ID  -}}</a></td>
       <td>{{- .CreatedAt | pretty_date -}}</td>
       <td>{{- .UpdatedAt | pretty_date -}}</td>
     </tr>
@@ -34,11 +34,11 @@
       <td>{{- .AffiliatePoints -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-author/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML">{{- if .IsAuthor -}}<p style="color: var(--primary-green-color);">&#10004;</p>{{- else -}}<p style="color: var(--primary-red-color);">&#10008;</p>{{- end -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-admin/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML">{{- if .IsAdmin -}}<p style="color: var(--primary-green-color);">&#10004;</p>{{- else -}}<p style="color: var(--primary-red-color);">&#10008;</p>{{- end -}}</td>
-      <td>{{- index $.TutorialsLiked .ID  -}}</td>
-      <td>{{- index $.TutorialsBookmarked .ID  -}}</td>
-      <td>{{- index $.CoursesBought .ID  -}}</td>
-      <td>{{- index $.TutorialsWritten .ID  -}}</td>
-      <td>{{- index $.CoursesWritten .ID  -}}</td>
+      <td><a href="/admin/tutorials?liked_by={{- .ID -}}">{{- index $.TutorialsLiked .ID  -}}</a></td>
+      <td><a href="/admin/tutorials?bookmarked_by={{- .ID -}}">{{- index $.TutorialsBookmarked .ID  -}}</a></td>
+      <td><a href="/admin/courses?bought_by={{- .ID -}}">{{- index $.CoursesBought .ID  -}}</a></td>
+      <td><a href="/admin/tutorials?author={{- .ID -}}">{{- index $.TutorialsWritten .ID  -}}</a></td>
+      <td><a href="/admin/courses?author={{- .ID -}}">{{- index $.CoursesWritten .ID  -}}</a></td>
       <td>{{- .CreatedAt | pretty_date -}}</td>
       <td>{{- .UpdatedAt | pretty_date -}}</td>
     </tr>
