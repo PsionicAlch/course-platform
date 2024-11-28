@@ -1,9 +1,5 @@
 {{ template "admin" .}}
 
-{{ define "meta-tags" }}
-  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
-{{ end }}
-
 {{ define "title" }}
   <title>Tutorials - PsionicAlch</title>
 {{ end }}
@@ -11,25 +7,36 @@
 {{ define "body" }}
   <section class="admin-container">
     <div class="admin-header">
-      <h2>Tutorials Administration</h2>
+      <h2><a href="/admin/tutorials">Tutorials Administration ({{- .NumTutorials }} tutorials)</a></h2>
 
       <div class="admin-header-actions">
-        <form action="/">
-          <input type="text" name="search-term" id="search-term" class="shadow-sm" placeholder="Search terms...">
+        <form
+          hx-get="/admin/tutorials/htmx?{{- .URLQuery -}}"
+          hx-target=".admin-body table tbody"
+          hx-trigger="change, keyup delay:500ms"
+        >
+          <input type="text" name="query" id="query" class="shadow-sm" placeholder="Search terms...">
 
-          <select name="publish-status" id="publish-status" class="shadow-sm">
+          <select name="status" id="status" class="shadow-sm">
             <option value="">Publish Status</option>
-            <option value="unpublished">Unpublished</option>
-            <option value="published">Published</option>
+            {{ range .PublishStatus }}
+              <option value="{{- . -}}">{{- . -}}</option>
+            {{ end }}
           </select>
 
           <select name="author" id="author" class="shadow-sm">
             <option value="">Authors</option>
-            <option value="null">No Author</option>
-            <option value="01JBC9HM3C160KYY6WE7KM8T20">Jean-Jacques Strydom</option>
-            <option value="01JBC9HM3C160KYY6WE7KM8T20">John Doe</option>
-            <option value="01JBC9HM3C160KYY6WE7KM8T20">Jane Smith</option>
-            <option value="01JBC9HM3C160KYY6WE7KM8T20">Alice Wonderland</option>
+            <option value="nil">No Author</option>
+            {{ range .Authors }}
+              <option value="{{- .ID -}}">{{- .Name }} {{ .Surname -}}</option>
+            {{ end }}
+          </select>
+
+          <select name="keyword" id="keyword" class="shadow-sm">
+            <option value="">Keywords</option>
+            {{ range .Keywords }}
+              <option value="{{- . -}}">{{- . -}}</option>
+            {{ end }}
           </select>
         </form>
       </div>
@@ -42,210 +49,21 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Created At</th>
-            <th>Updated At</th>
             <th>Title</th>
+            <th>Slug</th>
             <th>Description</th>
-            <th>Likes</th>
-            <th>Bookmarks</th>
             <th>Published</th>
             <th>Author</th>
+            <th>Keywords</th>
+            <th>Comments</th>
+            <th>Likes</th>
+            <th>Bookmarks</th>
+            <th>Created At</th>
+            <th>Updated At</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>01JBC9HM3C160KYY6WE7KM8T20</td>
-            <td><time datetime="2024-12-24">2024-12-24</time></td>
-            <td><time datetime="2024-12-24">2024-12-24</time></td>
-            <td>How to render HTML in Golang</td>
-            <td>Learn how to render HTML using the Golang programming language</td>
-            <td><a href="/admin/users?liked=INSERT_TUTORIAL_ID">12</a></td>
-            <td><a href="/admin/users?bookmarked=INSERT_TUTORIAL_ID">25</a></td>
-            <td>Published</td>
-            <td><a href="/admin/authors?id=INSERT_USER_ID">Jean-Jacques Strydom</a></td>
-          </tr>
-
-          <tr>
-            <td>01JBC9HM3C160KYY6WE7KM8T20</td>
-            <td><time datetime="2024-12-24">2024-12-24</time></td>
-            <td><time datetime="2024-12-24">2024-12-24</time></td>
-            <td>How to send emails in Golang</td>
-            <td>Learn how to send emails with SMTP using the Golang programming language</td>
-            <td><a href="/admin-tutorial-like.html">5</a></td>
-            <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-            <td>
-              <select name="edit-published" id="edit-published" class="shadow-sm">
-                <option value="published" selected>Published</option>
-                <option value="unpublished">Unpublished</option>
-              </select>
-            </td>
-            <td><a href="/admin-author.html">Jean-Jacques Strydom</a></td>
-          </tr>
-
-          <tr>
-            <td>01JBC9HM3C160KYY6WE7KM8T20</td>
-            <td><time datetime="2024-12-24">2024-12-24</time></td>
-            <td><time datetime="2024-12-24">2024-12-24</time></td>
-            <td>Getting Started with Golang</td>
-            <td>Learn the basics of Golang syntax and structure</td>
-            <td><a href="/admin-tutorial-like.html">32</a></td>
-            <td><a href="/admin-tutorial-bookmark.html">10</a></td>
-            <td>Published</td>
-            <td>
-              <select name="edit-author" id="edit-author" class="shadow-sm">
-                <option value="">Author</option>
-                <option value="null">No Author</option>
-                <option value="01JBC9HM3C160KYY6WE7KM8T20">Jean-Jacques Strydom</option>
-                <option value="01JBC9HM3C160KYY6WE7KM8T20">John Doe</option>
-                <option value="01JBC9HM3C160KYY6WE7KM8T20" selected>Jane Smith</option>
-                <option value="01JBC9HM3C160KYY6WE7KM8T20">Alice Wonderland</option>
-              </select>
-            </td>
-          </tr>
-
-          <tr>
-              <td>02JKC2HG3G180JXX9TE7LR4T30</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Building REST APIs in Go</td>
-              <td>A guide to creating RESTful APIs with Golang's net/http package</td>
-              <td><a href="/admin-tutorial-like.html">0</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-              <td>Unpublished</td>
-              <td><a href="/admin-author.html">Jean-Jacques Strydom</a></td>
-          </tr>
-
-          <tr>
-              <td>03AUC3HL2K270HYY3XE8KM9V10</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Concurrency in Golang</td>
-              <td>Master Go's concurrency model with goroutines and channels</td>
-              <td><a href="/admin-tutorial-like.html">4</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-              <td>Published</td>
-              <td><a href="/admin-author.html">Jane Smith</a></td>
-          </tr>
-
-          <tr>
-              <td>04BAC8HL1F490JXX6WE3LR4U50</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Error Handling in Go</td>
-              <td>Learn best practices for handling errors in Golang</td>
-              <td><a href="/admin-tutorial-like.html">0</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-              <td>Unpublished</td>
-              <td><a href="/admin-author.html">Alice Wonderland</a></td>
-          </tr>
-
-          <tr>
-              <td>05KDC3GM5P320KYY5UE7KR1B40</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Structs and Interfaces in Go</td>
-              <td>Explore structs and interfaces for more flexible code</td>
-              <td><a href="/admin-tutorial-like.html">0</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">12</a></td>
-              <td>Published</td>
-              <td><a href="/admin-author.html">Jean-Jacques Strydom</a></td>
-          </tr>
-
-          <tr>
-              <td>06LGC4HL6M660JYY2TE4LM8V80</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Building CLI Applications with Golang</td>
-              <td>Develop command-line tools in Golang with ease</td>
-              <td><a href="/admin-tutorial-like.html">0</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-              <td>Unpublished</td>
-              <td><a href="/admin-author.html">John Doe</a></td>
-          </tr>
-
-          <tr>
-              <td>07QHC5IM8N710KXX3VE6LR7Z30</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Go Modules and Package Management</td>
-              <td>Learn how to manage dependencies with Go modules</td>
-              <td><a href="/admin-tutorial-like.html">4</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-              <td>Published</td>
-              <td><a href="/admin-author.html">Alice Wonderland</a></td>
-          </tr>
-
-          <tr>
-              <td>08RMC6GL4F220HXX8ZE9KM2B50</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Testing in Golang</td>
-              <td>Write and run tests for your Go applications</td>
-              <td><a href="/admin-tutorial-like.html">120</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">2500</a></td>
-              <td>Published</td>
-              <td><a href="/admin-author.html">Jane Smith</a></td>
-          </tr>
-
-          <tr>
-              <td>09JPC7GM1J950KYY4WE7KR1H90</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Web Development with Go and HTML Templates</td>
-              <td>Build dynamic web pages with Go's template package</td>
-              <td><a href="/admin-tutorial-like.html">0</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-              <td>Unpublished</td>
-              <td><a href="/admin-author.html">John Doe</a></td>
-          </tr>
-
-          <tr>
-              <td>10SGC8IM2V830HYY2YE8LR9C40</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Working with JSON in Golang</td>
-              <td>Parse and generate JSON data using Golang</td>
-              <td><a href="/admin-tutorial-like.html">0</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-              <td>Published</td>
-              <td><a href="/admin-author.html">Jean-Jacques Strydom</a></td>
-          </tr>
-
-          <tr>
-              <td>11TMC9HL7L550KXX7UE4LM1V70</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>File Handling in Go</td>
-              <td>Learn to read and write files efficiently in Golang</td>
-              <td><a href="/admin-tutorial-like.html">0</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-              <td>Unpublished</td>
-              <td><a href="/admin-author.html">Alice Wonderland</a></td>
-          </tr>
-
-          <tr>
-              <td>12KFC1GM3J420HYY6ZE7KR3A10</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Introduction to Goroutines and Channels</td>
-              <td>A beginner's guide to concurrency with goroutines</td>
-              <td><a href="/admin-tutorial-like.html">120</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">250</a></td>
-              <td>Published</td>
-              <td><a href="/admin-author.html">Jane Smith</a></td>
-          </tr>
-
-          <tr>
-              <td>13LGC4IM6N680KYY9VE8LM9C80</td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td><time datetime="2024-12-24">2024-12-24</time></td>
-              <td>Deploying Go Applications with Docker</td>
-              <td>Containerize and deploy Golang applications using Docker</td>
-              <td><a href="/admin-tutorial-like.html">0</a></td>
-              <td><a href="/admin-tutorial-bookmark.html">0</a></td>
-              <td>Unpublished</td>
-              <td><a href="/admin-author.html">John Doe</a></td>
-          </tr>
+          {{ template "admin-tutorials-list" .Tutorials }}
         </tbody>
       </table>
     </div>

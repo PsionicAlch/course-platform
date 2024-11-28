@@ -109,7 +109,7 @@ func (db *SQLiteDatabase) TutorialsLikedByUser(userId string) ([]*models.Tutoria
 }
 
 func (db *SQLiteDatabase) CountTutorialsLikedByUser(userId string) (uint, error) {
-	query := `SELECT COUNT(t.id) FROM tutorials_likes AS tl JOIN tutorials AS t ON tl.tutorial_id = t.id WHERE tl.user_id = ?;`
+	query := `SELECT COUNT(id) FROM tutorials_likes WHERE user_id = ?;`
 
 	var count uint
 
@@ -120,6 +120,24 @@ func (db *SQLiteDatabase) CountTutorialsLikedByUser(userId string) (uint, error)
 		}
 
 		db.ErrorLog.Printf("Failed to count the number of tutorials liked by user \"%s\": %s\n", userId, err)
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (db *SQLiteDatabase) CountTutorialLikes(tutorialId string) (uint, error) {
+	query := `SELECT COUNT(id) FROM tutorials_likes WHERE tutorial_id = ?;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query, tutorialId)
+	if err := row.Scan(&count); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count the number of likes the tutorial \"%s\" has: %s\n", tutorialId, err)
 		return 0, err
 	}
 

@@ -80,6 +80,24 @@ func (db *SQLiteDatabase) GetAllCommentsBySlugPaginated(slug string, page, eleme
 	return comments, nil
 }
 
+func (db *SQLiteDatabase) CountCommentsForTutorial(tutorialId string) (uint, error) {
+	query := `SELECT COUNT(id) FROM comments WHERE tutorial_id = ?;`
+
+	var comments uint
+
+	row := db.connection.QueryRow(query, tutorialId)
+	if err := row.Scan(&comments); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count all comments related to tutorial \"%s\": %s\n", tutorialId, err)
+		return 0, err
+	}
+
+	return comments, nil
+}
+
 func (db *SQLiteDatabase) AddCommentBySlug(content, userId, slug string) (*models.CommentModel, error) {
 	query := `INSERT INTO comments (id, content, user_id, tutorial_id, created_at) VALUES (?, ?, ?, (SELECT id FROM tutorials WHERE slug = ?), ?);`
 

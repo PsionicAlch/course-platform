@@ -58,13 +58,19 @@ type AdminRefundsPage struct {
 
 type AdminTutorialsPage struct {
 	BasePage
+	NumTutorials  uint
+	URLQuery      string
+	PublishStatus []string
+	Authors       []*models.UserModel
+	Keywords      []string
+	Tutorials     *AdminTutorialsListComponent
 }
 
 type AdminUsersPage struct {
 	BasePage
 	NumUsers            uint
 	AuthorizationLevels []string
-	Users               *UsersListComponent
+	Users               *AdminUsersListComponent
 }
 
 type AuthorsTutorialsPage struct {

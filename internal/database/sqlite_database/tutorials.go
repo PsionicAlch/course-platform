@@ -6,6 +6,88 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
+func (db *SQLiteDatabase) GetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error) {
+	query := `SELECT DISTINCT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials AS t LEFT JOIN tutorials_likes AS tl ON t.id = tl.tutorial_id LEFT JOIN tutorials_bookmarks AS tb ON t.id = tb.tutorial_id LEFT JOIN tutorials_keywords AS tk ON t.id = tk.tutorial_id LEFT JOIN keywords AS k ON tk.keyword_id = k.id WHERE (LOWER(t.id) LIKE '%' || ? || '%' OR LOWER(t.title) LIKE '%' || ? || '%' OR LOWER(t.slug) LIKE '%' || ? || '%' OR LOWER(t.description) LIKE '%' || ? || '%' OR LOWER(k.keyword) LIKE '%' || ? || '%')`
+
+	args := []any{term, term, term, term, term}
+
+	if published != nil {
+		query += " AND t.published = ?"
+
+		var pubInt int
+		if *published {
+			pubInt = 1
+		} else {
+			pubInt = 0
+		}
+
+		args = append(args, pubInt)
+	}
+
+	if authorId != nil {
+		if *authorId != "" {
+			query += " AND t.author_id = ?"
+			args = append(args, *authorId)
+		}
+	} else {
+		query += " AND t.author_id IS NULL"
+	}
+
+	if likedByUser != "" {
+		query += " AND tl.user_id = ?"
+		args = append(args, likedByUser)
+	}
+
+	if bookmarkedByUser != "" {
+		query += " AND tb.user_id = ?"
+		args = append(args, bookmarkedByUser)
+	}
+
+	if keyword != "" {
+		query += " AND k.keyword LIKE '%' || ? || '%'"
+		args = append(args, keyword)
+	}
+
+	offset := (page - 1) * elements
+	query += " ORDER BY t.created_at DESC, t.updated_at DESC, t.title ASC LIMIT ? OFFSET ?;"
+	args = append(args, elements, offset)
+
+	var tutorials []*models.TutorialModel
+
+	rows, err := db.connection.Query(query, args...)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get all tutorials from the database: %s\n", err)
+		db.ErrorLog.Printf("\nSQL Query Used:\n%s\n", query)
+
+		return nil, err
+	}
+
+	for rows.Next() {
+		var tutorial models.TutorialModel
+		var published int
+
+		if err := rows.Scan(&tutorial.ID, &tutorial.Title, &tutorial.Slug, &tutorial.Description, &tutorial.ThumbnailURL, &tutorial.BannerURL, &tutorial.Content, &published, &tutorial.AuthorID, &tutorial.FileChecksum, &tutorial.FileKey, &tutorial.CreatedAt, &tutorial.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read row from tutorials table: %s\n", err)
+			return nil, err
+		}
+
+		tutorial.Published = published == 1
+
+		tutorials = append(tutorials, &tutorial)
+	}
+
+	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get all tutorials from the database: %s\n", err)
+		db.ErrorLog.Printf("\nSQL Query Used:\n%s\n", query)
+
+		return nil, err
+	}
+
+	// db.InfoLog.Printf("%s\n", query)
+
+	return tutorials, nil
+}
+
 func (db *SQLiteDatabase) GetAllTutorials() ([]*models.TutorialModel, error) {
 	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials ORDER BY updated_at DESC, title ASC;`
 
@@ -186,4 +268,18 @@ func (db *SQLiteDatabase) GetTutorialByFileKey(fileKey string) (*models.Tutorial
 	}
 
 	return &tutorial, nil
+}
+
+func (db *SQLiteDatabase) CountTutorials() (uint, error) {
+	query := `SELECT COUNT(id) FROM tutorials;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query)
+	if err := row.Scan(&count); err != nil {
+		db.ErrorLog.Printf("Failed to count the number of tutorials in the database: %s\n", err)
+		return 0, err
+	}
+
+	return count, nil
 }

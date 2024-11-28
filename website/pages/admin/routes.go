@@ -3,7 +3,6 @@ package admin
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/website/pages/admin/authors"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/admin/comments"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/admin/courses"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/admin/discounts"
@@ -15,7 +14,6 @@ import (
 )
 
 func RegisterRoutes(handlers *Handlers) http.Handler {
-	authorsHandlers := authors.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
 	commentsHandlers := comments.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
 	coursesHandlers := courses.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
 	discountsHandlers := discounts.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
@@ -30,7 +28,6 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	router.Get("/", handlers.AdminGet)
 
-	router.Mount("/authors", authors.RegisterRoutes(authorsHandlers))
 	router.Mount("/comments", comments.RegisterRoutes(commentsHandlers))
 	router.Mount("/courses", courses.RegisterRoutes(coursesHandlers))
 	router.Mount("/discounts", discounts.RegisterRoutes(discountsHandlers))

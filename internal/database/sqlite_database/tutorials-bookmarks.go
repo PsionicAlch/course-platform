@@ -75,3 +75,17 @@ func (db *SQLiteDatabase) UserUnbookmarkTutorial(userId, slug string) error {
 
 	return nil
 }
+
+func (db *SQLiteDatabase) CountTutorialBookmarks(tutorialId string) (uint, error) {
+	query := `SELECT COUNT(id) FROM tutorials_bookmarks WHERE tutorial_id = ?;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query, tutorialId)
+	if err := row.Scan(&count); err != nil {
+		db.ErrorLog.Printf("Failed to count the amount of times the tutorial \"%s\" has been bookmarked: %s\n", tutorialId, err)
+		return 0, err
+	}
+
+	return count, nil
+}

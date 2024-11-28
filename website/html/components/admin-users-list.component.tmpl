@@ -1,6 +1,6 @@
-{{ define "users-list" }}
+{{ define "admin-users-list" }}
   {{ range .Users }}
-    <tr id="{{- .ID -}}">
+    <tr>
       <td>{{- .ID -}}</td>
       <td>{{- .Name -}}</td>
       <td>{{- .Surname -}}</td>
@@ -21,7 +21,6 @@
 
   {{ with .LastUser }}
     <tr
-      id="{{- .ID -}}"
       hx-get="{{- $.QueryURL }}"
       hx-trigger="revealed once"
       hx-swap="afterend"

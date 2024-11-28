@@ -1,12 +1,13 @@
 package sqlite_database
 
 import (
+	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/xeonx/timeago"
 )
 
 func (db *SQLiteDatabase) CommentSetUser(comment *models.CommentModel) error {
-	user, err := db.GetUserByID(comment.UserID)
+	user, err := db.GetUserByID(comment.UserID, database.All)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to get user from comment: %s\n", err)
 		return err
@@ -19,7 +20,7 @@ func (db *SQLiteDatabase) CommentSetUser(comment *models.CommentModel) error {
 
 func (db *SQLiteDatabase) CommentsSetUser(comments []*models.CommentModel) error {
 	for _, comment := range comments {
-		user, err := db.GetUserByID(comment.UserID)
+		user, err := db.GetUserByID(comment.UserID, database.All)
 		if err != nil {
 			db.ErrorLog.Printf("Failed to get user from comment: %s\n", err)
 			return err

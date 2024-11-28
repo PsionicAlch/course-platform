@@ -3,6 +3,7 @@ package vanilla
 import (
 	"fmt"
 	"html/template"
+	"net/url"
 	"time"
 )
 
@@ -11,6 +12,7 @@ func CreateFuncMap() template.FuncMap {
 		"props":       Props,
 		"pretty_date": PrettyDate,
 		"html":        HTML,
+		"add_queries": AddQueries,
 	}
 
 	return funcMap
@@ -41,4 +43,34 @@ func PrettyDate(t time.Time) string {
 
 func HTML(s string) template.HTML {
 	return template.HTML(s)
+}
+
+func AddQueries(queries string, values ...any) (string, error) {
+	valuesLen := len(values)
+
+	if valuesLen%2 != 0 {
+		return "", fmt.Errorf("url queries need to be an even number (Query key/value pair)")
+	}
+
+	urlQuery, err := url.ParseQuery(queries)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse url queries: %s", err)
+	}
+
+	for i := 0; i < valuesLen; i += 2 {
+		key, ok := values[i].(string)
+		if !ok {
+			return "", fmt.Errorf("url query keys must be strings")
+		}
+
+		value := fmt.Sprintf("%v", values[i+1])
+
+		if urlQuery.Has(key) {
+			urlQuery.Set(key, value)
+		} else {
+			urlQuery.Add(key, value)
+		}
+	}
+
+	return urlQuery.Encode(), nil
 }

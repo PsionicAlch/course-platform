@@ -107,7 +107,7 @@ type CoursesListComponent struct {
 	ErrorMessage string
 }
 
-type UsersListComponent struct {
+type AdminUsersListComponent struct {
 	Users               []*models.UserModel
 	LastUser            *models.UserModel
 	TutorialsLiked      map[string]uint
@@ -125,5 +125,18 @@ type SelectComponent struct {
 	Options      []string
 	Selected     string
 	URL          string
+	ErrorMessage string
+}
+
+type AdminTutorialsListComponent struct {
+	Tutorials    []*models.TutorialModel
+	LastTutorial *models.TutorialModel
+	Authors      map[string]*models.UserModel
+	Keywords     map[string][]string
+	Comments     map[string]uint
+	Likes        map[string]uint
+	Bookmarks    map[string]uint
+	BaseURL      string
+	URLQuery     string
 	ErrorMessage string
 }

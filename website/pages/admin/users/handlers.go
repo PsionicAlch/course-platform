@@ -94,7 +94,7 @@ func (h *Handlers) UsersPaginationGet(w http.ResponseWriter, r *http.Request) {
 
 	usersList, err := h.CreateUsersList(query, level, uint(page))
 	if err != nil {
-		if err := h.Renderers.Htmx.RenderHTML(w, nil, "users", &html.UsersListComponent{
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "admin-users", &html.AdminUsersListComponent{
 			ErrorMessage: "Failed to get users. Please try again.",
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
@@ -103,7 +103,7 @@ func (h *Handlers) UsersPaginationGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.Renderers.Htmx.RenderHTML(w, nil, "users", usersList); err != nil {
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "admin-users", usersList); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -111,7 +111,7 @@ func (h *Handlers) UsersPaginationGet(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) AuthorEditGet(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, "user-id")
 
-	user, err := h.Database.GetUserByID(userId)
+	user, err := h.Database.GetUserByID(userId, database.All)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user by ID \"%s\": %s\n", userId, err)
 
@@ -157,7 +157,7 @@ func (h *Handlers) AuthorEditGet(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, "user-id")
 
-	user, err := h.Database.GetUserByID(userId)
+	user, err := h.Database.GetUserByID(userId, database.All)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user by ID \"%s\": %s\n", userId, err)
 
@@ -245,7 +245,7 @@ func (h *Handlers) AdminEditGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 
 	userId := chi.URLParam(r, "user-id")
-	targetUser, err := h.Database.GetUserByID(userId)
+	targetUser, err := h.Database.GetUserByID(userId, database.All)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user by ID \"%s\": %s\n", userId, err)
 
@@ -315,7 +315,7 @@ func (h *Handlers) AdminEditGet(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, "user-id")
 
-	user, err := h.Database.GetUserByID(userId)
+	user, err := h.Database.GetUserByID(userId, database.All)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user by ID \"%s\": %s\n", userId, err)
 
@@ -399,7 +399,7 @@ func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handlers) CreateUsersList(term string, level database.AuthorizationLevel, page uint) (*html.UsersListComponent, error) {
+func (h *Handlers) CreateUsersList(term string, level database.AuthorizationLevel, page uint) (*html.AdminUsersListComponent, error) {
 	users, err := h.Database.GetUsersPaginated(term, level, page, UsersPerPagination)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get users (page %d) from the database: %s\n", 1, err)
@@ -442,7 +442,7 @@ func (h *Handlers) CreateUsersList(term string, level database.AuthorizationLeve
 		lastUser = users[len(users)-1]
 	}
 
-	usersList := &html.UsersListComponent{
+	usersList := &html.AdminUsersListComponent{
 		Users:               usersSlice,
 		LastUser:            lastUser,
 		TutorialsLiked:      tutorialsLiked,

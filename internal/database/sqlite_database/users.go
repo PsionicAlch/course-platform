@@ -11,6 +11,52 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
+func (db *SQLiteDatabase) GetUsers(term string, level database.AuthorizationLevel) ([]*models.UserModel, error) {
+	query := `SELECT id, name, surname, email, password, affiliate_code, affiliate_points, is_admin, is_author, created_at, updated_at FROM users WHERE (LOWER(id) LIKE '%' || ? || '%' OR LOWER(name) LIKE '%' || ? || '%' OR LOWER(surname) LIKE '%' || ? || '%' OR LOWER(email) LIKE '%' || ? || '%' OR LOWER(affiliate_code) LIKE '%' || ? || '%')`
+
+	args := []any{term, term, term, term, term}
+
+	switch level {
+	case database.User:
+		query += ` AND is_admin = 0 AND is_author = 0`
+	case database.Admin:
+		query += ` AND is_admin = 1`
+	case database.Author:
+		query += ` AND is_author = 1`
+	}
+
+	var users []*models.UserModel
+
+	rows, err := db.connection.Query(query, args...)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to query database for all users according to the search term \"%s\" and authorization level \"%s\": %s\n", term, level, err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var user models.UserModel
+		var isAdmin int
+		var isAuthor int
+
+		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &user.AffiliateCode, &user.AffiliatePoints, &isAdmin, &isAuthor, &user.CreatedAt, &user.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read row from users table: %s\n", err)
+			return nil, err
+		}
+
+		user.IsAdmin = isAdmin == 1
+		user.IsAuthor = isAuthor == 1
+
+		users = append(users, &user)
+	}
+
+	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to query database for all users according to the search term \"%s\" and authorization level \"%s\": %s\n", term, level, err)
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func (db *SQLiteDatabase) GetUsersPaginated(term string, level database.AuthorizationLevel, page, elements uint) ([]*models.UserModel, error) {
 	query := `SELECT id, name, surname, email, password, affiliate_code, affiliate_points, is_admin, is_author, created_at, updated_at FROM users WHERE (LOWER(id) LIKE '%' || ? || '%' OR LOWER(name) LIKE '%' || ? || '%' OR LOWER(surname) LIKE '%' || ? || '%' OR LOWER(email) LIKE '%' || ? || '%' OR LOWER(affiliate_code) LIKE '%' || ? || '%')`
 
@@ -223,8 +269,17 @@ func (db *SQLiteDatabase) NewAdminUser(name, surname, email, password string) er
 	return nil
 }
 
-func (db *SQLiteDatabase) GetUserByEmail(email string) (*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE email = ?;`
+func (db *SQLiteDatabase) GetUserByEmail(email string, level database.AuthorizationLevel) (*models.UserModel, error) {
+	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE email = ?`
+
+	switch level {
+	case database.User:
+		query += ` AND is_admin = 0 AND is_author = 0`
+	case database.Admin:
+		query += ` AND is_admin = 1`
+	case database.Author:
+		query += ` AND is_author = 1`
+	}
 
 	var isAdminInt int
 	var isAuthorInt int
@@ -258,8 +313,17 @@ func (db *SQLiteDatabase) GetUserByEmail(email string) (*models.UserModel, error
 	return user, nil
 }
 
-func (db *SQLiteDatabase) GetUserByID(id string) (*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE id = ?;`
+func (db *SQLiteDatabase) GetUserByID(id string, level database.AuthorizationLevel) (*models.UserModel, error) {
+	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE id = ?`
+
+	switch level {
+	case database.User:
+		query += ` AND is_admin = 0 AND is_author = 0`
+	case database.Admin:
+		query += ` AND is_admin = 1`
+	case database.Author:
+		query += ` AND is_author = 1`
+	}
 
 	var isAdminInt int
 	var isAuthorInt int

@@ -41,6 +41,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 	}
 }
 
+// TODO: Redo the search logic. I believe it could be done much better.
 func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.TutorialsPage{

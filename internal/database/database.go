@@ -18,12 +18,13 @@ type Database interface {
 	Rollback(steps int) error
 
 	// Users functions.
+	GetUsers(term string, level AuthorizationLevel) ([]*models.UserModel, error)
 	GetUsersPaginated(term string, level AuthorizationLevel, page, elements uint) ([]*models.UserModel, error)
 	AddNewUser(name, surname, email, password, token, tokenType, ipAddr string, validUntil time.Time) (*models.UserModel, error)
 	NewUser(name, surname, email, password string) error
 	NewAdminUser(name, surname, email, password string) error
-	GetUserByEmail(email string) (*models.UserModel, error)
-	GetUserByID(id string) (*models.UserModel, error)
+	GetUserByEmail(email string, level AuthorizationLevel) (*models.UserModel, error)
+	GetUserByID(id string, level AuthorizationLevel) (*models.UserModel, error)
 	GetUserByToken(token, tokenType string) (*models.UserModel, error)
 	UpdateUserPassword(userId, password string) error
 	CountUsers() (uint, error)
@@ -43,10 +44,16 @@ type Database interface {
 	GetUserIpAddresses(userId string) ([]string, error)
 
 	// Tutorials functions.
+	GetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error)
 	GetAllTutorials() ([]*models.TutorialModel, error)
 	GetAllTutorialsPaginated(page, elements int) ([]*models.TutorialModel, error)
 	SearchTutorialsPaginated(term string, page, elements int) ([]*models.TutorialModel, error)
+	GetTutorialByID(id string) (*models.TutorialModel, error)
 	GetTutorialBySlug(slug string) (*models.TutorialModel, error)
+	CountTutorials() (uint, error)
+
+	// Keywords functions.
+	GetKeywords() ([]string, error)
 
 	// Tutorials-Keywords functions.
 	GetAllKeywordsForTutorial(tutorialId string) ([]string, error)
@@ -56,15 +63,18 @@ type Database interface {
 	UserLikeTutorial(userId, slug string) error
 	UserDislikeTutorial(userId, slug string) error
 	CountTutorialsLikedByUser(userId string) (uint, error)
+	CountTutorialLikes(tutorialId string) (uint, error)
 
 	// Tutorials-Bookmarks functions.
 	UserBookmarkedTutorial(userId, slug string) (bool, error)
 	UserBookmarkTutorial(userId, slug string) error
 	UserUnbookmarkTutorial(userId, slug string) error
+	CountTutorialBookmarks(tutorialId string) (uint, error)
 
 	// Comments functions.
 	GetAllCommentsPaginated(tutorialId string, page, elements int) ([]*models.CommentModel, error)
 	GetAllCommentsBySlugPaginated(slug string, page, elements int) ([]*models.CommentModel, error)
+	CountCommentsForTutorial(tutorialId string) (uint, error)
 	AddCommentBySlug(content, userId, slug string) (*models.CommentModel, error)
 
 	// Courses functions.
