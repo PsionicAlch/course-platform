@@ -122,7 +122,7 @@ type AdminUsersListComponent struct {
 
 type SelectComponent struct {
 	Name         string
-	Options      []string
+	Options      map[string]string
 	Selected     string
 	URL          string
 	ErrorMessage string

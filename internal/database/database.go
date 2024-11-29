@@ -51,6 +51,9 @@ type Database interface {
 	GetTutorialByID(id string) (*models.TutorialModel, error)
 	GetTutorialBySlug(slug string) (*models.TutorialModel, error)
 	CountTutorials() (uint, error)
+	PublishTutorial(tutorialId string) error
+	UnpublishTutorial(tutorialId string) error
+	UpdateAuthor(tutorialId, authorId string) error
 
 	// Keywords functions.
 	GetKeywords() ([]string, error)

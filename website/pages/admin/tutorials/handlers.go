@@ -183,11 +183,16 @@ func (h *Handlers) PublishedEditGet(w http.ResponseWriter, r *http.Request) {
 		publishStatus = "Unpublished"
 	}
 
+	publishStatuses := make(map[string]string, len(PublishStatuses))
+	for _, status := range PublishStatuses {
+		publishStatuses[status] = status
+	}
+
 	selectComponent := html.SelectComponent{
 		Name:     "publish-status",
-		Options:  PublishStatuses,
+		Options:  publishStatuses,
 		Selected: publishStatus,
-		URL:      fmt.Sprintf("/admin/tutorials/change-published/%s", tutorialId),
+		URL:      fmt.Sprintf("/admin/tutorials/htmx/change-published/%s", tutorialId),
 	}
 
 	if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", selectComponent); err != nil {
@@ -243,38 +248,140 @@ func (h *Handlers) PublishedEditPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !utils.InSlice(publishStatus, PublishStatuses) {
+		publishStatuses := make(map[string]string, len(PublishStatuses))
+		for _, status := range PublishStatuses {
+			publishStatuses[status] = status
+		}
+
 		selectComponent := html.SelectComponent{
 			Name:         "publish-status",
-			Options:      PublishStatuses,
+			Options:      publishStatuses,
 			URL:          fmt.Sprintf("/admin/tutorials/change-published/%s", tutorialId),
 			ErrorMessage: "Invalid publish status selected.",
 		}
+
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", selectComponent, http.StatusBadRequest); err != nil {
 			h.ErrorLog.Println(err)
 		}
+
+		return
 	}
 
 	if publishStatus == "Published" {
-		// TODO: Set publish status to true.
+		if err := h.Database.PublishTutorial(tutorial.ID); err != nil {
+			h.ErrorLog.Printf("Failed to update tutorial's (\"%s\") publish status: %s\n", tutorial.Title, err)
+
+			resp := "Unpublished"
+			resp += `
+            <script>
+                notyf.open({
+                    type: 'flash-error',
+                    message: "Unexpected server error"
+                });
+            </script>
+            `
+
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp, http.StatusInternalServerError); err != nil {
+				h.ErrorLog.Println(err)
+			}
+
+			return
+		}
+
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", "Published"); err != nil {
 			h.ErrorLog.Println(err)
 		}
 	} else {
-		// TODO: Set publish status to false.
-		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", "UnPublished"); err != nil {
+		if err := h.Database.PublishTutorial(tutorial.ID); err != nil {
+			h.ErrorLog.Printf("Failed to update tutorial's (\"%s\") publish status: %s\n", tutorial.Title, err)
+
+			resp := "Published"
+			resp += `
+            <script>
+                notyf.open({
+                    type: 'flash-error',
+                    message: "Unexpected server error"
+                });
+            </script>
+            `
+
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp, http.StatusInternalServerError); err != nil {
+				h.ErrorLog.Println(err)
+			}
+
+			return
+		}
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", "Unpublished"); err != nil {
 			h.ErrorLog.Println(err)
 		}
 	}
 }
 
 func (h *Handlers) AuthorEditGet(w http.ResponseWriter, r *http.Request) {
-	// TODO: Do something here.
+	tutorialId := chi.URLParam(r, "tutorial-id")
+
+	tutorial, err := h.Database.GetTutorialByID(tutorialId)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get tutorial by ID \"%s\": %s\n", tutorialId, err)
+
+		resp := "No Author"
+		resp += `
+		<script>
+			notyf.open({
+				type: 'flash-error',
+				message: "Unexpected server error"
+			});
+		</script>
+		`
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	authors, err := h.Database.GetUsers("", database.Author)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get authors: %s\n", err)
+
+		resp := "No Author"
+		resp += `
+		<script>
+			notyf.open({
+				type: 'flash-error',
+				message: "Unexpected server error"
+			});
+		</script>
+		`
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	selectOptions := map[string]string{
+		"": "No Author",
+	}
+
+	for _, author := range authors {
+		selectOptions[author.ID] = fmt.Sprintf("%s %s", author.Name, author.Surname)
+	}
+
+	var selected string
+
+	if tutorial.AuthorID.Valid {
+		selected = tutorial.AuthorID.String
+	}
 
 	selectComponent := html.SelectComponent{
-		Name:     "",
-		Options:  []string{},
-		Selected: "",
-		URL:      fmt.Sprintf("/admin/tutorials/change-author/%s", ""),
+		Name:     "author",
+		Options:  selectOptions,
+		Selected: selected,
+		URL:      fmt.Sprintf("/admin/tutorials/htmx/change-author/%s", tutorial.ID),
 	}
 
 	if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", selectComponent); err != nil {
@@ -283,7 +390,85 @@ func (h *Handlers) AuthorEditGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
+	tutorialId := chi.URLParam(r, "tutorial-id")
 
+	r.ParseForm()
+
+	authorId := r.Form.Get("author")
+
+	tutorial, err := h.Database.GetTutorialByID(tutorialId)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get tutorial by ID \"%s\": %s\n", tutorialId, err)
+
+		resp := "No Author"
+		resp += `
+		<script>
+			notyf.open({
+				type: 'flash-error',
+				message: "Unexpected server error"
+			});
+		</script>
+		`
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if err := h.Database.UpdateAuthor(tutorial.ID, authorId); err != nil {
+		h.ErrorLog.Printf("Failed to update tutorial \"%s\" author \"%s\": %s\n", tutorial.ID, authorId, err)
+
+		resp := "No Author"
+		resp += `
+		<script>
+			notyf.open({
+				type: 'flash-error',
+				message: "Unexpected server error"
+			});
+		</script>
+		`
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	var resp string
+
+	if authorId == "" {
+		resp = "No Author"
+	} else {
+		author, err := h.Database.GetUserByID(authorId, database.Author)
+		if err != nil {
+			h.ErrorLog.Printf("Failed to update tutorial \"%s\" author \"%s\": %s\n", tutorial.ID, authorId, err)
+
+			resp := "No Author"
+			resp += `
+            <script>
+                notyf.open({
+                    type: 'flash-error',
+                    message: "Unexpected server error"
+                });
+            </script>
+            `
+
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp, http.StatusInternalServerError); err != nil {
+				h.ErrorLog.Println(err)
+			}
+
+			return
+		}
+
+		resp = fmt.Sprintf("%s %s", author.Name, author.Surname)
+	}
+
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp); err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 // Possible URL queries:

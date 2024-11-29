@@ -283,3 +283,43 @@ func (db *SQLiteDatabase) CountTutorials() (uint, error) {
 
 	return count, nil
 }
+
+func (db *SQLiteDatabase) PublishTutorial(tutorialId string) error {
+	query := `UPDATE tutorials SET published = 1 WHERE id = ?;`
+
+	_, err := db.connection.Exec(query, tutorialId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to publish tutorial \"%s\": %s\n", tutorialId, err)
+		return err
+	}
+
+	return nil
+}
+
+func (db *SQLiteDatabase) UnpublishTutorial(tutorialId string) error {
+	query := `UPDATE tutorials SET published = 0 WHERE id = ?;`
+
+	_, err := db.connection.Exec(query, tutorialId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to unpublish tutorial \"%s\": %s\n", tutorialId, err)
+		return err
+	}
+
+	return nil
+}
+
+func (db *SQLiteDatabase) UpdateAuthor(tutorialId, authorId string) error {
+	query := `UPDATE tutorials SET author_id = ? WHERE id = ?;`
+
+	if authorId == "" {
+		authorId = "NULL"
+	}
+
+	_, err := db.connection.Exec(query, authorId, tutorialId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to update tutorial's (\"%s\") author (\"%s\"): %s\n", tutorialId, authorId, err)
+		return err
+	}
+
+	return nil
+}

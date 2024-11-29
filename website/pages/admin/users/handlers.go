@@ -141,9 +141,9 @@ func (h *Handlers) AuthorEditGet(w http.ResponseWriter, r *http.Request) {
 
 	selectComponent := html.SelectComponent{
 		Name: "author-status",
-		Options: []string{
-			"Author",
-			"User",
+		Options: map[string]string{
+			"Author": "Author",
+			"User":   "User",
 		},
 		Selected: userStatus,
 		URL:      fmt.Sprintf("/admin/users/htmx/change-author/%s", user.ID),
@@ -157,16 +157,18 @@ func (h *Handlers) AuthorEditGet(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, "user-id")
 
+	selectOptions := map[string]string{
+		"Author": "Author",
+		"User":   "User",
+	}
+
 	user, err := h.Database.GetUserByID(userId, database.All)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user by ID \"%s\": %s\n", userId, err)
 
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
-			Name: "author-status",
-			Options: []string{
-				"Author",
-				"User",
-			},
+			Name:         "author-status",
+			Options:      selectOptions,
 			ErrorMessage: "Unexpected",
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
@@ -183,11 +185,8 @@ func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Received invalid author status option: %s\n", authorStatus)
 
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
-			Name: "author-status",
-			Options: []string{
-				"Author",
-				"User",
-			},
+			Name:         "author-status",
+			Options:      selectOptions,
 			ErrorMessage: "Invalid option selected.",
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
@@ -201,11 +200,8 @@ func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
 			h.ErrorLog.Printf("Failed to update user's (\"%s\") author status: %s\n", user.ID, err)
 
 			if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
-				Name: "author-status",
-				Options: []string{
-					"Author",
-					"User",
-				},
+				Name:         "author-status",
+				Options:      selectOptions,
 				ErrorMessage: "Unexpected server error has occurred!",
 			}, http.StatusInternalServerError); err != nil {
 				h.ErrorLog.Println(err)
@@ -222,11 +218,8 @@ func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
 			h.ErrorLog.Printf("Failed to update user's (\"%s\") author status: %s\n", user.ID, err)
 
 			if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
-				Name: "author-status",
-				Options: []string{
-					"Author",
-					"User",
-				},
+				Name:         "author-status",
+				Options:      selectOptions,
 				ErrorMessage: "Unexpected server error has occurred!",
 			}, http.StatusInternalServerError); err != nil {
 				h.ErrorLog.Println(err)
@@ -299,9 +292,9 @@ func (h *Handlers) AdminEditGet(w http.ResponseWriter, r *http.Request) {
 
 	selectComponent := html.SelectComponent{
 		Name: "admin-status",
-		Options: []string{
-			"Admin",
-			"User",
+		Options: map[string]string{
+			"Admin": "Admin",
+			"User":  "User",
 		},
 		Selected: userStatus,
 		URL:      fmt.Sprintf("/admin/users/htmx/change-admin/%s", targetUser.ID),
@@ -315,16 +308,18 @@ func (h *Handlers) AdminEditGet(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, "user-id")
 
+	selectOptions := map[string]string{
+		"Admin": "Admin",
+		"User":  "User",
+	}
+
 	user, err := h.Database.GetUserByID(userId, database.All)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user by ID \"%s\": %s\n", userId, err)
 
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
-			Name: "admin-status",
-			Options: []string{
-				"Admin",
-				"User",
-			},
+			Name:         "admin-status",
+			Options:      selectOptions,
 			ErrorMessage: "Unable to find user by given ID.",
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
@@ -341,11 +336,8 @@ func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Received invalid admin status option: %s\n", adminStatus)
 
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
-			Name: "admin-status",
-			Options: []string{
-				"Admin",
-				"User",
-			},
+			Name:         "admin-status",
+			Options:      selectOptions,
 			ErrorMessage: "Invalid option selected.",
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
@@ -359,11 +351,8 @@ func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
 			h.ErrorLog.Printf("Failed to update user's (\"%s\") admin status: %s\n", user.ID, err)
 
 			if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
-				Name: "admin-status",
-				Options: []string{
-					"Admin",
-					"User",
-				},
+				Name:         "admin-status",
+				Options:      selectOptions,
 				ErrorMessage: "Unexpected server error has occurred!",
 			}, http.StatusInternalServerError); err != nil {
 				h.ErrorLog.Println(err)
@@ -380,11 +369,8 @@ func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
 			h.ErrorLog.Printf("Failed to update user's (\"%s\") admin status: %s\n", user.ID, err)
 
 			if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
-				Name: "admin-status",
-				Options: []string{
-					"Admin",
-					"User",
-				},
+				Name:         "admin-status",
+				Options:      selectOptions,
 				ErrorMessage: "Unexpected server error has occurred!",
 			}, http.StatusInternalServerError); err != nil {
 				h.ErrorLog.Println(err)

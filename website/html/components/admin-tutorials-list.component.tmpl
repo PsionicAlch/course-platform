@@ -7,10 +7,8 @@
       <td>{{- .Description -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-published/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">{{- if .Published -}}Published{{- else -}}Unpublished{{- end -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-author/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">
-        {{- if .AuthorID.Valid -}}
-          {{ with index .Authors .AuthorID.String }}
-            {{- .Name }} {{ .Surname -}}
-          {{ end }}
+        {{- with index $.Authors .ID -}}
+          {{- .Name }} {{ .Surname -}}
         {{- else -}}
           No Author
         {{- end -}}
@@ -43,7 +41,7 @@
       <td hx-get="{{- $.BaseURL -}}/change-published/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">{{- if .Published -}}Published{{- else -}}Unpublished{{- end -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-author/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">
         {{- if .AuthorID.Valid -}}
-          {{ with index .Authors .AuthorID.String }}
+          {{ with index $.Authors .AuthorID.String }}
             {{- .Name }} {{ .Surname -}}
           {{ end }}
         {{- else -}}

@@ -10,8 +10,8 @@
     </script>
   {{ else }}
     <select name="{{- .Name -}}" id="{{- .Name -}}" hx-post="{{- .URL -}}" hx-trigger="change" hx-target="this" hx-swap="outerHTML" class="shadow-sm">
-      {{ range .Options }}
-        <option value="{{- . -}}" {{- if eq . $.Selected -}}selected{{- end -}}>{{- . -}}</option>
+      {{ range $key, $value := .Options }}
+        <option value="{{- $key -}}" {{- if eq $key $.Selected -}}selected{{- end -}}>{{- $value -}}</option>
       {{ end }}
     </select>
   {{ end }}
