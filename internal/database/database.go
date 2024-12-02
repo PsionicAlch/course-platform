@@ -18,8 +18,8 @@ type Database interface {
 	Rollback(steps int) error
 
 	// Users functions.
-	GetUsers(term string, level AuthorizationLevel) ([]*models.UserModel, error)
-	GetUsersPaginated(term string, level AuthorizationLevel, page, elements uint) ([]*models.UserModel, error)
+	GetUsers(term string, level AuthorizationLevel, likedTutorialID, bookmarkedTutorialID string) ([]*models.UserModel, error)
+	GetUsersPaginated(term string, level AuthorizationLevel, likedTutorialID, bookmarkedTutorialID string, page, elements uint) ([]*models.UserModel, error)
 	AddNewUser(name, surname, email, password, token, tokenType, ipAddr string, validUntil time.Time) (*models.UserModel, error)
 	NewUser(name, surname, email, password string) error
 	NewAdminUser(name, surname, email, password string) error
@@ -54,6 +54,7 @@ type Database interface {
 	PublishTutorial(tutorialId string) error
 	UnpublishTutorial(tutorialId string) error
 	UpdateAuthor(tutorialId, authorId string) error
+	CountTutorialsWrittenBy(authorId string) (uint, error)
 
 	// Keywords functions.
 	GetKeywords() ([]string, error)
@@ -72,6 +73,7 @@ type Database interface {
 	UserBookmarkedTutorial(userId, slug string) (bool, error)
 	UserBookmarkTutorial(userId, slug string) error
 	UserUnbookmarkTutorial(userId, slug string) error
+	CountTutorialsBookmarkedByUser(userId string) (uint, error)
 	CountTutorialBookmarks(tutorialId string) (uint, error)
 
 	// Comments functions.

@@ -11,8 +11,8 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
-func (db *SQLiteDatabase) GetUsers(term string, level database.AuthorizationLevel) ([]*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, affiliate_code, affiliate_points, is_admin, is_author, created_at, updated_at FROM users WHERE (LOWER(id) LIKE '%' || ? || '%' OR LOWER(name) LIKE '%' || ? || '%' OR LOWER(surname) LIKE '%' || ? || '%' OR LOWER(email) LIKE '%' || ? || '%' OR LOWER(affiliate_code) LIKE '%' || ? || '%')`
+func (db *SQLiteDatabase) GetUsers(term string, level database.AuthorizationLevel, likedTutorialID, bookmarkedTutorialID string) ([]*models.UserModel, error) {
+	query := `SELECT DISTINCT u.id, u.name, u.surname, u.email, u.password, u.affiliate_code, u.affiliate_points, u.is_admin, u.is_author, u.created_at, u.updated_at FROM users AS u LEFT JOIN tutorials_likes AS tl ON u.id = tl.user_id LEFT JOIN tutorials_bookmarks AS tb ON u.id = tb.user_id WHERE (LOWER(u.id) LIKE '%' || ? || '%' OR LOWER(u.name) LIKE '%' || ? || '%' OR LOWER(u.surname) LIKE '%' || ? || '%' OR LOWER(u.email) LIKE '%' || ? || '%' OR LOWER(u.affiliate_code) LIKE '%' || ? || '%')`
 
 	args := []any{term, term, term, term, term}
 
@@ -23,6 +23,16 @@ func (db *SQLiteDatabase) GetUsers(term string, level database.AuthorizationLeve
 		query += ` AND is_admin = 1`
 	case database.Author:
 		query += ` AND is_author = 1`
+	}
+
+	if likedTutorialID != "" {
+		query += " AND tl.tutorial_id = ?"
+		args = append(args, likedTutorialID)
+	}
+
+	if bookmarkedTutorialID != "" {
+		query += " AND tb.tutorial_id = ?"
+		args = append(args, bookmarkedTutorialID)
 	}
 
 	var users []*models.UserModel
@@ -57,8 +67,8 @@ func (db *SQLiteDatabase) GetUsers(term string, level database.AuthorizationLeve
 	return users, nil
 }
 
-func (db *SQLiteDatabase) GetUsersPaginated(term string, level database.AuthorizationLevel, page, elements uint) ([]*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, affiliate_code, affiliate_points, is_admin, is_author, created_at, updated_at FROM users WHERE (LOWER(id) LIKE '%' || ? || '%' OR LOWER(name) LIKE '%' || ? || '%' OR LOWER(surname) LIKE '%' || ? || '%' OR LOWER(email) LIKE '%' || ? || '%' OR LOWER(affiliate_code) LIKE '%' || ? || '%')`
+func (db *SQLiteDatabase) GetUsersPaginated(term string, level database.AuthorizationLevel, likedTutorialID, bookmarkedTutorialID string, page, elements uint) ([]*models.UserModel, error) {
+	query := `SELECT DISTINCT u.id, u.name, u.surname, u.email, u.password, u.affiliate_code, u.affiliate_points, u.is_admin, u.is_author, u.created_at, u.updated_at FROM users AS u LEFT JOIN tutorials_likes AS tl ON u.id = tl.user_id LEFT JOIN tutorials_bookmarks AS tb ON u.id = tb.user_id WHERE (LOWER(u.id) LIKE '%' || ? || '%' OR LOWER(u.name) LIKE '%' || ? || '%' OR LOWER(u.surname) LIKE '%' || ? || '%' OR LOWER(u.email) LIKE '%' || ? || '%' OR LOWER(u.affiliate_code) LIKE '%' || ? || '%')`
 
 	offset := (page - 1) * elements
 
@@ -73,7 +83,17 @@ func (db *SQLiteDatabase) GetUsersPaginated(term string, level database.Authoriz
 		query += ` AND is_author = 1`
 	}
 
-	query += ` ORDER BY created_at DESC LIMIT ? OFFSET ?;`
+	if likedTutorialID != "" {
+		query += " AND tl.tutorial_id = ?"
+		args = append(args, likedTutorialID)
+	}
+
+	if bookmarkedTutorialID != "" {
+		query += " AND tb.tutorial_id = ?"
+		args = append(args, bookmarkedTutorialID)
+	}
+
+	query += ` ORDER BY u.created_at DESC LIMIT ? OFFSET ?;`
 	args = append(args, elements, offset)
 
 	var users []*models.UserModel

@@ -80,7 +80,7 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 
 	pageData.NumTutorials = numTutorials
 
-	authors, err := h.Database.GetUsers("", database.Author)
+	authors, err := h.Database.GetUsers("", database.Author, "", "")
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all the authors from the database: %s\n", err)
 
@@ -342,7 +342,7 @@ func (h *Handlers) AuthorEditGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authors, err := h.Database.GetUsers("", database.Author)
+	authors, err := h.Database.GetUsers("", database.Author, "", "")
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get authors: %s\n", err)
 

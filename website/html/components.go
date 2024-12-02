@@ -116,7 +116,7 @@ type AdminUsersListComponent struct {
 	TutorialsWritten    map[string]uint
 	CoursesWritten      map[string]uint
 	BaseURL             string
-	QueryURL            string
+	URLQuery            string
 	ErrorMessage        string
 }
 

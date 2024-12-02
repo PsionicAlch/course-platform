@@ -323,3 +323,21 @@ func (db *SQLiteDatabase) UpdateAuthor(tutorialId, authorId string) error {
 
 	return nil
 }
+
+func (db *SQLiteDatabase) CountTutorialsWrittenBy(authorId string) (uint, error) {
+	query := `SELECT COUNT(id) FROM tutorials WHERE author_id = ?;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query, authorId)
+	if err := row.Scan(&count); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count the number of tutorials written by \"%s\": %s\n", authorId, err)
+		return 0, err
+	}
+
+	return count, nil
+}

@@ -59,7 +59,7 @@ func (h *Handlers) UsersGet(w http.ResponseWriter, r *http.Request) {
 
 	pageData.AuthorizationLevels = database.AuthorizationLevelStrings()
 
-	usersList, err := h.CreateUsersList("", database.All, 1)
+	usersList, err := h.CreateUsersList(r)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get the number of users from the database: %s\n", err)
 
@@ -80,19 +80,7 @@ func (h *Handlers) UsersGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) UsersPaginationGet(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query().Get("query")
-	level := database.All
-	page := 2
-
-	if pageNum, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil {
-		page = pageNum
-	}
-
-	if authLevel, err := database.AuthorizationLevelString(r.URL.Query().Get("level")); err == nil {
-		level = authLevel
-	}
-
-	usersList, err := h.CreateUsersList(query, level, uint(page))
+	usersList, err := h.CreateUsersList(r)
 	if err != nil {
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "admin-users", &html.AdminUsersListComponent{
 			ErrorMessage: "Failed to get users. Please try again.",
@@ -385,8 +373,46 @@ func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handlers) CreateUsersList(term string, level database.AuthorizationLevel, page uint) (*html.AdminUsersListComponent, error) {
-	users, err := h.Database.GetUsersPaginated(term, level, page, UsersPerPagination)
+// Possible URL queries:
+// -page
+// -query
+// -level
+// -liked
+// -bookmarked
+func (h *Handlers) CreateUsersList(r *http.Request) (*html.AdminUsersListComponent, error) {
+	query := r.URL.Query().Get("query")
+	level := database.All
+	page := 1
+	liked := ""
+	bookmarked := ""
+
+	urlQuery := make(url.Values)
+
+	if pageNum, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil {
+		page = pageNum
+	}
+
+	urlQuery.Add("page", strconv.Itoa(page))
+
+	if authLevel, err := database.AuthorizationLevelString(r.URL.Query().Get("level")); err == nil {
+		level = authLevel
+
+		urlQuery.Add("level", authLevel.String())
+	}
+
+	if likedTutorial := r.URL.Query().Get("liked"); likedTutorial != "" {
+		liked = likedTutorial
+
+		urlQuery.Add("liked", likedTutorial)
+	}
+
+	if bookmarkedTutorial := r.URL.Query().Get("bookmarked"); bookmarkedTutorial != "" {
+		bookmarked = bookmarkedTutorial
+
+		urlQuery.Add("bookmarked", bookmarkedTutorial)
+	}
+
+	users, err := h.Database.GetUsersPaginated(query, level, liked, bookmarked, uint(page), UsersPerPagination)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get users (page %d) from the database: %s\n", 1, err)
 
@@ -409,11 +435,25 @@ func (h *Handlers) CreateUsersList(term string, level database.AuthorizationLeve
 
 		tutorialsLiked[user.ID] = tutsLiked
 
-		tutorialsBookmarked[user.ID] = 0
+		tutsBookmarked, err := h.Database.CountTutorialsBookmarkedByUser(user.ID)
+		if err != nil {
+			h.ErrorLog.Printf("Failed to get the number of tutorials bookmarked by user \"%s\": %s\n", user.ID, err)
+
+			return nil, err
+		}
+
+		tutorialsBookmarked[user.ID] = tutsBookmarked
 
 		coursesBought[user.ID] = 0
 
-		tutorialsWritten[user.ID] = 0
+		tutsWritten, err := h.Database.CountTutorialsWrittenBy(user.ID)
+		if err != nil {
+			h.ErrorLog.Printf("Failed to get the number of tutorials written by user \"%s\": %s\n", user.ID, err)
+
+			return nil, err
+		}
+
+		tutorialsWritten[user.ID] = tutsWritten
 
 		coursesWritten[user.ID] = 0
 	}
@@ -437,7 +477,7 @@ func (h *Handlers) CreateUsersList(term string, level database.AuthorizationLeve
 		TutorialsWritten:    tutorialsWritten,
 		CoursesWritten:      coursesWritten,
 		BaseURL:             "/admin/users/htmx",
-		QueryURL:            fmt.Sprintf("/admin/users/htmx?query=%s&level=%s&page=%d", url.QueryEscape(term), url.QueryEscape(level.String()), page+1),
+		URLQuery:            urlQuery.Encode(),
 	}
 
 	return usersList, nil

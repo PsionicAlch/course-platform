@@ -21,7 +21,7 @@
 
   {{ with .LastUser }}
     <tr
-      hx-get="{{- $.QueryURL }}"
+      hx-get="{{- $.BaseURL }}?{{- $.URLQuery -}}"
       hx-trigger="revealed once"
       hx-swap="afterend"
     >
