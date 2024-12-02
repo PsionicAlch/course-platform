@@ -28,7 +28,7 @@ type Handlers struct {
 }
 
 func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, auth *authentication.Authentication) *Handlers {
-	loggers := utils.CreateLoggers("ADMIN HANDLERS")
+	loggers := utils.CreateLoggers("TUTORIALS ADMIN HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,

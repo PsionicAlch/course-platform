@@ -1,0 +1,33 @@
+{{ define "admin-discounts-list" }}
+  {{ range .Discounts }}
+    <tr>
+      <td>{{- .ID -}}</td>
+      <td>{{- .Title -}}</td>
+      <td>{{- .Description -}}</td>
+      <td>{{- .Code -}}</td>
+      <td>{{- .Discount -}}</td>
+      <td>{{- .Uses -}}</td>
+      <td><a href="/admin/purchases?discount={{- .ID -}}">{{- index $.DiscountUsed .ID -}}</a></td>
+      <td hx-get="{{- $.BaseURL -}}/change-status/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">{{- if .Active -}}Active{{- else -}}Inactive{{- end -}}</td>
+    </tr>
+  {{ end }}
+
+  {{ with .LastDiscount }}
+    <tr
+      hx-get="{{- $.BaseURL -}}?{{- $.URLQuery -}}"
+      hx-trigger="revealed once"
+      hx-swap="afterend"
+    >
+      <td>{{- .ID -}}</td>
+      <td>{{- .Title -}}</td>
+      <td>{{- .Description -}}</td>
+      <td>{{- .Code -}}</td>
+      <td>{{- .Discount -}}</td>
+      <td>{{- .Uses -}}</td>
+      <td><a href="/admin/purchases?discount={{- .ID -}}">{{- index $.DiscountUsed .ID -}}</a></td>
+      <td hx-get="{{- $.BaseURL -}}/change-status/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">{{- if .Active -}}Active{{- else -}}Inactive{{- end -}}</td>
+    </tr>
+  {{ end }}
+
+  {{ template "error-message" .ErrorMessage }}
+{{ end }}

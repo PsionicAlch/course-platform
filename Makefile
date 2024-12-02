@@ -19,6 +19,12 @@ rollback:
 new-migration:
 	@migrate create -ext sql -dir $(MIGRATIONS_DIR) -seq $(name)
 
+seed-database:
+	@go run ./cmd/seed
+
+new-admin:
+	@go run ./cmd/add_admin_user -name="$(name)" -surname="$(surname)" -email="$(email)" -password="$(password)"
+
 new-keys:
 	@go run ./cmd/keys
 
@@ -28,8 +34,8 @@ load-content:
 generate-file-key:
 	@go run ./cmd/filekey
 
-new-admin:
-	@go run ./cmd/add_admin_user -name="$(name)" -surname="$(surname)" -email="$(email)" -password="$(password)"
+loc:
+	@go run ./cmd/loc
 
 clean:
 	rm -rf ./tmp

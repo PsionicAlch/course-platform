@@ -29,3 +29,14 @@ func (db *SQLiteDatabase) GetKeywords() ([]string, error) {
 
 	return keywords, nil
 }
+
+func (db *SQLiteDatabase) DeleteAllKeywords() error {
+	query := `DELETE FROM keywords;`
+
+	if _, err := db.connection.Exec(query); err != nil {
+		db.ErrorLog.Printf("Failed to delete all keywords: %s\n", err)
+		return err
+	}
+
+	return nil
+}

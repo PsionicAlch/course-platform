@@ -58,6 +58,7 @@ type Database interface {
 
 	// Keywords functions.
 	GetKeywords() ([]string, error)
+	DeleteAllKeywords() error
 
 	// Tutorials-Keywords functions.
 	GetAllKeywordsForTutorial(tutorialId string) ([]string, error)
@@ -93,6 +94,14 @@ type Database interface {
 	GetAllChapters() ([]*models.ChapterModel, error)
 	GetChapterByFileKey(fileKey string) (*models.ChapterModel, error)
 	CountChapters(courseId string) (int, error)
+
+	// Discounts functions.
+	GetDiscountsPaginated(term string, active *bool, page, elements uint) ([]*models.DiscountModel, error)
+	CountDiscounts() (uint, error)
+	AddDiscount(title, description string, discount, uses uint64) error
+	GetDiscountByID(discountId string) (*models.DiscountModel, error)
+	ActivateDiscount(discountId string) error
+	DeactivateDiscount(discountId string) error
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error

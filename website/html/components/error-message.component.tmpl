@@ -1,0 +1,10 @@
+{{ define "error-message" }}
+  {{ if . }}
+    <script>
+      notyf.open({
+        type: 'flash-error',
+        message: '{{.}}'
+      });
+    </script>
+  {{ end }}
+{{ end }}

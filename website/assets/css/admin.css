@@ -139,6 +139,38 @@
   padding: 0.5rem 1rem;
 }
 
+.form-control.has-errors label {
+  color: var(--primary-dark-red-color);
+}
+
+.form-control.has-errors>input {
+  border: var(--primary-red-border);
+  color: var(--primary-dark-red-color);
+  caret-color: var(--primary-dark-red-color);
+  background-color: var(--primary-light-red-color);
+}
+
+.form-control.has-errors ul.errors {
+  margin-left: 1rem;
+  color: var(--primary-dark-red-color);
+  list-style-type: disc;
+}
+
+.form-control.has-errors .password-control {
+  border: var(--primary-red-border);
+  background-color: var(--primary-light-red-color);
+}
+
+.form-control.has-errors .password-control input {
+  color: var(--primary-dark-red-color);
+  caret-color: var(--primary-dark-red-color);
+  background-color: var(--primary-light-red-color);
+}
+
+.form-control.has-errors .password-control .visibility-control {
+  color: var(--primary-dark-red-color);
+}
+
 .admin-modal-body .admin-modal-actions {
   width: 100%;
   display: flex;

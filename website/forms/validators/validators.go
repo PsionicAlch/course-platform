@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"strconv"
 
 	emailverifier "github.com/AfterShip/email-verifier"
 	goaway "github.com/TwiN/go-away"
@@ -165,6 +166,44 @@ func MatchesField(field, fieldName string) ValidationFunc {
 	return func(data string, values url.Values) error {
 		if data != values.Get(field) {
 			return fmt.Errorf("not the same as %s", fieldName)
+		}
+
+		return nil
+	}
+}
+
+func Integer(data string, values url.Values) error {
+	if _, err := strconv.Atoi(data); err != nil {
+		return errors.New("needs to be a number")
+	}
+
+	return nil
+}
+
+func Max(max int) ValidationFunc {
+	return func(data string, values url.Values) error {
+		num, err := strconv.Atoi(data)
+		if err != nil {
+			return errors.New("needs to be a number")
+		}
+
+		if num > max {
+			return fmt.Errorf("cannot be bigger than %d", max)
+		}
+
+		return nil
+	}
+}
+
+func Min(min int) ValidationFunc {
+	return func(data string, values url.Values) error {
+		num, err := strconv.Atoi(data)
+		if err != nil {
+			return errors.New("needs to be a number")
+		}
+
+		if num < min {
+			return fmt.Errorf("cannot be smaller than %d", min)
 		}
 
 		return nil

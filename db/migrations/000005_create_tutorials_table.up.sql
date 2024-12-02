@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS tutorials (
     thumbnail_url TEXT NOT NULL,                                                                -- URL for the thumbnail image of the tutorial.
     banner_url TEXT NOT NULL,                                                                   -- URL for the banner image of the tutorial.
     content TEXT NOT NULL,                                                                      -- HTML based contents of the tutorial.
-    published INTEGER DEFAULT 0,                                                                -- BOOLEAN to represent whether or not the tutorial has been published.
+    published INTEGER DEFAULT 0 CHECK (published >= 0 AND published <= 1),                      -- BOOLEAN to represent whether or not the tutorial has been published.
 
     author_id TEXT DEFAULT NULL,                                                                -- The user ID who published the tutorial (for when I have multiple authors).
 

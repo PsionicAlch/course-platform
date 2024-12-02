@@ -1,9 +1,5 @@
 {{ template "admin" .}}
 
-{{ define "meta-tags" }}
-  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
-{{ end }}
-
 {{ define "title" }}
   <title>Discounts - PsionicAlch</title>
 {{ end }}
@@ -11,16 +7,21 @@
 {{ define "body" }}
   <section class="admin-container">
     <div class="admin-header" x-data="{ modalOpen: false }">
-      <h2>Discounts Administration</h2>
+      <h2><a href="/admin/discounts">Discounts Administration (discounts: {{ .NumDiscounts -}})</a></h2>
 
       <div class="admin-header-actions">
-        <form action="/">
-          <input type="text" name="search-term" id="search-term" class="shadow-sm" placeholder="Search terms...">
+        <form
+          hx-get="/admin/discounts/htmx?{{- .URLQuery -}}"
+          hx-target=".admin-body table tbody"
+          hx-trigger="change, keyup delay:500ms"
+        >
+          <input type="text" name="query" id="query" class="shadow-sm" placeholder="Search terms...">
 
-          <select name="discount-active-status" id="discount-active-status" class="shadow-sm">
+          <select name="status" id="status" class="shadow-sm">
             <option value="" selected>Discount Active Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            {{ range .DiscountStatus }}
+              <option value="{{- . -}}">{{- . -}}</option>
+            {{ end }}
           </select>
         </form>
 
@@ -40,33 +41,7 @@
             </div>
 
             <div class="admin-modal-body">
-              <form action="/">
-                <div class="form-control">
-                  <label for="title">Title:</label>
-                  <input type="text" name="title" id="title" class="shadow-sm">
-                </div>
-
-                <div class="form-control">
-                  <label for="descripton">Description:</label>
-                  <input type="text" name="description" id="descripton" class="shadow-sm">
-                </div>
-
-                <div class="form-control">
-                  <label for="discount-amount">Discount Amount (%):</label>
-                  <input type="number" name="discount-amount" id="discount-amount" min="0" max="100" class="shadow-sm">
-                </div>
-
-                <div class="admin-modal-actions">
-                  <button
-                    x-on:click.prevent="modalOpen = false"
-                    class="btn btn-gray shadow-sm"
-                  >
-                    Cancel
-                  </button>
-
-                  <button type="submit" class="btn btn-blue shadow-sm">Add Discount</button>
-                </div>
-              </form>
+              {{ template "new-discount-form" .NewDiscountForm }}
             </div>
           </div>
         </section>
@@ -80,171 +55,17 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Date Added</th>
             <th>Title</th>
             <th>Description</th>
             <th>Code</th>
             <th>Discount (%)</th>
+            <th>Uses</th>
             <th>Used</th>
             <th>Active</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>VQUWSGOU5E2W3NY9FTYHZ85NHW</td>
-            <td><time datetime="2024-12-24">2024-12-24</time></td>
-            <td>VIP Discount</td>
-            <td>Limited time discount for loyal customers.</td>
-            <td>MEWFQSUPAGCJ9QXP9UDTPOTZLL</td>
-            <td>17</td>
-            <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">5078</a></td>
-            <td>Active</td>
-          </tr>
-          <tr>
-              <td>HDI9ZMR8JM05URZIIPQ3Y2RUID</td>
-              <td><time datetime="2024-12-07">2024-12-07</time></td>
-              <td>VIP Discount</td>
-              <td>Limited time discount for loyal customers.</td>
-              <td>P08XKIR4YL3F716ZEA046BKLV0</td>
-              <td>25</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">8802</a></td>
-              <td>
-                <select name="update-discount-status" id="update-discount-status" class="shadow-sm">
-                  <option value="active" selected>Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </td>
-          </tr>
-          <tr>
-              <td>E97DVSVEXE6M8KHFJDY40RQPZP</td>
-              <td><time datetime="2024-11-25">2024-11-25</time></td>
-              <td>Exclusive Discount</td>
-              <td>Special promotion to save big!</td>
-              <td>VLY2KG4PMSUV1ID89OLGVIZ1EL</td>
-              <td>91</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">6110</a></td>
-              <td>Inactive</td>
-          </tr>
-          <tr>
-              <td>YR4TH3H09S6PGTMHREEILQRIF0</td>
-              <td><time datetime="2024-11-10">2024-11-10</time></td>
-              <td>Exclusive Discount</td>
-              <td>Limited time discount for loyal customers.</td>
-              <td>A6LIFA6DT6IFTGI8JM574Q81IF</td>
-              <td>62</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">4792</a></td>
-              <td>Active</td>
-          </tr>
-          <tr>
-              <td>1AYD8R3IFQWMXE5VYFYZVMKJZF</td>
-              <td><time datetime="2024-10-20">2024-10-20</time></td>
-              <td>Holiday Discount</td>
-              <td>Limited time discount for loyal customers.</td>
-              <td>SJDN0O6TOG9TZDSJDFF619OFHJ</td>
-              <td>57</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">9829</a></td>
-              <td>Active</td>
-          </tr>
-          <tr>
-              <td>XEK2FU350RP2CZNWRARG62KSFD</td>
-              <td><time datetime="2024-10-06">2024-10-06</time></td>
-              <td>Special Discount</td>
-              <td>Limited time discount for loyal customers.</td>
-              <td>CO8L6MVCD190LXYOQSMZARLZTE</td>
-              <td>19</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">2169</a></td>
-              <td>Active</td>
-          </tr>
-          <tr>
-              <td>OVUZLCCYQNYMHYZWJGGUNM8WSG</td>
-              <td><time datetime="2024-09-12">2024-09-12</time></td>
-              <td>Exclusive Discount</td>
-              <td>Special promotion to save big!</td>
-              <td>92S0AIHG86SDKSJ0ZKXUYV78M6</td>
-              <td>60</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">8414</a></td>
-              <td>Active</td>
-          </tr>
-          <tr>
-              <td>QWO1LUJNUYU5GWECK6YESKUWSK</td>
-              <td><time datetime="2024-08-05">2024-08-05</time></td>
-              <td>Special Discount</td>
-              <td>Enjoy a discount on selected items.</td>
-              <td>7V8GBT64YGH98PBC43NIZJOIQF</td>
-              <td>95</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">546</a></td>
-              <td>Inactive</td>
-          </tr>
-          <tr>
-              <td>1M02Q08B72VBHY2AIK3G59MRL5</td>
-              <td><time datetime="2024-07-18">2024-07-18</time></td>
-              <td>Seasonal Discount</td>
-              <td>Enjoy a discount on selected items.</td>
-              <td>5T12WEMI1XRG9WA0Y45P23STAA</td>
-              <td>35</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">7002</a></td>
-              <td>Active</td>
-          </tr>
-          <tr>
-              <td>145ROYGLXS1ESA7QJ4QJZCIGVF</td>
-              <td><time datetime="2024-06-30">2024-06-30</time></td>
-              <td>Holiday Discount</td>
-              <td>Limited time discount for loyal customers.</td>
-              <td>I1EHLTNA70TBBJS0DZV47MODX2</td>
-              <td>79</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">6577</a></td>
-              <td>Active</td>
-          </tr>
-          <tr>
-              <td>TCQDL204MT96MM39UWM10608QX</td>
-              <td><time datetime="2024-05-14">2024-05-14</time></td>
-              <td>Exclusive Discount</td>
-              <td>Exclusive offer available for new users.</td>
-              <td>B09E83M0112YIXIBP8J3C1LKPB</td>
-              <td>7</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">3179</a></td>
-              <td>Active</td>
-          </tr>
-          <tr>
-              <td>9AUDST5TWPKE87VAKQECRYX4JY</td>
-              <td><time datetime="2024-04-22">2024-04-22</time></td>
-              <td>VIP Discount</td>
-              <td>Special promotion to save big!</td>
-              <td>L2JB86KDZSRFXH4EVOS1F1U5J1</td>
-              <td>21</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">1719</a></td>
-              <td>Active</td>
-          </tr>
-          <tr>
-              <td>SG3AXK89IZXDOQPKAH67VRNVZ3</td>
-              <td><time datetime="2024-03-08">2024-03-08</time></td>
-              <td>Exclusive Discount</td>
-              <td>Limited time discount for loyal customers.</td>
-              <td>J9ZHSDKEGGLVQQ7Y89RFIYF4QM</td>
-              <td>68</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">9217</a></td>
-              <td>Inactive</td>
-          </tr>
-          <tr>
-              <td>CSAGU08ICM0L9Z2X153VP3CZFE</td>
-              <td><time datetime="2024-02-10">2024-02-10</time></td>
-              <td>Special Discount</td>
-              <td>Enjoy a discount on selected items.</td>
-              <td>1P7V1WM9TUC1BDJSE2J5KVPZ2Z</td>
-              <td>98</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">1914</a></td>
-              <td>Active</td>
-          </tr>
-          <tr>
-              <td>09N9ONRZEC8ZTN1G684GX7PZQT</td>
-              <td><time datetime="2024-01-15">2024-01-15</time></td>
-              <td>Seasonal Discount</td>
-              <td>Limited time discount for loyal customers.</td>
-              <td>1T8YWU8I6SIEGEEHV82KF7TCGR</td>
-              <td>89</td>
-              <td><a href="/admin-purchases.html?discount_id=INSERT_DISCOUNT_ID">3406</a></td>
-              <td>Active</td>
-          </tr>
+          {{ template "admin-discounts-list" .Discounts }}
         </tbody>
       </table>
     </div>

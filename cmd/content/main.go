@@ -23,10 +23,7 @@ func main() {
 
 	loggers.InfoLog.Println("Registering content!")
 
-	err = content.RegisterContent(db)
-	if err != nil {
-		loggers.ErrorLog.Fatalln("Failed to load content: ", err)
-	}
+	content.RegisterContent(db)
 
 	endTimer := time.Since(startTimer)
 

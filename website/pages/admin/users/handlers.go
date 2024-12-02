@@ -26,7 +26,7 @@ type Handlers struct {
 }
 
 func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, auth *authentication.Authentication) *Handlers {
-	loggers := utils.CreateLoggers("ADMIN HANDLERS")
+	loggers := utils.CreateLoggers("USERS ADMIN HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
@@ -59,7 +59,7 @@ func (h *Handlers) UsersGet(w http.ResponseWriter, r *http.Request) {
 
 	pageData.AuthorizationLevels = database.AuthorizationLevelStrings()
 
-	usersList, err := h.CreateUsersList(r)
+	usersList, urlQuery, err := h.CreateUsersList(r)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get the number of users from the database: %s\n", err)
 
@@ -74,13 +74,16 @@ func (h *Handlers) UsersGet(w http.ResponseWriter, r *http.Request) {
 
 	pageData.Users = usersList
 
+	urlQuery.Set("page", "1")
+	pageData.URLQuery = urlQuery.Encode()
+
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "admin-users", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
 func (h *Handlers) UsersPaginationGet(w http.ResponseWriter, r *http.Request) {
-	usersList, err := h.CreateUsersList(r)
+	usersList, _, err := h.CreateUsersList(r)
 	if err != nil {
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "admin-users", &html.AdminUsersListComponent{
 			ErrorMessage: "Failed to get users. Please try again.",
@@ -379,7 +382,7 @@ func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
 // -level
 // -liked
 // -bookmarked
-func (h *Handlers) CreateUsersList(r *http.Request) (*html.AdminUsersListComponent, error) {
+func (h *Handlers) CreateUsersList(r *http.Request) (*html.AdminUsersListComponent, url.Values, error) {
 	query := r.URL.Query().Get("query")
 	level := database.All
 	page := 1
@@ -416,7 +419,7 @@ func (h *Handlers) CreateUsersList(r *http.Request) (*html.AdminUsersListCompone
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get users (page %d) from the database: %s\n", 1, err)
 
-		return nil, err
+		return nil, urlQuery, err
 	}
 
 	tutorialsLiked := make(map[string]uint, len(users))
@@ -430,7 +433,7 @@ func (h *Handlers) CreateUsersList(r *http.Request) (*html.AdminUsersListCompone
 		if err != nil {
 			h.ErrorLog.Printf("Failed to get the number of tutorials liked by user \"%s\": %s\n", user.ID, err)
 
-			return nil, err
+			return nil, urlQuery, err
 		}
 
 		tutorialsLiked[user.ID] = tutsLiked
@@ -439,7 +442,7 @@ func (h *Handlers) CreateUsersList(r *http.Request) (*html.AdminUsersListCompone
 		if err != nil {
 			h.ErrorLog.Printf("Failed to get the number of tutorials bookmarked by user \"%s\": %s\n", user.ID, err)
 
-			return nil, err
+			return nil, urlQuery, err
 		}
 
 		tutorialsBookmarked[user.ID] = tutsBookmarked
@@ -450,7 +453,7 @@ func (h *Handlers) CreateUsersList(r *http.Request) (*html.AdminUsersListCompone
 		if err != nil {
 			h.ErrorLog.Printf("Failed to get the number of tutorials written by user \"%s\": %s\n", user.ID, err)
 
-			return nil, err
+			return nil, urlQuery, err
 		}
 
 		tutorialsWritten[user.ID] = tutsWritten
@@ -480,5 +483,5 @@ func (h *Handlers) CreateUsersList(r *http.Request) (*html.AdminUsersListCompone
 		URLQuery:            urlQuery.Encode(),
 	}
 
-	return usersList, nil
+	return usersList, urlQuery, nil
 }

@@ -7,6 +7,8 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/forms/validators"
 )
 
+// TODO: Move this over to internal
+
 type FieldName string
 
 type GenericForm struct {

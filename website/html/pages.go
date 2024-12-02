@@ -46,6 +46,11 @@ type AdminCoursesPage struct {
 
 type AdminDiscountsPage struct {
 	BasePage
+	NumDiscounts    uint
+	URLQuery        string
+	DiscountStatus  []string
+	NewDiscountForm *NewDiscountFormComponent
+	Discounts       *AdminDiscountsListComponent
 }
 
 type AdminPurchasesPage struct {
@@ -69,6 +74,7 @@ type AdminTutorialsPage struct {
 type AdminUsersPage struct {
 	BasePage
 	NumUsers            uint
+	URLQuery            string
 	AuthorizationLevels []string
 	Users               *AdminUsersListComponent
 }

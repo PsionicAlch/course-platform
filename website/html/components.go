@@ -86,6 +86,14 @@ type ResetPasswordFormComponent struct {
 	ConfirmPasswordInput *PasswordControlComponent
 }
 
+type NewDiscountFormComponent struct {
+	TitleInput       *FormControlComponent
+	DescriptionInput *FormControlComponent
+	UsesInput        *FormControlComponent
+	AmountInput      *FormControlComponent
+	ErrorMessage     string
+}
+
 type TutorialsListComponent struct {
 	Tutorials    []*models.TutorialModel
 	LastTutorial *models.TutorialModel
@@ -136,6 +144,15 @@ type AdminTutorialsListComponent struct {
 	Comments     map[string]uint
 	Likes        map[string]uint
 	Bookmarks    map[string]uint
+	BaseURL      string
+	URLQuery     string
+	ErrorMessage string
+}
+
+type AdminDiscountsListComponent struct {
+	Discounts    []*models.DiscountModel
+	LastDiscount *models.DiscountModel
+	DiscountUsed map[string]uint
 	BaseURL      string
 	URLQuery     string
 	ErrorMessage string

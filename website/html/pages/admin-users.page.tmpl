@@ -11,7 +11,7 @@
 
       <div class="admin-header-actions">
         <form
-          hx-get="/admin/users/htmx?page=1"
+          hx-get="/admin/users/htmx?{{- .URLQuery -}}"
           hx-target=".admin-body table tbody"
           hx-trigger="change, keyup delay:500ms"
         >

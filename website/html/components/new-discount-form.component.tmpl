@@ -1,0 +1,21 @@
+{{ define "new-discount-form" }}
+  <form hx-post="/admin/discounts/add">
+    {{ template "form-control" .TitleInput }}
+    {{ template "form-control" .DescriptionInput }}
+    {{ template "form-control" .UsesInput }}
+    {{ template "form-control" .AmountInput }}
+
+    <div class="admin-modal-actions">
+      <button
+        x-on:click.prevent="modalOpen = false; $nextTick(() => htmx.ajax('GET', '/admin/discounts/validate/empty', '.admin-modal-container>.admin-modal-body>form'))"
+        class="btn btn-gray shadow-sm"
+      >
+        Cancel
+      </button>
+
+      <button type="submit" class="btn btn-blue shadow-sm">Add Discount</button>
+    </div>
+
+    {{ template "error-message" .ErrorMessage }}
+  </form>
+{{ end }}

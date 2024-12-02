@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS courses (
     thumbnail_url TEXT NOT NULL,                                                            -- URL for the thumbnail image of the course.
     banner_url TEXT NOT NULL,                                                               -- URL for the banner image of the course.
     content TEXT NOT NULL,                                                                  -- HTML based contents of the course.
-    published INTEGER DEFAULT 0,                                                            -- BOOLEAN to represent whether or not the course has been published.
+    published INTEGER DEFAULT 0 CHECK (published >= 0 AND published <= 1),                  -- BOOLEAN to represent whether or not the course has been published.
 
     author_id TEXT DEFAULT NULL,                                                            -- The user ID who published the course.
 
