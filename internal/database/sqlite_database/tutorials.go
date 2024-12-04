@@ -126,7 +126,7 @@ func (db *SQLiteDatabase) GetAllTutorials() ([]*models.TutorialModel, error) {
 }
 
 func (db *SQLiteDatabase) GetTutorials(term string, page, elements int) ([]*models.TutorialModel, error) {
-	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials WHERE LOWER(title) LIKE '%' || ? || '%' OR LOWER(description) LIKE '%' || ? || '%' ORDER BY updated_at DESC, title ASC LIMIT ? OFFSET ?;`
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials WHERE published = 1 AND author_id IS NOT NULL AND (LOWER(title) LIKE '%' || ? || '%' OR LOWER(description) LIKE '%' || ? || '%') ORDER BY updated_at DESC, title ASC LIMIT ? OFFSET ?;`
 
 	offset := (page - 1) * elements
 
