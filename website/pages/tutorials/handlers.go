@@ -394,7 +394,7 @@ func (h *Handlers) CreateTutorialsList(r *http.Request) (*html.TutorialsListComp
 	query := r.URL.Query().Get("query")
 	page := 1
 
-	urlQuery := new(url.Values)
+	urlQuery := make(url.Values)
 
 	if pageNum, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil {
 		page = pageNum
