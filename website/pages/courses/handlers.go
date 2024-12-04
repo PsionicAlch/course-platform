@@ -17,7 +17,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-const CoursesPerPagination = 5
+const CoursesPerPagination = 25
 
 type Handlers struct {
 	utils.Loggers
@@ -45,34 +45,18 @@ func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
-	courses, err := h.Database.GetAllCoursesPaginated(1, CoursesPerPagination)
+	coursesList, err := h.CreateCoursesList(r)
 	if err != nil {
-		h.ErrorLog.Printf("Failed to get all courses (page 1) from the database: %s\n", err)
+		h.ErrorLog.Printf("Failed to create courses list: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
-		}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
 		return
 	}
 
-	var courseSlice []*models.CourseModel
-	var lastCourse *models.CourseModel
-
-	if len(courses) < CoursesPerPagination {
-		courseSlice = courses
-	} else {
-		courseSlice = courses[:len(courses)-1]
-		lastCourse = courses[len(courses)-1]
-	}
-
-	pageData.Courses = &html.CoursesListComponent{
-		Courses:    courseSlice,
-		LastCourse: lastCourse,
-		QueryURL:   fmt.Sprintf("/courses/page/%d", 2),
-	}
+	pageData.Courses = coursesList
 
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "courses", pageData); err != nil {
 		h.ErrorLog.Println(err)
@@ -80,97 +64,18 @@ func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) CoursesPaginationGet(w http.ResponseWriter, r *http.Request) {
-	coursesComponent := &html.CoursesListComponent{}
-
-	pageNumber, err := strconv.Atoi(chi.URLParam(r, "page-number"))
+	coursesList, err := h.CreateCoursesList(r)
 	if err != nil {
-		h.ErrorLog.Printf("Failed to convert page-number to int: %s\n", err)
-		coursesComponent.ErrorMessage = "Unexpected server error. Please try again."
+		h.ErrorLog.Printf("Failed to create courses list: %s\n", err)
 
-		if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", coursesComponent); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", html.CoursesListComponent{ErrorMessage: "Failed to get courses. Please try again."}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
 		return
 	}
 
-	courses, err := h.Database.GetAllCoursesPaginated(pageNumber, CoursesPerPagination)
-	if err != nil {
-		h.ErrorLog.Printf("Failed to get all courses (page %d) from the database: %s\n", pageNumber, err)
-		coursesComponent.ErrorMessage = "Failed to fetch next courses."
-
-		if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", coursesComponent); err != nil {
-			h.ErrorLog.Println(err)
-		}
-
-		return
-	}
-
-	var courseSlice []*models.CourseModel
-	var lastCourse *models.CourseModel
-
-	if len(courses) < CoursesPerPagination {
-		courseSlice = courses
-	} else {
-		courseSlice = courses[:len(courses)-1]
-		lastCourse = courses[len(courses)-1]
-	}
-
-	coursesComponent.Courses = courseSlice
-	coursesComponent.LastCourse = lastCourse
-	coursesComponent.QueryURL = fmt.Sprintf("/courses/page/%d", pageNumber+1)
-
-	if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", coursesComponent); err != nil {
-		h.ErrorLog.Println(err)
-	}
-}
-
-func (h *Handlers) CoursesSearchGet(w http.ResponseWriter, r *http.Request) {
-	var page int
-
-	queryPage := r.URL.Query().Get("page")
-	query := r.URL.Query().Get("query")
-	coursesComponent := &html.CoursesListComponent{}
-
-	if queryPage == "" {
-		page = 1
-	} else {
-		pageNum, err := strconv.Atoi(queryPage)
-		if err != nil {
-			h.WarningLog.Printf("Failed to convert page to int: %s\n", err)
-			page = 1
-		} else {
-			page = pageNum
-		}
-	}
-
-	courses, err := h.Database.SearchCoursesPaginated(query, page, CoursesPerPagination)
-	if err != nil {
-		h.ErrorLog.Printf("Failed to search for courses (page %d) from the database: %s\n", page, err)
-		coursesComponent.ErrorMessage = "Failed to get courses. Please try again."
-
-		if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", coursesComponent); err != nil {
-			h.ErrorLog.Println(err)
-		}
-
-		return
-	}
-
-	var courseSlice []*models.CourseModel
-	var lastCourse *models.CourseModel
-
-	if len(courses) < CoursesPerPagination {
-		courseSlice = courses
-	} else {
-		courseSlice = courses[:len(courses)-1]
-		lastCourse = courses[len(courses)-1]
-	}
-
-	coursesComponent.Courses = courseSlice
-	coursesComponent.LastCourse = lastCourse
-	coursesComponent.QueryURL = fmt.Sprintf("/courses/search?page=%d&query=%s", page+1, url.QueryEscape(query))
-
-	if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", coursesComponent); err != nil {
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "courses", coursesList); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -252,4 +157,45 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "courses-purchase", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
+}
+
+// Possible URL queries:
+// -page
+// -query
+func (h *Handlers) CreateCoursesList(r *http.Request) (*html.CoursesListComponent, error) {
+	query := r.URL.Query().Get("query")
+	page := 1
+
+	urlQuery := make(url.Values)
+
+	if pageNum, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil {
+		page = pageNum
+	}
+
+	urlQuery.Add("query", query)
+	urlQuery.Add("page", fmt.Sprintf("%d", page+1))
+
+	courses, err := h.Database.GetCourses(query, page, CoursesPerPagination)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get all courses (page %d) from the database: %s\n", page, err)
+		return nil, err
+	}
+
+	var coursesSlice []*models.CourseModel
+	var lastCourse *models.CourseModel
+
+	if len(courses) < CoursesPerPagination {
+		coursesSlice = courses
+	} else {
+		coursesSlice = courses[:len(courses)-1]
+		lastCourse = courses[len(courses)-1]
+	}
+
+	coursesList := &html.CoursesListComponent{
+		Courses:    coursesSlice,
+		LastCourse: lastCourse,
+		QueryURL:   fmt.Sprintf("/courses/htmx?%s", urlQuery.Encode()),
+	}
+
+	return coursesList, nil
 }

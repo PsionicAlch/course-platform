@@ -85,8 +85,7 @@ type Database interface {
 
 	// Courses functions.
 	GetAllCourses() ([]*models.CourseModel, error)
-	GetAllCoursesPaginated(page, elements int) ([]*models.CourseModel, error)
-	SearchCoursesPaginated(term string, page, elements int) ([]*models.CourseModel, error)
+	GetCourses(term string, page, elements int) ([]*models.CourseModel, error)
 	GetCourseByFileKey(fileKey string) (*models.CourseModel, error)
 	GetCourseBySlug(slug string) (*models.CourseModel, error)
 
