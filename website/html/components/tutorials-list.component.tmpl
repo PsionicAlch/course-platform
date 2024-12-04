@@ -27,12 +27,5 @@
     </div>
   {{ end }}
 
-  {{ with .ErrorMessage }}
-      <script>
-        notyf.open({
-          type: 'flash-error',
-          message: '{{.}}'
-        });
-      </script>
-  {{ end }}
+  {{ template "error-message" .ErrorMessage }}
 {{ end }}

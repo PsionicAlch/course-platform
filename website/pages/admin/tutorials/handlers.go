@@ -548,7 +548,7 @@ func (h *Handlers) CreateTutorialsList(r *http.Request) (*html.AdminTutorialsLis
 		urlQuery.Add("keyword", key)
 	}
 
-	tutorials, err := h.Database.GetTutorials(query, published, author, likedBy, bookmarkedBy, keyword, uint(page), TutorialsPerPagination)
+	tutorials, err := h.Database.AdminGetTutorials(query, published, author, likedBy, bookmarkedBy, keyword, uint(page), TutorialsPerPagination)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get the tutorials from the database")
 		return nil, urlQuery, err

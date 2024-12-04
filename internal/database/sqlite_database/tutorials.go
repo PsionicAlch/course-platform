@@ -6,7 +6,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
-func (db *SQLiteDatabase) GetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error) {
+func (db *SQLiteDatabase) AdminGetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error) {
 	query := `SELECT DISTINCT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials AS t LEFT JOIN tutorials_likes AS tl ON t.id = tl.tutorial_id LEFT JOIN tutorials_bookmarks AS tb ON t.id = tb.tutorial_id LEFT JOIN tutorials_keywords AS tk ON t.id = tk.tutorial_id LEFT JOIN keywords AS k ON tk.keyword_id = k.id WHERE (LOWER(t.id) LIKE '%' || ? || '%' OR LOWER(t.title) LIKE '%' || ? || '%' OR LOWER(t.slug) LIKE '%' || ? || '%' OR LOWER(t.description) LIKE '%' || ? || '%' OR LOWER(k.keyword) LIKE '%' || ? || '%')`
 
 	args := []any{term, term, term, term, term}
@@ -83,8 +83,6 @@ func (db *SQLiteDatabase) GetTutorials(term string, published *bool, authorId *s
 		return nil, err
 	}
 
-	// db.InfoLog.Printf("%s\n", query)
-
 	return tutorials, nil
 }
 
@@ -127,44 +125,7 @@ func (db *SQLiteDatabase) GetAllTutorials() ([]*models.TutorialModel, error) {
 	return tutorials, err
 }
 
-func (db *SQLiteDatabase) GetAllTutorialsPaginated(page, elements int) ([]*models.TutorialModel, error) {
-	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials ORDER BY updated_at DESC, title ASC LIMIT ? OFFSET ?;`
-
-	offset := (page - 1) * elements
-
-	var tutorials []*models.TutorialModel
-
-	rows, err := db.connection.Query(query, elements, offset)
-	if err != nil {
-		db.ErrorLog.Printf("Failed to get all tutorials (page %d) from the database: %s\n", page, err)
-		return nil, err
-	}
-
-	for rows.Next() {
-		var tutorial models.TutorialModel
-		var published int
-
-		if err := rows.Scan(&tutorial.ID, &tutorial.Title, &tutorial.Slug, &tutorial.Description, &tutorial.ThumbnailURL, &tutorial.BannerURL, &tutorial.Content, &published, &tutorial.AuthorID, &tutorial.FileChecksum, &tutorial.FileKey, &tutorial.CreatedAt, &tutorial.UpdatedAt); err != nil {
-			db.ErrorLog.Printf("Failed to read row from tutorials table: %s\n", err)
-			return nil, err
-		}
-
-		if published == 1 {
-			tutorial.Published = true
-		}
-
-		tutorials = append(tutorials, &tutorial)
-	}
-
-	if err := rows.Err(); err != nil {
-		db.ErrorLog.Printf("Failed to get all tutorials (page %d) from the database: %s\n", page, err)
-		return nil, err
-	}
-
-	return tutorials, nil
-}
-
-func (db *SQLiteDatabase) SearchTutorialsPaginated(term string, page, elements int) ([]*models.TutorialModel, error) {
+func (db *SQLiteDatabase) GetTutorials(term string, page, elements int) ([]*models.TutorialModel, error) {
 	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials WHERE LOWER(title) LIKE '%' || ? || '%' OR LOWER(description) LIKE '%' || ? || '%' ORDER BY updated_at DESC, title ASC LIMIT ? OFFSET ?;`
 
 	offset := (page - 1) * elements

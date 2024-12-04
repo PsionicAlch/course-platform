@@ -10,8 +10,7 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
 
 	router.Get("/", handlers.TutorialsGet)
-	router.Get("/page/{page-number}", handlers.TutorialsPaginationGet)
-	router.Get("/search", handlers.TutorialsSearchGet)
+	router.Get("/htmx", handlers.TutorialsPaginationGet)
 
 	router.Get("/{slug}", handlers.TutorialGet)
 	router.With(handlers.Auth.AllowAuthenticated("")).Post("/{slug}/like", handlers.LikeTutorialPost)

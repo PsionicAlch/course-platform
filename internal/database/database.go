@@ -45,10 +45,9 @@ type Database interface {
 	GetUserIpAddresses(userId string) ([]string, error)
 
 	// Tutorials functions.
-	GetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error)
+	AdminGetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error)
 	GetAllTutorials() ([]*models.TutorialModel, error)
-	GetAllTutorialsPaginated(page, elements int) ([]*models.TutorialModel, error)
-	SearchTutorialsPaginated(term string, page, elements int) ([]*models.TutorialModel, error)
+	GetTutorials(term string, page, elements int) ([]*models.TutorialModel, error)
 	GetTutorialByID(id string) (*models.TutorialModel, error)
 	GetTutorialBySlug(slug string) (*models.TutorialModel, error)
 	CountTutorials() (uint, error)
