@@ -34,6 +34,7 @@ func SetupConfig() error {
 		"EMAIL_ADDRESS":              validators.NotEmpty,
 		"EMAIL_PASSWORD":             validators.Empty,
 		"STRIPE_SECRET_KEY":          validators.NotEmpty,
+		"STRIPE_WEBHOOK_SECRET":      validators.NotEmpty,
 	}
 
 	return envloader.LoadEnvironment(variables)

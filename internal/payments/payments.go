@@ -8,22 +8,21 @@ import (
 	"github.com/stripe/stripe-go/v81/checkout/session"
 )
 
-// The cost of a course in cents. $200 => 200 * 100 => 20000
-const CourseCost = 20000
-
 type Payments struct {
 	utils.Loggers
-	Database database.Database
+	WebhookSecret string
+	Database      database.Database
 }
 
-func SetupPayments(privateKey string, db database.Database) *Payments {
+func SetupPayments(privateKey, webhookSecret string, db database.Database) *Payments {
 	loggers := utils.CreateLoggers("PAYMENTS")
 
 	stripe.Key = privateKey
 
 	return &Payments{
-		Loggers:  loggers,
-		Database: db,
+		Loggers:       loggers,
+		WebhookSecret: webhookSecret,
+		Database:      db,
 	}
 }
 

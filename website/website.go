@@ -7,6 +7,7 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
+	"github.com/PsionicAlch/psionicalch-home/internal/payments"
 	"github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
@@ -78,6 +79,9 @@ func StartWebsite() {
 	// Set up emails.
 	emailer := emails.SetupEmails(emailRenderer)
 
+	// Set up payments.
+	payment := payments.SetupPayments(config.GetWithoutError[string]("STRIPE_SECRET_KEY"), config.GetWithoutError[string]("STRIPE_WEBHOOK_SECRET"), db)
+
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer, db)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions, auth)
@@ -101,6 +105,9 @@ func StartWebsite() {
 		// TODO: Set up 404 page.
 		pagesRenderer.RenderHTML(w, r.Context(), "404.page.tmpl", nil, http.StatusNotFound)
 	})
+
+	// Register payments webhook.
+	router.Post("/payments/webhook", payment.Webhook)
 
 	// Set up asset routes.
 	router.Mount("/assets", http.StripPrefix("/assets", http.FileServerFS(assets.AssetFiles)))
