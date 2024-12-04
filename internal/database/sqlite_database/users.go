@@ -334,45 +334,11 @@ func (db *SQLiteDatabase) GetUserByEmail(email string, level database.Authorizat
 }
 
 func (db *SQLiteDatabase) GetUserByID(id string, level database.AuthorizationLevel) (*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE id = ?`
-
-	switch level {
-	case database.User:
-		query += ` AND is_admin = 0 AND is_author = 0`
-	case database.Admin:
-		query += ` AND is_admin = 1`
-	case database.Author:
-		query += ` AND is_author = 1`
-	}
-
-	var isAdminInt int
-	var isAuthorInt int
-	user := new(models.UserModel)
-	isAdmin := false
-	isAuthor := false
-
-	row := db.connection.QueryRow(query, id)
-	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &isAdminInt, &isAuthorInt, &user.AffiliateCode, &user.AffiliatePoints, &user.CreatedAt, &user.UpdatedAt); err != nil {
-		if err == sql.ErrNoRows {
-			// Nothing was found so we can just send back nothing and handle it at the caller
-			// end.
-			return nil, nil
-		}
-
-		db.ErrorLog.Printf("Failed to query the database for user (\"%s\"): %s\n", id, err)
+	user, err := internal.GetUserByID(db.connection, id, level)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get user by ID (\"%s\") from the database: %s\n", id, err)
 		return nil, err
 	}
-
-	if isAdminInt == 1 {
-		isAdmin = true
-	}
-
-	if isAuthorInt == 1 {
-		isAuthor = true
-	}
-
-	user.IsAdmin = isAdmin
-	user.IsAuthor = isAuthor
 
 	return user, nil
 }
@@ -408,6 +374,29 @@ func (db *SQLiteDatabase) GetUserByToken(token, tokenType string) (*models.UserM
 
 	user.IsAdmin = isAdmin
 	user.IsAuthor = isAuthor
+
+	return user, nil
+}
+
+func (db *SQLiteDatabase) GetUserByAffiliateCode(affiliateCode string) (*models.UserModel, error) {
+	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE affiliate_code = ?;`
+
+	user := new(models.UserModel)
+	isAdmin := 0
+	isAuthor := 0
+
+	row := db.connection.QueryRow(query, affiliateCode)
+	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &isAdmin, &isAuthor, &user.AffiliateCode, &user.AffiliatePoints, &user.CreatedAt, &user.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		db.ErrorLog.Printf("Failed to query the database for user with affiliate code (\"%s\"): %s\n", affiliateCode, err)
+		return nil, err
+	}
+
+	user.IsAdmin = isAdmin == 1
+	user.IsAuthor = isAuthor == 1
 
 	return user, nil
 }

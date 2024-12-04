@@ -12,6 +12,13 @@ CREATE TABLE IF NOT EXISTS discounts (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE UNIQUE INDEX discounts_title_idx ON discounts(title);
+CREATE UNIQUE INDEX IF NOT EXISTS discounts_title_idx ON discounts(title);
 
-CREATE UNIQUE INDEX discounts_title_code ON discounts(code);
+CREATE UNIQUE INDEX IF NOT EXISTS discounts_title_code ON discounts(code);
+
+CREATE TRIGGER IF NOT EXISTS trigger_update_discounts_updated_at
+AFTER UPDATE ON discounts
+FOR EACH ROW
+BEGIN
+    UPDATE discounts SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;

@@ -15,8 +15,15 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Create a unique index on the email column to allow quick lookups by email and ensure uniqueness.
-CREATE UNIQUE INDEX idx_users_email ON users(email);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
 -- Create a unique index on the affiliate code column to ensure that affiliate codes are unique
 -- and to speed up searches based on the user's affiliate code.
-CREATE UNIQUE INDEX idx_users_affiliate_code ON users(affiliate_code);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_affiliate_code ON users(affiliate_code);
+
+CREATE TRIGGER IF NOT EXISTS trigger_update_users_updated_at
+AFTER UPDATE ON users
+FOR EACH ROW
+BEGIN
+    UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;

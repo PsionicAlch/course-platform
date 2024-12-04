@@ -7,7 +7,7 @@ import (
 )
 
 func (db *SQLiteDatabase) GetAllChapters() ([]*models.ChapterModel, error) {
-	query := `SELECT id, title, chapter, content, course_id, file_checksum, file_key, created_at, updated_at FROM courses_chapters;`
+	query := `SELECT id, title, chapter, content, course_id, file_checksum, file_key, created_at, updated_at FROM course_chapters;`
 
 	var chapters []*models.ChapterModel
 
@@ -37,7 +37,7 @@ func (db *SQLiteDatabase) GetAllChapters() ([]*models.ChapterModel, error) {
 }
 
 func (db *SQLiteDatabase) GetChapterByFileKey(fileKey string) (*models.ChapterModel, error) {
-	query := `SELECT id, title, chapter, content, course_id, file_checksum, file_key, created_at, updated_at FROM courses_chapters WHERE file_key = ?;`
+	query := `SELECT id, title, chapter, content, course_id, file_checksum, file_key, created_at, updated_at FROM course_chapters WHERE file_key = ?;`
 
 	var chapter models.ChapterModel
 
@@ -55,7 +55,7 @@ func (db *SQLiteDatabase) GetChapterByFileKey(fileKey string) (*models.ChapterMo
 }
 
 func (db *SQLiteDatabase) CountChapters(courseId string) (int, error) {
-	query := `SELECT COUNT(id) FROM courses_chapters WHERE course_id = ?;`
+	query := `SELECT COUNT(id) FROM courses_chapter WHERE course_id = ?;`
 
 	var chapters int
 

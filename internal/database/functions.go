@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"math/rand"
 	"time"
 
@@ -15,4 +16,12 @@ func GenerateID() (string, error) {
 	id, err := ulid.New(ms, entropy)
 
 	return id.String(), err
+}
+
+func NewNullString(s string) sql.NullString {
+	if s == "" {
+		return sql.NullString{Valid: false}
+	}
+
+	return sql.NullString{String: s, Valid: true}
 }

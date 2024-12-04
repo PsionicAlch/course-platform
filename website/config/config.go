@@ -33,6 +33,7 @@ func SetupConfig() error {
 		"EMAIL_PORT":                 validators.NotEmpty,
 		"EMAIL_ADDRESS":              validators.NotEmpty,
 		"EMAIL_PASSWORD":             validators.Empty,
+		"STRIPE_SECRET_KEY":          validators.NotEmpty,
 	}
 
 	return envloader.LoadEnvironment(variables)

@@ -14,4 +14,4 @@ CREATE TABLE IF NOT EXISTS tutorials_likes (
 
 -- Ensure that the user can only ever like a tutorial once. It wouldn't make sense for a user
 -- to like the same tutorial multiple times.
-CREATE UNIQUE INDEX idx_tutorials_likes_user_id ON tutorials_likes(user_id, tutorial_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tutorials_likes_user_id ON tutorials_likes(user_id, tutorial_id);

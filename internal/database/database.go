@@ -26,6 +26,7 @@ type Database interface {
 	GetUserByEmail(email string, level AuthorizationLevel) (*models.UserModel, error)
 	GetUserByID(id string, level AuthorizationLevel) (*models.UserModel, error)
 	GetUserByToken(token, tokenType string) (*models.UserModel, error)
+	GetUserByAffiliateCode(affiliateCode string) (*models.UserModel, error)
 	UpdateUserPassword(userId, password string) error
 	CountUsers() (uint, error)
 	AddAuthorStatus(userId string) error
@@ -100,8 +101,14 @@ type Database interface {
 	CountDiscounts() (uint, error)
 	AddDiscount(title, description string, discount, uses uint64) error
 	GetDiscountByID(discountId string) (*models.DiscountModel, error)
+	GetDiscountByCode(discountCode string) (*models.DiscountModel, error)
 	ActivateDiscount(discountId string) error
 	DeactivateDiscount(discountId string) error
+
+	// Course Purchases functions.
+	HasUserPurchasedCourse(userId, courseId string) (bool, error)
+	RegisterCoursePurchase(userId, courseId, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64) error
+	CountCoursesWhereDiscountWasUsed(discountCode string) (uint, error)
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error

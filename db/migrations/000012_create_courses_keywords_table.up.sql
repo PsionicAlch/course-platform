@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS courses_keywords (
 
 -- Ensure that there is ever only one unique pair of tutorial and keyword pairing. It doesn't
 -- make sense for a tutorial to have 3 keywords that are all the same.
-CREATE UNIQUE INDEX idx_courses_keywords ON courses_keywords(course_id, keyword_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_courses_keywords ON courses_keywords(course_id, keyword_id);

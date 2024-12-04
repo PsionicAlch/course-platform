@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS keywords (
 
 -- An index to enforce uniqueness of each keyword as well as speed up searching of keywords
 -- without the use of their index.
-CREATE UNIQUE INDEX idx_keywords_keyword ON keywords(keyword);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_keywords_keyword ON keywords(keyword);

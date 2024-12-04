@@ -13,4 +13,4 @@ CREATE TABLE IF NOT EXISTS tutorials_bookmarks (
 
 -- Ensure that the user can only favor this tutorial once. It wouldn't make a lot of sense if
 -- the user could favor the same tutorial multiple times.
-CREATE UNIQUE INDEX idx_tutorials_bookmarks_user_id ON tutorials_bookmarks(user_id, tutorial_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tutorials_bookmarks_user_id ON tutorials_bookmarks(user_id, tutorial_id);

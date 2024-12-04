@@ -23,5 +23,13 @@ CREATE TABLE IF NOT EXISTS courses (
 );
 
 -- A unique index to help speed up searching via slugs and/or file_key.
-CREATE UNIQUE INDEX idx_courses_slug ON courses(slug);
-CREATE UNIQUE INDEX idx_courses_file_key ON courses(file_key);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_courses_slug ON courses(slug);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_courses_file_key ON courses(file_key);
+
+CREATE TRIGGER IF NOT EXISTS trigger_update_courses_updated_at
+AFTER UPDATE ON courses
+FOR EACH ROW
+BEGIN
+    UPDATE courses SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;

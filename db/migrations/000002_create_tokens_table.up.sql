@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS tokens (
 );
 
 -- Create a composite index on the token and token_type columns for faster lookups
-CREATE UNIQUE INDEX idx_tokens_token_type ON tokens(token, token_type);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tokens_token_type ON tokens(token, token_type);

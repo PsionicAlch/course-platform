@@ -133,8 +133,30 @@ func (db *SQLiteDatabase) GetDiscountByID(discountId string) (*models.DiscountMo
 	return discount, nil
 }
 
+func (db *SQLiteDatabase) GetDiscountByCode(discountCode string) (*models.DiscountModel, error) {
+	query := `SELECT id, title, description, code, discount, uses, active, created_at, updated_at FROM discounts WHERE code = ?;`
+
+	discount := new(models.DiscountModel)
+
+	var active int
+
+	row := db.connection.QueryRow(query, discountCode)
+	if err := row.Scan(&discount.ID, &discount.Title, &discount.Description, &discount.Code, &discount.Discount, &discount.Uses, &active, &discount.CreatedAt, &discount.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		db.ErrorLog.Printf("Failed to get discount by code \"%s\" from the database: %s\n", discountCode, err)
+		return nil, err
+	}
+
+	discount.Active = active == 1
+
+	return discount, nil
+}
+
 func (db *SQLiteDatabase) ActivateDiscount(discountId string) error {
-	query := `UPDATE discounts SET active = 1 WHERE id = ?;`
+	query := `UPDATE discounts SET active = 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
 
 	if _, err := db.connection.Exec(query, discountId); err != nil {
 		db.ErrorLog.Printf("Failed to update discount \"%s\" active status: %s\n", discountId, err)
@@ -145,7 +167,7 @@ func (db *SQLiteDatabase) ActivateDiscount(discountId string) error {
 }
 
 func (db *SQLiteDatabase) DeactivateDiscount(discountId string) error {
-	query := `UPDATE discounts SET active = 0 WHERE id = ?;`
+	query := `UPDATE discounts SET active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
 
 	if _, err := db.connection.Exec(query, discountId); err != nil {
 		db.ErrorLog.Printf("Failed to update discount \"%s\" active status: %s\n", discountId, err)
