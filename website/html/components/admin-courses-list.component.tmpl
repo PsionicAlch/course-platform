@@ -1,9 +1,9 @@
-{{ define "admin-tutorials-list" }}
-  {{ range .Tutorials }}
+{{ define "admin-courses-list" }}
+  {{ range .Courses }}
     <tr>
       <td>{{- .ID -}}</td>
-      <td><a href="/tutorials/{{- .Slug -}}" target="_blank">{{- .Title -}}</a></td>
-      <td><a href="/tutorials/{{- .Slug -}}" target="_blank">{{- .Slug -}}</a></td>
+      <td><a href="/courses/{{- .Slug -}}" target="_blank">{{- .Title -}}</a></td>
+      <td><a href="/courses/{{- .Slug -}}" target="_blank">{{- .Slug -}}</a></td>
       <td>{{- .Description -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-published/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">{{- if .Published -}}Published{{- else -}}Unpublished{{- end -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-author/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">
@@ -20,30 +20,26 @@
           {{- end -}}
         </ul>
       </td>
-      <td><a href="/admin/comments?tutorial={{- .ID -}}" target="_blank">{{- index $.Comments .ID -}}</a></td>
-      <td><a href="/admin/users?liked={{- .ID -}}" target="_blank">{{- index $.Likes .ID -}}</a></td>
-      <td><a href="/admin/users?bookmarked={{- .ID -}}" target="_blank">{{- index $.Bookmarks .ID -}}</a></td>
+      <td><a href="/admin/purchases?course={{- .ID -}}">{{- index $.Purchases .ID -}}</a></td>
       <td>{{- .CreatedAt | pretty_date -}}</td>
       <td>{{- .UpdatedAt | pretty_date -}}</td>
     </tr>
   {{ end }}
 
-  {{ with .LastTutorial }}
+  {{ with .LastCourse }}
     <tr
       hx-get="{{- $.BaseURL -}}?{{- $.URLQuery }}"
       hx-trigger="revealed once"
       hx-swap="afterend"
     >
       <td>{{- .ID -}}</td>
-      <td><a href="/tutorials/{{- .Slug -}}" target="_blank">{{- .Title -}}</a></td>
-      <td><a href="/tutorials/{{- .Slug -}}" target="_blank">{{- .Slug -}}</a></td>
+      <td><a href="/courses/{{- .Slug -}}" target="_blank">{{- .Title -}}</a></td>
+      <td><a href="/courses/{{- .Slug -}}" target="_blank">{{- .Slug -}}</a></td>
       <td>{{- .Description -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-published/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">{{- if .Published -}}Published{{- else -}}Unpublished{{- end -}}</td>
       <td hx-get="{{- $.BaseURL -}}/change-author/{{- .ID -}}" hx-trigger="dblclick" hx-target="this" hx-swap="innerHTML" style="cursor: pointer;">
-        {{- if .AuthorID.Valid -}}
-          {{ with index $.Authors .AuthorID.String }}
-            {{- .Name }} {{ .Surname -}}
-          {{ end }}
+        {{- with index $.Authors .ID -}}
+          {{- .Name }} {{ .Surname -}}
         {{- else -}}
           No Author
         {{- end -}}
@@ -55,9 +51,7 @@
           {{- end -}}
         </ul>
       </td>
-      <td><a href="/admin/comments?tutorial={{- .ID -}}" target="_blank">{{- index $.Comments .ID -}}</a></td>
-      <td><a href="/admin/users?liked={{- .ID -}}" target="_blank">{{- index $.Likes .ID -}}</a></td>
-      <td><a href="/admin/users?bookmarked={{- .ID -}}" target="_blank">{{- index $.Bookmarks .ID -}}</a></td>
+      <td><a href="/admin/purchases?course={{- .ID -}}">{{- index $.Purchases .ID -}}</a></td>
       <td>{{- .CreatedAt | pretty_date -}}</td>
       <td>{{- .UpdatedAt | pretty_date -}}</td>
     </tr>

@@ -53,7 +53,7 @@ type Database interface {
 	CountTutorials() (uint, error)
 	PublishTutorial(tutorialId string) error
 	UnpublishTutorial(tutorialId string) error
-	UpdateAuthor(tutorialId, authorId string) error
+	UpdateTutorialAuthor(tutorialId, authorId string) error
 	CountTutorialsWrittenBy(authorId string) (uint, error)
 
 	// Keywords functions.
@@ -84,10 +84,19 @@ type Database interface {
 	AddCommentBySlug(content, userId, slug string) (*models.CommentModel, error)
 
 	// Courses functions.
+	AdminGetCourses(term string, published *bool, authorId *string, boughtBy, keyword string, page, elements uint) ([]*models.CourseModel, error)
 	GetAllCourses() ([]*models.CourseModel, error)
 	GetCourses(term string, page, elements int) ([]*models.CourseModel, error)
 	GetCourseByFileKey(fileKey string) (*models.CourseModel, error)
 	GetCourseBySlug(slug string) (*models.CourseModel, error)
+	GetCourseByID(courseId string) (*models.CourseModel, error)
+	CountCourses() (uint, error)
+	PublishCourse(courseId string) error
+	UnpublishCourse(courseId string) error
+	UpdateCourseAuthor(tutorialId, authorId string) error
+
+	// Courses Keywords functions.
+	GetAllKeywordsForCourse(courseId string) ([]string, error)
 
 	// Chapters functions.
 	GetAllChapters() ([]*models.ChapterModel, error)
@@ -107,6 +116,7 @@ type Database interface {
 	HasUserPurchasedCourse(userId, courseId string) (bool, error)
 	RegisterCoursePurchase(userId, courseId, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64) error
 	CountCoursesWhereDiscountWasUsed(discountCode string) (uint, error)
+	CountUsersWhoBoughtCourse(courseId string) (uint, error)
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error

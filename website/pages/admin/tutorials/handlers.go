@@ -60,7 +60,6 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 	pageData.Tutorials = tutorialList
 
 	urlQuery.Set("page", "1")
-
 	pageData.URLQuery = urlQuery.Encode()
 
 	pageData.PublishStatus = PublishStatuses
@@ -292,7 +291,7 @@ func (h *Handlers) PublishedEditPost(w http.ResponseWriter, r *http.Request) {
 			h.ErrorLog.Println(err)
 		}
 	} else {
-		if err := h.Database.PublishTutorial(tutorial.ID); err != nil {
+		if err := h.Database.UnpublishTutorial(tutorial.ID); err != nil {
 			h.ErrorLog.Printf("Failed to update tutorial's (\"%s\") publish status: %s\n", tutorial.Title, err)
 
 			resp := "Published"
@@ -417,7 +416,7 @@ func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.Database.UpdateAuthor(tutorial.ID, authorId); err != nil {
+	if err := h.Database.UpdateTutorialAuthor(tutorial.ID, authorId); err != nil {
 		h.ErrorLog.Printf("Failed to update tutorial \"%s\" author \"%s\": %s\n", tutorial.ID, authorId, err)
 
 		resp := "No Author"
@@ -550,7 +549,7 @@ func (h *Handlers) CreateTutorialsList(r *http.Request) (*html.AdminTutorialsLis
 
 	tutorials, err := h.Database.AdminGetTutorials(query, published, author, likedBy, bookmarkedBy, keyword, uint(page), TutorialsPerPagination)
 	if err != nil {
-		h.ErrorLog.Printf("Failed to get the tutorials from the database")
+		h.ErrorLog.Printf("Failed to get tutorials (page %d) from the database: %s\n", page, err)
 		return nil, urlQuery, err
 	}
 

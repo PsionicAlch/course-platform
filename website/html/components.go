@@ -157,3 +157,14 @@ type AdminDiscountsListComponent struct {
 	URLQuery     string
 	ErrorMessage string
 }
+
+type AdminCoursesListComponent struct {
+	Courses      []*models.CourseModel
+	LastCourse   *models.CourseModel
+	Authors      map[string]*models.UserModel
+	Keywords     map[string][]string
+	Purchases    map[string]uint
+	BaseURL      string
+	URLQuery     string
+	ErrorMessage string
+}

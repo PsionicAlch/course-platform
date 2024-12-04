@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS courses (
     thumbnail_url TEXT NOT NULL,                                                            -- URL for the thumbnail image of the course.
     banner_url TEXT NOT NULL,                                                               -- URL for the banner image of the course.
     content TEXT NOT NULL,                                                                  -- HTML based contents of the course.
-    published INTEGER DEFAULT 0 CHECK (published >= 0 AND published <= 1),                  -- BOOLEAN to represent whether or not the course has been published.
+    published INTEGER DEFAULT 0 CHECK (published = 0 OR published = 1),                  -- BOOLEAN to represent whether or not the course has been published.
 
     author_id TEXT DEFAULT NULL,                                                            -- The user ID who published the course.
 
@@ -26,6 +26,10 @@ CREATE TABLE IF NOT EXISTS courses (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_courses_slug ON courses(slug);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_courses_file_key ON courses(file_key);
+
+CREATE INDEX IF NOT EXISTS idx_courses_published ON courses(published);
+
+CREATE INDEX IF NOT EXISTS idx_courses_author_id ON courses(author_id);
 
 CREATE TRIGGER IF NOT EXISTS trigger_update_courses_updated_at
 AFTER UPDATE ON courses

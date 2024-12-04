@@ -114,3 +114,21 @@ func (db *SQLiteDatabase) CountCoursesWhereDiscountWasUsed(discountCode string) 
 
 	return count, nil
 }
+
+func (db *SQLiteDatabase) CountUsersWhoBoughtCourse(courseId string) (uint, error) {
+	query := `SELECT COUNT(id) FROM course_purchases WHERE course_id = ?;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query, courseId)
+	if err := row.Scan(&count); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count the number times course \"%s\" was purchased: %s\n", courseId, err)
+		return 0, err
+	}
+
+	return count, nil
+}

@@ -6,7 +6,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
-func (db *SQLiteDatabase) AdminGetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error) {
+func (db *SQLiteDatabase) AdminGetTutorials(term string, published *bool, authorId *string, likedByUser, bookmarkedByUser, keyword string, page, elements uint) ([]*models.TutorialModel, error) {
 	query := `SELECT DISTINCT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials AS t LEFT JOIN tutorials_likes AS tl ON t.id = tl.tutorial_id LEFT JOIN tutorials_bookmarks AS tb ON t.id = tb.tutorial_id LEFT JOIN tutorials_keywords AS tk ON t.id = tk.tutorial_id LEFT JOIN keywords AS k ON tk.keyword_id = k.id WHERE (LOWER(t.id) LIKE '%' || ? || '%' OR LOWER(t.title) LIKE '%' || ? || '%' OR LOWER(t.slug) LIKE '%' || ? || '%' OR LOWER(t.description) LIKE '%' || ? || '%' OR LOWER(k.keyword) LIKE '%' || ? || '%')`
 
 	args := []any{term, term, term, term, term}
@@ -269,7 +269,7 @@ func (db *SQLiteDatabase) UnpublishTutorial(tutorialId string) error {
 	return nil
 }
 
-func (db *SQLiteDatabase) UpdateAuthor(tutorialId, authorId string) error {
+func (db *SQLiteDatabase) UpdateTutorialAuthor(tutorialId, authorId string) error {
 	query := `UPDATE tutorials SET author_id = ? WHERE id = ?;`
 
 	if authorId == "" {

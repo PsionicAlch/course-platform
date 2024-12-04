@@ -42,6 +42,12 @@ type AdminCommentsPage struct {
 
 type AdminCoursesPage struct {
 	BasePage
+	NumCourses    uint
+	URLQuery      string
+	PublishStatus []string
+	Authors       []*models.UserModel
+	Keywords      []string
+	Courses       *AdminCoursesListComponent
 }
 
 type AdminDiscountsPage struct {
