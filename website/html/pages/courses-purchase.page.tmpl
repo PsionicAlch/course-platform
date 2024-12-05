@@ -1,7 +1,44 @@
 {{ template "base" .}}
 
 {{ define "meta-tags" }}
-  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
+  <meta name="description" content="Purchase {{ .Course.Title }} and learn {{ .Course.Description }}. Secure your spot today and start building real-world applications with Golang." />
+  <meta name="keywords" content="Buy {{ .Course.Title }}, Golang course purchase, {{ .Course.Title }} pricing, PsionicAlch courses, real-world Golang applications" />
+
+  <meta property="og:title" content="Buy {{ .Course.Title }} - PsionicAlch" />
+  <meta property="og:description" content="Purchase {{ .Course.Title }} and start learning to {{ .Course.Description }}. Master Golang with PsionicAlch." />
+  <meta property="og:image" content="{{- .Course.BannerURL -}}" />
+  <meta property="og:url" content="https://www.psionicalch.com/courses/{{ .Course.Slug }}/purchase" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="PsionicAlch" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@psionicalch" />
+  <meta name="twitter:title" content="Buy {{ .Course.Title }} - PsionicAlch" />
+  <meta name="twitter:description" content="Purchase {{ .Course.Title }} to learn {{ .Course.Description }}. Secure your spot and build real-world applications with Golang." />
+  <meta name="twitter:image" content="{{- .Course.BannerURL -}}" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "{{- .Course.Title -}}",
+      "description": "{{- .Course.Description -}}",
+      "url": "https://www.psionicalch.com/course/{{- .Course.Slug -}}/purchase",
+      "image": "{{- .Course.BannerURL -}}",
+      "offers": {
+        "@type": "Offer",
+        "price": "200",
+        "priceCurrency": "USD",
+        "url": "https://www.psionicalch.com/course/{{- .Course.Slug -}}/purchase",
+        "availability": "http://schema.org/InStock",
+        "validFrom": "{{ .Course.CreatedAt }}"
+      },
+      "brand": {
+        "@type": "Brand",
+        "name": "PsionicAlch"
+      }
+    }
+  </script>
 {{ end }}
 
 {{ define "stylesheets" }}
@@ -9,7 +46,7 @@
 {{ end }}
 
 {{ define "title" }}
-  <title>Buy Course - PsionicAlch</title>
+  <title>Buy {{ .Course.Title }} - PsionicAlch | Secure Your Spot</title>
 {{ end }}
 
 {{ define "body" }}
@@ -17,58 +54,17 @@
     <div class="container">
       <section class="course-purchase-container shadow-sm">
         <div class="course-purchase-header">
-          <img src="/assets/img/banner-img.png" alt="Course banner image" class="shadow-sm">
+          <img src="{{ .Course.BannerURL }}" alt="Course banner image" class="shadow-sm">
 
-          <h2>Build a course platform with Golang, HTMX, AlpineJS and Bootstrap 5</h2>
+          <h2>{{ .Course.Title }}</h2>
 
-          <p>Made by <a href="/authors/author-slug-goes-here/courses"><b>Jean-Jacques Strydom</b></a></p>
+          <p>Made by <a href="/authors/{{- .Author.Slug -}}/courses"><b>{{- .Author.Name }} {{ .Author.Surname -}}</b></a></p>
         </div>
 
         <hr>
 
         <div class="course-purchase-body">
-          <form action="/courses/slug-goes-here/purchase" method="posts">
-            <div class="form-control">
-              <label for="affiliate-code">Affiliate Code:</label>
-              <input class="shadow-sm" type="text" name="affiliate-code" id="affiliate-code" value="01JBC9HM3C160KYY6WE7KM8T20">
-            </div>
-
-            <div class="form-control">
-              <label for="affiliate-points">Affiliate Points (24 points available):</label>
-              <input class="shadow-sm" type="number" name="affiliate-points" id="affiliate-points" min="0" max="24" value="24">
-            </div>
-
-            <div class="form-control">
-              <label for="discount-code">Discount Code:</label>
-              <input class="shadow-sm" type="text" name="discount-code" id="discount-code" value="01JBC9HM3C9EXH42HDYFQJ95N4">
-            </div>
-
-            <div class="discounts">
-              <div class="discount">
-                <p>Affiliate Code Discount:</p>
-                <p><b>-10%</b></p>
-              </div>
-
-              <div class="discount">
-                <p>Affiliate Points Discount:</p>
-                <p><b>-24%</b></p>
-              </div>
-
-              <div class="discount">
-                <p>Discount Code:</p>
-                <p><b>-50%</b></p>
-              </div>
-            </div>
-
-            <hr>
-
-            <div class="total">
-              <p>Total Price:</p>
-              <p><b>$24</b></p>
-            </div>
-
-            <button type="submit" class="btn btn-blue shadow-sm">Buy Course</button>
-          </form>
+          {{ template "course-purchase-form" .CoursePurchaseForm }}
         </div>
       </section>
     </div>

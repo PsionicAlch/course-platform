@@ -15,13 +15,14 @@ import (
 // violation with a custom database.ErrUserAlreadyExists. This can be used to do thread safe and runtime safe data uniqueness
 // tests instead of doing two separate database calls where you check if the user exists first and then try to add them.
 // Those kinds of tests can fail because a user could have been added after you checked but before you added your user.
-func AddUser(dbFacade SqlDbFacade, id, name, surname, email, password, affiliateCode string) (*models.UserModel, error) {
-	query := `INSERT INTO users (id, name, surname, email, password, affiliate_code, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`
+func AddUser(dbFacade SqlDbFacade, id, name, surname, slug, email, password, affiliateCode string) (*models.UserModel, error) {
+	query := `INSERT INTO users (id, name, surname, slug, email, password, affiliate_code, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`
 
 	user := new(models.UserModel)
 	user.ID = id
 	user.Name = name
 	user.Surname = surname
+	user.Slug = slug
 	user.Email = email
 	user.Password = password
 	user.AffiliateCode = affiliateCode
@@ -31,7 +32,7 @@ func AddUser(dbFacade SqlDbFacade, id, name, surname, email, password, affiliate
 	user.UpdatedAt = time.Now()
 	user.AffiliatePoints = 0
 
-	result, err := dbFacade.Exec(query, user.ID, user.Name, user.Surname, user.Email, user.Password, user.AffiliateCode, user.CreatedAt, user.UpdatedAt)
+	result, err := dbFacade.Exec(query, user.ID, user.Name, user.Surname, user.Slug, user.Email, user.Password, user.AffiliateCode, user.CreatedAt, user.UpdatedAt)
 	if err != nil {
 		if sqliteErr, ok := err.(*sqlite.Error); ok && sqliteErr.Code() == sqlite3.SQLITE_CONSTRAINT_UNIQUE {
 			return nil, database.ErrUserAlreadyExists
@@ -53,7 +54,7 @@ func AddUser(dbFacade SqlDbFacade, id, name, surname, email, password, affiliate
 }
 
 func GetUserByID(dbFacade SqlDbFacade, id string, level database.AuthorizationLevel) (*models.UserModel, error) {
-	query := `SELECT id, name, surname, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE id = ?`
+	query := `SELECT id, name, surname, slug, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE id = ?`
 
 	switch level {
 	case database.User:
@@ -69,7 +70,7 @@ func GetUserByID(dbFacade SqlDbFacade, id string, level database.AuthorizationLe
 	var user models.UserModel
 
 	row := dbFacade.QueryRow(query, id)
-	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &isAdmin, &isAuthor, &user.AffiliateCode, &user.AffiliatePoints, &user.CreatedAt, &user.UpdatedAt); err != nil {
+	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Slug, &user.Email, &user.Password, &isAdmin, &isAuthor, &user.AffiliateCode, &user.AffiliatePoints, &user.CreatedAt, &user.UpdatedAt); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}

@@ -41,6 +41,10 @@ func (payment *Payments) CalculatePrice(userId, affiliateCode, discountCode stri
 }
 
 func (payment *Payments) ValidateAffiliateCode(userId, affiliateCode string) (float64, error) {
+	if affiliateCode == "" {
+		return 0, nil
+	}
+
 	user, err := payment.Database.GetUserByID(userId, database.All)
 	if err != nil {
 		payment.ErrorLog.Printf("Failed to get user by ID (\"%s\"): %s\n", userId, err)
@@ -69,6 +73,10 @@ func (payment *Payments) ValidateAffiliateCode(userId, affiliateCode string) (fl
 }
 
 func (payment *Payments) ValidateDiscountCode(discountCode string) (float64, error) {
+	if discountCode == "" {
+		return 0, nil
+	}
+
 	discount, err := payment.Database.GetDiscountByCode(discountCode)
 	if err != nil {
 		payment.ErrorLog.Printf("Failed to get discount from the database: %s\n", err)

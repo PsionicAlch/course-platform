@@ -151,12 +151,36 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		pageData.TutorialBookmarked = userBookmarkedTutorial
 	}
 
-	pageData.Author = &models.AuthorModel{
-		Name:    "Jean-Jacques",
-		Surname: "Strydom",
-		Slug:    "jean-jacques-strydom",
+	var authorId string
+	if tutorial.AuthorID.Valid {
+		authorId = tutorial.AuthorID.String
 	}
-	pageData.Course = nil
+
+	author, err := h.Database.GetUserByID(authorId, database.Author)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get author by ID (\"%s\") from the database: %s\n", authorId, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Author = author
+
+	var course *models.CourseModel
+
+	courses, err := h.Database.GetCourses("", 1, 1)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get author by ID (\"%s\") from the database: %s\n", authorId, err)
+	}
+
+	if len(courses) >= 1 {
+		course = courses[0]
+	}
+
+	pageData.Course = course
 
 	comments, err := h.Database.GetAllCommentsPaginated(tutorial.ID, 1, CommentsPerPagination)
 	if err != nil {

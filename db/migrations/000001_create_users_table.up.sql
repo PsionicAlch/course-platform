@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,                                                                                -- ULID as the primary key (stored as TEXT)
     name TEXT NOT NULL,                                                                                 -- User's name
     surname TEXT NOT NULL,                                                                              -- User's surname
+    slug TEXT NOT NULL,
     email TEXT NOT NULL,                                                                                -- User email (unique and required)
     password TEXT NOT NULL,                                                                             -- Hashed password (required)
     is_admin INTEGER DEFAULT 0 CHECK (is_admin >= 0 AND is_admin <= 1),                                 -- Boolean for whether or not the user is an administrator

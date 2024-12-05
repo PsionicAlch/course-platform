@@ -102,12 +102,15 @@ type CoursesPage struct {
 type CoursesCoursePage struct {
 	BasePage
 	Course   *models.CourseModel
-	Author   *models.AuthorModel
+	Author   *models.UserModel
 	Chapters int
 }
 
 type CoursesPurchasesPage struct {
 	BasePage
+	Course             *models.CourseModel
+	Author             *models.UserModel
+	CoursePurchaseForm *CoursePurchaseFormComponent
 }
 
 type Errors404Page struct {
@@ -172,7 +175,7 @@ type TutorialsTutorialPage struct {
 	User               *models.UserModel
 	Tutorial           *models.TutorialModel
 	Keywords           []string
-	Author             *models.AuthorModel
+	Author             *models.UserModel
 	Course             *models.CourseModel
 	TutorialLiked      bool
 	TutorialBookmarked bool

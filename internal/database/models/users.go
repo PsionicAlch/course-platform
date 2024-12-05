@@ -6,6 +6,7 @@ type UserModel struct {
 	ID              string
 	Name            string
 	Surname         string
+	Slug            string
 	Email           string
 	Password        string
 	AffiliateCode   string

@@ -9,6 +9,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/psionicalch-home/internal/payments"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
@@ -16,6 +17,8 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
 )
+
+// TODO: Clean up!
 
 const CoursesPerPagination = 25
 
@@ -25,9 +28,10 @@ type Handlers struct {
 	Database  database.Database
 	Session   *session.Session
 	Auth      *authentication.Authentication
+	Payment   *payments.Payments
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, sessions *session.Session, auth *authentication.Authentication) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, sessions *session.Session, auth *authentication.Authentication, payment *payments.Payments) *Handlers {
 	loggers := utils.CreateLoggers("COURSE HANDLERS")
 
 	return &Handlers{
@@ -36,6 +40,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 		Database:  db,
 		Session:   sessions,
 		Auth:      auth,
+		Payment:   payment,
 	}
 }
 
@@ -135,13 +140,20 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 		authorID = ""
 	}
 
-	// TODO: Implement author fetching logic.
-	pageData.Author = &models.AuthorModel{
-		ID:      authorID,
-		Name:    "Jean-Jacques",
-		Surname: "Strydom",
-		Slug:    "jean-jacques-strydom",
+	author, err := h.Database.GetUserByID(authorID, database.Author)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get author by ID \"%s\", in the database: %s\n", authorID, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
+			BasePage: html.NewBasePage(user),
+		}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
 	}
+
+	pageData.Author = author
 
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "courses-course", pageData); err != nil {
 		h.ErrorLog.Println(err)
@@ -154,9 +166,27 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
+	// TODO: Redirect the user to the course chapter if they've already bought this course.
+
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "courses-purchase", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
+}
+
+func (h *Handlers) PurchaseCoursePost(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (h *Handlers) PurchaseCourseSuccessGet(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (h *Handlers) PurchaseCourseCancelGet(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (h *Handlers) ValidatePurchasePost(w http.ResponseWriter, r *http.Request) {
+
 }
 
 // Possible URL queries:

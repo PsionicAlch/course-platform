@@ -94,6 +94,17 @@ type NewDiscountFormComponent struct {
 	ErrorMessage     string
 }
 
+type CoursePurchaseFormComponent struct {
+	AffiliateCodeInput      *FormControlComponent
+	AffiliatePointsInput    *FormControlComponent
+	DiscountCodeInput       *FormControlComponent
+	AffiliateCodeDiscount   uint
+	AffiliatePointsDiscount uint
+	DiscountCodeDiscount    uint
+	Total                   float64
+	CourseSlug              string
+}
+
 type TutorialsListComponent struct {
 	Tutorials    []*models.TutorialModel
 	LastTutorial *models.TutorialModel

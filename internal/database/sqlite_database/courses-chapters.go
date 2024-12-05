@@ -55,7 +55,7 @@ func (db *SQLiteDatabase) GetChapterByFileKey(fileKey string) (*models.ChapterMo
 }
 
 func (db *SQLiteDatabase) CountChapters(courseId string) (int, error) {
-	query := `SELECT COUNT(id) FROM courses_chapter WHERE course_id = ?;`
+	query := `SELECT COUNT(id) FROM course_chapters WHERE course_id = ?;`
 
 	var chapters int
 

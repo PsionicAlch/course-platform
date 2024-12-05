@@ -1,0 +1,76 @@
+{{ define "course-purchase-form" }}
+<form action="/courses/{{- .CourseSlug -}}/purchase" method="posts">
+  {{ template "form-control" .AffiliateCodeInput }}
+  {{ template "form-control" .AffiliatePointsInput }}
+  {{ template "form-control" .DiscountCodeInput }}
+
+  <div class="discounts">
+    <div class="discount">
+      <p>Affiliate Code Discount:</p>
+      <p><b>-{{- .AffiliateCodeDiscount -}}%</b></p>
+    </div>
+
+    <div class="discount">
+      <p>Affiliate Points Discount:</p>
+      <p><b>-{{- .AffiliatePointsDiscount -}}%</b></p>
+    </div>
+
+    <div class="discount">
+      <p>Discount Code:</p>
+      <p><b>-{{- .DiscountCodeDiscount -}}%</b></p>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="total">
+    <p>Total Price:</p>
+    <p><b>${{- .Total -}}</b></p>
+  </div>
+
+  <button type="submit" class="btn btn-blue shadow-sm">Buy Course</button>
+</form>
+{{ end }}
+
+<!-- <form action="/courses/slug-goes-here/purchase" method="posts">
+  <div class="form-control">
+    <label for="affiliate-code">Affiliate Code:</label>
+    <input class="shadow-sm" type="text" name="affiliate-code" id="affiliate-code" value="01JBC9HM3C160KYY6WE7KM8T20">
+  </div>
+
+  <div class="form-control">
+    <label for="affiliate-points">Affiliate Points (24 points available):</label>
+    <input class="shadow-sm" type="number" name="affiliate-points" id="affiliate-points" min="0" max="24" value="24">
+  </div>
+
+  <div class="form-control">
+    <label for="discount-code">Discount Code:</label>
+    <input class="shadow-sm" type="text" name="discount-code" id="discount-code" value="01JBC9HM3C9EXH42HDYFQJ95N4">
+  </div>
+
+  <div class="discounts">
+    <div class="discount">
+      <p>Affiliate Code Discount:</p>
+      <p><b>-10%</b></p>
+    </div>
+
+    <div class="discount">
+      <p>Affiliate Points Discount:</p>
+      <p><b>-24%</b></p>
+    </div>
+
+    <div class="discount">
+      <p>Discount Code:</p>
+      <p><b>-50%</b></p>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="total">
+    <p>Total Price:</p>
+    <p><b>$24</b></p>
+  </div>
+
+  <button type="submit" class="btn btn-blue shadow-sm">Buy Course</button>
+</form> -->
