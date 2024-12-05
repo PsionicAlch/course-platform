@@ -20,6 +20,7 @@ type Database interface {
 	// Users functions.
 	GetUsers(term string, level AuthorizationLevel, likedTutorialID, bookmarkedTutorialID string) ([]*models.UserModel, error)
 	GetUsersPaginated(term string, level AuthorizationLevel, likedTutorialID, bookmarkedTutorialID string, page, elements uint) ([]*models.UserModel, error)
+	GetAllUsers() ([]*models.UserModel, error)
 	AddNewUser(name, surname, email, password, token, tokenType, ipAddr string, validUntil time.Time) (*models.UserModel, error)
 	NewUser(name, surname, email, password string) error
 	NewAdminUser(name, surname, email, password string) error
@@ -78,10 +79,13 @@ type Database interface {
 	CountTutorialBookmarks(tutorialId string) (uint, error)
 
 	// Comments functions.
+	AdminGetComments(term, tutorialId, userId string, page, elements uint) ([]*models.CommentModel, error)
 	GetAllCommentsPaginated(tutorialId string, page, elements int) ([]*models.CommentModel, error)
 	GetAllCommentsBySlugPaginated(slug string, page, elements int) ([]*models.CommentModel, error)
 	CountCommentsForTutorial(tutorialId string) (uint, error)
 	AddCommentBySlug(content, userId, slug string) (*models.CommentModel, error)
+	CountComments() (uint, error)
+	DeleteComment(commentId string) error
 
 	// Courses functions.
 	AdminGetCourses(term string, published *bool, authorId *string, boughtBy, keyword string, page, elements uint) ([]*models.CourseModel, error)

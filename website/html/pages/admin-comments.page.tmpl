@@ -1,9 +1,5 @@
 {{ template "admin" .}}
 
-{{ define "meta-tags" }}
-  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
-{{ end }}
-
 {{ define "title" }}
   <title>Comments - PsionicAlch</title>
 {{ end }}
@@ -11,46 +7,28 @@
 {{ define "body" }}
   <section class="admin-container">
     <div class="admin-header">
-      <h2>Comments Administration</h2>
+      <h2><a href="/admin/comments">Comments Administration ({{- .NumComments }} comments)</a></h2>
 
       <div class="admin-header-actions">
-        <form action="/">
-          <input type="text" name="search-term" id="search-term" class="shadow-sm" placeholder="Search terms...">
+        <form
+          hx-get="/admin/comments/htmx?{{- .URLQuery -}}"
+          hx-target=".admin-body table tbody"
+          hx-trigger="change, keyup delay:500ms"
+        >
+          <input type="text" name="query" id="query" class="shadow-sm" placeholder="Search terms...">
+
           <select name="tutorial" id="tutorial" class="shadow-sm">
             <option value="">Tutorials</option>
-            <option value="01JBC9HM3C160KYY6WE7KM8T20">How to render HTML in Golang</option>
-            <option value="01JBC9HM3C160KYY6WE7KM8T20">How to send emails in Golang</option>
-            <option value="01JBC9HM3C160KYY6WE7KM8T20">Getting Started with Golang</option>
-            <option value="02JKC2HG3G180JXX9TE7LR4T30">Building REST APIs in Go</option>
-            <option value="03AUC3HL2K270HYY3XE8KM9V10">Concurrency in Golang</option>
-            <option value="04BAC8HL1F490JXX6WE3LR4U50">Error Handling in Go</option>
-            <option value="05KDC3GM5P320KYY5UE7KR1B40">Structs and Interfaces in Go</option>
-            <option value="06LGC4HL6M660JYY2TE4LM8V80">Building CLI Applications with Golang</option>
-            <option value="07QHC5IM8N710KXX3VE6LR7Z30">Go Modules and Package Management</option>
-            <option value="08RMC6GL4F220HXX8ZE9KM2B50">Testing in Golang</option>
-            <option value="09JPC7GM1J950KYY4WE7KR1H90">Web Development with Go and HTML Templates</option>
-            <option value="10SGC8IM2V830HYY2YE8LR9C40">Working with JSON in Golang</option>
-            <option value="11TMC9HL7L550KXX7UE4LM1V70">File Handling in Go</option>
-            <option value="12KFC1GM3J420HYY6ZE7KR3A10">Introduction to Goroutines and Channels</option>
-            <option value="13LGC4IM6N680KYY9VE8LM9C80">Deploying Go Applications with Docker</option>
+            {{ range .Tutorials }}
+              <option value="{{- .ID -}}">{{- .Title -}}</option>
+            {{ end }}
           </select>
+
           <select name="user" id="user" class="shadow-sm">
             <option value="">Users</option>
-            <option value="01A8E54F1RYQJYQGF4ZTWM16V8">John Doe</option>
-            <option value="01A8E8J7E2YMG98NKF3TQ84G1H">Jane Smith</option>
-            <option value="01A8EC3WZ4FJYP62PG6T0M5CBX">Michael Johnson</option>
-            <option value="01A8F2QW0ZGM3WXNQHC9R1SVDN">Emily Brown</option>
-            <option value="01A8F8YRQ7JQF8X0XCHN5WT4F9">Chris Davis</option>
-            <option value="01A8FESM8ZGFKP0YQDJ2XN9HJB">Sarah Miller</option>
-            <option value="01A8FTM3XMKZ6C8N0V6SD3ZYND">James Wilson</option>
-            <option value="01A8FXV0Q6P9Z9FJKM2TB8WQH4">Amanda Taylor</option>
-            <option value="01A8G2ZV7FGRX8ZQCBYKW5TY2L">David Anderson</option>
-            <option value="01A8G6XDRKJ8C3R1ZJN4Y2Q6P5">Laura Thomas</option>
-            <option value="01A8G9WEFK9ZMQ6JV8L9Z6C7QD">Brian Jackson</option>
-            <option value="01A8GJMW6P4H9F8WZJ6H5TL0YV">Jessica White</option>
-            <option value="01A8GLY9FT8MW8ZJ3NQ6ZYJVDX">Oliver Lee</option>
-            <option value="01A8GP3V9DJQY6MW6F4H8R5DZT">Sophia Martinez</option>
-            <option value="01A8GR5S1NZKW7TCQKH4G8V9PL">Daniel Lopez</option>
+            {{ range .Users }}
+              <option value="{{- .ID -}}">{{- .Name }} {{ .Surname -}}</option>
+            {{ end }}
           </select>
         </form>
       </div>
@@ -63,134 +41,15 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Created At</th>
             <th>Comment</th>
             <th>User</th>
             <th>Tutorial</th>
+            <th>Created At</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>01A9A4VJ2T7G8TQ0FKC9Z4Y9XE</td>
-            <td>2024-01-12</td>
-            <td>This tutorial helped me understand the basics of Go routines!</td>
-            <td><a href="/admin/users?id=INSERT_USER_ID">Alex Smith</a></td>
-            <td><a href="/admin/tutorials?id=INSERT_TUTORIAL_ID">Getting Started with Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9A5TBCN0F9ZQ4L9C8X2RWBG</td>
-            <td>2024-02-15</td>
-            <td>Great explanation of Go interfaces. Clear and concise.</td>
-            <td><a href="/admin/users?id=INSERT_USER_ID">Jamie Lee</a></td>
-            <td><a href="/admin/tutorials?id=INSERT_TUTORIAL_ID">Understanding Interfaces in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9A6J0R2K8W9P0VK8Y7T5FDL</td>
-            <td>2024-03-01</td>
-            <td>Good examples on error handling in Go. Very useful.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Chris Jordan</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Error Handling in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9A7B1T6FJ2S9LRJ7T5P3VQH</td>
-            <td>2024-03-25</td>
-            <td>I finally understand channels. Thanks for this guide!</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Emily Parker</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Working with Channels in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9A8P5D8L2V4G0MC5K4Y8QBG</td>
-            <td>2024-04-10</td>
-            <td>This tutorial made data structures in Go so easy to follow.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Ryan Martinez</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Data Structures in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9A9N9K7D1F3W5YP9X8V3SMB</td>
-            <td>2024-05-08</td>
-            <td>Concise and informative on pointers. Very helpful.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Taylor Nguyen</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Pointers in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9AAV1F3C7N5G8H6P0R2QJKL</td>
-            <td>2024-05-22</td>
-            <td>Learned a lot about structuring projects in Go.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Jordan Carter</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Structuring Projects in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9ABX9J7P4T8Z5MR9K3Y2GZD</td>
-            <td>2024-06-01</td>
-            <td>This guide on JSON handling in Go was spot on.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Alexis Morgan</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Handling JSON in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9ACQ8H3S8K4R5WM6L9T4FLX</td>
-            <td>2024-07-03</td>
-            <td>Clear explanations on using packages effectively.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Casey Lopez</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Using Packages in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9ADY4G2R6M8F0XR7L9T2JKF</td>
-            <td>2024-07-20</td>
-            <td>Nice walkthrough of Go modules, very thorough.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Sam Paterson</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Introduction to Go Modules</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9AEZ1M3D8T6Y9RP4F8W7MLD</td>
-            <td>2024-08-15</td>
-            <td>Good breakdown of concurrency patterns in Go.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Morgan Taylor</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Concurrency Patterns in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9AFK2H9C1T7Q4DL8X6V2NVG</td>
-            <td>2024-09-04</td>
-            <td>This was a great introduction to the Go standard library.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Jamie Brooks</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Exploring the Go Standard Library</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9AGV0K4F8N5X2YJ6Z9M7PKB</td>
-            <td>2024-09-28</td>
-            <td>Helped me understand Go's unique approach to variables.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Riley Cooper</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Variables and Types in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9AHY3T2N5F4V9GR6X9R8WKL</td>
-            <td>2024-10-10</td>
-            <td>Useful overview of Go's built-in testing tools.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Jordan Harper</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Testing in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
-          <tr>
-            <td>01A9AJX8M5L6T9Y4CJ9P8F6BVT</td>
-            <td>2024-11-02</td>
-            <td>Clear and detailed guide on Go's net/http package.</td>
-            <td><a href="/admin-users.html?id=INSERT_USER_ID">Shawn Collins</a></td>
-            <td><a href="/admin-tutorials.html?id=INSERT_TUTORIAL_ID">Building Web Servers in Golang</a></td>
-            <td><button class="btn btn-red shadow-sm">Delete Comment</button></td>
-          </tr>
+          {{ template "admin-comments-list" .Comments }}
         </tbody>
       </table>
     </div>

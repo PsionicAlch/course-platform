@@ -1,0 +1,29 @@
+{{ define "admin-comments-list" }}
+  {{ range .Comments }}
+    <tr>
+      <td>{{- .ID -}}</td>
+      <td>{{- .Content -}}</td>
+      <td>{{- with index $.Users .ID -}}<a href="/admin/users?query={{- .ID -}}">{{- .Name }} {{ .Surname -}}</a>{{- end -}}</td>
+      <td>{{- with index $.Tutorials .ID -}}<a href="/admin/tutorials?query={{- .ID -}}">{{- .Title -}}</a>{{- end -}}</td>
+      <td>{{- .CreatedAt | pretty_date -}}</td>
+      <td><button class="btn btn-red shadow-sm" hx-delete="/admin/comments/{{- .ID -}}">Delete Comment</button></td>
+    </tr>
+  {{ end }}
+
+  {{ with .LastComment }}
+    <tr
+      hx-get="{{- $.BaseURL -}}?{{- $.URLQuery }}"
+      hx-trigger="revealed once"
+      hx-swap="afterend"
+    >
+      <td>{{- .ID -}}</td>
+      <td>{{- .Content -}}</td>
+      <td>{{- with index $.Users .ID -}}<a href="/admin/users?query={{- .ID -}}">{{- .Name }} {{ .Surname -}}</a>{{- end -}}</td>
+      <td>{{- with index $.Tutorials .ID -}}<a href="/admin/tutorials?query={{- .ID -}}">{{- .Title -}}</a>{{- end -}}</td>
+      <td>{{- .CreatedAt | pretty_date -}}</td>
+      <td><button class="btn btn-red shadow-sm" hx-delete="/admin/comments/{{- .ID -}}">Delete Comment</button></td>
+    </tr>
+  {{ end }}
+
+  {{ template "error-message" .ErrorMessage }}
+{{ end }}

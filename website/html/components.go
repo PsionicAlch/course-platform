@@ -168,3 +168,13 @@ type AdminCoursesListComponent struct {
 	URLQuery     string
 	ErrorMessage string
 }
+
+type AdminCommentsListComponent struct {
+	Comments     []*models.CommentModel
+	LastComment  *models.CommentModel
+	Users        map[string]*models.UserModel
+	Tutorials    map[string]*models.TutorialModel
+	BaseURL      string
+	URLQuery     string
+	ErrorMessage string
+}

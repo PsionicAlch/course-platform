@@ -32,12 +32,13 @@ type AccountsResetPasswordPage struct {
 	ResetPasswordForm *ResetPasswordFormComponent
 }
 
-type AdminAuthorsPage struct {
-	BasePage
-}
-
 type AdminCommentsPage struct {
 	BasePage
+	NumComments uint
+	URLQuery    string
+	Tutorials   []*models.TutorialModel
+	Users       []*models.UserModel
+	Comments    *AdminCommentsListComponent
 }
 
 type AdminCoursesPage struct {

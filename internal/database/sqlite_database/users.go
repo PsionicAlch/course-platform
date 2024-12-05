@@ -128,6 +128,41 @@ func (db *SQLiteDatabase) GetUsersPaginated(term string, level database.Authoriz
 	return users, nil
 }
 
+func (db *SQLiteDatabase) GetAllUsers() ([]*models.UserModel, error) {
+	query := `SELECT id, name, surname, email, password, affiliate_code, affiliate_points, is_admin, is_author, created_at, updated_at FROM users`
+
+	var users []*models.UserModel
+
+	rows, err := db.connection.Query(query)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get all users from the database: %s\n", err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var user models.UserModel
+		var isAdmin int
+		var isAuthor int
+
+		if err := rows.Scan(&user.ID, &user.Name, &user.Surname, &user.Email, &user.Password, &user.AffiliateCode, &user.AffiliatePoints, &isAdmin, &isAuthor, &user.CreatedAt, &user.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read row from users table: %s\n", err)
+			return nil, err
+		}
+
+		user.IsAdmin = isAdmin == 1
+		user.IsAuthor = isAuthor == 1
+
+		users = append(users, &user)
+	}
+
+	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get all users from the database: %s\n", err)
+		return nil, err
+	}
+
+	return users, nil
+}
+
 // The only function that I believe has a viable reason to do transactions.
 func (db *SQLiteDatabase) AddNewUser(name, surname, email, password, token, tokenType, ipAddr string, validUntil time.Time) (*models.UserModel, error) {
 	// Generate all the IDs required for the database transaction first. I don't want the transaction to fail
