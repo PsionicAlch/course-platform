@@ -142,6 +142,8 @@ func (h *Handlers) CommentDelete(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	urlQuery.Set("page", "1")
+
 	w.Header().Set("HX-Redirect", fmt.Sprintf("/admin/comments?%s", urlQuery.Encode()))
 }
 
