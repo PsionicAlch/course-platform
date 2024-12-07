@@ -1,7 +1,12 @@
 package payments
 
 import (
+	"time"
+
+	"math/rand"
+
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/oklog/ulid/v2"
 )
 
 // The price of a course.
@@ -116,4 +121,13 @@ func (payment *Payments) ValidateAffiliatePointsUsed(userId string, affiliatePoi
 	}
 
 	return float64(affiliatePointsUsed) * AffiliatePointDiscount, nil
+}
+
+func GeneratePaymentKey() (string, error) {
+	now := time.Now()
+	entropy := rand.New(rand.NewSource(now.UnixNano()))
+	ms := ulid.Timestamp(now)
+	id, err := ulid.New(ms, entropy)
+
+	return id.String(), err
 }

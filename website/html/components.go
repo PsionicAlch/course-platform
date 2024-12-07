@@ -103,6 +103,7 @@ type CoursePurchaseFormComponent struct {
 	DiscountCodeDiscount    uint
 	Total                   float64
 	CourseSlug              string
+	ErrorMessage            string
 }
 
 type TutorialsListComponent struct {

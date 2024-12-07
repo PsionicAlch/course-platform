@@ -118,9 +118,11 @@ type Database interface {
 
 	// Course Purchases functions.
 	HasUserPurchasedCourse(userId, courseId string) (bool, error)
-	RegisterCoursePurchase(userId, courseId, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64) error
+	RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64) error
 	CountCoursesWhereDiscountWasUsed(discountCode string) (uint, error)
 	CountUsersWhoBoughtCourse(courseId string) (uint, error)
+	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)
+	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error

@@ -27,6 +27,20 @@ func SetupPayments(privateKey, webhookSecret string, db database.Database) *Paym
 }
 
 func (payment *Payments) BuyCourse(user *models.UserModel, course *models.CourseModel, successUrl, cancelUrl, affiliateCode, discountCode string, affiliatePointsUsed, amountPaid int64) (string, error) {
+	paymentKey, err := GeneratePaymentKey()
+	if err != nil {
+		payment.ErrorLog.Printf("Failed to generate payment key: %s\n", err)
+		return "", err
+	}
+
+	metaData := map[string]string{
+		"user_id":      user.ID,
+		"user_name":    user.Name,
+		"user_surname": user.Surname,
+		"user_email":   user.Email,
+		"payment_key":  paymentKey,
+	}
+
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
@@ -35,17 +49,22 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 					ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
 						Name:        stripe.String(course.Title),
 						Description: stripe.String(course.Description),
-						Images:      stripe.StringSlice([]string{course.ThumbnailURL}),
+						// TODO: Make sure that images are hosted with their full URL path.
+						// Images: stripe.StringSlice([]string{course.ThumbnailURL}),
 					},
 					UnitAmount: stripe.Int64(amountPaid),
 				},
 				Quantity: stripe.Int64(1),
 			},
 		},
-		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
-		SuccessURL: stripe.String(successUrl),
-		CancelURL:  stripe.String(cancelUrl),
-		Metadata:   map[string]string{"user_id": user.ID},
+		Mode:          stripe.String(string(stripe.CheckoutSessionModePayment)),
+		SuccessURL:    stripe.String(successUrl),
+		CancelURL:     stripe.String(cancelUrl),
+		CustomerEmail: stripe.String(user.Email),
+		Metadata:      metaData,
+		PaymentIntentData: &stripe.CheckoutSessionPaymentIntentDataParams{
+			Metadata: metaData,
+		},
 	}
 
 	s, err := session.New(params)
@@ -57,7 +76,7 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 	ac := database.NewNullString(affiliateCode)
 	dc := database.NewNullString(discountCode)
 
-	if err := payment.Database.RegisterCoursePurchase(user.ID, course.ID, s.ID, ac, dc, affiliatePointsUsed, float64(amountPaid)/100.0); err != nil {
+	if err := payment.Database.RegisterCoursePurchase(user.ID, course.ID, paymentKey, s.ID, ac, dc, affiliatePointsUsed, float64(amountPaid)/100.0); err != nil {
 		payment.ErrorLog.Printf("Failed to save stripe checkout information to the database: %s\n", err)
 		return "", err
 	}

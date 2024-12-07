@@ -13,6 +13,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/config"
 	"github.com/PsionicAlch/psionicalch-home/website/forms"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
@@ -85,12 +86,14 @@ func (h *Handlers) CoursesPaginationGet(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
+	// TODO: Fill the course price in based on the payment.CoursePrice const
+
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.CoursesCoursePage{
 		BasePage: html.NewBasePage(user),
 	}
 
-	courseSlug := chi.URLParam(r, "slug")
+	courseSlug := chi.URLParam(r, "course-slug")
 
 	course, err := h.Database.GetCourseBySlug(courseSlug)
 	if err != nil {
@@ -234,15 +237,79 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) PurchaseCoursePost(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
+	courseSlug := chi.URLParam(r, "course-slug")
+	coursePurchaseForm := forms.NewCoursePurchaseForm(r, user, h.Payment)
 
+	if !coursePurchaseForm.Validate() {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "course-purchase-form", forms.NewCoursePurchaseFormComponent(coursePurchaseForm, courseSlug, user, h.Payment)); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	affiliateCode, discountCode, affiliatePointsUsed := forms.GetCoursePurchaseFormValues(coursePurchaseForm)
+
+	totalPrice, err := h.Payment.CalculatePrice(user.ID, affiliateCode, discountCode, affiliatePointsUsed)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to calculate course price: %s\n", err)
+
+		coursePurchaseFormComponent := forms.NewCoursePurchaseFormComponent(coursePurchaseForm, courseSlug, user, h.Payment)
+		coursePurchaseFormComponent.ErrorMessage = "Failed to calculate price. Please try again."
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "course-purchase-form", coursePurchaseFormComponent, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	course, err := h.Database.GetCourseBySlug(courseSlug)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get course from slug: %s\n", err)
+
+		coursePurchaseFormComponent := forms.NewCoursePurchaseFormComponent(coursePurchaseForm, courseSlug, user, h.Payment)
+		coursePurchaseFormComponent.ErrorMessage = "Unexpected server error. Please try again."
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "course-purchase-form", coursePurchaseFormComponent, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	var domainName string
+
+	if config.InDevelopment() {
+		domainName = "http://localhost:8080"
+	} else {
+		domainName = fmt.Sprintf("https://%s", config.GetWithoutError[string]("DOMAIN_NAME"))
+	}
+
+	redirectURL, err := h.Payment.BuyCourse(user, course, fmt.Sprintf("%s/courses/%s/purchase/success", domainName, course.Slug), fmt.Sprintf("%s/courses/%s/purchase/cancel", domainName, course.Slug), affiliateCode, discountCode, int64(affiliatePointsUsed), totalPrice)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get course from slug: %s\n", err)
+
+		coursePurchaseFormComponent := forms.NewCoursePurchaseFormComponent(coursePurchaseForm, courseSlug, user, h.Payment)
+		coursePurchaseFormComponent.ErrorMessage = "Unexpected server error. Please try again."
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "course-purchase-form", coursePurchaseFormComponent, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	w.Header().Set("HX-Redirect", redirectURL)
 }
 
 func (h *Handlers) PurchaseCourseSuccessGet(w http.ResponseWriter, r *http.Request) {
-
+	h.InfoLog.Printf("Payment was successful!")
 }
 
 func (h *Handlers) PurchaseCourseCancelGet(w http.ResponseWriter, r *http.Request) {
-
+	h.InfoLog.Printf("Payment was cancelled!")
 }
 
 func (h *Handlers) ValidatePurchasePost(w http.ResponseWriter, r *http.Request) {
