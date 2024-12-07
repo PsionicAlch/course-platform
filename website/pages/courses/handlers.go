@@ -13,12 +13,11 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/website/forms"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
 )
-
-// TODO: Clean up!
 
 const CoursesPerPagination = 25
 
@@ -166,7 +165,68 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 		BasePage: html.NewBasePage(user),
 	}
 
+	courseSlug := chi.URLParam(r, "course-slug")
+
+	course, err := h.Database.GetCourseBySlug(courseSlug)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get course by slug: %s\n", err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if course == nil {
+		h.ErrorLog.Printf("Could not find a course by slug: %s\n", err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Course = course
+
+	if !course.AuthorID.Valid {
+		h.ErrorLog.Printf("Course does not contain a valid author ID: %s\n", err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	author, err := h.Database.GetUserByID(course.AuthorID.String, database.Author)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get course by slug: %s\n", err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if author == nil {
+		h.ErrorLog.Printf("Could not find a author by ID: %s\n", err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Author = author
+
 	// TODO: Redirect the user to the course chapter if they've already bought this course.
+
+	purchaseCourseForm := forms.EmptyCoursePurchaseFormComponent(course.Slug, user)
+	pageData.CoursePurchaseForm = purchaseCourseForm
 
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "courses-purchase", pageData); err != nil {
 		h.ErrorLog.Println(err)
@@ -186,7 +246,14 @@ func (h *Handlers) PurchaseCourseCancelGet(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *Handlers) ValidatePurchasePost(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
+	courseSlug := chi.URLParam(r, "course-slug")
+	coursePurchaseForm := forms.NewCoursePurchaseForm(r, user, h.Payment)
+	coursePurchaseForm.Validate()
 
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "course-purchase-form", forms.NewCoursePurchaseFormComponent(coursePurchaseForm, courseSlug, user, h.Payment)); err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 // Possible URL queries:

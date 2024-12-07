@@ -108,6 +108,7 @@ func EmptyCoursePurchaseFormComponent(courseSlug string, user *models.UserModel)
 	coursePurchaseForm.AffiliatePointsInput = affiliatePointsInput
 	coursePurchaseForm.DiscountCodeInput = discountCodeInput
 	coursePurchaseForm.CourseSlug = courseSlug
+	coursePurchaseForm.Total = payments.CoursePrice
 
 	return coursePurchaseForm
 }
@@ -164,7 +165,9 @@ func NewCoursePurchaseFormComponent(form *GenericForm, courseSlug string, user *
 			coursePurchaseForm.Total = float64(total) / 100.0
 		}
 	} else {
-		coursePurchaseForm.Total = payments.CoursePrice
+		if total, err := payment.CalculatePrice(user.ID, affiliateCode, discountCode, 0); err == nil {
+			coursePurchaseForm.Total = float64(total) / 100.0
+		}
 	}
 
 	return coursePurchaseForm
