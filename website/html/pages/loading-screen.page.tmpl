@@ -1,0 +1,18 @@
+{{ template "base" .}}
+
+{{ define "title" }}
+  <title>{{- .Title }} - PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <main style="width: 100vh; height: 100vh; display: flex; justify-content: center; align-items: center;">
+    <div
+      hx-get="{{- .PingURL -}}"
+      hx-trigger="load, every 5s"
+      hx-swap="none"
+      hx-indicator="#loading-spinner">
+    </div>
+
+    <p id="loading-spinner">One moment. Thank you for your patience!</p>
+  </main>
+{{ end }}

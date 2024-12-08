@@ -181,3 +181,8 @@ type TutorialsTutorialPage struct {
 	TutorialBookmarked bool
 	Comments           *CommentsListComponent
 }
+
+type LoadingScreenPage struct {
+	Title   string
+	PingURL string
+}

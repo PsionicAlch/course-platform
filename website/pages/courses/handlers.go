@@ -282,7 +282,9 @@ func (h *Handlers) PurchaseCoursePost(w http.ResponseWriter, r *http.Request) {
 	var domainName string
 
 	if config.InDevelopment() {
-		domainName = "http://localhost:8080"
+		domain := config.GetWithoutError[string]("DOMAIN_NAME")
+		port := config.GetWithoutError[string]("PORT")
+		domainName = fmt.Sprintf("http://%s:%s", domain, port)
 	} else {
 		domainName = fmt.Sprintf("https://%s", config.GetWithoutError[string]("DOMAIN_NAME"))
 	}
@@ -305,11 +307,51 @@ func (h *Handlers) PurchaseCoursePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) PurchaseCourseSuccessGet(w http.ResponseWriter, r *http.Request) {
-	h.InfoLog.Printf("Payment was successful!")
+	courseSlug := chi.URLParam(r, "course-slug")
+
+	loadingScreen := &html.LoadingScreenPage{
+		Title:   "Validating Purchase",
+		PingURL: fmt.Sprintf("/courses/%s/purchase/check", courseSlug),
+	}
+
+	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "loading-screen", loadingScreen); err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) PurchaseCourseCancelGet(w http.ResponseWriter, r *http.Request) {
-	h.InfoLog.Printf("Payment was cancelled!")
+	courseSlug := chi.URLParam(r, "course-slug")
+
+	h.Session.SetWarningMessage(r.Context(), "Payment was cancelled.")
+
+	utils.Redirect(w, r, fmt.Sprintf("/courses/%s/purchase", courseSlug))
+}
+
+func (h *Handlers) PurchaseCourseCheckGet(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
+	courseSlug := chi.URLParam(r, "course-slug")
+
+	course, err := h.Database.GetCourseBySlug(courseSlug)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get course by slug (\"%s\"): %s\n", courseSlug, err)
+		return
+	}
+
+	if course == nil {
+		utils.Redirect(w, r, "/courses")
+		return
+	}
+
+	bought, err := h.Database.HasUserPurchasedCourse(user.ID, course.ID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to check if the user (\"%s\") has bought this course (\"%s\"): %s\n", user.ID, course.ID, err)
+		return
+	}
+
+	if bought {
+		// TODO: Change this URL to something more sensible.
+		utils.Redirect(w, r, "/profile")
+	}
 }
 
 func (h *Handlers) ValidatePurchasePost(w http.ResponseWriter, r *http.Request) {
