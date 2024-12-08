@@ -165,6 +165,7 @@ func (auth *Authentication) GetUserFromAuthCookie(cookies []*http.Cookie) (*mode
 
 			valid := ValidateToken(token, AuthenticationToken)
 			if !valid {
+				auth.InfoLog.Printf("Authentication token was deemed invalid.")
 				continue
 			}
 

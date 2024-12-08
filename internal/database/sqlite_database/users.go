@@ -394,7 +394,7 @@ func (db *SQLiteDatabase) GetUserByToken(token, tokenType string) (*models.UserM
 	isAuthor := false
 
 	row := db.connection.QueryRow(query, token, tokenType)
-	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Slug, &user.Email, &user.Password, &isAdminInt, &isAuthorInt, &user.AffiliateCode, &user.CreatedAt, &user.UpdatedAt); err != nil {
+	if err := row.Scan(&user.ID, &user.Name, &user.Surname, &user.Slug, &user.Email, &user.Password, &isAdminInt, &isAuthorInt, &user.AffiliateCode, &user.AffiliatePoints, &user.CreatedAt, &user.UpdatedAt); err != nil {
 		if err == sql.ErrNoRows {
 			// Nothing was found so we can just send back nothing and handle it at the caller
 			// end.

@@ -11,6 +11,8 @@ const (
 	EmailToken          = "email"
 )
 
+// TODO: Move token logic over to using database.GenerateToken
+
 func NewToken() (string, error) {
 	tokenBytes, err := RandomBytes(32)
 	if err != nil {

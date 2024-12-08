@@ -307,11 +307,18 @@ func (h *Handlers) PurchaseCoursePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) PurchaseCourseSuccessGet(w http.ResponseWriter, r *http.Request) {
+	token := r.URL.Query().Get("token")
+
+	if !h.Payment.ValidatePaymentToken(token) {
+		utils.Redirect(w, r, "/courses")
+		return
+	}
+
 	courseSlug := chi.URLParam(r, "course-slug")
 
 	loadingScreen := &html.LoadingScreenPage{
 		Title:   "Validating Purchase",
-		PingURL: fmt.Sprintf("/courses/%s/purchase/check", courseSlug),
+		PingURL: fmt.Sprintf("/courses/%s/purchase/check?token=%s", courseSlug, token),
 	}
 
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "loading-screen", loadingScreen); err != nil {
@@ -320,6 +327,17 @@ func (h *Handlers) PurchaseCourseSuccessGet(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *Handlers) PurchaseCourseCancelGet(w http.ResponseWriter, r *http.Request) {
+	token := r.URL.Query().Get("token")
+
+	if !h.Payment.ValidatePaymentToken(token) {
+		utils.Redirect(w, r, "/courses")
+		return
+	}
+
+	if err := h.Payment.DeletePaymentToken(token); err != nil {
+		h.ErrorLog.Printf("Failed to delete payment token: %s\n", err)
+	}
+
 	courseSlug := chi.URLParam(r, "course-slug")
 
 	h.Session.SetWarningMessage(r.Context(), "Payment was cancelled.")
@@ -328,7 +346,19 @@ func (h *Handlers) PurchaseCourseCancelGet(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *Handlers) PurchaseCourseCheckGet(w http.ResponseWriter, r *http.Request) {
-	user := authentication.GetUserFromRequest(r)
+	token := r.URL.Query().Get("token")
+
+	if !h.Payment.ValidatePaymentToken(token) {
+		utils.Redirect(w, r, "/courses")
+		return
+	}
+
+	user, err := h.Payment.GetUserFromPaymentToken(token)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get user from payment token: %s\n", err)
+		return
+	}
+
 	courseSlug := chi.URLParam(r, "course-slug")
 
 	course, err := h.Database.GetCourseBySlug(courseSlug)
@@ -348,7 +378,11 @@ func (h *Handlers) PurchaseCourseCheckGet(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	h.InfoLog.Printf("%#v", bought)
+
 	if bought {
+		h.Payment.DeletePaymentToken(token)
+
 		// TODO: Change this URL to something more sensible.
 		utils.Redirect(w, r, "/profile")
 	}

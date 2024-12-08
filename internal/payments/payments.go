@@ -1,6 +1,9 @@
 package payments
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
@@ -33,6 +36,12 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 		return "", err
 	}
 
+	paymentToken, err := database.GenerateToken()
+	if err != nil {
+		payment.ErrorLog.Printf("Failed to generate payment token: %s\n", err)
+		return "", err
+	}
+
 	metaData := map[string]string{
 		"user_id":      user.ID,
 		"user_name":    user.Name,
@@ -58,8 +67,8 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 			},
 		},
 		Mode:          stripe.String(string(stripe.CheckoutSessionModePayment)),
-		SuccessURL:    stripe.String(successUrl),
-		CancelURL:     stripe.String(cancelUrl),
+		SuccessURL:    stripe.String(fmt.Sprintf("%s?token=%s", successUrl, paymentToken)),
+		CancelURL:     stripe.String(fmt.Sprintf("%s?token=%s", cancelUrl, paymentToken)),
 		CustomerEmail: stripe.String(user.Email),
 		Metadata:      metaData,
 		PaymentIntentData: &stripe.CheckoutSessionPaymentIntentDataParams{
@@ -76,7 +85,7 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 	ac := database.NewNullString(affiliateCode)
 	dc := database.NewNullString(discountCode)
 
-	if err := payment.Database.RegisterCoursePurchase(user.ID, course.ID, paymentKey, s.ID, ac, dc, affiliatePointsUsed, float64(amountPaid)/100.0); err != nil {
+	if err := payment.Database.RegisterCoursePurchase(user.ID, course.ID, paymentKey, s.ID, ac, dc, affiliatePointsUsed, float64(amountPaid)/100.0, paymentToken, PaymentToken, time.Now().Add(time.Hour)); err != nil {
 		payment.ErrorLog.Printf("Failed to save stripe checkout information to the database: %s\n", err)
 		return "", err
 	}

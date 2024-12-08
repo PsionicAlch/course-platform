@@ -2,6 +2,7 @@ package sqlite_database
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
@@ -19,10 +20,16 @@ func (db *SQLiteDatabase) HasUserPurchasedCourse(userId, courseId string) (bool,
 	return b, nil
 }
 
-func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64) error {
+func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64, token, tokenType string, validUntil time.Time) error {
 	purchaseId, err := database.GenerateID()
 	if err != nil {
 		db.ErrorLog.Printf("Failed to generate ID for new course purchase: %s\n", err)
+		return err
+	}
+
+	paymentTokenId, err := database.GenerateID()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to generate ID for new payment token: %s\n", err)
 		return err
 	}
 
@@ -83,6 +90,15 @@ func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, s
 		}
 
 		db.ErrorLog.Printf("Failed to register course purchase: %s\n", err)
+		return err
+	}
+
+	if err := internal.AddToken(tx, paymentTokenId, token, tokenType, user.ID, validUntil); err != nil {
+		if err := tx.Rollback(); err != nil {
+			db.ErrorLog.Printf("Failed to rollback changes after error occurred: %s\n", err)
+		}
+
+		db.ErrorLog.Printf("Failed to save the payment token: %s\n", err)
 		return err
 	}
 

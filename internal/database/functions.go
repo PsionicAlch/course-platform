@@ -1,9 +1,11 @@
 package database
 
 import (
+	cryptoRand "crypto/rand"
 	"database/sql"
+	"encoding/base64"
 	"fmt"
-	"math/rand"
+	mathRand "math/rand"
 	"regexp"
 	"strings"
 	"time"
@@ -14,11 +16,34 @@ import (
 // GenerateID generates a new ULID to be used as an ID.
 func GenerateID() (string, error) {
 	now := time.Now()
-	entropy := rand.New(rand.NewSource(now.UnixNano()))
+	entropy := mathRand.New(mathRand.NewSource(now.UnixNano()))
 	ms := ulid.Timestamp(now)
 	id, err := ulid.New(ms, entropy)
 
 	return id.String(), err
+}
+
+func GenerateToken() (string, error) {
+	tokenBytes, err := RandomBytes(32)
+	if err != nil {
+		return "", err
+	}
+
+	return BytesToURLString(tokenBytes), nil
+}
+
+func RandomBytes(length uint) ([]byte, error) {
+	b := make([]byte, length)
+	_, err := cryptoRand.Read(b)
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
+
+func BytesToURLString(src []byte) string {
+	return base64.RawURLEncoding.EncodeToString(src)
 }
 
 func NewNullString(s string) sql.NullString {

@@ -118,7 +118,7 @@ type Database interface {
 
 	// Course Purchases functions.
 	HasUserPurchasedCourse(userId, courseId string) (bool, error)
-	RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64) error
+	RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64, token, tokenType string, validUntil time.Time) error
 	CountCoursesWhereDiscountWasUsed(discountCode string) (uint, error)
 	CountUsersWhoBoughtCourse(courseId string) (uint, error)
 	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)
