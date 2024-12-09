@@ -9,14 +9,11 @@ import (
 func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
 
-	router.Use(handlers.auth.AllowAuthenticated("/accounts/login"))
+	router.Use(handlers.Auth.AllowAuthenticated("/accounts/login"))
 
 	router.Get("/", handlers.ProfileGet)
 
 	router.Get("/affiliate-history", handlers.AffiliateHistoryGet)
-
-	// TODO: Set up the logic for this.
-	// router.Get("/whitelist/{ip_address}", )
 
 	router.Get("/courses", handlers.CoursesGet)
 	router.Get("/courses/{slug}", handlers.CourseGet)

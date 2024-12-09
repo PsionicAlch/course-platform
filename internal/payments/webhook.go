@@ -51,6 +51,8 @@ func (payment *Payments) Webhook(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+
+		// TODO: Send email to thank the user for the successful purchase.
 	case "payment_intent.payment_failed":
 		payment.InfoLog.Println("Handling event: ", "payment_intent.payment_failed")
 

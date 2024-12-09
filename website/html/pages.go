@@ -139,6 +139,15 @@ type GeneralRefundPolicyPage struct {
 
 type ProfilePage struct {
 	BasePage
+	User                       *models.UserModel
+	NumTutorialsBookmarked     uint
+	HasAffiliateHistory        bool
+	Courses                    []*models.CourseModel
+	HasMoreCourses             bool
+	TutorialsBookmarked        []*models.TutorialModel
+	HasMoreTutorialsBookmarked bool
+	TutorialsLiked             []*models.TutorialModel
+	HasMoreTutorialsLiked      bool
 }
 
 type ProfileAffiliateHistoryPage struct {

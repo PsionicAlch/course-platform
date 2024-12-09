@@ -11,5 +11,7 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	router.Get("/", handlers.SettingsGet)
 
+	// TODO: Set up the logic for managing a user's whitelisted IP addresses.
+
 	return router
 }

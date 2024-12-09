@@ -4,7 +4,41 @@ import (
 	"database/sql"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
+
+func (db *SQLiteDatabase) GetTutorialsBookmarkedByUser(userId string) ([]*models.TutorialModel, error) {
+	query := `SELECT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials_bookmarks AS tb JOIN tutorials AS t ON tb.tutorial_id = t.id WHERE tb.user_id = ? ORDER BY tb.created_at DESC;`
+
+	var tutorials []*models.TutorialModel
+
+	rows, err := db.connection.Query(query, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get all tutorials bookmarked by user (\"%s\"): %s\n", userId, err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var tutorial models.TutorialModel
+		var published int
+
+		if err := rows.Scan(&tutorial.ID, &tutorial.Title, &tutorial.Slug, &tutorial.Description, &tutorial.ThumbnailURL, &tutorial.BannerURL, &tutorial.Content, &published, &tutorial.AuthorID, &tutorial.FileChecksum, &tutorial.FileKey, &tutorial.CreatedAt, &tutorial.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read tutorial from the database: %s\n", err)
+			return nil, err
+		}
+
+		tutorial.Published = published == 1
+
+		tutorials = append(tutorials, &tutorial)
+	}
+
+	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get all tutorials bookmarked by user (\"%s\"): %s\n", userId, err)
+		return nil, err
+	}
+
+	return tutorials, nil
+}
 
 func (db *SQLiteDatabase) UserBookmarkedTutorial(userId, slug string) (bool, error) {
 	query := `SELECT t.id FROM tutorials_bookmarks AS tb JOIN tutorials AS t ON tb.tutorial_id = t.id WHERE tb.user_id = ? AND t.slug = ?;`

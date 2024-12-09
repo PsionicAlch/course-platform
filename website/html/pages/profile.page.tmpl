@@ -1,7 +1,57 @@
 {{ template "base" .}}
 
 {{ define "meta-tags" }}
-  <!-- TODO: Generate SEO Tags with ChatGPT. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <meta name="description" content="Access your PsionicAlch profile to view your affiliate points, affiliate code, usage history, purchased courses, and bookmarked tutorials." />
+  <meta name="keywords" content="user profile, PsionicAlch, affiliate points, course purchases, tutorial bookmarks, tutorial likes" />
+
+  <meta property="og:title" content="Your Profile - PsionicAlch" />
+  <meta property="og:description" content="Manage your profile: view affiliate points, course purchases, tutorial bookmarks, and likes." />
+  <meta property="og:image" content="https://www.psionicalch.com/static/images/profile-placeholder.jpg" />  <!-- TODO: Replace with actual image. -->
+  <meta property="og:url" content="https://www.psionicalch.com/profile" />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@psionicalch" />
+  <meta name="twitter:title" content="Your Profile - PsionicAlch" />
+  <meta name="twitter:description" content="Access your PsionicAlch profile and manage your activity, including affiliate points, purchases, and bookmarks." />
+  <meta name="twitter:image" content="https://www.psionicalch.com/static/images/profile-placeholder.jpg" /> <!-- TODO: Replace with actual image. -->
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "UserProfile",
+      "url": "https://www.psionicalch.com/profile",
+      "mainEntity": {
+        "@type": "Person",
+        "name": "Logged-in User",
+        "memberOf": {
+          "@type": "Organization",
+          "name": "PsionicAlch",
+          "url": "https://www.psionicalch.com"
+        },
+        "owns": {
+          "@type": "ItemList",
+          "name": "Purchased Courses",
+          "itemListElement": [
+            {{ range .Courses }}
+            {
+              "@type": "CreativeWork",
+              "name": "{{- .Title -}}",
+              "url": "https://www.psionicalch.com/courses/{{- .Slug -}}"
+            },
+            {{ end }}
+          ]
+        },
+        "interactionStatistic": {
+          "@type": "InteractionCounter",
+          "interactionType": "https://schema.org/BookmarkAction",
+          "userInteractionCount": {{- .NumTutorialsBookmarked -}}
+        }
+      }
+    }
+  </script>
 {{ end }}
 
 {{ define "stylesheets" }}
@@ -9,7 +59,7 @@
 {{ end }}
 
 {{ define "title" }}
-  <title>Your Profile - Track Affiliates, View Courses, and More | PsionicAlch</title>
+  <title>Your Profile - PsionicAlch</title>
 {{ end }}
 
 {{ define "body" }}
@@ -20,16 +70,24 @@
           <div class="profile-section-header">
             <h2>Affiliate Program</h2>
 
-            <a href="/profile/affiliate-history" class="btn btn-blue shadow-sm">View History</a>
+            {{ if .HasAffiliateHistory }}
+              <a href="/profile/affiliate-history" class="btn btn-blue shadow-sm">View History</a>
+            {{ else }}
+              <a href="javascript:void(0);" class="btn btn-blue shadow-sm link-disabled">View History</a>
+            {{ end }}
           </div>
 
           <div class="profile-section-body">
-            <p>Available Affiliate Points: <b>23</b></p>
-            <p>Affiliate Link Code: <b>01JBC9HM3C160KYY6WE7KM8T20</b></p>
+            <p>Available Affiliate Points: <b>{{- .User.AffiliatePoints -}}</b></p>
+            <p>Affiliate Link Code: <b>{{- .User.AffiliateCode -}}</b></p>
           </div>
 
           <div class="profile-section-mobile">
-            <a href="/profile/affiliate-history" class="btn btn-blue shadow-sm">View History</a>
+            {{ if .HasAffiliateHistory }}
+              <a href="/profile/affiliate-history" class="btn btn-blue shadow-sm">View History</a>
+            {{ else }}
+              <a href="javascript:void(0);" class="btn btn-blue shadow-sm link-disabled">View History</a>
+            {{ end }}
           </div>
         </div>
       </section>
@@ -42,49 +100,39 @@
             <h2>My Courses</h2>
 
             <div class="actions">
-              <a href="/profile/courses" class="btn btn-blue shadow-sm">More</a>
+              {{ if .HasMoreCourses }}
+                <a href="/profile/courses" class="btn btn-blue shadow-sm">More</a>
+              {{ else }}
+                <a href="javascript:void(0);" class="btn btn-blue shadow-sm link-disabled">More</a>
+              {{ end }}
             </div>
           </div>
 
           <div class="profile-section-body">
-            <div class="cards-list">
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Course Name</h2>
-                  <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-                </div>
+            {{ if .Courses }}
+              <div class="cards-list">
+                {{ range .Courses }}
+                  <div class="card shadow-sm" style="background-image: url('{{- .ThumbnailURL -}}');">
+                    <div class="card-body">
+                      <h2>{{- .Title -}}</h2>
+                      <p>{{- .Description -}}</p>
+                      <a href="/profile/courses/{{- .Slug -}}" class="btn-blue shadow-sm"><small>Start Course</small></a>
+                    </div>
+                  </div>
+                {{ end }}
               </div>
-
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Course Name</h2>
-                  <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-                </div>
-              </div>
-
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Course Name</h2>
-                  <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-                </div>
-              </div>
-
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Course Name</h2>
-                  <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-                </div>
-              </div>
-            </div>
+            {{ else }}
+              <p>You haven't bought any courses yet.</p>
+            {{ end }}
           </div>
 
           <div class="profile-section-mobile">
             <div class="actions">
-              <a href="/profile/courses" class="btn btn-blue shadow-sm">More</a>
+              {{ if .HasMoreCourses }}
+                <a href="/profile/courses" class="btn btn-blue shadow-sm">More</a>
+              {{ else }}
+                <a href="javascript:void(0);" class="btn btn-blue shadow-sm link-disabled">More</a>
+              {{ end }}
             </div>
           </div>
         </div>
@@ -95,52 +143,42 @@
       <section class="profile-section">
         <div class="profile-section-container">
           <div class="profile-section-header">
-            <h2>My Saved Tutorials</h2>
+            <h2>My Bookmarked Tutorials</h2>
 
             <div class="actions">
-              <a href="/profile/tutorials/bookmarks" class="btn btn-blue shadow-sm">More</a>
+              {{ if .HasMoreTutorialsBookmarked }}
+                <a href="/profile/tutorials/bookmarks" class="btn btn-blue shadow-sm">More</a>
+              {{ else }}
+                <a href="javascript:void(0);" class="btn btn-blue shadow-sm link-disabled">More</a>
+              {{ end }}
             </div>
           </div>
 
           <div class="profile-section-body">
-            <div class="cards-list">
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Tutorial Name</h2>
-                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
-                </div>
+            {{ if .TutorialsBookmarked }}
+              <div class="cards-list">
+                {{ range .TutorialsBookmarked }}
+                  <div class="card shadow-sm" style="background-image: url('{{- .ThumbnailURL -}}');">
+                    <div class="card-body">
+                      <h2>{{- .Title -}}</h2>
+                      <p>{{- .Description -}}</p>
+                      <a href="/tutorials/{{- .Slug -}}" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                    </div>
+                  </div>
+                {{ end }}
               </div>
-
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Tutorial Name</h2>
-                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
-                </div>
-              </div>
-
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Tutorial Name</h2>
-                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
-                </div>
-              </div>
-
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Tutorial Name</h2>
-                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
-                </div>
-              </div>
-            </div>
+            {{ else }}
+              <p>You haven't bookmarked any tutorials yet.</p>
+            {{ end }}
           </div>
 
           <div class="profile-section-mobile">
             <div class="actions">
-              <a href="/profile/tutorials/bookmarks" class="btn btn-blue shadow-sm">More</a>
+              {{ if .HasMoreTutorialsBookmarked }}
+                <a href="/profile/tutorials/bookmarks" class="btn btn-blue shadow-sm">More</a>
+              {{ else }}
+                <a href="javascript:void(0);" class="btn btn-blue shadow-sm link-disabled">More</a>
+              {{ end }}
             </div>
           </div>
         </div>
@@ -154,49 +192,39 @@
             <h2>My Liked Tutorials</h2>
 
             <div class="actions">
-              <a href="/profile/tutorials/liked" class="btn btn-blue shadow-sm">More</a>
+              {{ if .HasMoreTutorialsLiked }}
+                <a href="/profile/tutorials/liked" class="btn btn-blue shadow-sm">More</a>
+              {{ else }}
+                <a href="javascript:void(0);" class="btn btn-blue shadow-sm link-disabled">More</a>
+              {{ end }}
             </div>
           </div>
 
           <div class="profile-section-body">
-            <div class="cards-list">
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Tutorial Name</h2>
-                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
-                </div>
+            {{ if .TutorialsLiked }}
+              <div class="cards-list">
+                {{ range .TutorialsLiked }}
+                  <div class="card shadow-sm" style="background-image: url('{{- .ThumbnailURL -}}');">
+                    <div class="card-body">
+                      <h2>{{- .Title -}}</h2>
+                      <p>{{- .Description -}}</p>
+                      <a href="/tutorials/{{- .Slug -}}" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
+                    </div>
+                  </div>
+                {{ end }}
               </div>
-
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Tutorial Name</h2>
-                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
-                </div>
-              </div>
-
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Tutorial Name</h2>
-                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
-                </div>
-              </div>
-
-              <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-                <div class="card-body">
-                  <h2>Tutorial Name</h2>
-                  <p>This is a short tutorial description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-                  <a href="/tutorials/tutorial-slug-goes-here" class="btn btn-blue shadow-sm"><small>Read Tutorial</small></a>
-                </div>
-              </div>
-            </div>
+            {{ else }}
+              <p>You haven't liked any tutorials yet.</p>
+            {{ end }}
           </div>
 
           <div class="profile-section-mobile">
             <div class="actions">
-              <a href="/profile/tutorials/liked" class="btn btn-blue shadow-sm">More</a>
+              {{ if .HasMoreTutorialsLiked }}
+                <a href="/profile/tutorials/liked" class="btn btn-blue shadow-sm">More</a>
+              {{ else }}
+                <a href="javascript:void(0);" class="btn btn-blue shadow-sm link-disabled">More</a>
+              {{ end }}
             </div>
           </div>
         </div>

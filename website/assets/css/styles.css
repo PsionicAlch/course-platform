@@ -177,8 +177,11 @@ noscript .noscript-container {
 }
 
 .btn:disabled,
+.btn.link-disabled,
 .btn-md:disabled,
-.btn-inline:disabled {
+.btn-md.link-disabled,
+.btn-inline:disabled,
+.btn-inline.link-disabled {
   cursor: not-allowed;
 }
 

@@ -65,6 +65,7 @@ type Database interface {
 	GetAllKeywordsForTutorial(tutorialId string) ([]string, error)
 
 	// Tutorials-Likes functions.
+	GetTutorialsLikedByUser(userId string) ([]*models.TutorialModel, error)
 	UserLikedTutorial(userId, slug string) (bool, error)
 	UserLikeTutorial(userId, slug string) error
 	UserDislikeTutorial(userId, slug string) error
@@ -72,6 +73,7 @@ type Database interface {
 	CountTutorialLikes(tutorialId string) (uint, error)
 
 	// Tutorials-Bookmarks functions.
+	GetTutorialsBookmarkedByUser(userId string) ([]*models.TutorialModel, error)
 	UserBookmarkedTutorial(userId, slug string) (bool, error)
 	UserBookmarkTutorial(userId, slug string) error
 	UserUnbookmarkTutorial(userId, slug string) error
@@ -123,6 +125,7 @@ type Database interface {
 	CountUsersWhoBoughtCourse(courseId string) (uint, error)
 	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)
 	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
+	GetCoursesBoughtByUser(userId string) ([]*models.CourseModel, error)
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error
