@@ -378,10 +378,9 @@ func (h *Handlers) PurchaseCourseCheckGet(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	h.InfoLog.Printf("%#v", bought)
-
 	if bought {
 		h.Payment.DeletePaymentToken(token)
+		h.Session.SetInfoMessage(r.Context(), "Thank you for your purchase! We hope you enjoy the course.")
 
 		// TODO: Change this URL to something more sensible.
 		utils.Redirect(w, r, "/profile")
