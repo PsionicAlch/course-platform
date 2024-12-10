@@ -65,7 +65,7 @@ type Database interface {
 	GetAllKeywordsForTutorial(tutorialId string) ([]string, error)
 
 	// Tutorials-Likes functions.
-	GetTutorialsLikedByUser(userId string) ([]*models.TutorialModel, error)
+	GetTutorialsLikedByUser(term, userId string, page, elements uint) ([]*models.TutorialModel, error)
 	UserLikedTutorial(userId, slug string) (bool, error)
 	UserLikeTutorial(userId, slug string) error
 	UserDislikeTutorial(userId, slug string) error
@@ -73,7 +73,7 @@ type Database interface {
 	CountTutorialLikes(tutorialId string) (uint, error)
 
 	// Tutorials-Bookmarks functions.
-	GetTutorialsBookmarkedByUser(userId string) ([]*models.TutorialModel, error)
+	GetTutorialsBookmarkedByUser(term, userId string, page, elements uint) ([]*models.TutorialModel, error)
 	UserBookmarkedTutorial(userId, slug string) (bool, error)
 	UserBookmarkTutorial(userId, slug string) error
 	UserUnbookmarkTutorial(userId, slug string) error

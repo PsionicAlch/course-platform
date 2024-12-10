@@ -7,12 +7,22 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
-func (db *SQLiteDatabase) GetTutorialsLikedByUser(userId string) ([]*models.TutorialModel, error) {
-	query := `SELECT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials_likes AS tl JOIN tutorials AS t ON tl.tutorial_id = t.id WHERE tl.user_id = ? ORDER BY tl.created_at DESC;`
+func (db *SQLiteDatabase) GetTutorialsLikedByUser(term, userId string, page, elements uint) ([]*models.TutorialModel, error) {
+	query := `SELECT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials_likes AS tl JOIN tutorials AS t ON tl.tutorial_id = t.id WHERE tl.user_id = ?`
+	args := []any{userId}
+
+	if term != "" {
+		query += " AND (LOWER(t.title) LIKE '%' || ? || '%' OR LOWER(t.slug) LIKE '%' || ? || '%' OR LOWER(t.description) LIKE '%' || ? || '%')"
+		args = append(args, term, term, term)
+	}
+
+	offset := (page - 1) * elements
+	query += " ORDER BY tl.created_at DESC LIMIT ? OFFSET ?;"
+	args = append(args, elements, offset)
 
 	var tutorials []*models.TutorialModel
 
-	rows, err := db.connection.Query(query, userId)
+	rows, err := db.connection.Query(query, args...)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to get all tutorials liked by user (\"%s\"): %s\n", userId, err)
 		return nil, err

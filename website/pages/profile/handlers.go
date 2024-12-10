@@ -1,7 +1,10 @@
 package profile
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
+	"strconv"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
@@ -12,6 +15,8 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 )
 
+const TutorialsPerPagination = 4
+
 type Handlers struct {
 	utils.Loggers
 	Renderers pages.Renderers
@@ -19,12 +24,12 @@ type Handlers struct {
 	Database  database.Database
 }
 
-func SetupHandlers(pageRenderer render.Renderer, auth *authentication.Authentication, db database.Database) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *authentication.Authentication, db database.Database) *Handlers {
 	loggers := utils.CreateLoggers("PROFILE HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
-		Renderers: *pages.CreateRenderers(pageRenderer, nil),
+		Renderers: *pages.CreateRenderers(pageRenderer, htmxRenderer),
 		Auth:      auth,
 		Database:  db,
 	}
@@ -66,7 +71,7 @@ func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	pageData.Courses = coursesSlice
 	pageData.HasMoreCourses = hasMoreCourses
 
-	tutorialsBookmarked, err := h.Database.GetTutorialsBookmarkedByUser(user.ID)
+	tutorialsBookmarked, err := h.Database.GetTutorialsBookmarkedByUser("", user.ID, 1, Elements+2)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get tutorials bookmarked by user (\"%s\"): %s\n", user.ID, err)
 
@@ -92,7 +97,7 @@ func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	pageData.TutorialsBookmarked = tutorialsBookmarkedSlice
 	pageData.HasMoreTutorialsBookmarked = hasMoreTutorialsBookmarked
 
-	tutorialsLiked, err := h.Database.GetTutorialsLikedByUser(user.ID)
+	tutorialsLiked, err := h.Database.GetTutorialsLikedByUser("", user.ID, 1, Elements+2)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get tutorials liked by user (\"%s\"): %s\n", user.ID, err)
 
@@ -167,18 +172,174 @@ func (h *Handlers) TutorialsBookmarksGet(w http.ResponseWriter, r *http.Request)
 		BasePage: html.NewBasePage(user),
 	}
 
+	tutorialsList, err := h.CreateBookmarkedTutorialsList(r)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to create tutorials list: %s\n", err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Tutorials = tutorialsList
+
 	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "profile-tutorials-bookmarks", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
 
-func (h *Handlers) TutorialsLikedGet(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) TutorialsBookmarksPaginationGet(w http.ResponseWriter, r *http.Request) {
+	tutorialsList, err := h.CreateBookmarkedTutorialsList(r)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to create tutorials list: %s\n", err)
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", html.TutorialsListComponent{ErrorMessage: "Failed to get tutorials. Please try again."}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", tutorialsList); err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+// Possible URL Queries:
+// - page
+// - query
+func (h *Handlers) CreateBookmarkedTutorialsList(r *http.Request) (*html.TutorialsListComponent, error) {
+	user := authentication.GetUserFromRequest(r)
+
+	page := 1
+	query := ""
+
+	urlQuery := make(url.Values)
+
+	if p, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil {
+		page = p
+	}
+
+	urlQuery.Add("page", fmt.Sprintf("%d", page+1))
+
+	if q := r.URL.Query().Get("query"); q != "" {
+		query = q
+
+		urlQuery.Add("query", q)
+	}
+
+	tutorials, err := h.Database.GetTutorialsBookmarkedByUser(query, user.ID, uint(page), TutorialsPerPagination)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get all tutorials bookmarked by user (\"%s\"): %s\n", user.ID, err)
+		return nil, err
+	}
+
+	var tutorialsSlice []*models.TutorialModel
+	var lastTutorial *models.TutorialModel
+
+	if len(tutorials) < TutorialsPerPagination {
+		tutorialsSlice = tutorials
+	} else {
+		tutorialsSlice = tutorials[:len(tutorials)-1]
+		lastTutorial = tutorials[len(tutorials)-1]
+	}
+
+	tutorialsList := &html.TutorialsListComponent{
+		Tutorials:    tutorialsSlice,
+		LastTutorial: lastTutorial,
+		QueryURL:     fmt.Sprintf("/profile/tutorials/bookmarks/htmx?%s", urlQuery.Encode()),
+	}
+
+	return tutorialsList, nil
+}
+
+func (h *Handlers) TutorialsLikesGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.ProfileTutorialsLikedPage{
 		BasePage: html.NewBasePage(user),
 	}
 
-	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "profile-tutorials-liked", pageData); err != nil {
+	tutorialsList, err := h.CreateLikedTutorialsList(r)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to create tutorials list: %s\n", err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Tutorials = tutorialsList
+
+	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "profile-tutorials-likes", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
+}
+
+func (h *Handlers) TutorialsLikesPaginationGet(w http.ResponseWriter, r *http.Request) {
+	tutorialsList, err := h.CreateLikedTutorialsList(r)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to create tutorials list: %s\n", err)
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", html.TutorialsListComponent{ErrorMessage: "Failed to get tutorials. Please try again."}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "tutorials", tutorialsList); err != nil {
+		h.ErrorLog.Println(err)
+	}
+}
+
+// Possible URL Queries:
+// - page
+// - query
+func (h *Handlers) CreateLikedTutorialsList(r *http.Request) (*html.TutorialsListComponent, error) {
+	user := authentication.GetUserFromRequest(r)
+
+	page := 1
+	query := ""
+
+	urlQuery := make(url.Values)
+
+	if p, err := strconv.Atoi(r.URL.Query().Get("page")); err == nil {
+		page = p
+	}
+
+	urlQuery.Add("page", fmt.Sprintf("%d", page+1))
+
+	if q := r.URL.Query().Get("query"); q != "" {
+		query = q
+
+		urlQuery.Add("query", q)
+	}
+
+	tutorials, err := h.Database.GetTutorialsLikedByUser(query, user.ID, uint(page), TutorialsPerPagination)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get all tutorials liked by user (\"%s\"): %s\n", user.ID, err)
+		return nil, err
+	}
+
+	var tutorialsSlice []*models.TutorialModel
+	var lastTutorial *models.TutorialModel
+
+	if len(tutorials) < TutorialsPerPagination {
+		tutorialsSlice = tutorials
+	} else {
+		tutorialsSlice = tutorials[:len(tutorials)-1]
+		lastTutorial = tutorials[len(tutorials)-1]
+	}
+
+	tutorialsList := &html.TutorialsListComponent{
+		Tutorials:    tutorialsSlice,
+		LastTutorial: lastTutorial,
+		QueryURL:     fmt.Sprintf("/profile/tutorials/likes/htmx?%s", urlQuery.Encode()),
+	}
+
+	return tutorialsList, nil
 }

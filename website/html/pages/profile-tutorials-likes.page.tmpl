@@ -1,4 +1,4 @@
-{{ template "base" . }}
+{{ template "base" .}}
 
 {{ define "meta-tags" }}
   <!-- TODO: Generate SEO Tags with ChatGPT. -->
@@ -9,7 +9,7 @@
 {{ end }}
 
 {{ define "title" }}
-  <title>Your Bookmarked Tutorials | PsionicAlch</title>
+  <title>Your Liked Tutorials | PsionicAlch</title>
 {{ end }}
 
 {{ define "body" }}
@@ -23,7 +23,7 @@
           id="query"
           placeholder="What tutorial are you looking for?"
           hx-trigger="keyup changed delay:500ms"
-          hx-get="/tutorials/bookmarks/htmx"
+          hx-get="/tutorials/likes/htmx"
           hx-target=".cards-list"
         >
       </form>
@@ -31,7 +31,7 @@
       <hr>
 
       <div class="tutorials-container">
-        <h2>My Saved Tutorials</h2>
+        <h2>My Liked Tutorials</h2>
 
         <div class="cards-list">
           {{ template "tutorials-list" .Tutorials }}

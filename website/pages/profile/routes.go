@@ -20,7 +20,10 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.Get("/courses/{course_slug}/{chapter_slug}", handlers.CourseChapterGet)
 
 	router.Get("/tutorials/bookmarks", handlers.TutorialsBookmarksGet)
-	router.Get("/tutorials/liked", handlers.TutorialsLikedGet)
+	router.Get("/tutorials/bookmarks/htmx", handlers.TutorialsBookmarksPaginationGet)
+
+	router.Get("/tutorials/likes", handlers.TutorialsLikesGet)
+	router.Get("/tutorials/likes/htmx", handlers.TutorialsLikesPaginationGet)
 
 	return router
 }

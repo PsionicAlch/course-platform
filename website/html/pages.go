@@ -164,10 +164,12 @@ type ProfileCourse struct {
 
 type ProfileTutorialsBookmarksPage struct {
 	BasePage
+	Tutorials *TutorialsListComponent
 }
 
 type ProfileTutorialsLikedPage struct {
 	BasePage
+	Tutorials *TutorialsListComponent
 }
 
 type SettingsPage struct {
