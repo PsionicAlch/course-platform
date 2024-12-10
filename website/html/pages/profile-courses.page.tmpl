@@ -15,8 +15,17 @@
 {{ define "body" }}
   <main class="courses">
     <div class="container">
-      <form method="get" action="/">
-        <input class="shadow-sm" type="text" name="search" placeholder="What course are you looking for?">
+      <form>
+        <input
+          class="shadow-sm"
+          type="text"
+          name="query"
+          id="query"
+          placeholder="What course are you looking for?"
+          hx-trigger="keyup changed delay:500ms"
+          hx-get="/profile/courses/htmx"
+          hx-target=".cards-list"
+        >
       </form>
 
       <hr>
@@ -25,69 +34,7 @@
         <h2>My Courses</h2>
 
         <div class="cards-list">
-          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-            <div class="card-body">
-              <h2>Course Name</h2>
-              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-            </div>
-          </div>
-
-          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-            <div class="card-body">
-              <h2>Course Name</h2>
-              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-            </div>
-          </div>
-
-          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-            <div class="card-body">
-              <h2>Course Name</h2>
-              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-            </div>
-          </div>
-
-          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-            <div class="card-body">
-              <h2>Course Name</h2>
-              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-            </div>
-          </div>
-
-          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-            <div class="card-body">
-              <h2>Course Name</h2>
-              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-            </div>
-          </div>
-
-          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-            <div class="card-body">
-              <h2>Course Name</h2>
-              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-            </div>
-          </div>
-
-          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-            <div class="card-body">
-              <h2>Course Name</h2>
-              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-            </div>
-          </div>
-
-          <div class="card shadow-sm" style="background-image: url('/assets/img/golang-course-platform-image.png');">
-            <div class="card-body">
-              <h2>Course Name</h2>
-              <p>This is a short course description to see what would be too many words. I'd like to know so that I can plan around how many characters are too many? Is this too many yet?</p>
-              <a href="/profile/courses/course-slug-goes-here" class="btn-blue shadow-sm"><small>Start Course</small></a>
-            </div>
-          </div>
+          {{ template "profile-courses-list" .Courses }}
         </div>
       </div>
     </div>

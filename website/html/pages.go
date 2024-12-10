@@ -156,6 +156,7 @@ type ProfileAffiliateHistoryPage struct {
 
 type ProfileCourses struct {
 	BasePage
+	Courses *CoursesListComponent
 }
 
 type ProfileCourse struct {

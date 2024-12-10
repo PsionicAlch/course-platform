@@ -191,12 +191,22 @@ func (db *SQLiteDatabase) UpdateCoursePurchasePaymentStatus(coursePurchaseId str
 	return nil
 }
 
-func (db *SQLiteDatabase) GetCoursesBoughtByUser(userId string) ([]*models.CourseModel, error) {
-	query := `SELECT c.id, c.title, c.slug, c.description, c.thumbnail_url, c.banner_url, c.content, c.published, c.author_id, c.file_checksum, c.file_key, c.created_at, c.updated_at FROM course_purchases AS cp JOIN courses AS c ON cp.course_id = c.id WHERE cp.user_id = ?;`
+func (db *SQLiteDatabase) GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error) {
+	query := `SELECT c.id, c.title, c.slug, c.description, c.thumbnail_url, c.banner_url, c.content, c.published, c.author_id, c.file_checksum, c.file_key, c.created_at, c.updated_at FROM course_purchases AS cp JOIN courses AS c ON cp.course_id = c.id WHERE cp.user_id = ?`
+	args := []any{userId}
+
+	if term != "" {
+		query += " AND (LOWER(c.title) LIKE '%' || ? || '%' OR LOWER(c.slug) LIKE '%' || ? || '%' OR LOWER(c.description) LIKE '%' || ? || '%')"
+		args = append(args, term, term, term)
+	}
+
+	offset := (page - 1) * elements
+	query += " ORDER BY cp.updated_at DESC LIMIT ? OFFSET ?;"
+	args = append(args, elements, offset)
 
 	var courses []*models.CourseModel
 
-	rows, err := db.connection.Query(query, userId)
+	rows, err := db.connection.Query(query, args...)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to get all courses purchased bought by user (\"%s\"): %s\n", userId, err)
 		return nil, err

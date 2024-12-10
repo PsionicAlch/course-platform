@@ -125,7 +125,7 @@ type Database interface {
 	CountUsersWhoBoughtCourse(courseId string) (uint, error)
 	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)
 	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
-	GetCoursesBoughtByUser(userId string) ([]*models.CourseModel, error)
+	GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error)
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error
