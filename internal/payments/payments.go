@@ -29,7 +29,7 @@ func SetupPayments(privateKey, webhookSecret string, db database.Database) *Paym
 	}
 }
 
-func (payment *Payments) BuyCourse(user *models.UserModel, course *models.CourseModel, successUrl, cancelUrl, affiliateCode, discountCode string, affiliatePointsUsed, amountPaid int64) (string, error) {
+func (payment *Payments) BuyCourse(user *models.UserModel, course *models.CourseModel, successUrl, cancelUrl, affiliateCode, discountCode string, affiliatePointsUsed uint, amountPaid int64) (string, error) {
 	paymentKey, err := GeneratePaymentKey()
 	if err != nil {
 		payment.ErrorLog.Printf("Failed to generate payment key: %s\n", err)

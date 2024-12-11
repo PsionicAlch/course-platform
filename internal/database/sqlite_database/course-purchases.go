@@ -2,6 +2,7 @@ package sqlite_database
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
@@ -20,10 +21,16 @@ func (db *SQLiteDatabase) HasUserPurchasedCourse(userId, courseId string) (bool,
 	return b, nil
 }
 
-func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64, token, tokenType string, validUntil time.Time) error {
+func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed uint, amountPaid float64, token, tokenType string, validUntil time.Time) error {
 	purchaseId, err := database.GenerateID()
 	if err != nil {
 		db.ErrorLog.Printf("Failed to generate ID for new course purchase: %s\n", err)
+		return err
+	}
+
+	affiliateHistoryId, err := database.GenerateID()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to generate ID for new affiliate points history: %s\n", err)
 		return err
 	}
 
@@ -49,7 +56,16 @@ func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, s
 		return err
 	}
 
-	purchased, err := internal.HasUserPurchasedCourse(tx, user.ID, courseId)
+	course, err := internal.GetCourseByID(tx, courseId)
+	if err != nil {
+		if err := tx.Rollback(); err != nil {
+			db.ErrorLog.Printf("Failed to rollback changes after error occurred: %s\n", err)
+		}
+
+		db.ErrorLog.Printf("Failed to get course by ID (\"%s\"): %s\n", courseId, err)
+	}
+
+	purchased, err := internal.HasUserPurchasedCourse(tx, user.ID, course.ID)
 	if err != nil {
 		if err := tx.Rollback(); err != nil {
 			db.ErrorLog.Printf("Failed to rollback changes after error occurred: %s\n", err)
@@ -67,7 +83,7 @@ func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, s
 		return database.ErrCourseAlreadyOwned
 	}
 
-	if user.AffiliatePoints < uint(affiliatePointsUsed) {
+	if user.AffiliatePoints < int(affiliatePointsUsed) {
 		if err := tx.Rollback(); err != nil {
 			db.ErrorLog.Printf("Failed to rollback changes after error occurred: %s\n", err)
 		}
@@ -75,13 +91,15 @@ func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, s
 		return database.ErrInsufficientAffiliatePoints
 	}
 
-	if err := internal.UpdateAffiliatePoints(tx, user.ID, user.AffiliatePoints-uint(affiliatePointsUsed)); err != nil {
-		if err := tx.Rollback(); err != nil {
-			db.ErrorLog.Printf("Failed to rollback changes after error occurred: %s\n", err)
-		}
+	if affiliatePointsUsed > 0 {
+		if err := internal.RegisterAffiliatePointsChange(tx, affiliateHistoryId, user.ID, courseId, -1*int(affiliatePointsUsed), fmt.Sprintf("Purchased \"%s\"", course.Title)); err != nil {
+			if err := tx.Rollback(); err != nil {
+				db.ErrorLog.Printf("Failed to rollback changes after error occurred: %s\n", err)
+			}
 
-		db.ErrorLog.Printf("Failed to update user's (\"%s\") affiliate points: %s\n", user.ID, err)
-		return err
+			db.ErrorLog.Printf("Failed to register affiliate point change: %s\n", err)
+			return err
+		}
 	}
 
 	if err := internal.AddNewCoursePurchase(tx, purchaseId, user.ID, courseId, paymentKey, stripeCheckoutSessionId, affiliateCode, discountCode, affiliatePointsUsed, amountPaid); err != nil {

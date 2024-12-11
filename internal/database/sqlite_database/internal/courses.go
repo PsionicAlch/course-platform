@@ -1,6 +1,11 @@
 package internal
 
-import "github.com/PsionicAlch/psionicalch-home/internal/database"
+import (
+	"database/sql"
+
+	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+)
 
 func AddCourse(dbFacade SqlDbFacade, id, title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum, fileKey string) error {
 	query := `INSERT INTO courses (id, title, slug, description, thumbnail_url, banner_url, content, file_checksum, file_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`
@@ -39,4 +44,24 @@ func UpdateCourse(dbFacade SqlDbFacade, id, title, slug, description, thumbnailU
 	}
 
 	return nil
+}
+
+func GetCourseByID(dbFacade SqlDbFacade, courseId string) (*models.CourseModel, error) {
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM courses WHERE id = ?;`
+
+	var course models.CourseModel
+	var published int
+
+	row := dbFacade.QueryRow(query, courseId)
+	if err := row.Scan(&course.ID, &course.Title, &course.Slug, &course.Description, &course.ThumbnailURL, &course.BannerURL, &course.Content, &published, &course.AuthorID, &course.FileChecksum, &course.FileKey, &course.CreatedAt, &course.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	course.Published = published == 1
+
+	return &course, nil
 }

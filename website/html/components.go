@@ -190,3 +190,10 @@ type AdminCommentsListComponent struct {
 	URLQuery     string
 	ErrorMessage string
 }
+
+type AffiliateHistoryListComponent struct {
+	AffiliateHistory     []*models.AffiliatePointsHistoryModel
+	LastAffiliateHistory *models.AffiliatePointsHistoryModel
+	QueryURL             string
+	ErrorMessage         string
+}

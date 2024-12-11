@@ -116,7 +116,7 @@ func (payment *Payments) ValidateAffiliatePointsUsed(userId string, affiliatePoi
 		return 0, err
 	}
 
-	if user.AffiliatePoints < affiliatePointsUsed {
+	if user.AffiliatePoints < int(affiliatePointsUsed) {
 		return 0, ErrInsufficientAffiliatePoints
 	}
 

@@ -120,12 +120,17 @@ type Database interface {
 
 	// Course Purchases functions.
 	HasUserPurchasedCourse(userId, courseId string) (bool, error)
-	RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64, token, tokenType string, validUntil time.Time) error
+	RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed uint, amountPaid float64, token, tokenType string, validUntil time.Time) error
 	CountCoursesWhereDiscountWasUsed(discountCode string) (uint, error)
 	CountUsersWhoBoughtCourse(courseId string) (uint, error)
 	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)
 	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
 	GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error)
+
+	// Affiliate Points History functions.
+	RegisterAffiliatePointsChange(userId, courseId string, pointsChange int, reason string) error
+	CountUserAffiliateHistory(userId string) (uint, error)
+	GetUserAffiliatePointsHistory(userId string, page, elements uint) ([]*models.AffiliatePointsHistoryModel, error)
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error

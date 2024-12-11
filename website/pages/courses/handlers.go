@@ -289,7 +289,7 @@ func (h *Handlers) PurchaseCoursePost(w http.ResponseWriter, r *http.Request) {
 		domainName = fmt.Sprintf("https://%s", config.GetWithoutError[string]("DOMAIN_NAME"))
 	}
 
-	redirectURL, err := h.Payment.BuyCourse(user, course, fmt.Sprintf("%s/courses/%s/purchase/success", domainName, course.Slug), fmt.Sprintf("%s/courses/%s/purchase/cancel", domainName, course.Slug), affiliateCode, discountCode, int64(affiliatePointsUsed), totalPrice)
+	redirectURL, err := h.Payment.BuyCourse(user, course, fmt.Sprintf("%s/courses/%s/purchase/success", domainName, course.Slug), fmt.Sprintf("%s/courses/%s/purchase/cancel", domainName, course.Slug), affiliateCode, discountCode, affiliatePointsUsed, totalPrice)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get course from slug: %s\n", err)
 

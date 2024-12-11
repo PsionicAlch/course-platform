@@ -41,6 +41,11 @@
   gap: 1rem;
 }
 
+.affiliate-timestamp time {
+  width: fit-content;
+  text-wrap: nowrap;
+}
+
 .affiliate-timestamp.added {
   border: var(--primary-green-border);
   background-color: var(--primary-light-green-color);
@@ -58,6 +63,12 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+  }
+
+  .affiliate-timestamp p {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 

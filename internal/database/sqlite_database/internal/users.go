@@ -83,23 +83,3 @@ func GetUserByID(dbFacade SqlDbFacade, id string, level database.AuthorizationLe
 
 	return &user, nil
 }
-
-func UpdateAffiliatePoints(dbFacade SqlDbFacade, userId string, affiliatePoints uint) error {
-	query := `UPDATE users SET affiliate_points = ? WHERE id = ?;`
-
-	result, err := dbFacade.Exec(query, affiliatePoints, userId)
-	if err != nil {
-		return err
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if rowsAffected == 0 {
-		return database.ErrNoRowsAffected
-	}
-
-	return nil
-}

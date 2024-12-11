@@ -152,6 +152,8 @@ type ProfilePage struct {
 
 type ProfileAffiliateHistoryPage struct {
 	BasePage
+	User             *models.UserModel
+	AffiliateHistory *AffiliateHistoryListComponent
 }
 
 type ProfileCourses struct {

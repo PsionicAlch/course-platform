@@ -14,6 +14,7 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.Get("/", handlers.ProfileGet)
 
 	router.Get("/affiliate-history", handlers.AffiliateHistoryGet)
+	router.Get("/affiliate-history/htmx", handlers.AffiliateHistoryPaginationGet)
 
 	router.Get("/courses", handlers.CoursesGet)
 	router.Get("/courses/htmx", handlers.CoursesPaginationGet)

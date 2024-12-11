@@ -5,6 +5,7 @@ go 1.23.0
 require (
 	github.com/AfterShip/email-verifier v1.4.1
 	github.com/TwiN/go-away v1.6.14
+	github.com/adrg/frontmatter v0.2.0
 	github.com/fatih/color v1.17.0
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/golang-migrate/migrate/v4 v4.18.1
@@ -12,16 +13,14 @@ require (
 	github.com/gorilla/securecookie v1.1.2
 	github.com/joho/godotenv v1.5.1
 	github.com/oklog/ulid/v2 v2.1.0
+	github.com/stripe/stripe-go/v81 v81.1.0
+	github.com/xeonx/timeago v1.0.0-rc5
 	golang.org/x/crypto v0.29.0
 	modernc.org/sqlite v1.33.1
 )
 
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
-	github.com/adrg/frontmatter v0.2.0 // indirect
-	github.com/jaswdr/faker/v2 v2.3.3 // indirect
-	github.com/stripe/stripe-go/v81 v81.1.0 // indirect
-	github.com/xeonx/timeago v1.0.0-rc5 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 

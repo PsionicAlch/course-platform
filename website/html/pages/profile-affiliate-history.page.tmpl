@@ -19,65 +19,13 @@
         <div class="affiliate-header">
           <h2>Affiliate Points History</h2>
 
-          <p>Current Affiliate Points: <b>24</b></p>
+          <p>Current Affiliate Points: <b>{{- .User.AffiliatePoints -}}</b></p>
         </div>
 
         <hr>
 
         <div class="affiliate-body">
-          <div class="affiliate-timestamp added shadow-sm">
-            <p>10 points added</p>
-
-            <time datetime="2024-11-08">2024-11-08</time>
-          </div>
-
-          <div class="affiliate-timestamp added shadow-sm">
-            <p>10 points added</p>
-
-            <time datetime="2024-11-08">2024-11-08</time>
-          </div>
-
-          <div class="affiliate-timestamp removed shadow-sm">
-            <p>10 points removed</p>
-
-            <time datetime="2024-11-08">2024-11-07</time>
-          </div>
-
-          <div class="affiliate-timestamp added shadow-sm">
-            <p>10 points added</p>
-
-            <time datetime="2024-11-08">2024-11-07</time>
-          </div>
-
-          <div class="affiliate-timestamp added shadow-sm">
-            <p>10 points added</p>
-
-            <time datetime="2024-11-08">2024-11-06</time>
-          </div>
-
-          <div class="affiliate-timestamp added shadow-sm">
-            <p>10 points added</p>
-
-            <time datetime="2024-11-08">2024-11-06</time>
-          </div>
-
-          <div class="affiliate-timestamp added shadow-sm">
-            <p>10 points added</p>
-
-            <time datetime="2024-11-08">2024-11-06</time>
-          </div>
-
-          <div class="affiliate-timestamp removed shadow-sm">
-            <p>10 points removed</p>
-
-            <time datetime="2024-11-08">2024-11-05</time>
-          </div>
-
-          <div class="affiliate-timestamp added shadow-sm">
-            <p>10 points added</p>
-
-            <time datetime="2024-11-08">2024-11-04</time>
-          </div>
+          {{ template "affiliate-history-list" .AffiliateHistory }}
         </div>
       </section>
     </div>

@@ -1,0 +1,42 @@
+{{ define "affiliate-history-list" }}
+  {{ if .AffiliateHistory }}
+    {{ range .AffiliateHistory }}
+      {{ if lt .PointsChange 0 }}
+        <div class="affiliate-timestamp removed shadow-sm">
+          <p>{{- .PointsChange }} Points. {{ .Reason -}}</p>
+
+          <time datetime="{{- pretty_date .CreatedAt -}}">{{- pretty_date .CreatedAt -}}</time>
+        </div>
+      {{ else }}
+        <div class="affiliate-timestamp added shadow-sm">
+          <p>+{{- .PointsChange }} Points. {{ .Reason -}}</p>
+
+          <time datetime="{{- pretty_date .CreatedAt -}}">{{- pretty_date .CreatedAt -}}</time>
+        </div>
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ with .LastAffiliateHistory }}
+    {{ if lt .PointsChange 0 }}
+      <div
+        class="affiliate-timestamp removed shadow-sm"
+        hx-get="{{- $.QueryURL -}}"
+        hx-trigger="revealed once"
+        hx-swap="afterend"
+      >
+        <p>{{- .PointsChange }} Points. {{ .Reason -}}</p>
+
+        <time datetime="{{- pretty_date .CreatedAt -}}">{{- pretty_date .CreatedAt -}}</time>
+      </div>
+    {{ else }}
+      <div class="affiliate-timestamp added shadow-sm">
+        <p>+{{- .PointsChange }} Points. {{ .Reason -}}</p>
+
+        <time datetime="{{- pretty_date .CreatedAt -}}">{{- pretty_date .CreatedAt -}}</time>
+      </div>
+    {{ end }}
+  {{ end }}
+
+  {{ template "error-message" .ErrorMessage }}
+{{ end }}

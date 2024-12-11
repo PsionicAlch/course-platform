@@ -23,7 +23,7 @@ func HasUserPurchasedCourse(dbFacade SqlDbFacade, userId, courseId string) (bool
 	return id != "", nil
 }
 
-func AddNewCoursePurchase(dbFacade SqlDbFacade, purchaseId, userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed int64, amountPaid float64) error {
+func AddNewCoursePurchase(dbFacade SqlDbFacade, purchaseId, userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed uint, amountPaid float64) error {
 	query := `INSERT INTO course_purchases (id, user_id, course_id, payment_key, stripe_checkout_session_id, affiliate_code, discount_code, affiliate_points_used, amount_paid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`
 
 	result, err := dbFacade.Exec(query, purchaseId, userId, courseId, paymentKey, stripeCheckoutSessionId, affiliateCode, discountCode, affiliatePointsUsed, amountPaid)

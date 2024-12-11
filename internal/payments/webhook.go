@@ -27,8 +27,6 @@ func (payment *Payments) Webhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	payment.InfoLog.Printf("Processing event: %s\n", event.Type)
-
 	switch event.Type {
 	case "payment_intent.requires_action":
 		payment.InfoLog.Println("Handling event: ", "payment_intent.requires_action")
@@ -47,23 +45,21 @@ func (payment *Payments) Webhook(w http.ResponseWriter, r *http.Request) {
 	case "payment_intent.succeeded":
 		payment.InfoLog.Println("Handling event: ", "payment_intent.succeeded")
 
-		if err := payment.HandlePaymentIntent(&event, database.Succeeded); err != nil {
+		if err := payment.HandlePaymentSuccess(&event); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-
-		// TODO: Send email to thank the user for the successful purchase.
 	case "payment_intent.payment_failed":
 		payment.InfoLog.Println("Handling event: ", "payment_intent.payment_failed")
 
-		if err := payment.HandlePaymentIntent(&event, database.Failed); err != nil {
+		if err := payment.HandlePaymentFailed(&event); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 	case "payment_intent.canceled":
 		payment.InfoLog.Println("Handling event: ", "payment_intent.canceled")
 
-		if err := payment.HandlePaymentIntent(&event, database.Cancelled); err != nil {
+		if err := payment.HandlePaymentCancel(&event); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -94,8 +90,6 @@ func (payment *Payments) Webhook(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// TODO: Update refund request to "Failed".
-	default:
-		payment.WarningLog.Printf("Unhandled event type: %s\n", event.Type)
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -107,8 +101,6 @@ func (payment *Payments) HandlePaymentIntent(event *stripe.Event, status databas
 		payment.ErrorLog.Printf("Failed to unmarshal payment intent: %s\n", err)
 		return errors.New("unexpected internal server error")
 	}
-
-	payment.InfoLog.Println("Handling payment intent")
 
 	if paymentKey, exists := intent.Metadata["payment_key"]; exists {
 		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
@@ -127,6 +119,104 @@ func (payment *Payments) HandlePaymentIntent(event *stripe.Event, status databas
 		payment.InfoLog.Println("Managed to update course payment status!")
 	} else {
 		payment.WarningLog.Println("Payment key wasn't found in meta data.")
+	}
+
+	return nil
+}
+
+func (payment *Payments) HandlePaymentSuccess(event *stripe.Event) error {
+	var intent stripe.PaymentIntent
+	if err := json.Unmarshal(event.Data.Raw, &intent); err != nil {
+		payment.ErrorLog.Printf("Failed to unmarshal payment intent: %s\n", err)
+		return errors.New("unexpected internal server error")
+	}
+
+	if paymentKey, exists := intent.Metadata["payment_key"]; exists {
+		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to get course purchase by payment key (\"%s\"): %s\n", paymentKey, err)
+			return errors.New("unexpected internal server error")
+		}
+
+		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Succeeded); err != nil {
+			payment.ErrorLog.Printf("Failed to update course purchase's (\"%s\") payment status: %s\n", coursePurchase.ID, err)
+			return errors.New("unexpected internal server error")
+		}
+
+		if coursePurchase.AffiliateCode.Valid {
+			affiliateUser, err := payment.Database.GetUserByAffiliateCode(coursePurchase.AffiliateCode.String)
+			if err != nil {
+				payment.ErrorLog.Printf("Failed to get user by affiliate code (\"%s\"): %s\n", coursePurchase.AffiliateCode.String, err)
+				return errors.New("unexpected internal server error")
+			}
+
+			if err := payment.Database.RegisterAffiliatePointsChange(affiliateUser.ID, coursePurchase.CourseID, AffiliateReward, "Affiliate reward received"); err != nil {
+				payment.ErrorLog.Printf("Failed to reward user (\"%s\") with affiliate points: %s\n", affiliateUser.ID, err)
+				return errors.New("unexpected internal server error")
+			}
+		}
+
+		// TODO: Send email to thank user for purchase.
+	}
+
+	return nil
+}
+
+func (payment *Payments) HandlePaymentCancel(event *stripe.Event) error {
+	var intent stripe.PaymentIntent
+	if err := json.Unmarshal(event.Data.Raw, &intent); err != nil {
+		payment.ErrorLog.Printf("Failed to unmarshal payment intent: %s\n", err)
+		return errors.New("unexpected internal server error")
+	}
+
+	if paymentKey, exists := intent.Metadata["payment_key"]; exists {
+		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to get course purchase by payment key (\"%s\"): %s\n", paymentKey, err)
+			return errors.New("unexpected internal server error")
+		}
+
+		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Cancelled); err != nil {
+			payment.ErrorLog.Printf("Failed to update course purchase's (\"%s\") payment status: %s\n", coursePurchase.ID, err)
+			return errors.New("unexpected internal server error")
+		}
+
+		if coursePurchase.AffiliatePointsUsed > 0 {
+			if err := payment.Database.RegisterAffiliatePointsChange(coursePurchase.UserID, coursePurchase.CourseID, int(coursePurchase.AffiliatePointsUsed), "Payment cancelled"); err != nil {
+				payment.ErrorLog.Printf("Failed to refund affiliate points after payment was cancelled: %s\n", err)
+				return errors.New("unexpected internal server error")
+			}
+		}
+	}
+
+	return nil
+}
+
+func (payment *Payments) HandlePaymentFailed(event *stripe.Event) error {
+	var intent stripe.PaymentIntent
+	if err := json.Unmarshal(event.Data.Raw, &intent); err != nil {
+		payment.ErrorLog.Printf("Failed to unmarshal payment intent: %s\n", err)
+		return errors.New("unexpected internal server error")
+	}
+
+	if paymentKey, exists := intent.Metadata["payment_key"]; exists {
+		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to get course purchase by payment key (\"%s\"): %s\n", paymentKey, err)
+			return errors.New("unexpected internal server error")
+		}
+
+		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Failed); err != nil {
+			payment.ErrorLog.Printf("Failed to update course purchase's (\"%s\") payment status: %s\n", coursePurchase.ID, err)
+			return errors.New("unexpected internal server error")
+		}
+
+		if coursePurchase.AffiliatePointsUsed > 0 {
+			if err := payment.Database.RegisterAffiliatePointsChange(coursePurchase.UserID, coursePurchase.CourseID, int(coursePurchase.AffiliatePointsUsed), "Payment failed"); err != nil {
+				payment.ErrorLog.Printf("Failed to refund affiliate points after payment failed: %s\n", err)
+				return errors.New("unexpected internal server error")
+			}
+		}
 	}
 
 	return nil
