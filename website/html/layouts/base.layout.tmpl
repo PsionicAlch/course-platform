@@ -33,6 +33,7 @@
     {{ end }}
   </head>
   <body
+    hx-ext="preload"
     x-data="{ menuOpen: false }"
     x-bind:class="{ 'noscroll': menuOpen }"
   >
