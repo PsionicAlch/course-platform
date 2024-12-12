@@ -183,7 +183,7 @@ func (db *SQLiteDatabase) GetCourseBySlug(slug string) (*models.CourseModel, err
 			return nil, nil
 		}
 
-		db.ErrorLog.Printf("Failed to get course by slug \"%s\" from the database: %s\n", slug, err)
+		db.ErrorLog.Printf("Failed to get course by slug (\"%s\") from the database: %s\n", slug, err)
 		return nil, err
 	}
 

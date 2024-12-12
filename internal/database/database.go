@@ -106,8 +106,10 @@ type Database interface {
 
 	// Chapters functions.
 	GetAllChapters() ([]*models.ChapterModel, error)
+	GetChapterBySlug(chapterSlug string) (*models.ChapterModel, error)
 	GetChapterByFileKey(fileKey string) (*models.ChapterModel, error)
 	CountChapters(courseId string) (int, error)
+	GetCourseChapters(courseId string) ([]*models.ChapterModel, error)
 
 	// Discounts functions.
 	GetDiscountsPaginated(term string, active *bool, page, elements uint) ([]*models.DiscountModel, error)
@@ -132,6 +134,10 @@ type Database interface {
 	CountUserAffiliateHistory(userId string) (uint, error)
 	GetUserAffiliatePointsHistory(userId string, page, elements uint) ([]*models.AffiliatePointsHistoryModel, error)
 
+	// User Course Chapter Completion functions.
+	HasUserCompletedChapter(userId, courseId, chapterId string) (bool, error)
+	GetAllChaptersCompleted(userId, courseId string) ([]*models.ChapterModel, error)
+
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error
 	CommentsSetUser(comments []*models.CommentModel) error
@@ -149,7 +155,7 @@ type Database interface {
 	PrepareBulkCourses()
 	InsertCourse(title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum, fileKey string, keywords []string)
 	UpdateCourse(id, title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum, fileKey string, keywords []string, authorId sql.NullString)
-	InsertChapter(title string, chapter int, content, fileChecksum, fileKey, courseKey string)
-	UpdateChapter(id, title string, chapter int, content, fileChecksum, fileKey, courseKey string)
+	InsertChapter(title, slug string, chapter int, content, fileChecksum, fileKey, courseKey string)
+	UpdateChapter(id, title, slug string, chapter int, content, fileChecksum, fileKey, courseKey string)
 	RunBulkCourses() error
 }

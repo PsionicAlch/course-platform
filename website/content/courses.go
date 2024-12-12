@@ -146,14 +146,14 @@ func (content *Content) ParseChapterFile(filePath string, db database.Database, 
 
 	// The chapter does not yet exist.
 	if !fileKeyFound {
-		db.InsertChapter(chapterData.Title, chapterData.Chapter, chapterData.Content, fileChecksum, chapterData.Key, chapterData.CourseKey)
+		db.InsertChapter(chapterData.Title, TitleToSlug(chapterData.Title), chapterData.Chapter, chapterData.Content, fileChecksum, chapterData.Key, chapterData.CourseKey)
 		return
 	}
 
 	// The chapter has been updated.
 	if !checksumMatch {
 		content.InfoLog.Printf("%s's file checksum didn't match.\nOld file checksum: %s\t New file checksum: %s\n", chapters[fileKeyIndex].FileKey, chapters[fileKeyIndex].FileChecksum, fileChecksum)
-		db.UpdateChapter(chapters[fileKeyIndex].ID, chapterData.Title, chapterData.Chapter, chapterData.Content, fileChecksum, chapterData.Key, chapterData.CourseKey)
+		db.UpdateChapter(chapters[fileKeyIndex].ID, chapterData.Title, TitleToSlug(chapterData.Title), chapterData.Chapter, chapterData.Content, fileChecksum, chapterData.Key, chapterData.CourseKey)
 		return
 	}
 }

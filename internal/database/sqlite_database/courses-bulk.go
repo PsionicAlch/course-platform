@@ -24,6 +24,7 @@ type intermediate_course struct {
 type intermediate_chapter struct {
 	ID           string
 	Title        string
+	Slug         string
 	Chapter      int
 	Content      string
 	FileChecksum string
@@ -73,9 +74,10 @@ func (db *SQLiteDatabase) UpdateCourse(id, title, slug, description, thumbnailUr
 	})
 }
 
-func (db *SQLiteDatabase) InsertChapter(title string, chapter int, content, fileChecksum, fileKey, courseKey string) {
+func (db *SQLiteDatabase) InsertChapter(title, slug string, chapter int, content, fileChecksum, fileKey, courseKey string) {
 	chaptersToInsert = append(chaptersToInsert, &intermediate_chapter{
 		Title:        title,
+		Slug:         slug,
 		Chapter:      chapter,
 		Content:      content,
 		FileChecksum: fileChecksum,
@@ -84,10 +86,11 @@ func (db *SQLiteDatabase) InsertChapter(title string, chapter int, content, file
 	})
 }
 
-func (db *SQLiteDatabase) UpdateChapter(id, title string, chapter int, content, fileChecksum, fileKey, courseKey string) {
+func (db *SQLiteDatabase) UpdateChapter(id, title, slug string, chapter int, content, fileChecksum, fileKey, courseKey string) {
 	chaptersToUpdate = append(chaptersToUpdate, &intermediate_chapter{
 		ID:           id,
 		Title:        title,
+		Slug:         slug,
 		Chapter:      chapter,
 		Content:      content,
 		FileChecksum: fileChecksum,
@@ -177,7 +180,7 @@ func AddChapters(tx *sql.Tx, chapters []*intermediate_chapter) error {
 			return err
 		}
 
-		if err := internal.AddChapter(tx, id, chapter.Title, chapter.Chapter, chapter.Content, chapter.FileChecksum, chapter.FileKey, chapter.CourseKey); err != nil {
+		if err := internal.AddChapter(tx, id, chapter.Title, chapter.Slug, chapter.Chapter, chapter.Content, chapter.FileChecksum, chapter.FileKey, chapter.CourseKey); err != nil {
 			return err
 		}
 	}
@@ -205,7 +208,7 @@ func UpdateCourses(tx *sql.Tx, courses []*intermediate_course) error {
 
 func UpdateChapters(tx *sql.Tx, chapters []*intermediate_chapter) error {
 	for _, chapter := range chapters {
-		if err := internal.UpdateChapter(tx, chapter.ID, chapter.Title, chapter.Chapter, chapter.Content, chapter.FileChecksum, chapter.FileKey, chapter.CourseKey); err != nil {
+		if err := internal.UpdateChapter(tx, chapter.ID, chapter.Title, chapter.Slug, chapter.Chapter, chapter.Content, chapter.FileChecksum, chapter.FileKey, chapter.CourseKey); err != nil {
 			return err
 		}
 	}

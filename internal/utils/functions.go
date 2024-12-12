@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"iter"
 )
 
 // InSlice checks to see if an item is in a list of items.
@@ -26,6 +27,16 @@ func InSliceFunc[T, A any](item T, items []A, compareFunc func(itemA T, itemB A)
 	}
 
 	return -1, false
+}
+
+func InSeq[T iter.Seq[A], A comparable](item A, items T) bool {
+	for i := range items {
+		if item == i {
+			return true
+		}
+	}
+
+	return false
 }
 
 func RandomByteSlice(length int) ([]byte, error) {

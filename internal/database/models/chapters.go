@@ -5,6 +5,7 @@ import "time"
 type ChapterModel struct {
 	ID           string
 	Title        string
+	Slug         string
 	Chapter      int
 	Content      string
 	CourseID     string

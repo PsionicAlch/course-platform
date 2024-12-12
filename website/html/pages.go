@@ -163,6 +163,12 @@ type ProfileCourses struct {
 
 type ProfileCourse struct {
 	BasePage
+	Course             *models.CourseModel
+	Chapter            *models.ChapterModel
+	Chapters           []*models.ChapterModel
+	LastChapter        bool
+	Completed          map[string]bool
+	HasCompletedCourse bool
 }
 
 type ProfileTutorialsBookmarksPage struct {

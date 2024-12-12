@@ -11,7 +11,7 @@ import (
 
 func RegisterRoutes(handlers *Handlers) http.Handler {
 	affiliateHistoryHandlers := affiliatehistory.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database)
-	courseHandlers := courses.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database)
+	courseHandlers := courses.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Session)
 	tutorialHandlers := tutorials.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database)
 
 	router := chi.NewRouter()
