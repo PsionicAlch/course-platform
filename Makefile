@@ -37,5 +37,8 @@ generate-file-key:
 loc:
 	@go run ./cmd/loc
 
+stripe-webhook:
+	@stripe listen --forward-to localhost:8080/payments/webhook
+
 clean:
 	rm -rf ./tmp

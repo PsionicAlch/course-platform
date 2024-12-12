@@ -3,30 +3,26 @@ package profile
 import (
 	"net/http"
 
+	affiliatehistory "github.com/PsionicAlch/psionicalch-home/website/pages/profile/affiliate-history"
+	"github.com/PsionicAlch/psionicalch-home/website/pages/profile/courses"
+	"github.com/PsionicAlch/psionicalch-home/website/pages/profile/tutorials"
 	"github.com/go-chi/chi/v5"
 )
 
 func RegisterRoutes(handlers *Handlers) http.Handler {
+	affiliateHistoryHandlers := affiliatehistory.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database)
+	courseHandlers := courses.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database)
+	tutorialHandlers := tutorials.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database)
+
 	router := chi.NewRouter()
 
 	router.Use(handlers.Auth.AllowAuthenticated("/accounts/login"))
 
 	router.Get("/", handlers.ProfileGet)
 
-	router.Get("/affiliate-history", handlers.AffiliateHistoryGet)
-	router.Get("/affiliate-history/htmx", handlers.AffiliateHistoryPaginationGet)
-
-	router.Get("/courses", handlers.CoursesGet)
-	router.Get("/courses/htmx", handlers.CoursesPaginationGet)
-
-	router.Get("/courses/{slug}", handlers.CourseGet)
-	router.Get("/courses/{course_slug}/{chapter_slug}", handlers.CourseChapterGet)
-
-	router.Get("/tutorials/bookmarks", handlers.TutorialsBookmarksGet)
-	router.Get("/tutorials/bookmarks/htmx", handlers.TutorialsBookmarksPaginationGet)
-
-	router.Get("/tutorials/likes", handlers.TutorialsLikesGet)
-	router.Get("/tutorials/likes/htmx", handlers.TutorialsLikesPaginationGet)
+	router.Mount("/affiliate-history", affiliatehistory.RegisterRoutes(affiliateHistoryHandlers))
+	router.Mount("/courses", courses.RegisterRoutes(courseHandlers))
+	router.Mount("/tutorials", tutorials.RegisterRoutes(tutorialHandlers))
 
 	return router
 }
