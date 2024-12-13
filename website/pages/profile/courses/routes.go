@@ -14,11 +14,12 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.Get("/htmx", handlers.CoursesPaginationGet)
 
 	router.Route("/{course-slug}", func(r chi.Router) {
-		router.Use(handlers.UserBoughtCourse)
+		r.Use(handlers.UserBoughtCourse)
 
-		router.Get("/", handlers.CourseGet)
-		router.Get("/certificate", handlers.CourseCertificateGet)
-		router.Get("/{chapter-slug}", handlers.CourseChapterGet)
+		r.Get("/", handlers.CourseGet)
+		r.Get("/certificate", handlers.CourseCertificateGet)
+		r.Get("/{chapter-slug}", handlers.CourseChapterGet)
+		r.Post("/{chapter-slug}/finish", handlers.CourseChapterFinishPost)
 	})
 
 	return router

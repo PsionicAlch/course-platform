@@ -40,6 +40,7 @@
     <button
       class="chapters-btn"
       x-on:click="courseMenuOpen = true"
+      x-ref="toggleButton"
     >
       <span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
@@ -54,11 +55,20 @@
 
         {{ html .Chapter.Content }}
 
-        <button hx-post="/profile/courses/{{- .Course.Slug -}}/{{- .Chapter.Slug -}}/finish" class="btn btn-blue shadow-sm next-chapter-btn">{{- if .LastChapter -}}Finish Course{{- else -}}Next Chapter{{- end -}}</button>
+        <button hx-post="/profile/courses/{{- .Course.Slug -}}/{{- .Chapter.Slug -}}/finish" id="next-chapter-btn" class="btn btn-blue shadow-sm next-chapter-btn">{{- if .LastChapter -}}Finish Course{{- else -}}Next Chapter{{- end -}}</button>
       </div>
     </section>
 
-    <section class="course-menu" x-bind:class="{ 'visible': courseMenuOpen, 'hidden': !courseMenuOpen }" style="display: none;">
+    <section
+      class="course-menu"
+      x-bind:class="{ 'visible': courseMenuOpen, 'hidden': !courseMenuOpen }"
+      x-on:click.outside="
+        if (!$refs.toggleButton.contains($event.target)) {
+          courseMenuOpen = false;
+        }
+      "
+      style="display: none;"
+    >
       <div class="course-menu-header">
         <h2>Chapters</h2>
 
@@ -77,7 +87,7 @@
                 <span>&#10004;</span>
               </div>
 
-              <p><a href="/profile/courses/{{ $.Course.Slug }}/{{- .Slug -}}">{{- .Title -}}</a></h2>
+              <p><a href="/profile/courses/{{ $.Course.Slug }}/{{- .Slug -}}">Chapter {{ .Chapter }}: {{ .Title }}</a></h2>
             </div>
           {{ else }}
             <div class="course-section">
@@ -85,7 +95,7 @@
                 <span>&#x268A;</span>
               </div>
 
-              <p><a href="/profile/courses/{{- $.Course.Slug -}}/{{- .Slug -}}">{{- .Title -}}</a></h2>
+              <p><a href="/profile/courses/{{- $.Course.Slug -}}/{{- .Slug -}}">Chapter {{ .Chapter }}: {{ .Title }}</a></h2>
             </div>
           {{ end }}
         {{ end }}
@@ -96,7 +106,7 @@
               <span>&#10004;</span>
             </div>
 
-            <p><a href="/profile/courses/{{ $.Course.Slug }}/certificate">Certificate of Completion</a></h2>
+            <p><a href="/profile/courses/{{ $.Course.Slug }}/certificate" hx-swap="none">Certificate of Completion</a></h2>
           </div>
         {{ end }}
       </div>

@@ -13,9 +13,6 @@ func Redirect(w http.ResponseWriter, r *http.Request, url string, status ...int)
 		statusCode = http.StatusFound
 	}
 
-	// w.Header().Set("HX-Redirect", url)
-	// http.Redirect(w, r, url, statusCode)
-
 	// Check if the request is an HTMX request
 	if r.Header.Get("HX-Request") != "" {
 		w.Header().Set("HX-Redirect", url)

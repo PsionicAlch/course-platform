@@ -137,6 +137,8 @@ type Database interface {
 	// User Course Chapter Completion functions.
 	HasUserCompletedChapter(userId, courseId, chapterId string) (bool, error)
 	GetAllChaptersCompleted(userId, courseId string) ([]*models.ChapterModel, error)
+	GetAllChaptersNotCompleted(userId, courseId string) ([]*models.ChapterModel, error)
+	FinishChapter(userId, chapterId, courseId string) error
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error

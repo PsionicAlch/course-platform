@@ -293,3 +293,61 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Println(err)
 	}
 }
+
+func (h *Handlers) CourseChapterFinishPost(w http.ResponseWriter, r *http.Request) {
+	user := authentication.GetUserFromRequest(r)
+
+	if user == nil {
+		h.ErrorLog.Println("Failed to get user from request context")
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error.")
+		utils.Redirect(w, r, "/profile")
+		return
+	}
+
+	courseSlug := chi.URLParam(r, "course-slug")
+	chapterSlug := chi.URLParam(r, "chapter-slug")
+
+	chapter, err := h.Database.GetChapterBySlug(chapterSlug)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get chapter by slug (\"%s\"): %s\n", chapterSlug, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if chapter == nil {
+		h.ErrorLog.Printf("Failed to get chapter from slug (\"%s\")\n", chapterSlug)
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error.")
+		utils.Redirect(w, r, "/profile")
+		return
+	}
+
+	if err := h.Database.FinishChapter(user.ID, chapter.ID, chapter.CourseID); err != nil {
+		h.ErrorLog.Printf("Failed to mark the chapter (\"%s\") as completed for user (\"%s\"): %s\n", chapter.ID, user.ID, err)
+		h.Session.SetErrorMessage(r.Context(), "Failed to mark chapter as completed. Please try again.")
+		w.Header().Set("HX-Refresh", "true")
+		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s/%s#next-chapter-btn", courseSlug, chapterSlug))
+		return
+	}
+
+	incompleteChapters, err := h.Database.GetAllChaptersNotCompleted(user.ID, chapter.CourseID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get all chapters of course (\"%s\") that the user (\"%s\") hasn't completed yet: %s\n", chapter.CourseID, user.ID, err)
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
+		w.Header().Set("HX-Refresh", "true")
+		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s/%s#next-chapter-btn", courseSlug, chapterSlug))
+		return
+	}
+
+	h.InfoLog.Println(incompleteChapters)
+	h.InfoLog.Println(len(incompleteChapters))
+
+	if len(incompleteChapters) == 0 {
+		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s/certificate", courseSlug))
+	} else {
+		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s/%s", courseSlug, incompleteChapters[0].Slug))
+	}
+}
