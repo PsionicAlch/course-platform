@@ -1,0 +1,217 @@
+{{ template "base" .}}
+
+{{ define "meta-tags" }}
+  <!-- TODO: Generate SEO Tags with ChatGPT. -->
+{{ end }}
+
+{{ define "stylesheets" }}
+  <link rel="stylesheet" href="/assets/css/article.css">
+  <link rel="stylesheet" href="/assets/css/profile-course.css">
+{{ end }}
+
+{{ define "title" }}
+  <title>Certificate of Completion for {{ .Course.Title }} | PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <main
+    x-data="{ courseMenuOpen: false }"
+    class="course"
+  >
+    <button
+      class="chapters-btn"
+      x-on:click="courseMenuOpen = true"
+      x-ref="toggleButton"
+    >
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+          <path d="M11.25 4.533A9.707 9.707 0 0 0 6 3a9.735 9.735 0 0 0-3.25.555.75.75 0 0 0-.5.707v14.25a.75.75 0 0 0 1 .707A8.237 8.237 0 0 1 6 18.75c1.995 0 3.823.707 5.25 1.886V4.533ZM12.75 20.636A8.214 8.214 0 0 1 18 18.75c.966 0 1.89.166 2.75.47a.75.75 0 0 0 1-.708V4.262a.75.75 0 0 0-.5-.707A9.735 9.735 0 0 0 18 3a9.707 9.707 0 0 0-5.25 1.533v16.103Z" />
+        </svg>
+      </span>
+    </button>
+
+    <section class="course-container">
+      <div class="course-content article-content">
+        <h1>Certificate of Completion</h1>
+
+        <div class="certificate-container shadow-sm">
+          <iframe id="certificate" src="/certificates/{{- .Certificate.ID -}}" scrolling="no"></iframe>
+        </div>
+
+        <div class="certificate-text">
+          <p>Congratulations, {{ .User.Name }}!</p>
+
+          <p>You've successfully completed the <strong>{{ .Course.Title }}</strong> course on <strong>{{ pretty_date .Certificate.CreatedAt }}</strong>, taught by <a href="/authors/{{- .Author.Slug -}}">{{ .Author.Name }} {{ .Author.Surname }}</a> on PsionicAlch.</p>
+
+          <p>This certificate confirms that you completed the entire course and validated your knowledge as a dedicated student. Great job!</p>
+        </div>
+
+        <hr>
+
+        <div class="certificate-actions">
+          <button class="btn btn-blue shadow-sm" id="share-btn">Share Achievement</button>
+          <button class="btn btn-blue shadow-sm" id="png-download-btn">Download PNG</button>
+          <button class="btn btn-blue shadow-sm" id="pdf-download-btn">Download PDF</button>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="course-menu"
+      x-bind:class="{ 'visible': courseMenuOpen, 'hidden': !courseMenuOpen }"
+      x-on:click.outside="
+        if (!$refs.toggleButton.contains($event.target)) {
+          courseMenuOpen = false;
+        }
+      "
+      style="display: none;"
+    >
+      <div class="course-menu-header">
+        <h2>Chapters</h2>
+
+        <button x-on:click="courseMenuOpen = false">
+          <span>&#10005;</span>
+        </button>
+      </div>
+
+      <hr>
+
+      <div class="course-menu-body">
+        {{ range .Chapters }}
+          <div class="course-section">
+            <div class="completed">
+              <span>&#10004;</span>
+            </div>
+
+            <p><a href="/profile/courses/{{ $.Course.Slug }}/{{- .Slug -}}">Chapter {{ .Chapter }}: {{ .Title }}</a></h2>
+          </div>
+        {{ end }}
+
+        <div class="course-section">
+          <div class="completed">
+            <span>&#10004;</span>
+          </div>
+
+          <p><a href="/profile/courses/{{ $.Course.Slug }}/certificate" hx-swap="none">Certificate of Completion</a></h2>
+        </div>
+      </div>
+    </section>
+  </main>
+{{ end }}
+
+{{ define "javascript" }}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    function scaleCertificate() {
+      const iframe = document.getElementById("certificate");
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      const container = iframe.parentElement;
+      const containerWidth = container.offsetWidth;
+      const iframeOriginalWidth = 1920;
+      const iframeOriginalHeight = 1080;
+      const scaleFactor = containerWidth / iframeOriginalWidth;
+      const iframeBody = iframeDocument.body;
+
+      iframeBody.style.transform = `scale(${scaleFactor})`;
+      iframeBody.style.transformOrigin = '0 0';
+      iframeBody.style.width = `${iframeOriginalWidth}px`;
+      iframeBody.style.height = `${iframeOriginalHeight}px`;
+    }
+
+    document.getElementById("certificate")?.addEventListener("load", scaleCertificate);
+    window.addEventListener("resize", scaleCertificate);
+
+    function shareCertificate() {
+      const textToCopy = "🎉 I just completed the {{ .Course.Title }} course on PsionicAlch! 🚀 Grateful for the hands-on learning and proud to take this next step as a developer. 💻✨\n\nCheck out my certificate: https://www.psionicalch.com/certificates/{{- .Certificate.ID -}}\n\n#PsionicAlch #golang";
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        notyf.open({
+          type: 'flash-info',
+          message: 'Share link has been copied to clipboard!'
+        });
+      }).catch(() => {
+        notyf.open({
+          type: 'flash-error',
+          message: 'Failed to copy certificate link. Please try again.'
+        });
+      });
+    }
+
+    document.getElementById("share-btn")?.addEventListener("click", shareCertificate);
+
+    async function certificateToPNG() {
+      const button = document.getElementById("png-download-btn");
+      button.innerText = "Downloading...";
+
+      const iframe = document.getElementById("certificate");
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      const iframeContent = iframeDocument.body;
+
+      iframeContent.style = "";
+
+      try {
+        const canvas = await html2canvas(iframeContent, {
+          scale: 2,
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = 'testing.png';
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error(error);
+      }
+
+      scaleCertificate();
+      button.innerText = "Download PNG";
+    }
+
+    async function certificateToPDF() {
+      const button = document.getElementById("pdf-download-btn");
+      button.innerText = "Downloading...";
+
+      const iframe = document.getElementById("certificate");
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      const iframeContent = iframeDocument.body;
+
+      iframeContent.style = "";
+
+      try {
+        const canvas = await html2canvas(iframeContent, {
+          scale: 2,
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+
+        const width = 1920;
+        const height = 1080;
+
+        const pdf = new jsPDF({
+          orientation: 'landscape',
+          unit: 'px',
+          format: [width, height],
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+        pdf.save('testing.pdf');
+      } catch (error) {
+        console.error(error);
+      }
+
+      scaleCertificate();
+      button.innerText = "Download PDF";
+    }
+
+    document.getElementById("png-download-btn")?.addEventListener("click", certificateToPNG);
+    document.getElementById("pdf-download-btn")?.addEventListener("click", certificateToPDF);
+  </script>
+{{ end }}

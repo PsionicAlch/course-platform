@@ -18,6 +18,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/pages/accounts"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/admin"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/authors"
+	"github.com/PsionicAlch/psionicalch-home/website/pages/certificates"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/courses"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/general"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/profile"
@@ -91,6 +92,7 @@ func StartWebsite() {
 	settingsHandlers := settings.SetupHandlers(pagesRenderer)
 	adminHandlers := admin.SetupHandlers(pagesRenderer, htmxRenderer, db, auth)
 	authorsHandlers := authors.SetupHandlers(pagesRenderer)
+	certificateHandlers := certificates.SetupHandlers(pagesRenderer, db)
 
 	// Create new router.
 	router := chi.NewRouter()
@@ -99,12 +101,6 @@ func StartWebsite() {
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
-
-	// Set up 404 handler.
-	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Set up 404 page.
-		pagesRenderer.RenderHTML(w, r.Context(), "404.page.tmpl", nil, http.StatusNotFound)
-	})
 
 	// Register payments webhook.
 	router.Post("/payments/webhook", payment.Webhook)
@@ -121,6 +117,16 @@ func StartWebsite() {
 	router.With(auth.SetUserWithEmail(emailer), sessions.SessionMiddleware).Mount("/settings", settings.RegisterRoutes(settingsHandlers))
 	router.With(auth.SetUserWithEmail(emailer), sessions.SessionMiddleware).Mount("/admin", admin.RegisterRoutes(adminHandlers))
 	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/authors", authors.RegisterRoutes(authorsHandlers))
+	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/certificates", certificates.RegisterRoutes(certificateHandlers))
+
+	// Set up 404 handler.
+	router.With(auth.SetUser, sessions.SessionMiddleware).NotFound(func(w http.ResponseWriter, r *http.Request) {
+		user := authentication.GetUserFromRequest(r)
+
+		if err := pagesRenderer.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			loggers.ErrorLog.Println(err)
+		}
+	})
 
 	// Start server.
 	port := config.GetWithoutError[string]("PORT")

@@ -140,6 +140,13 @@ type Database interface {
 	GetAllChaptersNotCompleted(userId, courseId string) ([]*models.ChapterModel, error)
 	FinishChapter(userId, chapterId, courseId string) error
 
+	// Certificates functions.
+	AddCertificate(userId, courseId string) error
+	GetCertificateFromID(certificateId string) (*models.CertificateModel, error)
+	GetCertificateFromUserAndCourse(userId, courseId string) (*models.CertificateModel, error)
+	GetUserFromCertificate(certificateId string) (*models.UserModel, error)
+	GetCourseFromCertificate(certificateId string) (*models.CourseModel, error)
+
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error
 	CommentsSetUser(comments []*models.CommentModel) error

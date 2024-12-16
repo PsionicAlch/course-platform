@@ -28,7 +28,7 @@ type Handlers struct {
 }
 
 func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, sessions *session.Session) *Handlers {
-	loggers := utils.CreateLoggers("PROFILE HANDLERS")
+	loggers := utils.CreateLoggers("PROFILE COURSES HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
@@ -185,7 +185,129 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) {
-	// TODO: Figure out how the to generate certificate for users.
+	user := authentication.GetUserFromRequest(r)
+	course := GetCourseFromRequest(r)
+	pageData := &html.ProfileCertificate{
+		BasePage: html.NewBasePage(user),
+	}
+
+	if user == nil {
+		h.ErrorLog.Println("Failed to get user from context")
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if course == nil {
+		h.ErrorLog.Println("Failed to get course from context")
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Course = course
+	pageData.User = user
+
+	incompleteChapters, err := h.Database.GetAllChaptersNotCompleted(user.ID, course.ID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get all chapters of course (\"%s\") that the user (\"%s\") hasn't completed yet: %s\n", course.ID, user.ID, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if len(incompleteChapters) != 0 {
+		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s/%s", course.Slug, incompleteChapters[0].Slug))
+		return
+	}
+
+	certificate, err := h.Database.GetCertificateFromUserAndCourse(user.ID, course.ID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get certificate from the database: %s\n", err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if certificate == nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Certificate = certificate
+
+	if !course.AuthorID.Valid {
+		h.ErrorLog.Printf("Course (\"%s\") does not have a valid author", course.Title)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	author, err := h.Database.GetUserByID(course.AuthorID.String, database.Author)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get author by ID (\"%s\"): %s\n", course.AuthorID.String, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if author == nil {
+		h.ErrorLog.Printf("Failed to get author by ID (\"%s\")", course.AuthorID.String)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Author = author
+
+	chapters, err := h.Database.GetCourseChapters(course.ID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get chapters associates with course (\"%s\"): %s\n", course.ID, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if chapters == nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Chapters = chapters
+
+	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "profile-certificate", pageData); err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
@@ -296,6 +418,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) CourseChapterFinishPost(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
+	course := GetCourseFromRequest(r)
 
 	if user == nil {
 		h.ErrorLog.Println("Failed to get user from request context")
@@ -310,11 +433,8 @@ func (h *Handlers) CourseChapterFinishPost(w http.ResponseWriter, r *http.Reques
 	chapter, err := h.Database.GetChapterBySlug(chapterSlug)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get chapter by slug (\"%s\"): %s\n", chapterSlug, err)
-
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
-			h.ErrorLog.Println(err)
-		}
-
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error.")
+		utils.Redirect(w, r, "/profile")
 		return
 	}
 
@@ -342,10 +462,21 @@ func (h *Handlers) CourseChapterFinishPost(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	h.InfoLog.Println(incompleteChapters)
-	h.InfoLog.Println(len(incompleteChapters))
-
 	if len(incompleteChapters) == 0 {
+		if course == nil {
+			h.ErrorLog.Println("Failed to get course from context")
+			h.Session.SetErrorMessage(r.Context(), "Unexpected server error.")
+			utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s/%s#next-chapter-btn", courseSlug, chapterSlug))
+			return
+		}
+
+		if err := h.Database.AddCertificate(user.ID, course.ID); err != nil {
+			h.ErrorLog.Printf("Failed to create new certificate of completion: %s\n", err)
+			h.Session.SetErrorMessage(r.Context(), "Unexpected server error.")
+			utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s/%s#next-chapter-btn", courseSlug, chapterSlug))
+			return
+		}
+
 		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s/certificate", courseSlug))
 	} else {
 		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s/%s", courseSlug, incompleteChapters[0].Slug))

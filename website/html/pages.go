@@ -94,6 +94,12 @@ type AuthorsCoursesPage struct {
 	BasePage
 }
 
+type CertificatePage struct {
+	Certificate *models.CertificateModel
+	User        *models.UserModel
+	Course      *models.CourseModel
+}
+
 type CoursesPage struct {
 	BasePage
 	Courses *CoursesListComponent
@@ -154,6 +160,15 @@ type ProfileAffiliateHistoryPage struct {
 	BasePage
 	User             *models.UserModel
 	AffiliateHistory *AffiliateHistoryListComponent
+}
+
+type ProfileCertificate struct {
+	BasePage
+	Certificate *models.CertificateModel
+	Course      *models.CourseModel
+	User        *models.UserModel
+	Author      *models.UserModel
+	Chapters    []*models.ChapterModel
 }
 
 type ProfileCourses struct {

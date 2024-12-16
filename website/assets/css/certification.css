@@ -1,0 +1,68 @@
+body {
+  width: 1920px;
+  height: 1080px;
+  overflow: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+nav {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav h2 {
+  color: var(--primary-dark-text-color);
+  font-size: 3em;
+}
+
+main {
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.image-container {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-container {
+  width: 100%;
+  text-align: center;
+}
+
+.text-container hr {
+  margin: 2rem auto;
+  width: 80%;
+}
+
+.text-container h3 {
+  font-size: 3em;
+}
+
+.certificate-heading {
+  margin-top: 1rem;
+  color: var(--primary-dark-text-color);
+  font-size: 4em;
+}
+
+.user-name {
+  margin-bottom: 2rem;
+  color: var(--primary-dark-text-color);
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
