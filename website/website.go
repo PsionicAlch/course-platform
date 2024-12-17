@@ -91,7 +91,7 @@ func StartWebsite() {
 	profileHandlers := profile.SetupHandlers(pagesRenderer, htmxRenderer, auth, db, sessions)
 	settingsHandlers := settings.SetupHandlers(pagesRenderer)
 	adminHandlers := admin.SetupHandlers(pagesRenderer, htmxRenderer, db, auth)
-	authorsHandlers := authors.SetupHandlers(pagesRenderer)
+	authorsHandlers := authors.SetupHandlers(pagesRenderer, htmxRenderer, db)
 	certificateHandlers := certificates.SetupHandlers(pagesRenderer, db)
 
 	// Create new router.

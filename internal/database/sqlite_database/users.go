@@ -384,8 +384,17 @@ func (db *SQLiteDatabase) GetUserByID(id string, level database.AuthorizationLev
 	return user, nil
 }
 
-func (db *SQLiteDatabase) GetUserByToken(token, tokenType string) (*models.UserModel, error) {
-	query := `SELECT users.id, users.name, users.surname, users.slug, users.email, users.password, users.is_admin, users.is_author, users.affiliate_code, users.affiliate_points, users.created_at, users.updated_at FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token = ? AND tokens.token_type = ? AND tokens.valid_until > CURRENT_TIMESTAMP;`
+func (db *SQLiteDatabase) GetUserByToken(token, tokenType string, level database.AuthorizationLevel) (*models.UserModel, error) {
+	query := `SELECT users.id, users.name, users.surname, users.slug, users.email, users.password, users.is_admin, users.is_author, users.affiliate_code, users.affiliate_points, users.created_at, users.updated_at FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token = ? AND tokens.token_type = ? AND tokens.valid_until > CURRENT_TIMESTAMP`
+
+	switch level {
+	case database.User:
+		query += ` AND users.is_admin = 0 AND users.is_author = 0`
+	case database.Admin:
+		query += ` AND users.is_admin = 1`
+	case database.Author:
+		query += ` AND users.is_author = 1`
+	}
 
 	var isAdminInt int
 	var isAuthorInt int
@@ -419,8 +428,17 @@ func (db *SQLiteDatabase) GetUserByToken(token, tokenType string) (*models.UserM
 	return user, nil
 }
 
-func (db *SQLiteDatabase) GetUserByAffiliateCode(affiliateCode string) (*models.UserModel, error) {
-	query := `SELECT id, name, surname, slug, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE affiliate_code = ?;`
+func (db *SQLiteDatabase) GetUserByAffiliateCode(affiliateCode string, level database.AuthorizationLevel) (*models.UserModel, error) {
+	query := `SELECT id, name, surname, slug, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE affiliate_code = ?`
+
+	switch level {
+	case database.User:
+		query += ` AND is_admin = 0 AND is_author = 0`
+	case database.Admin:
+		query += ` AND is_admin = 1`
+	case database.Author:
+		query += ` AND is_author = 1`
+	}
 
 	user := new(models.UserModel)
 	isAdmin := 0
@@ -442,8 +460,17 @@ func (db *SQLiteDatabase) GetUserByAffiliateCode(affiliateCode string) (*models.
 	return user, nil
 }
 
-func (db *SQLiteDatabase) GetUserBySlug(userSlug string) (*models.UserModel, error) {
-	query := `SELECT id, name, surname, slug, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE slug = ?;`
+func (db *SQLiteDatabase) GetUserBySlug(userSlug string, level database.AuthorizationLevel) (*models.UserModel, error) {
+	query := `SELECT id, name, surname, slug, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE slug = ?`
+
+	switch level {
+	case database.User:
+		query += ` AND is_admin = 0 AND is_author = 0`
+	case database.Admin:
+		query += ` AND is_admin = 1`
+	case database.Author:
+		query += ` AND is_author = 1`
+	}
 
 	user := new(models.UserModel)
 	isAdmin := 0

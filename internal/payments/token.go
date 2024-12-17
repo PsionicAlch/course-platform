@@ -3,6 +3,7 @@ package payments
 import (
 	"time"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
@@ -31,7 +32,7 @@ func (payment *Payments) ValidatePaymentToken(token string) bool {
 }
 
 func (payment *Payments) GetUserFromPaymentToken(token string) (*models.UserModel, error) {
-	return payment.Database.GetUserByToken(token, PaymentToken)
+	return payment.Database.GetUserByToken(token, PaymentToken, database.All)
 }
 
 func (payment *Payments) DeletePaymentToken(token string) error {

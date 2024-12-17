@@ -88,6 +88,9 @@ type AdminUsersPage struct {
 
 type AuthorsTutorialsPage struct {
 	BasePage
+	Author       *models.UserModel
+	LenTutorials uint
+	Tutorials    *TutorialsListComponent
 }
 
 type AuthorsCoursesPage struct {

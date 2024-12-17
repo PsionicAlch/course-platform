@@ -427,7 +427,7 @@ func (h *Handlers) CreateTutorialsList(r *http.Request) (*html.TutorialsListComp
 	urlQuery.Add("query", query)
 	urlQuery.Add("page", fmt.Sprintf("%d", page+1))
 
-	tutorials, err := h.Database.GetTutorials(query, page, TutorialsPerPagination)
+	tutorials, err := h.Database.GetTutorials(query, "", page, TutorialsPerPagination)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all tutorials (page %d): %s\n", page, err)
 		return nil, err

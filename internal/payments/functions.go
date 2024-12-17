@@ -64,7 +64,7 @@ func (payment *Payments) ValidateAffiliateCode(userId, affiliateCode string) (fl
 		return 0, ErrCantUseOwnAffiliateCode
 	}
 
-	affiliateUser, err := payment.Database.GetUserByAffiliateCode(affiliateCode)
+	affiliateUser, err := payment.Database.GetUserByAffiliateCode(affiliateCode, database.All)
 	if err != nil {
 		payment.ErrorLog.Printf("Failed to get user by affiliate code (\"%s\"): %s\n", affiliateCode, err)
 		return 0, err

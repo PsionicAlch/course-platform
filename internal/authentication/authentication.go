@@ -221,7 +221,7 @@ func (auth *Authentication) ValidateEmailToken(emailToken string) (bool, error) 
 }
 
 func (auth *Authentication) GetUserFromEmailToken(emailToken string) (*models.UserModel, error) {
-	user, err := auth.Database.GetUserByToken(emailToken, EmailToken)
+	user, err := auth.Database.GetUserByToken(emailToken, EmailToken, database.All)
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to get user using password reset token from database: %s\n", err)
 		return nil, err

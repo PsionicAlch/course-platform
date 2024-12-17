@@ -26,8 +26,9 @@ type Database interface {
 	NewAdminUser(name, surname, email, password string) error
 	GetUserByEmail(email string, level AuthorizationLevel) (*models.UserModel, error)
 	GetUserByID(id string, level AuthorizationLevel) (*models.UserModel, error)
-	GetUserByToken(token, tokenType string) (*models.UserModel, error)
-	GetUserByAffiliateCode(affiliateCode string) (*models.UserModel, error)
+	GetUserByToken(token, tokenType string, level AuthorizationLevel) (*models.UserModel, error)
+	GetUserByAffiliateCode(affiliateCode string, level AuthorizationLevel) (*models.UserModel, error)
+	GetUserBySlug(userSlug string, level AuthorizationLevel) (*models.UserModel, error)
 	UpdateUserPassword(userId, password string) error
 	CountUsers() (uint, error)
 	AddAuthorStatus(userId string) error
@@ -48,14 +49,14 @@ type Database interface {
 	// Tutorials functions.
 	AdminGetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error)
 	GetAllTutorials() ([]*models.TutorialModel, error)
-	GetTutorials(term string, page, elements int) ([]*models.TutorialModel, error)
+	GetTutorials(term string, authorId string, page, elements int) ([]*models.TutorialModel, error)
 	GetTutorialByID(id string) (*models.TutorialModel, error)
 	GetTutorialBySlug(slug string) (*models.TutorialModel, error)
 	CountTutorials() (uint, error)
+	CountTutorialsWrittenBy(authorId string) (uint, error)
 	PublishTutorial(tutorialId string) error
 	UnpublishTutorial(tutorialId string) error
 	UpdateTutorialAuthor(tutorialId, authorId string) error
-	CountTutorialsWrittenBy(authorId string) (uint, error)
 
 	// Keywords functions.
 	GetKeywords() ([]string, error)

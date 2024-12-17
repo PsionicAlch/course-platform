@@ -125,14 +125,22 @@ func (db *SQLiteDatabase) GetAllTutorials() ([]*models.TutorialModel, error) {
 	return tutorials, err
 }
 
-func (db *SQLiteDatabase) GetTutorials(term string, page, elements int) ([]*models.TutorialModel, error) {
-	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials WHERE published = 1 AND author_id IS NOT NULL AND (LOWER(title) LIKE '%' || ? || '%' OR LOWER(description) LIKE '%' || ? || '%') ORDER BY updated_at DESC, title ASC LIMIT ? OFFSET ?;`
+func (db *SQLiteDatabase) GetTutorials(term string, authorId string, page, elements int) ([]*models.TutorialModel, error) {
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials WHERE published = 1 AND author_id IS NOT NULL AND (LOWER(title) LIKE '%' || ? || '%' OR LOWER(description) LIKE '%' || ? || '%')`
+	args := []any{term, term}
+
+	if authorId != "" {
+		query += " AND author_id = ?"
+		args = append(args, authorId)
+	}
 
 	offset := (page - 1) * elements
+	query += " ORDER BY updated_at DESC, title ASC LIMIT ? OFFSET ?;"
+	args = append(args, elements, offset)
 
 	var tutorials []*models.TutorialModel
 
-	rows, err := db.connection.Query(query, term, term, elements, offset)
+	rows, err := db.connection.Query(query, args...)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to get all tutorials (page %d), that match the search term \"%s\", from the database: %s\n", page, term, err)
 		return nil, err
@@ -245,6 +253,20 @@ func (db *SQLiteDatabase) CountTutorials() (uint, error) {
 	return count, nil
 }
 
+func (db *SQLiteDatabase) CountTutorialsWrittenBy(authorId string) (uint, error) {
+	query := `SELECT COUNT(id) FROM tutorials where author_id = ?;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query, authorId)
+	if err := row.Scan(&count); err != nil {
+		db.ErrorLog.Printf("Failed to count the number of tutorials written by \"%s\": %s\n", authorId, err)
+		return 0, err
+	}
+
+	return count, nil
+}
+
 func (db *SQLiteDatabase) PublishTutorial(tutorialId string) error {
 	query := `UPDATE tutorials SET published = 1 WHERE id = ?;`
 
@@ -283,22 +305,4 @@ func (db *SQLiteDatabase) UpdateTutorialAuthor(tutorialId, authorId string) erro
 	}
 
 	return nil
-}
-
-func (db *SQLiteDatabase) CountTutorialsWrittenBy(authorId string) (uint, error) {
-	query := `SELECT COUNT(id) FROM tutorials WHERE author_id = ?;`
-
-	var count uint
-
-	row := db.connection.QueryRow(query, authorId)
-	if err := row.Scan(&count); err != nil {
-		if err == sql.ErrNoRows {
-			return 0, nil
-		}
-
-		db.ErrorLog.Printf("Failed to count the number of tutorials written by \"%s\": %s\n", authorId, err)
-		return 0, err
-	}
-
-	return count, nil
 }

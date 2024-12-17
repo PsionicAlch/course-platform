@@ -144,7 +144,7 @@ func (payment *Payments) HandlePaymentSuccess(event *stripe.Event) error {
 		}
 
 		if coursePurchase.AffiliateCode.Valid {
-			affiliateUser, err := payment.Database.GetUserByAffiliateCode(coursePurchase.AffiliateCode.String)
+			affiliateUser, err := payment.Database.GetUserByAffiliateCode(coursePurchase.AffiliateCode.String, database.All)
 			if err != nil {
 				payment.ErrorLog.Printf("Failed to get user by affiliate code (\"%s\"): %s\n", coursePurchase.AffiliateCode.String, err)
 				return errors.New("unexpected internal server error")

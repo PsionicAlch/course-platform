@@ -1,47 +1,29 @@
 package authors
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
+	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
+	"github.com/go-chi/chi/v5"
 )
 
 type Handlers struct {
-	utils.Loggers
-	renderers pages.Renderers
+	Render   pages.Renderers
+	Database database.Database
 }
 
-func SetupHandlers(pageRenderer render.Renderer) *Handlers {
-	loggers := utils.CreateLoggers("AUTHOR HANDLERS")
-
+func SetupHandlers(pageRenderer, htmxRenderer render.Renderer, db database.Database) *Handlers {
 	return &Handlers{
-		Loggers:   loggers,
-		renderers: *pages.CreateRenderers(pageRenderer, nil),
+		Render:   *pages.CreateRenderers(pageRenderer, htmxRenderer),
+		Database: db,
 	}
 }
 
-func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
-	user := authentication.GetUserFromRequest(r)
-	pageData := html.AuthorsTutorialsPage{
-		BasePage: html.NewBasePage(user),
-	}
-
-	if err := h.renderers.Page.RenderHTML(w, r.Context(), "authors-tutorials", pageData); err != nil {
-		h.ErrorLog.Println(err)
-	}
-}
-
-func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
-	user := authentication.GetUserFromRequest(r)
-	pageData := html.AuthorsCoursesPage{
-		BasePage: html.NewBasePage(user),
-	}
-
-	if err := h.renderers.Page.RenderHTML(w, r.Context(), "authors-courses", pageData); err != nil {
-		h.ErrorLog.Println(err)
-	}
+func (h *Handlers) AuthorGet(w http.ResponseWriter, r *http.Request) {
+	authorSlug := chi.URLParam(r, "author-slug")
+	utils.Redirect(w, r, fmt.Sprintf("/authors/%s/tutorials", authorSlug))
 }
