@@ -86,12 +86,26 @@ func (db *SQLiteDatabase) AdminGetTutorials(term string, published *bool, author
 	return tutorials, nil
 }
 
-func (db *SQLiteDatabase) GetAllTutorials() ([]*models.TutorialModel, error) {
-	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials ORDER BY updated_at DESC, title ASC;`
+func (db *SQLiteDatabase) GetAllTutorials(published *bool) ([]*models.TutorialModel, error) {
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials`
+	args := []any{}
+
+	if published != nil {
+		query += " WHERE published = ?"
+
+		if *published {
+			query += " AND author_id IS NOT NULL"
+			args = append(args, 1)
+		} else {
+			args = append(args, 0)
+		}
+	}
+
+	query += " ORDER BY updated_at DESC, title ASC;"
 
 	var tutorials []*models.TutorialModel
 
-	rows, err := db.connection.Query(query)
+	rows, err := db.connection.Query(query, args...)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to query database for all tutorials: %s\n", err)
 		return nil, err

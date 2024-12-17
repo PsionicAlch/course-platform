@@ -9,10 +9,11 @@ import (
 
 func CreateFuncMap() template.FuncMap {
 	funcMap := template.FuncMap{
-		"props":       Props,
-		"pretty_date": PrettyDate,
-		"html":        HTML,
-		"add_queries": AddQueries,
+		"props":        Props,
+		"pretty_date":  PrettyDate,
+		"html":         HTML,
+		"add_queries":  AddQueries,
+		"current_time": CurrentTime,
 	}
 
 	return funcMap
@@ -73,4 +74,8 @@ func AddQueries(queries string, values ...any) (string, error) {
 	}
 
 	return urlQuery.Encode(), nil
+}
+
+func CurrentTime() time.Time {
+	return time.Now()
 }

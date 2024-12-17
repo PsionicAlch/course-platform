@@ -30,7 +30,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 
 	return &Handlers{
 		Loggers:   loggers,
-		Renderers: *pages.CreateRenderers(pageRenderer, htmxRenderer),
+		Renderers: *pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
 		Database:  db,
 		Auth:      auth,
 	}
@@ -58,7 +58,7 @@ func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 	urlQuery.Set("page", "1")
 	pageData.URLQuery = urlQuery.Encode()
 
-	tutorials, err := h.Database.GetAllTutorials()
+	tutorials, err := h.Database.GetAllTutorials(nil)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all tutorials: %s\n", err)
 

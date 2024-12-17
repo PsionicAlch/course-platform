@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>PsionicAlch Updates</title>
+    <link>https://www.psionicalch.com</link>
+    <description>Stay updated with the latest tutorials and courses from PsionicAlch.</description>
+    <language>en-us</language>
+    <lastBuildDate>{{ current_time }}</lastBuildDate>
+    <image>
+      <url>https://www.psionicalch.com/assets/img/logo.png</url> <!-- TODO: Replace with actual image -->
+      <title>PsionicAlch</title>
+      <link>https://www.psionicalch.com</link>
+    </image>
+
+    {{ range .Tutorials }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>https://www.psionicalch.com/tutorials/{{ .Slug }}</link>
+      <description>{{ .Description }}</description>
+      <pubDate>{{ .CreatedAt }}</pubDate>
+      {{ with index $.Authors .ID }}
+      <dc:creator>{{ .Name }} {{ .Surname }}</dc:creator>
+      {{ end }}
+      <category>Tutorial</category>
+    </item>
+    {{ end }}
+
+    {{ range .Courses }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>https://www.psionicalch.com/courses/{{ .Slug }}</link>
+      <description>{{ .Description }}</description>
+      <pubDate>{{ .CreatedAt }}</pubDate>
+      {{ with index $.Authors .ID }}
+      <dc:creator>{{ .Name }} {{ .Surname }}</dc:creator>
+      {{ end }}
+      <category>Course</category>
+    </item>
+    {{ end }}
+  </channel>
+</rss>

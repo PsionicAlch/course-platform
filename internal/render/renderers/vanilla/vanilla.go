@@ -84,6 +84,27 @@ func (renderer *VanillaRenderer) RenderHTML(w http.ResponseWriter, ctx context.C
 	statusCode := render.GetStatusCode(status...)
 	w.WriteHeader(statusCode)
 
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	_, err = tmplBuffer.WriteTo(w)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (renderer *VanillaRenderer) RenderXML(w http.ResponseWriter, file string, data any, status ...int) error {
+	tmplBuffer, err := renderer.templates.Compile(file+renderer.fileExtension, data)
+	if err != nil {
+		return err
+	}
+
+	statusCode := render.GetStatusCode(status...)
+	w.WriteHeader(statusCode)
+
+	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+
 	_, err = tmplBuffer.WriteTo(w)
 	if err != nil {
 		return err

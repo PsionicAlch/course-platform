@@ -20,7 +20,7 @@ func SetupHandlers(pageRenderer render.Renderer) *Handlers {
 
 	return &Handlers{
 		Loggers:   loggers,
-		renderers: *pages.CreateRenderers(pageRenderer, nil),
+		renderers: *pages.CreateRenderers(pageRenderer, nil, nil),
 	}
 }
 

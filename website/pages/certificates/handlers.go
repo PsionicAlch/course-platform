@@ -23,7 +23,7 @@ func SetupHandlers(pageRenderer render.Renderer, db database.Database) *Handlers
 
 	return &Handlers{
 		Loggers:   loggers,
-		Renderers: *pages.CreateRenderers(pageRenderer, nil),
+		Renderers: *pages.CreateRenderers(pageRenderer, nil, nil),
 		Database:  db,
 	}
 }

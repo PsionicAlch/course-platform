@@ -61,6 +61,11 @@ func StartWebsite() {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}
 
+	rssRenderer, err := vanilla.SetupVanillaRenderer(nil, html.HTMLFiles, ".rss.tmpl", "rss")
+	if err != nil {
+		loggers.ErrorLog.Fatalln("Failed to set up rss renderer: ", err)
+	}
+
 	emailRenderer, err := vanilla.SetupVanillaRenderer(nil, html.HTMLFiles, ".email.tmpl", "emails", "layouts/email.layout.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up email renderer: ", err)
@@ -84,7 +89,7 @@ func StartWebsite() {
 	payment := payments.SetupPayments(config.GetWithoutError[string]("STRIPE_SECRET_KEY"), config.GetWithoutError[string]("STRIPE_WEBHOOK_SECRET"), db)
 
 	// Set up handlers.
-	generalHandlers := general.SetupHandlers(pagesRenderer, db)
+	generalHandlers := general.SetupHandlers(pagesRenderer, rssRenderer, db)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions, auth)
 	courseHandlers := courses.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions, auth, payment)
 	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth, emailer, sessions)

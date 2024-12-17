@@ -28,14 +28,11 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, a
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
-		Loggers: loggers,
-		Renderers: &pages.Renderers{
-			Page: pageRenderer,
-			Htmx: htmxRenderer,
-		},
-		Auth:    auth,
-		Emailer: emailer,
-		Session: sessions,
+		Loggers:   loggers,
+		Renderers: pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
+		Auth:      auth,
+		Emailer:   emailer,
+		Session:   sessions,
 	}
 }
 

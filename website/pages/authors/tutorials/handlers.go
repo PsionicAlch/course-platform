@@ -29,7 +29,7 @@ func SetupHandlers(pageRenderer, htmxRenderer render.Renderer, db database.Datab
 
 	return &Handlers{
 		Loggers:   loggers,
-		Renderers: *pages.CreateRenderers(pageRenderer, htmxRenderer),
+		Renderers: *pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
 		Database:  db,
 	}
 }

@@ -18,7 +18,7 @@ type Handlers struct {
 
 func SetupHandlers(pageRenderer, htmxRenderer render.Renderer, db database.Database) *Handlers {
 	return &Handlers{
-		Render:   *pages.CreateRenderers(pageRenderer, htmxRenderer),
+		Render:   *pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
 		Database: db,
 	}
 }

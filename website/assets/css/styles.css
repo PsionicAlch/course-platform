@@ -246,18 +246,48 @@ noscript .noscript-container {
 
 .footer-links {
   margin: 2rem auto;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+.link-container {
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
 }
 
-@media screen and (min-width: 770px) {
+.links {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media screen and (min-width: 425px) {
   .footer-links {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .footer-links {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .footer-links {
+    align-items: center;
+  }
+
+  .links {
+    width: fit-content;
     flex-direction: row;
-    justify-content: space-evenly;
+    gap: 1rem;
   }
 }
 

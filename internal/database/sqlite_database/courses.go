@@ -82,12 +82,26 @@ func (db *SQLiteDatabase) AdminGetCourses(term string, published *bool, authorId
 	return courses, nil
 }
 
-func (db *SQLiteDatabase) GetAllCourses() ([]*models.CourseModel, error) {
-	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM courses;`
+func (db *SQLiteDatabase) GetAllCourses(published *bool) ([]*models.CourseModel, error) {
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM courses`
+	args := []any{}
+
+	if published != nil {
+		query += " WHERE published = ?"
+
+		if *published {
+			query += " AND author_id IS NOT NULL"
+			args = append(args, 1)
+		} else {
+			args = append(args, 0)
+		}
+	}
+
+	query += " ORDER BY updated_at DESC, title ASC;"
 
 	var courses []*models.CourseModel
 
-	rows, err := db.connection.Query(query)
+	rows, err := db.connection.Query(query, args...)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to query database for all courses: %s\n", err)
 		return nil, err
