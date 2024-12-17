@@ -93,11 +93,12 @@ type Database interface {
 	// Courses functions.
 	AdminGetCourses(term string, published *bool, authorId *string, boughtBy, keyword string, page, elements uint) ([]*models.CourseModel, error)
 	GetAllCourses() ([]*models.CourseModel, error)
-	GetCourses(term string, page, elements int) ([]*models.CourseModel, error)
+	GetCourses(term string, authorId string, page, elements int) ([]*models.CourseModel, error)
 	GetCourseByFileKey(fileKey string) (*models.CourseModel, error)
 	GetCourseBySlug(slug string) (*models.CourseModel, error)
 	GetCourseByID(courseId string) (*models.CourseModel, error)
 	CountCourses() (uint, error)
+	CountCoursesWrittenBy(authorId string) (uint, error)
 	PublishCourse(courseId string) error
 	UnpublishCourse(courseId string) error
 	UpdateCourseAuthor(tutorialId, authorId string) error

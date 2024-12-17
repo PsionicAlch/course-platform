@@ -115,14 +115,27 @@ func (db *SQLiteDatabase) GetAllCourses() ([]*models.CourseModel, error) {
 	return courses, nil
 }
 
-func (db *SQLiteDatabase) GetCourses(term string, page, elements int) ([]*models.CourseModel, error) {
-	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM courses WHERE published = 1 AND author_id IS NOT NULL AND (LOWER(title) LIKE '%' || ? || '%' OR LOWER(description) LIKE '%' || ? || '%') ORDER BY updated_at DESC, title ASC LIMIT ? OFFSET ?;`
+func (db *SQLiteDatabase) GetCourses(term string, authorId string, page, elements int) ([]*models.CourseModel, error) {
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM courses WHERE published = 1 AND author_id IS NOT NULL`
+	args := []any{}
+
+	if term != "" {
+		query += " AND (LOWER(title) LIKE '%' || ? || '%' OR LOWER(description) LIKE '%' || ? || '%')"
+		args = append(args, term, term)
+	}
+
+	if authorId != "" {
+		query += " AND author_id = ?"
+		args = append(args, authorId)
+	}
 
 	offset := (page - 1) * elements
+	query += " ORDER BY updated_at DESC, title ASC LIMIT ? OFFSET ?;"
+	args = append(args, elements, offset)
 
 	var courses []*models.CourseModel
 
-	rows, err := db.connection.Query(query, term, term, elements, offset)
+	rows, err := db.connection.Query(query, args...)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to query database for all courses on page %d: %s\n", page, err)
 		return nil, err
@@ -214,6 +227,24 @@ func (db *SQLiteDatabase) CountCourses() (uint, error) {
 		}
 
 		db.ErrorLog.Printf("Failed to count all the courses in the database: %s\n", err)
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (db *SQLiteDatabase) CountCoursesWrittenBy(authorId string) (uint, error) {
+	query := `SELECT COUNT(id) FROM courses WHERE author_id = ?;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query, authorId)
+	if err := row.Scan(&count); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count all the courses written by \"%s\": %s\n", authorId, err)
 		return 0, err
 	}
 

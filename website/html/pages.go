@@ -95,6 +95,9 @@ type AuthorsTutorialsPage struct {
 
 type AuthorsCoursesPage struct {
 	BasePage
+	Author     *models.UserModel
+	LenCourses uint
+	Courses    *CoursesListComponent
 }
 
 type CertificatePage struct {

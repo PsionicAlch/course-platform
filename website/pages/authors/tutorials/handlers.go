@@ -62,7 +62,7 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 
 	lenTutorials, err := h.Database.CountTutorialsWrittenBy(author.ID)
 	if err != nil {
-		h.ErrorLog.Printf("Failed to create tutorials list: %s\n", err)
+		h.ErrorLog.Printf("Failed to count all tutorials written by \"%s\": %s\n", author.ID, err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)

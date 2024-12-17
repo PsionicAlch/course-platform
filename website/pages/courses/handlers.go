@@ -414,7 +414,7 @@ func (h *Handlers) CreateCoursesList(r *http.Request) (*html.CoursesListComponen
 	urlQuery.Add("query", query)
 	urlQuery.Add("page", fmt.Sprintf("%d", page+1))
 
-	courses, err := h.Database.GetCourses(query, page, CoursesPerPagination)
+	courses, err := h.Database.GetCourses(query, "", page, CoursesPerPagination)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all courses (page %d) from the database: %s\n", page, err)
 		return nil, err

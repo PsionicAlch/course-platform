@@ -171,7 +171,7 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 
 	var course *models.CourseModel
 
-	courses, err := h.Database.GetCourses("", 1, 1)
+	courses, err := h.Database.GetCourses("", "", 1, 1)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get author by ID (\"%s\") from the database: %s\n", authorId, err)
 	}
