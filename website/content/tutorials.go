@@ -37,7 +37,7 @@ func (content *Content) RegisterTutorialsContent(db database.Database) {
 
 	timerStart := time.Now()
 
-	tutorials, err := db.GetAllTutorials(nil)
+	tutorials, err := db.GetAllTutorials("", nil)
 	if err != nil {
 		content.ErrorLog.Fatalf("Failed to read all tutorials from the database: %s\n", err)
 	}

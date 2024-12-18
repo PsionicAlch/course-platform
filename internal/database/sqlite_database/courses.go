@@ -82,12 +82,17 @@ func (db *SQLiteDatabase) AdminGetCourses(term string, published *bool, authorId
 	return courses, nil
 }
 
-func (db *SQLiteDatabase) GetAllCourses(published *bool) ([]*models.CourseModel, error) {
-	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM courses`
+func (db *SQLiteDatabase) GetAllCourses(authorId string, published *bool) ([]*models.CourseModel, error) {
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM courses WHERE 1=1`
 	args := []any{}
 
+	if authorId != "" {
+		query += " AND author_id = ?"
+		args = append(args, authorId)
+	}
+
 	if published != nil {
-		query += " WHERE published = ?"
+		query += " AND published = ?"
 
 		if *published {
 			query += " AND author_id IS NOT NULL"

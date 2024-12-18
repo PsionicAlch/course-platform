@@ -58,7 +58,7 @@ func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 	urlQuery.Set("page", "1")
 	pageData.URLQuery = urlQuery.Encode()
 
-	tutorials, err := h.Database.GetAllTutorials(nil)
+	tutorials, err := h.Database.GetAllTutorials("", nil)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all tutorials: %s\n", err)
 

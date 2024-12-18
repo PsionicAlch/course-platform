@@ -48,7 +48,7 @@ type Database interface {
 
 	// Tutorials functions.
 	AdminGetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error)
-	GetAllTutorials(published *bool) ([]*models.TutorialModel, error)
+	GetAllTutorials(authorId string, published *bool) ([]*models.TutorialModel, error)
 	GetTutorials(term string, authorId string, page, elements int) ([]*models.TutorialModel, error)
 	GetTutorialByID(id string) (*models.TutorialModel, error)
 	GetTutorialBySlug(slug string) (*models.TutorialModel, error)
@@ -92,7 +92,7 @@ type Database interface {
 
 	// Courses functions.
 	AdminGetCourses(term string, published *bool, authorId *string, boughtBy, keyword string, page, elements uint) ([]*models.CourseModel, error)
-	GetAllCourses(published *bool) ([]*models.CourseModel, error)
+	GetAllCourses(authorId string, published *bool) ([]*models.CourseModel, error)
 	GetCourses(term string, authorId string, page, elements int) ([]*models.CourseModel, error)
 	GetCourseByFileKey(fileKey string) (*models.CourseModel, error)
 	GetCourseBySlug(slug string) (*models.CourseModel, error)

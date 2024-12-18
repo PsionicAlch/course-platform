@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
+	gocache "github.com/PsionicAlch/psionicalch-home/internal/cache/go-cache"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/payments"
 	vanillahtml "github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla-html"
@@ -15,6 +16,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
 	"github.com/PsionicAlch/psionicalch-home/website/config"
 	"github.com/PsionicAlch/psionicalch-home/website/emails"
+	"github.com/PsionicAlch/psionicalch-home/website/generators"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/accounts"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/admin"
@@ -90,6 +92,16 @@ func StartWebsite() {
 	// Set up payments.
 	payment := payments.SetupPayments(config.GetWithoutError[string]("STRIPE_SECRET_KEY"), config.GetWithoutError[string]("STRIPE_WEBHOOK_SECRET"), db)
 
+	// Set up cache.
+	gens := &gocache.Generators{
+		RSSFeed:                generators.RSSFeed(utils.CreateLoggers("RSS FEED GENERATOR"), db, rssRenderer),
+		TutorialsRSSFeed:       generators.TutorialsRSSFeed(utils.CreateLoggers("TUTORIALS RSS FEED GENERATOR"), db, rssRenderer),
+		CoursesRSSFeed:         generators.CoursesRSSFeed(utils.CreateLoggers("COURSES RSS FEED GENERATOR"), db, rssRenderer),
+		AuthorTutorialsRSSFeed: generators.AuthorTutorialsRSSFeed(utils.CreateLoggers("AUTHOR TUTORIALS RSS FEED GENERATOR"), db, rssRenderer),
+		AuthorCoursesRSSFeed:   generators.AuthorCoursesRSSFeed(utils.CreateLoggers("AUTHOR COURSES RSS FEED GENERATOR"), db, rssRenderer),
+	}
+	cache := gocache.SetupGoCache(gens)
+
 	// Set up handlers.
 	generalHandlers := general.SetupHandlers(pagesRenderer, rssRenderer, db)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions, auth)
@@ -100,7 +112,7 @@ func StartWebsite() {
 	adminHandlers := admin.SetupHandlers(pagesRenderer, htmxRenderer, db, auth)
 	authorsHandlers := authors.SetupHandlers(pagesRenderer, htmxRenderer, db)
 	certificateHandlers := certificates.SetupHandlers(pagesRenderer, db)
-	rssHandlers := rss.SetupHandlers(rssRenderer, db)
+	rssHandlers := rss.SetupHandlers(rssRenderer, db, cache)
 
 	// Create new router.
 	router := chi.NewRouter()

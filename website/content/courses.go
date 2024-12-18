@@ -44,7 +44,7 @@ type ChapterData struct {
 }
 
 func (content *Content) RegisterCourseContent(db database.Database) {
-	courses, err := db.GetAllCourses(nil)
+	courses, err := db.GetAllCourses("", nil)
 	if err != nil {
 		content.ErrorLog.Fatalf("Failed to get all courses: %s\n", err)
 	}

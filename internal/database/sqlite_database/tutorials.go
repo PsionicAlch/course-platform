@@ -86,12 +86,17 @@ func (db *SQLiteDatabase) AdminGetTutorials(term string, published *bool, author
 	return tutorials, nil
 }
 
-func (db *SQLiteDatabase) GetAllTutorials(published *bool) ([]*models.TutorialModel, error) {
-	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials`
+func (db *SQLiteDatabase) GetAllTutorials(authorId string, published *bool) ([]*models.TutorialModel, error) {
+	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM tutorials WHERE 1=1`
 	args := []any{}
 
+	if authorId != "" {
+		query += " AND author_id = ?"
+		args = append(args, authorId)
+	}
+
 	if published != nil {
-		query += " WHERE published = ?"
+		query += " AND published = ?"
 
 		if *published {
 			query += " AND author_id IS NOT NULL"
