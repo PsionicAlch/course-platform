@@ -4,28 +4,16 @@ import (
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/cache"
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
 )
 
 type Handlers struct {
-	utils.Loggers
-	Renderers *pages.Renderers
-	Database  database.Database
-	Cache     cache.Cache
+	Cache cache.Cache
 }
 
-func SetupHandlers(rssRenderer render.Renderer, db database.Database, c cache.Cache) *Handlers {
-	loggers := utils.CreateLoggers("RSS HANDLERS")
-
+func SetupHandlers(c cache.Cache) *Handlers {
 	return &Handlers{
-		Loggers:   loggers,
-		Renderers: pages.CreateRenderers(nil, nil, rssRenderer),
-		Database:  db,
-		Cache:     c,
+		Cache: c,
 	}
 }
 

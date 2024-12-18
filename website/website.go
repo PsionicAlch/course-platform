@@ -112,7 +112,7 @@ func StartWebsite() {
 	adminHandlers := admin.SetupHandlers(pagesRenderer, htmxRenderer, db, auth)
 	authorsHandlers := authors.SetupHandlers(pagesRenderer, htmxRenderer, db)
 	certificateHandlers := certificates.SetupHandlers(pagesRenderer, db)
-	rssHandlers := rss.SetupHandlers(rssRenderer, db, cache)
+	rssHandlers := rss.SetupHandlers(cache)
 
 	// Create new router.
 	router := chi.NewRouter()
