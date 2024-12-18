@@ -8,7 +8,8 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/payments"
-	"github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla"
+	vanillahtml "github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla-html"
+	vanillatext "github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla-text"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
@@ -22,6 +23,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/pages/courses"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/general"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/profile"
+	"github.com/PsionicAlch/psionicalch-home/website/pages/rss"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/settings"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/tutorials"
 	"github.com/go-chi/chi/v5"
@@ -51,22 +53,22 @@ func StartWebsite() {
 	sessions := session.SetupSession(cookieName, domainName)
 
 	// Set up renderers.
-	pagesRenderer, err := vanilla.SetupVanillaRenderer(sessions, html.HTMLFiles, ".page.tmpl", "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
+	pagesRenderer, err := vanillahtml.SetupVanillaHTMLRenderer(sessions, html.HTMLFiles, ".page.tmpl", "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up pages renderer: ", err)
 	}
 
-	htmxRenderer, err := vanilla.SetupVanillaRenderer(nil, html.HTMLFiles, ".htmx.tmpl", "htmx", "components/*.component.tmpl")
+	htmxRenderer, err := vanillahtml.SetupVanillaHTMLRenderer(nil, html.HTMLFiles, ".htmx.tmpl", "htmx", "components/*.component.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}
 
-	rssRenderer, err := vanilla.SetupVanillaRenderer(nil, html.HTMLFiles, ".rss.tmpl", "rss")
+	rssRenderer, err := vanillatext.SetupVanillaTextRenderer(html.TextFiles, ".rss.tmpl", "rss")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up rss renderer: ", err)
 	}
 
-	emailRenderer, err := vanilla.SetupVanillaRenderer(nil, html.HTMLFiles, ".email.tmpl", "emails", "layouts/email.layout.tmpl")
+	emailRenderer, err := vanillahtml.SetupVanillaHTMLRenderer(nil, html.HTMLFiles, ".email.tmpl", "emails", "layouts/email.layout.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up email renderer: ", err)
 	}
@@ -98,6 +100,7 @@ func StartWebsite() {
 	adminHandlers := admin.SetupHandlers(pagesRenderer, htmxRenderer, db, auth)
 	authorsHandlers := authors.SetupHandlers(pagesRenderer, htmxRenderer, db)
 	certificateHandlers := certificates.SetupHandlers(pagesRenderer, db)
+	rssHandlers := rss.SetupHandlers(rssRenderer, db)
 
 	// Create new router.
 	router := chi.NewRouter()
@@ -112,6 +115,9 @@ func StartWebsite() {
 
 	// Set up asset routes.
 	router.Mount("/assets", http.StripPrefix("/assets", http.FileServerFS(assets.AssetFiles)))
+
+	// Set up RSS routes.
+	router.Mount("/rss", rss.RegisterRoutes(rssHandlers))
 
 	// Set up routes.
 	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/", general.RegisterRoutes(generalHandlers))

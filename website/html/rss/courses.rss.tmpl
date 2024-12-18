@@ -1,32 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>PsionicAlch Updates</title>
-    <link>https://www.psionicalch.com</link>
-    <description>Stay updated with the latest tutorials and courses from PsionicAlch.</description>
+    <title>PsionicAlch Courses</title>
+    <link>https://www.psionicalch.com/courses</link>
+    <description>Explore all courses from PsionicAlch, teaching real-world software development with Golang.</description>
     <language>en-us</language>
     <lastBuildDate>{{ format_time_to_rfc_822 .LastBuildTime }}</lastBuildDate>
-    <atom:link href="https://www.psionicalch.com/rss" rel="self" type="application/rss+xml" />
+    <atom:link href="https://www.psionicalch.com/rss/courses" rel="self" type="application/rss+xml" />
     <image>
       <!-- TODO: Replace with actual image -->
       <url>https://www.psionicalch.com/assets/img/logo.png</url>
-      <title>PsionicAlch Updates</title>
-      <link>https://www.psionicalch.com</link>
+      <title>PsionicAlch Courses</title>
+      <link>https://www.psionicalch.com/courses</link>
     </image>
-
-    {{ range .Tutorials }}
-    <item>
-      <title>{{- .Title -}}</title>
-      <link>https://www.psionicalch.com/tutorials/{{- .Slug -}}</link>
-      <description>{{- .Description -}}</description>
-      <pubDate>{{- format_time_to_rfc_822 .CreatedAt -}}</pubDate>
-      {{ with index $.Authors .ID }}
-      <dc:creator>{{ .Name }} {{ .Surname }}</dc:creator>
-      {{ end }}
-      <category>Tutorial</category>
-      <guid>https://www.psionicalch.com/tutorials/{{- .Slug -}}</guid>
-    </item>
-    {{ end }}
 
     {{ range .Courses }}
     <item>

@@ -1,4 +1,4 @@
-package vanilla
+package vanillahtml
 
 import (
 	"bytes"
@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"html/template"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/render/errors"
+	"github.com/PsionicAlch/psionicalch-home/internal/render"
 )
 
 type TemplateCache map[string]*template.Template
@@ -52,14 +52,14 @@ func CreateTemplates(embeddedFS embed.FS, directory string, otherDirectories ...
 func (templates *Templates) Compile(tmpl string, data any) (*bytes.Buffer, error) {
 	t, ok := templates.Cache[tmpl]
 	if !ok {
-		return nil, errors.CreateFailedToFindTemplateInCache(tmpl, templates.Name)
+		return nil, render.CreateFailedToFindTemplateInCache(tmpl, templates.Name)
 	}
 
 	templateBuffer := new(bytes.Buffer)
 
 	err := t.Execute(templateBuffer, data)
 	if err != nil {
-		return nil, errors.CreateFailedToCompileTemplate(tmpl, err.Error())
+		return nil, render.CreateFailedToCompileTemplate(tmpl, err)
 	}
 
 	return templateBuffer, nil

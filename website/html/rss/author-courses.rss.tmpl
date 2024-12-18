@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Courses by {{ .Author.Name }} {{ .Author.Surname }}</title>
+    <link>https://www.psionicalch.com/author/{{ .Author.Slug }}/courses</link>
+    <description>Courses created by {{ .Author.Name }} {{ .Author.Surname }} on PsionicAlch.</description>
+    <language>en-us</language>
+    <lastBuildDate>{{ format_time_to_rfc_822 .LastBuildTime }}</lastBuildDate>
+    <atom:link href="https://www.psionicalch.com/rss/courses/{{- .Author.Slug -}}" rel="self" type="application/rss+xml" />
+    <image>
+      <!-- TODO: Replace with actual image -->
+      <url>https://www.psionicalch.com/assets/img/logo.png</url>
+      <title>Courses by {{ .Author.Name }} {{ .Author.Surname }}</title>
+      <link>https://www.psionicalch.com/author/{{ .Author.Slug }}/courses</link>
+    </image>
+
+    {{ range .Courses }}
+    <item>
+      <title>{{- .Title -}}</title>
+      <link>https://www.psionicalch.com/courses/{{- .Slug -}}</link>
+      <description>{{- .Description -}}</description>
+      <pubDate>{{- format_time_to_rfc_822 .CreatedAt -}}</pubDate>
+      <dc:creator>{{ $.Author.Name }} {{ $.Author.Surname }}</dc:creator>
+      <category>Course</category>
+      <guid>https://www.psionicalch.com/courses/{{- .Slug -}}</guid>
+    </item>
+    {{ end }}
+  </channel>
+</rss>

@@ -23,6 +23,7 @@ require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/go-rod/rod v0.116.0 // indirect
 	github.com/luabagg/orcgen/v2 v2.0.2 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/ysmood/fetchup v0.2.4 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
 	github.com/ysmood/got v0.40.0 // indirect

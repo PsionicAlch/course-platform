@@ -1,4 +1,4 @@
-package vanilla
+package vanillahtml
 
 import (
 	"fmt"

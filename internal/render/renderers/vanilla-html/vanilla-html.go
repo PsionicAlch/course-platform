@@ -1,4 +1,4 @@
-package vanilla
+package vanillahtml
 
 import (
 	"context"
@@ -10,28 +10,28 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 )
 
-type VanillaRenderer struct {
+type VanillaHTMLRenderer struct {
 	templates     *Templates
 	fileExtension string
 	sessions      *session.Session
 }
 
-func SetupVanillaRenderer(sessions *session.Session, embeddedFS embed.FS, fileExtension, directory string, otherDirectories ...string) (*VanillaRenderer, error) {
+func SetupVanillaHTMLRenderer(sessions *session.Session, embeddedFS embed.FS, fileExtension, directory string, otherDirectories ...string) (*VanillaHTMLRenderer, error) {
 	templates, err := CreateTemplates(embeddedFS, directory, otherDirectories...)
 	if err != nil {
 		return nil, err
 	}
 
-	vanillaRenderer := &VanillaRenderer{
+	vanillaHTMLRenderer := &VanillaHTMLRenderer{
 		templates:     templates,
 		fileExtension: fileExtension,
 		sessions:      sessions,
 	}
 
-	return vanillaRenderer, nil
+	return vanillaHTMLRenderer, nil
 }
 
-func (renderer *VanillaRenderer) Render(w io.Writer, ctx context.Context, file string, data any) error {
+func (renderer *VanillaHTMLRenderer) Render(w io.Writer, ctx context.Context, file string, data any) error {
 	var infoMessages, warningMessages, errorMessages []string
 
 	if renderer.sessions != nil {
@@ -60,7 +60,7 @@ func (renderer *VanillaRenderer) Render(w io.Writer, ctx context.Context, file s
 	return nil
 }
 
-func (renderer *VanillaRenderer) RenderHTML(w http.ResponseWriter, ctx context.Context, file string, data any, status ...int) error {
+func (renderer *VanillaHTMLRenderer) RenderHTML(w http.ResponseWriter, ctx context.Context, file string, data any, status ...int) error {
 	var infoMessages, warningMessages, errorMessages []string
 
 	if renderer.sessions != nil {
@@ -94,21 +94,6 @@ func (renderer *VanillaRenderer) RenderHTML(w http.ResponseWriter, ctx context.C
 	return nil
 }
 
-func (renderer *VanillaRenderer) RenderXML(w http.ResponseWriter, file string, data any, status ...int) error {
-	tmplBuffer, err := renderer.templates.Compile(file+renderer.fileExtension, data)
-	if err != nil {
-		return err
-	}
-
-	statusCode := render.GetStatusCode(status...)
-	w.WriteHeader(statusCode)
-
-	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-
-	_, err = tmplBuffer.WriteTo(w)
-	if err != nil {
-		return err
-	}
-
-	return nil
+func (renderer *VanillaHTMLRenderer) RenderXML(w http.ResponseWriter, file string, data any, status ...int) error {
+	return render.ErrCannotRenderXML
 }
