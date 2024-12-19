@@ -13,6 +13,7 @@ import (
 	vanillatext "github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla-text"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/psionicalch-home/pkg/sitemapper"
 	"github.com/PsionicAlch/psionicalch-home/website/assets"
 	"github.com/PsionicAlch/psionicalch-home/website/config"
 	"github.com/PsionicAlch/psionicalch-home/website/emails"
@@ -27,6 +28,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/pages/profile"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/rss"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/settings"
+	"github.com/PsionicAlch/psionicalch-home/website/pages/sitemap"
 	"github.com/PsionicAlch/psionicalch-home/website/pages/tutorials"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -65,7 +67,7 @@ func StartWebsite() {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}
 
-	rssRenderer, err := vanillatext.SetupVanillaTextRenderer(html.TextFiles, ".rss.tmpl", "rss")
+	xmlRenderer, err := vanillatext.SetupVanillaTextRenderer(html.XMLFiles, ".xml.tmpl", "xml")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up rss renderer: ", err)
 	}
@@ -94,16 +96,19 @@ func StartWebsite() {
 
 	// Set up cache.
 	gens := &gocache.Generators{
-		RSSFeed:                generators.RSSFeed(utils.CreateLoggers("RSS FEED GENERATOR"), db, rssRenderer),
-		TutorialsRSSFeed:       generators.TutorialsRSSFeed(utils.CreateLoggers("TUTORIALS RSS FEED GENERATOR"), db, rssRenderer),
-		CoursesRSSFeed:         generators.CoursesRSSFeed(utils.CreateLoggers("COURSES RSS FEED GENERATOR"), db, rssRenderer),
-		AuthorTutorialsRSSFeed: generators.AuthorTutorialsRSSFeed(utils.CreateLoggers("AUTHOR TUTORIALS RSS FEED GENERATOR"), db, rssRenderer),
-		AuthorCoursesRSSFeed:   generators.AuthorCoursesRSSFeed(utils.CreateLoggers("AUTHOR COURSES RSS FEED GENERATOR"), db, rssRenderer),
+		RSSFeed:                generators.RSSFeed(utils.CreateLoggers("RSS FEED GENERATOR"), db, xmlRenderer),
+		TutorialsRSSFeed:       generators.TutorialsRSSFeed(utils.CreateLoggers("TUTORIALS RSS FEED GENERATOR"), db, xmlRenderer),
+		CoursesRSSFeed:         generators.CoursesRSSFeed(utils.CreateLoggers("COURSES RSS FEED GENERATOR"), db, xmlRenderer),
+		AuthorTutorialsRSSFeed: generators.AuthorTutorialsRSSFeed(utils.CreateLoggers("AUTHOR TUTORIALS RSS FEED GENERATOR"), db, xmlRenderer),
+		AuthorCoursesRSSFeed:   generators.AuthorCoursesRSSFeed(utils.CreateLoggers("AUTHOR COURSES RSS FEED GENERATOR"), db, xmlRenderer),
 	}
 	cache := gocache.SetupGoCache(gens)
 
+	// Set up sitemapper.
+	mapper := sitemapper.NewSiteMapper("http://localhost:8080", time.Hour*24*7)
+
 	// Set up handlers.
-	generalHandlers := general.SetupHandlers(pagesRenderer, rssRenderer, db)
+	generalHandlers := general.SetupHandlers(pagesRenderer, db)
 	tutorialHandlers := tutorials.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions, auth)
 	courseHandlers := courses.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions, auth, payment)
 	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth, emailer, sessions)
@@ -113,6 +118,7 @@ func StartWebsite() {
 	authorsHandlers := authors.SetupHandlers(pagesRenderer, htmxRenderer, db)
 	certificateHandlers := certificates.SetupHandlers(pagesRenderer, db)
 	rssHandlers := rss.SetupHandlers(cache)
+	sitemapHandlers := sitemap.SetupHandlers(mapper)
 
 	// Create new router.
 	router := chi.NewRouter()
@@ -130,6 +136,7 @@ func StartWebsite() {
 
 	// Set up RSS routes.
 	router.Mount("/rss", rss.RegisterRoutes(rssHandlers))
+	router.Mount("/sitemap", sitemap.RegisterRoutes(sitemapHandlers))
 
 	// Set up routes.
 	router.With(auth.SetUser, sessions.SessionMiddleware).Mount("/", general.RegisterRoutes(generalHandlers))

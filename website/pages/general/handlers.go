@@ -17,12 +17,12 @@ type Handlers struct {
 	Database  database.Database
 }
 
-func SetupHandlers(pageRenderer render.Renderer, rssRenderer render.Renderer, db database.Database) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, db database.Database) *Handlers {
 	loggers := utils.CreateLoggers("GENERAL HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
-		Renderers: pages.CreateRenderers(pageRenderer, nil, rssRenderer),
+		Renderers: pages.CreateRenderers(pageRenderer, nil, nil),
 		Database:  db,
 	}
 }
