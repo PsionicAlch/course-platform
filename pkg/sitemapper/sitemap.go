@@ -3,6 +3,7 @@ package sitemapper
 import (
 	"encoding/xml"
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -21,7 +22,7 @@ type SitemapURLSet struct {
 	URLS         []SitemapURL `xml:"url"`
 }
 
-func (mapper *SiteMapper) GenerateSitemap(baseDomain string) string {
+func (mapper *SiteMapper) GenerateSitemap(baseDomain string, filterPattern string) string {
 	urlSet := SitemapURLSet{
 		Xmlns:        "http://www.sitemaps.org/schemas/sitemap/0.9",
 		XmlnsXsi:     "http://www.w3.org/2001/XMLSchema-instance",
@@ -32,11 +33,22 @@ func (mapper *SiteMapper) GenerateSitemap(baseDomain string) string {
 
 	var urls []SitemapURL
 
+	filter, err := regexp.Compile(filterPattern)
+	if err != nil {
+		fmt.Println("Invalid filter pattern provided!")
+		return mapper.EmptySitemapXML(baseDomain)
+	}
+
 	for _, link := range links {
 		fmt.Println(link.Link)
 
+		if filter.MatchString(link.Link) {
+			fmt.Println("Skipping: ", link.Link)
+			continue
+		}
+
 		url := SitemapURL{
-			Location:     link.Link,
+			Location:     ReplaceDomain(link.Link, mapper.Domain, baseDomain),
 			LastModified: link.LastChanged.Format("2006-01-02"),
 		}
 

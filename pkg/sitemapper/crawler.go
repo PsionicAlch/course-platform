@@ -129,9 +129,20 @@ func (crawler *Crawler) ExtractLinks(r io.Reader) []string {
 		case html.StartTagToken, html.SelfClosingTagToken:
 			token := tokenizer.Token()
 
+			// Check anchor tags for href attributes.
 			if token.Data == "a" {
 				for _, attr := range token.Attr {
 					if attr.Key == "href" {
+						link := attr.Val
+						if normalized, ok := crawler.NormalizeURL(link); ok {
+							links = append(links, normalized)
+						}
+					}
+				}
+			} else {
+				// Check all other elements for hx-get attributes.
+				for _, attr := range token.Attr {
+					if attr.Key == "hx-get" {
 						link := attr.Val
 						if normalized, ok := crawler.NormalizeURL(link); ok {
 							links = append(links, normalized)

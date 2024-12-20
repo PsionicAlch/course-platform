@@ -17,7 +17,7 @@ func SetupHandlers(mapper *sitemapper.SiteMapper) *Handlers {
 }
 
 func (h *Handlers) SitemapGet(w http.ResponseWriter, r *http.Request) {
-	sitemap := h.Mapper.GenerateSitemap("https://www.psionicalch.com")
+	sitemap := h.Mapper.GenerateSitemap("https://www.psionicalch.com", "/htmx")
 
 	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 	w.Write([]byte(sitemap))

@@ -1,6 +1,7 @@
 package sitemapper
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -25,8 +26,9 @@ func NewSiteMapper(domain string, crawlInterval time.Duration, startingURL ...st
 	}
 
 	go func() {
-		time.Sleep(5 * time.Second)
+		time.Sleep(3 * time.Second)
 
+		fmt.Println("Initial site crawl")
 		mapper.Spider.Crawl(url)
 
 		ticker := time.NewTicker(crawlInterval)
