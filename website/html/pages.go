@@ -204,6 +204,11 @@ type ProfileTutorialsLikedPage struct {
 
 type SettingsPage struct {
 	BasePage
+	ChangeFirstNameForm *ChangeFirstNameFormComponent
+	ChangeLastNameForm  *ChangeLastNameFormComponent
+	ChangeEmailForm     *ChangeEmailFormComponent
+	IPAddresses         []*models.WhitelistedIPModel
+	Courses             []*models.CourseModel
 }
 
 type TutorialsPage struct {

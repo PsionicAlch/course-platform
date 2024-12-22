@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 )
 
@@ -34,7 +35,11 @@ func (auth *Authentication) SetUserWithEmail(email AuthenticationEmail) func(nex
 					auth.ErrorLog.Printf("Failed to get user's (\"%s\") whitelisted IP addresses: %s\n", user.Email, err)
 				}
 
-				if userIpAddresses != nil && !utils.InSlice(ipAddr, userIpAddresses) {
+				_, whitelistedIP := utils.InSliceFunc(ipAddr, userIpAddresses, func(ip string, addr *models.WhitelistedIPModel) bool {
+					return ip == addr.IPAddress
+				})
+
+				if userIpAddresses != nil && !whitelistedIP {
 					go email.SendSuspiciousActivityEmail(user.Email, user.Name, ipAddr, time.Now())
 				}
 			}

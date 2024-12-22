@@ -44,7 +44,7 @@ type Database interface {
 
 	// IP Addresses functions.
 	AddIPAddress(userId, ipAddr string) error
-	GetUserIpAddresses(userId string) ([]string, error)
+	GetUserIpAddresses(userId string) ([]*models.WhitelistedIPModel, error)
 
 	// Tutorials functions.
 	AdminGetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error)
@@ -130,6 +130,7 @@ type Database interface {
 	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)
 	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
 	GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error)
+	GetAllCoursesBoughtByUser(userId string) ([]*models.CourseModel, error)
 
 	// Affiliate Points History functions.
 	RegisterAffiliatePointsChange(userId, courseId string, pointsChange int, reason string) error

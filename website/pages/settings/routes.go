@@ -11,7 +11,11 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	router.Get("/", handlers.SettingsGet)
 
-	// TODO: Set up the logic for managing a user's whitelisted IP addresses.
+	router.Route("/validate", func(r chi.Router) {
+		r.Post("/change-first-name", handlers.ValidateChangeFirstName)
+		r.Post("/change-last-name", handlers.ValidateChangeLastName)
+		r.Post("/change-email", handlers.ValidateChangeEmail)
+	})
 
 	return router
 }

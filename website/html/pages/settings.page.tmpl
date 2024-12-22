@@ -18,14 +18,7 @@
       <section class="settings-container">
         <h2>Change My First Name</h2>
 
-        <form action="/">
-          <div class="form-control">
-            <label for="first-name">New First Name:</label>
-            <input type="first-name" name="first-name" id="first-name" autocomplete="off">
-          </div>
-
-          <button type="submit" class="btn btn-blue shadow-sm">Change First Name</button>
-        </form>
+        {{ template "change-first-name-form" .ChangeFirstNameForm }}
       </section>
 
       <hr>
@@ -33,14 +26,7 @@
       <section class="settings-container">
         <h2>Change My Last Name</h2>
 
-        <form action="/">
-          <div class="form-control">
-            <label for="last-name">New Last Name:</label>
-            <input type="last-name" name="last-name" id="last-name" autocomplete="off">
-          </div>
-
-          <button type="submit" class="btn btn-blue shadow-sm">Change Last Name</button>
-        </form>
+        {{ template "change-last-name-form" .ChangeLastNameForm }}
       </section>
 
       <hr>
@@ -48,14 +34,7 @@
       <section class="settings-container">
         <h2>Change My Email Address</h2>
 
-        <form action="/">
-          <div class="form-control">
-            <label for="email">New Email Address:</label>
-            <input type="email" name="email" id="email" autocomplete="off">
-          </div>
-
-          <button type="submit" class="btn btn-blue shadow-sm">Change Email Address</button>
-        </form>
+        {{ template "change-email-form" .ChangeEmailForm }}
       </section>
 
       <hr>
@@ -80,6 +59,24 @@
 
       <hr>
 
+      <section class="settings-container" id="manage-ip-addresses">
+        <h2>Manage Whitelisted IP Addresses</h2>
+
+        <div class="ip-addresses-container">
+          {{ range .IPAddresses }}
+            <div class="ip-address shadow-sm">
+              <p><b>{{- .IPAddress -}}</b></p>
+
+              <button class="btn btn-red shadow-sm" hx-delete="/settings/delete-ip-address/{{- .ID -}}">Delete IP Address</button>
+            </div>
+          {{ else }}
+            <p>You don't currently have any whitelisted IP addresses</p>
+          {{ end }}
+        </div>
+      </section>
+
+      <hr>
+
       <section class="settings-container" x-data="usercourses">
         <h2>Request Refund</h2>
 
@@ -87,10 +84,9 @@
 
         <select name="courses" id="courses" x-model="courseID" x-effect="setCourseName(courseID)" class="shadow-sm">
           <option value="" disabled>Select a course</option>
-
-          <template x-for="(value, key) in courses">
-            <option x-bind:value="key" x-text="value"></option>
-          </template>
+          {{ range .Courses }}
+            <option value="{{- .ID -}}">{{- .Title -}}</option>
+          {{ end }}
         </select>
 
         <button class="btn btn-blue shadow-sm" x-on:click="modalOpen = true" x-bind:disabled="!courseID && !courseName">Request Refund</button>
@@ -108,7 +104,7 @@
               <hr>
 
               <div class="modal-actions">
-                <button x-on:click="modalOpen = false" class="btn btn-gray shadow-sm">Cancel</button>
+                <button x-on:click="modalOpen = false; courseID = ''; courseName = ''" class="btn btn-gray shadow-sm">Cancel</button>
 
                 <form action="/">
                   <input type="hidden" name="course-id" x-bind:value="courseID">
@@ -163,13 +159,6 @@
   <script>
     document.addEventListener("alpine:init", () => {
       Alpine.data('usercourses', () => ({
-        courses: {
-          "01JBC9HM3C160KYY6WE7KM8T20": "How to create a course platform with Golang, HTMX, AlpineJS, and Bootstrap 5",
-          "01JBC9HM3C4VC85G492M117GDR": "How to create a video sharing platform (like YouTube) with Golang, HTMX, AlpineJS, and Bootstrap 5",
-          "01JBC9HM3C9EXH42HDYFQJ95N4": "How to create your first AI startup with Golang, HTMX, AlpineJS, and Bootstrap 5",
-          "01JBC9HM3CCEYM21SX60KDFBJ6": "How to create a job board with Golang, HTMX, AlpineJS, and Bootstrap 5",
-          "01JBC9HM3CD0H6RJ9MYR57P7EQ": "How to create an AI powered audio book service with Golang, HTMX, AlpineJS, and Bootstrap 5",
-        },
         courseID: "",
         courseName: "",
         modalOpen: false,

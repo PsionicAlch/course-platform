@@ -2,6 +2,7 @@ package sqlite_database
 
 import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
 )
 
@@ -21,10 +22,10 @@ func (db *SQLiteDatabase) AddIPAddress(userId, ipAddr string) error {
 	return nil
 }
 
-func (db *SQLiteDatabase) GetUserIpAddresses(userId string) ([]string, error) {
-	query := `SELECT ip_address FROM whitelisted_ips WHERE user_id = ?;`
+func (db *SQLiteDatabase) GetUserIpAddresses(userId string) ([]*models.WhitelistedIPModel, error) {
+	query := `SELECT id, user_id, ip_address, created_at FROM whitelisted_ips WHERE user_id = ?;`
 
-	var ipAddresses []string
+	var ipAddresses []*models.WhitelistedIPModel
 
 	rows, err := db.connection.Query(query, userId)
 	if err != nil {
@@ -34,15 +35,15 @@ func (db *SQLiteDatabase) GetUserIpAddresses(userId string) ([]string, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var ipAddr string
+		var ipAddr models.WhitelistedIPModel
 
-		err = rows.Scan(&ipAddr)
+		err = rows.Scan(&ipAddr.ID, &ipAddr.UserID, &ipAddr.IPAddress, &ipAddr.CreatedAt)
 		if err != nil {
 			db.ErrorLog.Printf("Failed to query database row for user's (\"%s\") whitelisted IP address: %s\n", userId, err)
 			return nil, err
 		}
 
-		ipAddresses = append(ipAddresses, ipAddr)
+		ipAddresses = append(ipAddresses, &ipAddr)
 	}
 
 	if err := rows.Err(); err != nil {

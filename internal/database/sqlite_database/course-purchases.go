@@ -251,3 +251,36 @@ func (db *SQLiteDatabase) GetCoursesBoughtByUser(term, userId string, page, elem
 
 	return courses, nil
 }
+
+func (db *SQLiteDatabase) GetAllCoursesBoughtByUser(userId string) ([]*models.CourseModel, error) {
+	query := `SELECT c.id, c.title, c.slug, c.description, c.thumbnail_url, c.banner_url, c.content, c.published, c.author_id, c.file_checksum, c.file_key, c.created_at, c.updated_at FROM course_purchases AS cp LEFT JOIN courses AS c ON cp.course_id = c.id WHERE cp.user_id = ? AND cp.payment_status = 'Succeeded' ORDER BY cp.updated_at DESC;`
+
+	var courses []*models.CourseModel
+
+	rows, err := db.connection.Query(query, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get all courses purchased bought by user (\"%s\"): %s\n", userId, err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var course models.CourseModel
+		var published int
+
+		if err := rows.Scan(&course.ID, &course.Title, &course.Slug, &course.Description, &course.ThumbnailURL, &course.BannerURL, &course.Content, &published, &course.AuthorID, &course.FileChecksum, &course.FileKey, &course.CreatedAt, &course.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read course from the database: %s\n", err)
+			return nil, err
+		}
+
+		course.Published = published == 1
+
+		courses = append(courses, &course)
+	}
+
+	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get all courses purchased bought by user (\"%s\"): %s\n", userId, err)
+		return nil, err
+	}
+
+	return courses, nil
+}

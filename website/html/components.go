@@ -106,6 +106,18 @@ type CoursePurchaseFormComponent struct {
 	ErrorMessage            string
 }
 
+type ChangeFirstNameFormComponent struct {
+	FirstNameInput *FormControlComponent
+}
+
+type ChangeLastNameFormComponent struct {
+	LastNameInput *FormControlComponent
+}
+
+type ChangeEmailFormComponent struct {
+	EmailInput *FormControlComponent
+}
+
 type TutorialsListComponent struct {
 	Tutorials    []*models.TutorialModel
 	LastTutorial *models.TutorialModel

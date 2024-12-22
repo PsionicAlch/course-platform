@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
@@ -106,7 +107,11 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to get user's (\"%s\") whitelisted IP addresses: %s\n", user.Email, err)
 	}
 
-	if userIpAddresses != nil && !utils.InSlice(ipAddr, userIpAddresses) {
+	_, whitelistedIP := utils.InSliceFunc(ipAddr, userIpAddresses, func(ip string, addr *models.WhitelistedIPModel) bool {
+		return ip == addr.IPAddress
+	})
+
+	if userIpAddresses != nil && !whitelistedIP {
 		go h.Emailer.SendLoginEmail(email, user.Name, ipAddr, time.Now())
 	}
 

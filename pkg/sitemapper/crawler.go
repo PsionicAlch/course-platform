@@ -59,8 +59,6 @@ func (crawler *Crawler) Crawl(url string) {
 			continue
 		}
 
-		fmt.Println("Crawling: ", currentURL)
-
 		resp, err := http.Get(currentURL)
 		if err != nil {
 			fmt.Printf("Error fetching \"%s\": %s\n", currentURL, err)

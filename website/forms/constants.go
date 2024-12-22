@@ -16,7 +16,10 @@ const (
 	DiscountCodeName    = "discount_code"
 
 	// Validation URLs
-	SignupValidationURL        = "/accounts/validate/signup"
-	ResetPasswordValidationURL = "/accounts/validate/reset-password"
-	NewDiscountsValidationURL  = "/admin/discounts/validate/add"
+	SignupValidationURL          = "/accounts/validate/signup"
+	ResetPasswordValidationURL   = "/accounts/validate/reset-password"
+	NewDiscountsValidationURL    = "/admin/discounts/validate/add"
+	ChangeFirstNameValidationURL = "/settings/validate/change-first-name"
+	ChangeLastNameValidationURL  = "/settings/validate/change-last-name"
+	ChangeEmailValidationURL     = "/settings/validate/change-email"
 )
