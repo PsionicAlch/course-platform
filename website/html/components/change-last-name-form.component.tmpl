@@ -1,5 +1,5 @@
 {{ define "change-last-name-form" }}
-  <form action="/">
+  <form hx-post="/settings/change-last-name">
     {{ template "form-control" .LastNameInput }}
 
     <button type="submit" class="btn btn-blue shadow-sm">Change Last Name</button>

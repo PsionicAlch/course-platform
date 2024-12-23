@@ -113,7 +113,7 @@ func StartWebsite() {
 	courseHandlers := courses.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions, auth, payment)
 	accountHandlers := accounts.SetupHandlers(pagesRenderer, htmxRenderer, auth, emailer, sessions)
 	profileHandlers := profile.SetupHandlers(pagesRenderer, htmxRenderer, auth, db, sessions)
-	settingsHandlers := settings.SetupHandlers(pagesRenderer, htmxRenderer, db)
+	settingsHandlers := settings.SetupHandlers(pagesRenderer, htmxRenderer, db, sessions, auth)
 	adminHandlers := admin.SetupHandlers(pagesRenderer, htmxRenderer, db, auth)
 	authorsHandlers := authors.SetupHandlers(pagesRenderer, htmxRenderer, db)
 	certificateHandlers := certificates.SetupHandlers(pagesRenderer, db)

@@ -1,5 +1,5 @@
 {{ define "change-email-form" }}
-  <form action="/">
+  <form hx-post="/settings/change-email">
     {{ template "form-control" .EmailInput }}
 
     <button type="submit" class="btn btn-blue shadow-sm">Change Email Address</button>

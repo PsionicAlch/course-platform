@@ -15,7 +15,7 @@
 {{ define "body" }}
   <main class="settings">
     <div class="container">
-      <section class="settings-container">
+      <section id="change-first-name" class="settings-container">
         <h2>Change My First Name</h2>
 
         {{ template "change-first-name-form" .ChangeFirstNameForm }}
@@ -23,7 +23,7 @@
 
       <hr>
 
-      <section class="settings-container">
+      <section id="change-last-name" class="settings-container">
         <h2>Change My Last Name</h2>
 
         {{ template "change-last-name-form" .ChangeLastNameForm }}
@@ -31,7 +31,7 @@
 
       <hr>
 
-      <section class="settings-container">
+      <section id="change-email" class="settings-container">
         <h2>Change My Email Address</h2>
 
         {{ template "change-email-form" .ChangeEmailForm }}
@@ -42,19 +42,7 @@
       <section id="change-password" class="settings-container">
         <h2>Change My Password</h2>
 
-        <form action="/">
-          <div class="form-control">
-            <label for="old-password">Old Password:</label>
-            <input type="password" name="old-password" id="old-password" autocomplete="off">
-          </div>
-
-          <div class="form-control">
-            <label for="new-password">New Password:</label>
-            <input type="password" name="new-password" id="new-password" autocomplete="off">
-          </div>
-
-          <button type="submit" class="btn btn-blue shadow-sm">Change Password</button>
-        </form>
+        {{ template "change-password-form" .ChangePasswordForm }}
       </section>
 
       <hr>

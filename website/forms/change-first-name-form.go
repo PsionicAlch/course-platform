@@ -35,7 +35,7 @@ func EmptyChangeFirstNameFormComponent() *html.ChangeFirstNameFormComponent {
 	firstNameInput.Label = "First Name:"
 	firstNameInput.Name = FirstName
 	firstNameInput.Type = "text"
-	firstNameInput.ValidationURL = ChangeFirstNameValidationURL
+	firstNameInput.ValidationURL = ""
 
 	changeFirstNameForm := new(html.ChangeFirstNameFormComponent)
 	changeFirstNameForm.FirstNameInput = firstNameInput

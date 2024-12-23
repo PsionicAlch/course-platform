@@ -395,7 +395,7 @@ func (h *Handlers) CreateUsersList(r *http.Request) (*html.AdminUsersListCompone
 		page = pageNum
 	}
 
-	urlQuery.Add("page", strconv.Itoa(page))
+	urlQuery.Add("page", strconv.Itoa(page+1))
 
 	if authLevel, err := database.AuthorizationLevelString(r.URL.Query().Get("level")); err == nil {
 		level = authLevel

@@ -11,11 +11,15 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	router.Get("/", handlers.SettingsGet)
 
-	router.Route("/validate", func(r chi.Router) {
-		r.Post("/change-first-name", handlers.ValidateChangeFirstName)
-		r.Post("/change-last-name", handlers.ValidateChangeLastName)
-		r.Post("/change-email", handlers.ValidateChangeEmail)
-	})
+	router.Post("/change-first-name", handlers.ChangeFirstNamePost)
+
+	router.Post("/change-last-name", handlers.ChangeLastNamePost)
+
+	router.Post("/change-email", handlers.ChangeEmailPost)
+
+	router.Post("/change-password", handlers.ChangePasswordPost)
+
+	router.Post("/validate/change-password", handlers.ValidateChangePassword)
 
 	return router
 }

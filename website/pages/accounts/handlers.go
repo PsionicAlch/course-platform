@@ -369,7 +369,7 @@ func (h *Handlers) ValidateSignupPost(w http.ResponseWriter, r *http.Request) {
 	signupForm := forms.SignupFormPartialValidation(r)
 	signupForm.Validate()
 
-	if err := h.Renderers.Htmx.RenderHTML(w, r.Context(), "signup-form", forms.NewSignupFormComponent(signupForm)); err != nil {
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "signup-form", forms.NewSignupFormComponent(signupForm)); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -379,7 +379,7 @@ func (h *Handlers) ValidateResetPasswordPost(w http.ResponseWriter, r *http.Requ
 	resetPasswordForm := forms.ResetPasswordFormPartialValidation(r)
 	resetPasswordForm.Validate()
 
-	if err := h.Renderers.Htmx.RenderHTML(w, r.Context(), "reset-password-form", forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)); err != nil {
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "reset-password-form", forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

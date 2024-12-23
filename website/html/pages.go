@@ -207,6 +207,7 @@ type SettingsPage struct {
 	ChangeFirstNameForm *ChangeFirstNameFormComponent
 	ChangeLastNameForm  *ChangeLastNameFormComponent
 	ChangeEmailForm     *ChangeEmailFormComponent
+	ChangePasswordForm  *ChangePasswordFormComponent
 	IPAddresses         []*models.WhitelistedIPModel
 	Courses             []*models.CourseModel
 }

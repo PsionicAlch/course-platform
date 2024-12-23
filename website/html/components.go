@@ -118,6 +118,11 @@ type ChangeEmailFormComponent struct {
 	EmailInput *FormControlComponent
 }
 
+type ChangePasswordFormComponent struct {
+	PreviousPasswordInput *PasswordControlComponent
+	NewPasswordInput      *PasswordControlComponent
+}
+
 type TutorialsListComponent struct {
 	Tutorials    []*models.TutorialModel
 	LastTutorial *models.TutorialModel

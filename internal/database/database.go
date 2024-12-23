@@ -29,6 +29,8 @@ type Database interface {
 	GetUserByToken(token, tokenType string, level AuthorizationLevel) (*models.UserModel, error)
 	GetUserByAffiliateCode(affiliateCode string, level AuthorizationLevel) (*models.UserModel, error)
 	GetUserBySlug(userSlug string, level AuthorizationLevel) (*models.UserModel, error)
+	UpdateUserName(userId, name, surname string) error
+	UpdateUserEmail(userId, email string) error
 	UpdateUserPassword(userId, password string) error
 	CountUsers() (uint, error)
 	AddAuthorStatus(userId string) error

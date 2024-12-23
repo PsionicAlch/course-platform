@@ -297,3 +297,13 @@ func (auth *Authentication) NewUser(name, surname, email, password string) error
 
 	return nil
 }
+
+func (auth *Authentication) ValidatePassword(user *models.UserModel, password string) (bool, error) {
+	match, err := ComparePasswordAndHash(password, user.Password)
+	if err != nil {
+		auth.ErrorLog.Printf("Failed to compare user (\"%s\") password: %s\n", user.ID, err)
+		return false, err
+	}
+
+	return match, nil
+}

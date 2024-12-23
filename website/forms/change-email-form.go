@@ -33,7 +33,7 @@ func EmptyChangeEmailFormComponent() *html.ChangeEmailFormComponent {
 	emailInput.Label = "Email:"
 	emailInput.Name = EmailName
 	emailInput.Type = "email"
-	emailInput.ValidationURL = ChangeEmailValidationURL
+	emailInput.ValidationURL = ""
 
 	changeEmailForm := new(html.ChangeEmailFormComponent)
 	changeEmailForm.EmailInput = emailInput

@@ -492,6 +492,54 @@ func (db *SQLiteDatabase) GetUserBySlug(userSlug string, level database.Authoriz
 	return user, nil
 }
 
+func (db *SQLiteDatabase) UpdateUserName(userId, name, surname string) error {
+	query := `UPDATE users SET name = ?, surname = ?, slug = ? WHERE id = ?;`
+
+	slug := database.NameSurnameToSlug(name, surname)
+
+	result, err := db.connection.Exec(query, name, surname, slug, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to update user's (\"%s\") name: %s\n", userId, err)
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get rows affected after updating user's (\"%s\") name: %s\n", userId, err)
+		return err
+	}
+
+	if rowsAffected == 0 {
+		db.ErrorLog.Printf("0 rows were affected after updating user's (\"%s\") name\n", userId)
+		return database.ErrNoRowsAffected
+	}
+
+	return nil
+}
+
+func (db *SQLiteDatabase) UpdateUserEmail(userId, email string) error {
+	query := `UPDATE users SET email = ? WHERE id = ?;`
+
+	result, err := db.connection.Exec(query, email, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to update user's (\"%s\") email: %s\n", userId, err)
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get rows affected after updating user's (\"%s\") email: %s\n", userId, err)
+		return err
+	}
+
+	if rowsAffected == 0 {
+		db.ErrorLog.Printf("0 rows were affected after updating user's (\"%s\") email\n", userId)
+		return database.ErrNoRowsAffected
+	}
+
+	return nil
+}
+
 func (db *SQLiteDatabase) UpdateUserPassword(userId, password string) error {
 	query := `UPDATE users SET password = ? WHERE id = ?;`
 
