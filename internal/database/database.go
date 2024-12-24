@@ -37,6 +37,7 @@ type Database interface {
 	RemoveAuthorStatus(userId string) error
 	AddAdminStatus(userId string) error
 	RemoveAdminStatus(userId string) error
+	DeleteUser(userId string) error
 
 	// Tokens functions.
 	AddToken(token, tokenType, userId string, validUntil time.Time) error
@@ -47,6 +48,7 @@ type Database interface {
 	// IP Addresses functions.
 	AddIPAddress(userId, ipAddr string) error
 	GetUserIpAddresses(userId string) ([]*models.WhitelistedIPModel, error)
+	DeleteIPAddress(ipAddrId, userId string) error
 
 	// Tutorials functions.
 	AdminGetTutorials(term string, published *bool, authorId *string, likedByUser string, bookmarkedByUser string, keyword string, page, elements uint) ([]*models.TutorialModel, error)

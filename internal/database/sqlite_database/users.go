@@ -628,3 +628,15 @@ func (db *SQLiteDatabase) RemoveAdminStatus(userId string) error {
 
 	return nil
 }
+
+func (db *SQLiteDatabase) DeleteUser(userId string) error {
+	query := `DELETE FROM users WHERE id = ?;`
+
+	_, err := db.connection.Exec(query, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to delete user's (\"%s\") account: %s\n", userId, err)
+		return err
+	}
+
+	return nil
+}

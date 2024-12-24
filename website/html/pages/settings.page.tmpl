@@ -109,6 +109,7 @@
       <section
         x-data="{ modalOpen: false }"
         class="settings-container danger"
+        id="delete-account"
       >
         <h2>Delete My Account</h2>
 
@@ -130,10 +131,7 @@
 
               <div class="modal-actions">
                 <button x-on:click="modalOpen = false" class="btn btn-gray shadow-sm">Cancel</button>
-
-                <form action="/">
-                  <button type="submit" x-on:click="modalOpen = false" class="btn btn-red shadow-sm">Delete My Account</button>
-                </form>
+                <button class="btn btn-red shadow-sm" hx-delete="/settings/delete-account">Delete My Account</button>
               </div>
             </div>
           </section>

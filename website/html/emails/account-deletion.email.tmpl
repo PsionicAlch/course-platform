@@ -1,0 +1,25 @@
+{{ template "email" . }}
+
+{{ define "content" }}
+  <p>Hello {{.FirstName}},</p>
+
+  <p>We're sorry to see you go, but we completely understand your decision to delete your PsionicAlch account. Your account, along with all associated data, has been permanently deleted.</p>
+
+  <p>We'd love to know if there's anything we could have done differently. If you'd like to share your thoughts, feel free to reach out to us anytime:</p>
+  <p>
+    <a href="https://twitter.com/psionicalch">Twitter</a> |
+    <a href="https://bsky.app/profile/psionicalch.com">Bluesky</a> |
+    <a href="mailto:contact@psionicalch.com">Email</a>
+  </p>
+
+  <p>If you ever decide to return, you're more than welcome to create a new account. However, please note:</p>
+  <ul>
+    <li>Any courses you purchased on your previous account will no longer be accessible.</li>
+    <li>Your affiliate code is no longer valid, and all accumulated affiliate points have been permanently removed.</li>
+    <li>Courses and affiliate points are non-refundable and cannot be restored to a new account.</li>
+  </ul>
+
+  <p>We truly appreciate the time you spent with us and hope you found value in your learning journey. If you ever need assistance or have further questions, we're here to help.</p>
+
+  <p>Wishing you the best,<br>The PsionicAlch Team</p>
+{{ end }}

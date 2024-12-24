@@ -43,62 +43,42 @@ func SetupEmails(emailRenderer render.Renderer) *Emails {
 	}
 }
 
-func (e *Emails) SendWelcomeEmail(email, firstName, affiliateCode string) {
-	emailData := html.NewGreetingEmail(firstName, affiliateCode)
-
+func (e *Emails) SendEmail(email, title, tmpl string, data any) {
 	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, nil, "greeting", emailData); err != nil {
-		e.ErrorLog.Printf("Failed to render greeting email for %s: %s\n", email, err)
+	if err := e.Render.Render(buf, nil, tmpl, data); err != nil {
+		e.ErrorLog.Printf("Failed to \"%s\" email for %s: %s\n", tmpl, email, err)
 		return
 	}
 
-	e.Client.SendEmail(email, emailData.Title, buf.String())
+	e.Client.SendEmail(email, title, buf.String())
+}
+
+func (e *Emails) SendWelcomeEmail(email, firstName, affiliateCode string) {
+	emailData := html.NewGreetingEmail(firstName, affiliateCode)
+	e.SendEmail(email, emailData.Title, "greeting", emailData)
 }
 
 func (e *Emails) SendLoginEmail(email, firstName, ipAddr string, date time.Time) {
 	emailData := html.NewLoginEmail(firstName, ipAddr, date)
-
-	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, nil, "login", emailData); err != nil {
-		e.ErrorLog.Printf("Failed to render login email for %s: %s\n", email, err)
-		return
-	}
-
-	e.Client.SendEmail(email, emailData.Title, buf.String())
+	e.SendEmail(email, emailData.Title, "login", emailData)
 }
 
 func (e *Emails) SendPasswordResetEmail(email, firstName, emailToken string) {
 	emailData := html.NewPasswordResetEmail(firstName, emailToken)
-
-	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, nil, "reset-password", emailData); err != nil {
-		e.ErrorLog.Printf("Failed to render reset password email for %s: %s\n", email, err)
-		return
-	}
-
-	e.Client.SendEmail(email, emailData.Title, buf.String())
+	e.SendEmail(email, emailData.Title, "reset-password", emailData)
 }
 
 func (e *Emails) SendPasswordResetConfirmationEmail(email, firstName string) {
 	emailData := html.NewPasswordResetConfirmationEmail(firstName)
-
-	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, nil, "password-reset-confirmation", emailData); err != nil {
-		e.ErrorLog.Printf("Failed to render password reset confirmation email for %s: %s\n", email, err)
-		return
-	}
-
-	e.Client.SendEmail(email, emailData.Title, buf.String())
+	e.SendEmail(email, emailData.Title, "password-reset-confirmation", emailData)
 }
 
 func (e *Emails) SendSuspiciousActivityEmail(email, firstName, ipAddr string, dateTime time.Time) {
 	emailData := html.NewSuspiciousActivityEmail(firstName, ipAddr, dateTime)
+	e.SendEmail(email, emailData.Title, "suspicious-activity", emailData)
+}
 
-	buf := new(bytes.Buffer)
-	if err := e.Render.Render(buf, nil, "suspicious-activity", emailData); err != nil {
-		e.ErrorLog.Printf("Failed to render suspicious activity email for %s: %s\n", email, err)
-		return
-	}
-
-	e.Client.SendEmail(email, emailData.Title, buf.String())
+func (e *Emails) SendAccountDeletionEmail(email, firstName string) {
+	emailData := html.NewAccountDeletionEmail(firstName)
+	e.SendEmail(email, emailData.Title, "account-deletion", emailData)
 }

@@ -47,21 +47,10 @@ func (db *SQLiteDatabase) GetToken(token, tokenType string) (*models.TokenModel,
 func (db *SQLiteDatabase) DeleteToken(token, tokenType string) error {
 	query := `DELETE FROM tokens WHERE token = ? AND token_type = ?;`
 
-	result, err := db.connection.Exec(query, token, tokenType)
+	_, err := db.connection.Exec(query, token, tokenType)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to delete token from database: %s\n", err)
 		return err
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		db.ErrorLog.Printf("Failed to get rows affected after deleting token: %s\n", err)
-		return err
-	}
-
-	if rowsAffected == 0 {
-		db.ErrorLog.Println("No rows were affected after deleting token")
-		return database.ErrNoRowsAffected
 	}
 
 	return nil
@@ -70,20 +59,10 @@ func (db *SQLiteDatabase) DeleteToken(token, tokenType string) error {
 func (db *SQLiteDatabase) DeleteAllTokens(email, tokenType string) error {
 	query := `DELETE FROM tokens WHERE token_type = ? AND user_id IN (SELECT id FROM users WHERE email = ?);`
 
-	result, err := db.connection.Exec(query, tokenType, email)
+	_, err := db.connection.Exec(query, tokenType, email)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to delete all user's (\"%s\") %s tokens from database: %s\n", email, tokenType, err)
 		return err
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		db.ErrorLog.Printf("Failed to get rows affected after deleting all user's (\"%s\") %s tokens: %s\n", email, tokenType, err)
-		return err
-	}
-
-	if rowsAffected == 0 {
-		db.ErrorLog.Printf("No rows were affected after deleting all user's (\"%s\") %s tokens", email, tokenType)
 	}
 
 	return nil

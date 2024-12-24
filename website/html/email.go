@@ -100,3 +100,15 @@ func NewSuspiciousActivityEmail(firstName, ipAddr string, dateTime time.Time) *S
 		LoginDateTime:    dateTime,
 	}
 }
+
+type AccountDeletionEmail struct {
+	BaseEmail
+	FirstName string
+}
+
+func NewAccountDeletionEmail(firstName string) *AccountDeletionEmail {
+	return &AccountDeletionEmail{
+		BaseEmail: NewBaseEmail("Account Deleted"),
+		FirstName: firstName,
+	}
+}

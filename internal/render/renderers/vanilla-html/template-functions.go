@@ -14,6 +14,7 @@ func CreateFuncMap() template.FuncMap {
 		"html":         HTML,
 		"add_queries":  AddQueries,
 		"current_time": CurrentTime,
+		"url_escape":   URLEscape,
 	}
 
 	return funcMap
@@ -78,4 +79,8 @@ func AddQueries(queries string, values ...any) (string, error) {
 
 func CurrentTime() time.Time {
 	return time.Now()
+}
+
+func URLEscape(s string) string {
+	return url.QueryEscape(s)
 }

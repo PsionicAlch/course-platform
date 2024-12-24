@@ -70,3 +70,7 @@ func GetChangePasswordFormValues(form *GenericForm) (previousPassword, newPasswo
 
 	return
 }
+
+func SetPreviousPasswordError(form *GenericForm, msg string) {
+	form.SetError(PreviousPasswordName, msg)
+}

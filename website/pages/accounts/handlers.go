@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
+	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
@@ -21,17 +22,19 @@ type Handlers struct {
 	utils.Loggers
 	Renderers *pages.Renderers
 	Auth      *authentication.Authentication
+	Database  database.Database
 	Emailer   *emails.Emails
 	Session   *session.Session
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *authentication.Authentication, emailer *emails.Emails, sessions *session.Session) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *authentication.Authentication, db database.Database, emailer *emails.Emails, sessions *session.Session) *Handlers {
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
 		Loggers:   loggers,
 		Renderers: pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
 		Auth:      auth,
+		Database:  db,
 		Emailer:   emailer,
 		Session:   sessions,
 	}
@@ -102,17 +105,17 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIpAddresses, err := h.Auth.Database.GetUserIpAddresses(user.ID)
+	userIpAddresses, err := h.Database.GetUserIpAddresses(user.ID)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user's (\"%s\") whitelisted IP addresses: %s\n", user.Email, err)
-	}
+	} else {
+		_, whitelistedIP := utils.InSliceFunc(ipAddr, userIpAddresses, func(ip string, addr *models.WhitelistedIPModel) bool {
+			return ip == addr.IPAddress
+		})
 
-	_, whitelistedIP := utils.InSliceFunc(ipAddr, userIpAddresses, func(ip string, addr *models.WhitelistedIPModel) bool {
-		return ip == addr.IPAddress
-	})
-
-	if userIpAddresses != nil && !whitelistedIP {
-		go h.Emailer.SendLoginEmail(email, user.Name, ipAddr, time.Now())
+		if !whitelistedIP {
+			go h.Emailer.SendLoginEmail(email, user.Name, ipAddr, time.Now())
+		}
 	}
 
 	http.SetCookie(w, cookie)
@@ -203,8 +206,6 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) LogoutDelete(w http.ResponseWriter, r *http.Request) {
-	h.InfoLog.Printf("Logging user (%#v) out", authentication.GetUserFromRequest(r))
-
 	cookie, err := h.Auth.LogUserOut(r.Cookies())
 	if err != nil {
 		h.ErrorLog.Printf("An error occurred whilst logging user out: %s\n", err)

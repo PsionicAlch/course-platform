@@ -23,7 +23,7 @@ func (db *SQLiteDatabase) AddIPAddress(userId, ipAddr string) error {
 }
 
 func (db *SQLiteDatabase) GetUserIpAddresses(userId string) ([]*models.WhitelistedIPModel, error) {
-	query := `SELECT id, user_id, ip_address, created_at FROM whitelisted_ips WHERE user_id = ?;`
+	query := `SELECT id, user_id, ip_address, created_at FROM whitelisted_ips WHERE user_id = ? ORDER BY created_at DESC;`
 
 	var ipAddresses []*models.WhitelistedIPModel
 
@@ -32,7 +32,6 @@ func (db *SQLiteDatabase) GetUserIpAddresses(userId string) ([]*models.Whitelist
 		db.ErrorLog.Printf("Failed to query database for all user's (\"%s\") whitelisted IP addresses: %s\n", userId, err)
 		return nil, err
 	}
-	defer rows.Close()
 
 	for rows.Next() {
 		var ipAddr models.WhitelistedIPModel
@@ -52,4 +51,16 @@ func (db *SQLiteDatabase) GetUserIpAddresses(userId string) ([]*models.Whitelist
 	}
 
 	return ipAddresses, nil
+}
+
+func (db *SQLiteDatabase) DeleteIPAddress(ipAddrId, userId string) error {
+	query := `DELETE FROM whitelisted_ips WHERE id = ? AND user_id = ?;`
+
+	_, err := db.connection.Exec(query, ipAddrId, userId)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to delete IP address (\"%s\") from database (user id: \"%s\"): %s\n", ipAddrId, userId, err)
+		return err
+	}
+
+	return nil
 }
