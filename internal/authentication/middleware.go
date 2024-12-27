@@ -33,14 +33,14 @@ func (auth *Authentication) SetUserWithEmail(email AuthenticationEmail) func(nex
 				userIpAddresses, err := auth.Database.GetUserIpAddresses(user.ID)
 				if err != nil {
 					auth.ErrorLog.Printf("Failed to get user's (\"%s\") whitelisted IP addresses: %s\n", user.Email, err)
-				}
+				} else {
+					_, whitelistedIP := utils.InSliceFunc(ipAddr, userIpAddresses, func(ip string, addr *models.WhitelistedIPModel) bool {
+						return ip == addr.IPAddress
+					})
 
-				_, whitelistedIP := utils.InSliceFunc(ipAddr, userIpAddresses, func(ip string, addr *models.WhitelistedIPModel) bool {
-					return ip == addr.IPAddress
-				})
-
-				if userIpAddresses != nil && !whitelistedIP {
-					go email.SendSuspiciousActivityEmail(user.Email, user.Name, ipAddr, time.Now())
+					if !whitelistedIP {
+						go email.SendSuspiciousActivityEmail(user.Email, user.Name, ipAddr, time.Now())
+					}
 				}
 			}
 
