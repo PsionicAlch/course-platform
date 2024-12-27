@@ -284,3 +284,17 @@ func (db *SQLiteDatabase) GetAllCoursesBoughtByUser(userId string) ([]*models.Co
 
 	return courses, nil
 }
+
+func (db *SQLiteDatabase) GetCoursePurchaseByUserAndCourse(userId, courseId string) (*models.CoursePurchaseModel, error) {
+	query := `SELECT id, user_id, course_id, payment_key, stripe_checkout_session_id, affiliate_code, discount_code, affiliate_points_used, amount_paid, payment_status, created_at, updated_at FROM course_purchases WHERE user_id = ? AND course_id = ?;`
+
+	var coursePurchase models.CoursePurchaseModel
+
+	row := db.connection.QueryRow(query, userId, courseId)
+	if err := row.Scan(&coursePurchase.ID, &coursePurchase.UserID, &coursePurchase.CourseID, &coursePurchase.PaymentKey, &coursePurchase.StripeCheckoutSessionID, &coursePurchase.AffiliateCode, &coursePurchase.DiscountCode, &coursePurchase.AffiliatePointsUsed, &coursePurchase.AmountPaid, &coursePurchase.PaymentStatus, &coursePurchase.CreatedAt, &coursePurchase.UpdatedAt); err != nil {
+		db.ErrorLog.Printf("Failed to get course purchase information for user (\"%s\") and course (\"%s\"): %s\n", userId, courseId, err)
+		return nil, err
+	}
+
+	return &coursePurchase, nil
+}

@@ -135,6 +135,7 @@ type Database interface {
 	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
 	GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error)
 	GetAllCoursesBoughtByUser(userId string) ([]*models.CourseModel, error)
+	GetCoursePurchaseByUserAndCourse(userId, courseId string) (*models.CoursePurchaseModel, error)
 
 	// Affiliate Points History functions.
 	RegisterAffiliatePointsChange(userId, courseId string, pointsChange int, reason string) error

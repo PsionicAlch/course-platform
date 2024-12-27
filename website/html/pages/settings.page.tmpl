@@ -65,16 +65,17 @@
 
       <hr>
 
-      <section class="settings-container" x-data="usercourses">
+      <section class="settings-container" x-data="usercourses" id="request-refund">
         <h2>Request Refund</h2>
 
         <p>Once a refund request has been successfully processed you will no longer have access to that specific course. Only courses that you have bought less than 30 days ago and have yet to complete are viable for a refund. Any refund requests for a course that doesn't meet these criteria will be denied. Please see our <a href="/refund-policy.html" class="emphasis">Refund Policy</a> for more information.</p>
 
         <select name="courses" id="courses" x-model="courseID" x-effect="setCourseName(courseID)" class="shadow-sm">
           <option value="" disabled>Select a course</option>
-          {{ range .Courses }}
-            <option value="{{- .ID -}}">{{- .Title -}}</option>
-          {{ end }}
+
+          <template x-for="(value, key) in courses">
+            <option x-bind:value="key" x-text="value"></option>
+          </template>
         </select>
 
         <button class="btn btn-blue shadow-sm" x-on:click="modalOpen = true" x-bind:disabled="!courseID && !courseName">Request Refund</button>
@@ -92,12 +93,8 @@
               <hr>
 
               <div class="modal-actions">
-                <button x-on:click="modalOpen = false; courseID = ''; courseName = ''" class="btn btn-gray shadow-sm">Cancel</button>
-
-                <form action="/">
-                  <input type="hidden" name="course-id" x-bind:value="courseID">
-                  <button type="submit" x-on:click="modalOpen = false" class="btn btn-red shadow-sm">Request Refund</button>
-                </form>
+                <button x-on:click="cancel()" class="btn btn-gray shadow-sm">Cancel</button>
+                <button x-on:click="submit()" class="btn btn-red shadow-sm" id="request-refund-btn">Request Refund</button>
               </div>
             </div>
           </section>
@@ -145,6 +142,11 @@
   <script>
     document.addEventListener("alpine:init", () => {
       Alpine.data('usercourses', () => ({
+        courses: {
+          {{- range .Courses }}
+            "{{- .ID -}}": "{{- .Title -}}",
+          {{ end -}}
+        },
         courseID: "",
         courseName: "",
         modalOpen: false,
@@ -153,8 +155,39 @@
           if (id && id in this.courses) {
             this.courseName = this.courses[id];
           }
+        },
 
-          console.log(this.courseID, " : ", this.courseName);
+        cancel() {
+          this.modalOpen = false;
+          this.courseID = '';
+          this.courseName = ''
+        },
+
+        async submit() {
+          const refundURL = `/settings/request-refund/${this.courseID}`;
+          const refundBtn = document.getElementById("request-refund-btn");
+
+          try {
+            refundBtn.innerText = "Requesting...";
+
+            const response = await fetch(refundURL, { method: "post" });
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            notyf.open({
+              type: 'flash-info',
+              message: 'Refund has been requested.'
+            });
+          } catch (_) {
+            notyf.open({
+              type: 'flash-error',
+              message: 'Unexpected server error. Failed to request refund.'
+            });
+          }
+
+          refundBtn.innerText = "Request Refund";
+          this.cancel();
         }
       }));
     });

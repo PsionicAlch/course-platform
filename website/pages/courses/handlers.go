@@ -226,7 +226,21 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 
 	pageData.Author = author
 
-	// TODO: Redirect the user to the course chapter if they've already bought this course.
+	hasPurchasedCourse, err := h.Database.HasUserPurchasedCourse(user.ID, course.ID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to check if user (\"%s\") has purchased course (\"%s\"): %s\n", user.ID, course.ID, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	if hasPurchasedCourse {
+		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s", course.Slug))
+		return
+	}
 
 	purchaseCourseForm := forms.EmptyCoursePurchaseFormComponent(course.Slug, user)
 	pageData.CoursePurchaseForm = purchaseCourseForm
@@ -382,8 +396,9 @@ func (h *Handlers) PurchaseCourseCheckGet(w http.ResponseWriter, r *http.Request
 		h.Payment.DeletePaymentToken(token)
 		h.Session.SetInfoMessage(r.Context(), "Thank you for your purchase! We hope you enjoy the course.")
 
-		// TODO: Change this URL to something more sensible.
-		utils.Redirect(w, r, "/profile")
+		// TODO: Send email thanking user for the purchase of the course.
+
+		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s", course.Slug))
 	}
 }
 

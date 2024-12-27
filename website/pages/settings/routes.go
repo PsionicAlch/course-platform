@@ -23,6 +23,8 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 
 	router.Delete("/delete-ip-address/{ip-address-id}", handlers.IPAddressDelete)
 
+	router.Post("/request-refund/{course-id}", handlers.RequestRefundPost)
+
 	router.Delete("/delete-account", handlers.AccountDelete)
 
 	router.Post("/validate/change-password", handlers.ValidateChangePassword)

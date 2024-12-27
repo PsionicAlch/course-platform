@@ -9,6 +9,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/stripe/stripe-go/v81"
 	"github.com/stripe/stripe-go/v81/checkout/session"
+	"github.com/stripe/stripe-go/v81/refund"
 )
 
 type Payments struct {
@@ -29,6 +30,7 @@ func SetupPayments(privateKey, webhookSecret string, db database.Database) *Paym
 	}
 }
 
+// TODO: Check logic on courses where user pays $0.
 func (payment *Payments) BuyCourse(user *models.UserModel, course *models.CourseModel, successUrl, cancelUrl, affiliateCode, discountCode string, affiliatePointsUsed uint, amountPaid int64) (string, error) {
 	paymentKey, err := GeneratePaymentKey()
 	if err != nil {
@@ -91,4 +93,51 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 	}
 
 	return s.URL, nil
+}
+
+func (payment *Payments) RequestRefund(user *models.UserModel, course *models.CourseModel) error {
+	coursePurchase, err := payment.Database.GetCoursePurchaseByUserAndCourse(user.ID, course.ID)
+	if err != nil {
+		payment.ErrorLog.Printf("Failed to get course purchase for user (\"%s\") and course (\"%s\"): %s\n", user.ID, course.ID, err)
+		return err
+	}
+
+	if coursePurchase.PaymentStatus != database.Succeeded.String() {
+		return ErrUserHasNotBoughtCourse
+	}
+
+	if coursePurchase.AmountPaid == 0.0 {
+		// TODO: Email user about successful course refund.
+		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Refunded); err != nil {
+			payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") status to refunded: %s\n", coursePurchase.ID, err)
+			return err
+		}
+
+		return nil
+	}
+
+	checkoutSession, err := session.Get(coursePurchase.StripeCheckoutSessionID, nil)
+	if err != nil {
+		payment.ErrorLog.Printf("Failed to get Stripe Checkout Session: %s\n", err)
+		return err
+	}
+
+	refundParams := &stripe.RefundParams{
+		PaymentIntent: stripe.String(checkoutSession.PaymentIntent.ID),
+		Metadata: map[string]string{
+			"user_id":            user.ID,
+			"user_name":          user.Name,
+			"user_surname":       user.Surname,
+			"user_email":         user.Email,
+			"course_purchase_id": coursePurchase.ID,
+		},
+	}
+
+	_, err = refund.New(refundParams)
+	if err != nil {
+		payment.ErrorLog.Printf("Failed to created Stripe Refund: %s\n", err)
+		return err
+	}
+
+	return nil
 }

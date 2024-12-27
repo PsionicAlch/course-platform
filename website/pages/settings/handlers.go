@@ -273,6 +273,14 @@ func (h *Handlers) IPAddressDelete(w http.ResponseWriter, r *http.Request) {
 	utils.Redirect(w, r, "/settings#change-password")
 }
 
+func (h *Handlers) RequestRefundPost(w http.ResponseWriter, r *http.Request) {
+	h.InfoLog.Println("Refund has been requested!")
+
+	time.Sleep(2 * time.Second)
+
+	w.WriteHeader(http.StatusInternalServerError)
+}
+
 func (h *Handlers) AccountDelete(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 

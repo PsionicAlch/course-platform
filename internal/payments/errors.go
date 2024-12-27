@@ -9,4 +9,5 @@ var (
 	ErrInvalidAffiliateCode        = errors.New("invalid affiliate code provided")
 	ErrInvalidDiscountCode         = errors.New("invalid discount code provided")
 	ErrInsufficientAffiliatePoints = errors.New("user doesn't have enough affiliate points")
+	ErrUserHasNotBoughtCourse      = errors.New("user hasn't purchased the course")
 )
