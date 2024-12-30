@@ -132,6 +132,7 @@ type Database interface {
 	CountCoursesWhereDiscountWasUsed(discountCode string) (uint, error)
 	CountUsersWhoBoughtCourse(courseId string) (uint, error)
 	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)
+	GetCoursePurchaseByID(coursePurchaseId string) (*models.CoursePurchaseModel, error)
 	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
 	GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error)
 	GetAllCoursesBoughtByUser(userId string) ([]*models.CourseModel, error)
@@ -154,6 +155,9 @@ type Database interface {
 	GetCertificateFromUserAndCourse(userId, courseId string) (*models.CertificateModel, error)
 	GetUserFromCertificate(certificateId string) (*models.UserModel, error)
 	GetCourseFromCertificate(certificateId string) (*models.CourseModel, error)
+
+	// Refunds functions.
+	RegisterRefund(userId, coursePurchaseId string, status RefundStatus) error
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error

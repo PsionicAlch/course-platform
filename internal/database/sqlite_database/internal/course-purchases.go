@@ -2,18 +2,20 @@ package internal
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 )
 
 func HasUserPurchasedCourse(dbFacade SqlDbFacade, userId, courseId string) (bool, error) {
-	query := `SELECT id FROM course_purchases WHERE user_id = ? AND course_id = ? AND payment_status = 'Succeeded';`
+	query := `SELECT id FROM course_purchases WHERE user_id = ? AND course_id = ? AND payment_status = ?;`
 
 	var id string
 
-	row := dbFacade.QueryRow(query, userId, courseId)
+	row := dbFacade.QueryRow(query, userId, courseId, database.Succeeded.String())
 	if err := row.Scan(&id); err != nil {
 		if err == sql.ErrNoRows {
+			fmt.Println("Hello?")
 			return false, nil
 		}
 

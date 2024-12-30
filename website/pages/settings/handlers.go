@@ -9,6 +9,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/psionicalch-home/internal/payments"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
@@ -26,9 +27,10 @@ type Handlers struct {
 	Session  *session.Session
 	Auth     *authentication.Authentication
 	Emailer  *emails.Emails
+	Payments *payments.Payments
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, sessions *session.Session, auth *authentication.Authentication, emailer *emails.Emails) *Handlers {
+func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, sessions *session.Session, auth *authentication.Authentication, emailer *emails.Emails, pay *payments.Payments) *Handlers {
 	loggers := utils.CreateLoggers("SETTINGS HANDLERS")
 
 	return &Handlers{
@@ -38,6 +40,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 		Session:  sessions,
 		Auth:     auth,
 		Emailer:  emailer,
+		Payments: pay,
 	}
 }
 
@@ -274,11 +277,23 @@ func (h *Handlers) IPAddressDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) RequestRefundPost(w http.ResponseWriter, r *http.Request) {
-	h.InfoLog.Println("Refund has been requested!")
+	user := authentication.GetUserFromRequest(r)
 
-	time.Sleep(2 * time.Second)
+	courseId := chi.URLParam(r, "course-id")
+	course, err := h.Database.GetCourseByID(courseId)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get course by ID (\"%s\"): %s\n", courseId, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	w.WriteHeader(http.StatusInternalServerError)
+	if err := h.Payments.RequestRefund(user, course); err != nil {
+		h.ErrorLog.Printf("Failed to request course (\"%s\") refund for user (\"%s\"): %s\n", course.ID, user.ID, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handlers) AccountDelete(w http.ResponseWriter, r *http.Request) {

@@ -9,14 +9,17 @@ CREATE TABLE IF NOT EXISTS course_purchases (
     affiliate_points_used INTEGER DEFAULT 0 CHECK (affiliate_points_used >= 0),                                     -- Points used
     amount_paid REAL NOT NULL CHECK (amount_paid >= 0.0),                                                           -- Final amount paid in cents
     payment_status TEXT NOT NULL DEFAULT 'Pending' CHECK (
-        payment_status IN ('Succeeded', 'Refunded', 'Pending', 'Cancelled', 'Failed', 'Requires Action')
+        payment_status IN ('Succeeded', 'Refunded', 'Disputed', 'Pending', 'Cancelled', 'Failed', 'Requires Action', 'Processing')
     ),
+
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,                                                                  -- Purchase timestamp
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,                                                                  -- Update timestamp
 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
+
+-- TODO: Consider adding unique index on user_id and course_id.
 
 CREATE INDEX IF NOT EXISTS idx_course_purchases_discount_code ON course_purchases(discount_code);
 

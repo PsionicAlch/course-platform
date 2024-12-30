@@ -60,11 +60,10 @@
 
           <h1>{{- .Course.Title -}}</h1>
 
-          <p>Made by <a href="/authors/{{- .Author.Slug -}}/courses">{{- .Author.Name -}} {{- .Author.Surname -}}</a></p>
+          <p>Made by <a href="/authors/{{- .Author.Slug -}}/courses">{{- .Author.Name }} {{ .Author.Surname -}}</a></p>
 
           <p>{{- .Course.Description -}}</p>
 
-          {{/* TODO: Implement logic around whether or not the course is live */}}
           <a href="/courses/{{- .Course.Slug -}}/purchase" class="btn btn-blue btn-buy shadow-sm">Buy Course - $150</a>
         </div>
 
