@@ -283,17 +283,19 @@ func (h *Handlers) RequestRefundPost(w http.ResponseWriter, r *http.Request) {
 	course, err := h.Database.GetCourseByID(courseId)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get course by ID (\"%s\"): %s\n", courseId, err)
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if err := h.Payments.RequestRefund(user, course); err != nil {
 		h.ErrorLog.Printf("Failed to request course (\"%s\") refund for user (\"%s\"): %s\n", course.ID, user.ID, err)
+		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// w.WriteHeader(http.StatusOK)
+	h.Session.SetInfoMessage(r.Context(), "Refund successfully requested.")
 }
 
 func (h *Handlers) AccountDelete(w http.ResponseWriter, r *http.Request) {

@@ -96,18 +96,30 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 }
 
 func (payment *Payments) RequestRefund(user *models.UserModel, course *models.CourseModel) error {
-	coursePurchase, err := payment.Database.GetCoursePurchaseByUserAndCourse(user.ID, course.ID)
+	coursePurchases, err := payment.Database.GetCoursePurchasesByUserAndCourse(user.ID, course.ID)
 	if err != nil {
 		payment.ErrorLog.Printf("Failed to get course purchase for user (\"%s\") and course (\"%s\"): %s\n", user.ID, course.ID, err)
 		return err
 	}
 
-	if coursePurchase.PaymentStatus != database.Succeeded.String() {
+	index, has := utils.Find(coursePurchases, func(coursePurchase *models.CoursePurchaseModel) bool {
+		return coursePurchase.PaymentStatus == database.Succeeded.String()
+	})
+
+	if !has {
 		return ErrUserHasNotBoughtCourse
 	}
 
+	coursePurchase := coursePurchases[index]
+
 	if coursePurchase.AmountPaid == 0.0 {
 		// TODO: Email user about successful course refund.
+
+		if err := payment.Database.RegisterRefund(coursePurchase.UserID, coursePurchase.ID, database.RefundSucceeded); err != nil {
+			payment.ErrorLog.Printf("Failed to insert new refund: %s\n", err)
+			return err
+		}
+
 		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Refunded); err != nil {
 			payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") status to refunded: %s\n", coursePurchase.ID, err)
 			return err
@@ -125,11 +137,11 @@ func (payment *Payments) RequestRefund(user *models.UserModel, course *models.Co
 	refundParams := &stripe.RefundParams{
 		PaymentIntent: stripe.String(checkoutSession.PaymentIntent.ID),
 		Metadata: map[string]string{
-			"user_id":            user.ID,
-			"user_name":          user.Name,
-			"user_surname":       user.Surname,
-			"user_email":         user.Email,
-			"course_purchase_id": coursePurchase.ID,
+			"user_id":      user.ID,
+			"user_name":    user.Name,
+			"user_surname": user.Surname,
+			"user_email":   user.Email,
+			"payment_key":  coursePurchase.PaymentKey,
 		},
 	}
 
@@ -137,6 +149,15 @@ func (payment *Payments) RequestRefund(user *models.UserModel, course *models.Co
 	if err != nil {
 		payment.ErrorLog.Printf("Failed to created Stripe Refund: %s\n", err)
 		return err
+	}
+
+	if err := payment.Database.RegisterRefund(coursePurchase.UserID, coursePurchase.ID, database.RefundPending); err != nil {
+		payment.ErrorLog.Printf("Failed to insert new refund: %s\n", err)
+		return err
+	}
+
+	if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Refunded); err != nil {
+		payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") status to refunded: %s\n", coursePurchase.ID, err)
 	}
 
 	return nil

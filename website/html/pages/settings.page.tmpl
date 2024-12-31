@@ -174,20 +174,10 @@
             if (!response.ok) {
               throw new Error(`Response status: ${response.status}`);
             }
-
-            notyf.open({
-              type: 'flash-info',
-              message: 'Refund has been requested.'
-            });
           } catch (_) {
-            notyf.open({
-              type: 'flash-error',
-              message: 'Unexpected server error. Failed to request refund.'
-            });
           }
 
-          refundBtn.innerText = "Request Refund";
-          this.cancel();
+          location.reload();
         }
       }));
     });

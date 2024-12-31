@@ -39,6 +39,16 @@ func InSeq[T iter.Seq[A], A comparable](item A, items T) bool {
 	return false
 }
 
+func Find[A comparable](items []A, compareFunc func(item A) bool) (int, bool) {
+	for index, item := range items {
+		if compareFunc(item) {
+			return index, true
+		}
+	}
+
+	return -1, false
+}
+
 func RandomByteSlice(length int) ([]byte, error) {
 	b := make([]byte, length)
 	_, err := rand.Read(b)

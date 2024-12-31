@@ -228,8 +228,8 @@ func (db *SQLiteDatabase) UpdateCoursePurchasePaymentStatus(coursePurchaseId str
 }
 
 func (db *SQLiteDatabase) GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error) {
-	query := `SELECT c.id, c.title, c.slug, c.description, c.thumbnail_url, c.banner_url, c.content, c.published, c.author_id, c.file_checksum, c.file_key, c.created_at, c.updated_at FROM course_purchases AS cp JOIN courses AS c ON cp.course_id = c.id WHERE cp.user_id = ?`
-	args := []any{userId}
+	query := `SELECT c.id, c.title, c.slug, c.description, c.thumbnail_url, c.banner_url, c.content, c.published, c.author_id, c.file_checksum, c.file_key, c.created_at, c.updated_at FROM course_purchases AS cp JOIN courses AS c ON cp.course_id = c.id WHERE cp.user_id = ? AND cp.payment_status = ?`
+	args := []any{userId, database.Succeeded.String()}
 
 	if term != "" {
 		query += " AND (LOWER(c.title) LIKE '%' || ? || '%' OR LOWER(c.slug) LIKE '%' || ? || '%' OR LOWER(c.description) LIKE '%' || ? || '%')"
@@ -303,16 +303,32 @@ func (db *SQLiteDatabase) GetAllCoursesBoughtByUser(userId string) ([]*models.Co
 	return courses, nil
 }
 
-func (db *SQLiteDatabase) GetCoursePurchaseByUserAndCourse(userId, courseId string) (*models.CoursePurchaseModel, error) {
+func (db *SQLiteDatabase) GetCoursePurchasesByUserAndCourse(userId, courseId string) ([]*models.CoursePurchaseModel, error) {
 	query := `SELECT id, user_id, course_id, payment_key, stripe_checkout_session_id, affiliate_code, discount_code, affiliate_points_used, amount_paid, payment_status, created_at, updated_at FROM course_purchases WHERE user_id = ? AND course_id = ?;`
 
-	var coursePurchase models.CoursePurchaseModel
+	coursePurchases := []*models.CoursePurchaseModel{}
 
-	row := db.connection.QueryRow(query, userId, courseId)
-	if err := row.Scan(&coursePurchase.ID, &coursePurchase.UserID, &coursePurchase.CourseID, &coursePurchase.PaymentKey, &coursePurchase.StripeCheckoutSessionID, &coursePurchase.AffiliateCode, &coursePurchase.DiscountCode, &coursePurchase.AffiliatePointsUsed, &coursePurchase.AmountPaid, &coursePurchase.PaymentStatus, &coursePurchase.CreatedAt, &coursePurchase.UpdatedAt); err != nil {
-		db.ErrorLog.Printf("Failed to get course purchase information for user (\"%s\") and course (\"%s\"): %s\n", userId, courseId, err)
+	rows, err := db.connection.Query(query, userId, courseId, database.Succeeded.String())
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get course purchases for user (\"%s\") and course (\"%s\"): %s\n", userId, courseId, err)
 		return nil, err
 	}
 
-	return &coursePurchase, nil
+	for rows.Next() {
+		var coursePurchase models.CoursePurchaseModel
+
+		if err := rows.Scan(&coursePurchase.ID, &coursePurchase.UserID, &coursePurchase.CourseID, &coursePurchase.PaymentKey, &coursePurchase.StripeCheckoutSessionID, &coursePurchase.AffiliateCode, &coursePurchase.DiscountCode, &coursePurchase.AffiliatePointsUsed, &coursePurchase.AmountPaid, &coursePurchase.PaymentStatus, &coursePurchase.CreatedAt, &coursePurchase.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to get course purchase information for user (\"%s\") and course (\"%s\"): %s\n", userId, courseId, err)
+			return nil, err
+		}
+
+		coursePurchases = append(coursePurchases, &coursePurchase)
+	}
+
+	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get course purchases for user (\"%s\") and course (\"%s\"): %s\n", userId, courseId, err)
+		return nil, err
+	}
+
+	return coursePurchases, nil
 }

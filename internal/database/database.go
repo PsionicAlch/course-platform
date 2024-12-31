@@ -136,7 +136,7 @@ type Database interface {
 	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
 	GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error)
 	GetAllCoursesBoughtByUser(userId string) ([]*models.CourseModel, error)
-	GetCoursePurchaseByUserAndCourse(userId, courseId string) (*models.CoursePurchaseModel, error)
+	GetCoursePurchasesByUserAndCourse(userId, courseId string) ([]*models.CoursePurchaseModel, error)
 
 	// Affiliate Points History functions.
 	RegisterAffiliatePointsChange(userId, courseId string, pointsChange int, reason string) error
@@ -158,6 +158,8 @@ type Database interface {
 
 	// Refunds functions.
 	RegisterRefund(userId, coursePurchaseId string, status RefundStatus) error
+	GetRefundWithCoursePurchaseID(coursePurchaseId string) (*models.RefundModel, error)
+	UpdateRefundStatus(refundId string, status RefundStatus) error
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error
