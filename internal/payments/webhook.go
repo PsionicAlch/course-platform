@@ -5,10 +5,11 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"slices"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/stripe/stripe-go/v81"
+	"github.com/stripe/stripe-go/v81/checkout/session"
 	"github.com/stripe/stripe-go/v81/webhook"
 )
 
@@ -34,12 +35,12 @@ func (payment *Payments) Webhook(w http.ResponseWriter, r *http.Request) {
 		"payment_intent.succeeded":       payment.HandlePaymentSuccess,
 		"payment_intent.payment_failed":  payment.HandlePaymentFailed,
 		"payment_intent.canceled":        payment.HandlePaymentCancel,
-		"refund.created":                 payment.HandleRefundCreated,
-		"refund.updated":                 payment.HandleRefundUpdated,
-		"refund.failed":                  payment.HandleRefundFailed,
+		"refund.created":                 payment.HandleRefund,
+		"refund.updated":                 payment.HandleRefund,
+		"refund.failed":                  payment.HandleRefund,
 		"charge.refunded":                payment.HandleChargeRefunded,
-		"charge.dispute.created":         payment.HandleChargeDisputeCreated,
-		"charge.dispute.closed":          payment.HandleChargeDisputeClosed,
+		"charge.dispute.created":         payment.HandleChargeDispute,
+		"charge.dispute.closed":          payment.HandleChargeDispute,
 	}
 
 	if handler, has := handlers[string(event.Type)]; has {
@@ -181,121 +182,115 @@ func (payment *Payments) HandlePaymentFailed(event *stripe.Event) error {
 	return nil
 }
 
-func (payment *Payments) HandleRefundCreated(event *stripe.Event) error {
+func (payment *Payments) HandleRefund(event *stripe.Event) error {
 	var refund stripe.Refund
 	if err := json.Unmarshal(event.Data.Raw, &refund); err != nil {
 		payment.ErrorLog.Printf("Failed to unmarshal refund: %s\n", err)
 		return errors.New("unexpected internal server error")
 	}
 
+	var coursePurchase *models.CoursePurchaseModel
+
 	if paymentKey, hasPaymentKey := refund.Metadata["payment_key"]; hasPaymentKey {
-		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
-		if err != nil || coursePurchase == nil {
+		cp, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
+		if err != nil {
 			payment.ErrorLog.Printf("Failed to find course purchase by payment key (\"%s\"): %s\n", paymentKey, err)
 			return errors.New("unexpected internal server error")
 		}
 
-		if err := payment.Database.RegisterRefund(coursePurchase.UserID, coursePurchase.ID, database.RefundPending); err != nil {
+		coursePurchase = cp
+	} else {
+		var paymentIntentID string
+
+		if refund.PaymentIntent != nil {
+			paymentIntentID = refund.PaymentIntent.ID
+		} else if refund.Charge != nil && refund.Charge.PaymentIntent != nil {
+			paymentIntentID = refund.Charge.PaymentIntent.ID
+		} else {
+			payment.ErrorLog.Println("Couldn't find the data required for logging refund")
+			return errors.New("unexpected internal server error")
+		}
+
+		params := &stripe.CheckoutSessionListParams{}
+		params.Filters.AddFilter("payment_intent", "", paymentIntentID)
+
+		i := session.List(params)
+		for i.Next() {
+			s, ok := i.Current().(*stripe.CheckoutSession)
+			if !ok {
+				payment.WarningLog.Printf("Could not convert stripe.session.Iter to *stripe.CheckoutSession: %T\n", i.Current())
+				continue
+			}
+
+			cp, err := payment.Database.GetCoursePurchaseByCheckoutSession(s.ID)
+			if err != nil {
+				payment.ErrorLog.Printf("Failed to get course purchase by stripe checkout session ID (\"%s\"): %s\n", s.ID, err)
+				return errors.New("unexpected internal server error")
+			}
+
+			coursePurchase = cp
+		}
+
+		if err := i.Err(); err != nil {
+			payment.ErrorLog.Printf("Error retrieving checkout sessions: %v", err)
+			return errors.New("unexpected internal server error")
+		}
+	}
+
+	if coursePurchase == nil {
+		payment.ErrorLog.Println("Failed to get course purchase from the database")
+		return errors.New("unexpected internal server error")
+	}
+
+	status := database.RefundPending
+	switch refund.Status {
+	case "pending":
+		status = database.RefundPending
+	case "requires_action":
+		status = database.RefundRequiresAction
+	case "succeeded":
+		status = database.RefundSucceeded
+	case "failed":
+		status = database.RefundFailed
+	case "canceled":
+		status = database.RefundCancelled
+	default:
+		return nil
+	}
+
+	refundModel, err := payment.Database.GetRefundWithCoursePurchaseID(coursePurchase.ID)
+	if err != nil {
+		payment.ErrorLog.Printf("Failed to get refund from course purchase ID (\"%s\"): %s\n", coursePurchase.ID, err)
+		return errors.New("unexpected internal server error")
+	}
+
+	if refundModel == nil {
+		if err := payment.Database.RegisterRefund(coursePurchase.UserID, coursePurchase.ID, status); err != nil {
 			payment.ErrorLog.Printf("Failed to insert new refund: %s\n", err)
 			return errors.New("unexpected internal server error")
 		}
-
-		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Refunded); err != nil {
-			payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") payment status to refunded: %s\n", coursePurchase.ID, err)
-			return errors.New("unexpected internal server error")
-		}
-
-		return nil
 	} else {
-		payment.ErrorLog.Println("Refund metadata didn't contain a payment key")
-		return errors.New("refund doesn't contain required metadata")
-	}
-}
-
-func (payment *Payments) HandleRefundUpdated(event *stripe.Event) error {
-	var refund stripe.Refund
-	if err := json.Unmarshal(event.Data.Raw, &refund); err != nil {
-		payment.ErrorLog.Printf("Failed to unmarshal refund: %s\n", err)
-		return errors.New("unexpected internal server error")
-	}
-
-	if paymentKey, hasPaymentKey := refund.Metadata["payment_key"]; hasPaymentKey {
-		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
-		if err != nil || coursePurchase == nil {
-			payment.ErrorLog.Printf("Failed to find course purchase by payment key (\"%s\"): %s\n", paymentKey, err)
-			return errors.New("unexpected internal server error")
-		}
-
-		status := database.RefundPending
-		switch refund.Status {
-		case "requires_action":
-			status = database.RefundRequiresAction
-		case "canceled":
-			status = database.RefundCancelled
-		default:
-			return nil
-		}
-
-		if status == database.RefundFailed || status == database.RefundCancelled {
-			if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Succeeded); err != nil {
-				payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") payment status to succeeded: %s\n", coursePurchase.ID, err)
+		if database.RefundStatusFromString(refundModel.RefundStatus) < status {
+			if err := payment.Database.UpdateRefundStatus(coursePurchase.ID, status); err != nil {
+				payment.ErrorLog.Printf("Failed to update refund (\"%s\") status: %s\n", refundModel.ID, err)
 				return errors.New("unexpected internal server error")
 			}
 		}
-
-		refundModel, err := payment.Database.GetRefundWithCoursePurchaseID(coursePurchase.ID)
-		if err != nil {
-			payment.ErrorLog.Printf("Failed to get refund from course purchase ID (\"%s\"): %s\n", coursePurchase.ID, err)
-			return errors.New("unexpected internal server error")
-		}
-
-		if err := payment.Database.UpdateRefundStatus(coursePurchase.ID, status); err != nil {
-			payment.ErrorLog.Printf("Failed to update refund (\"%s\") status: %s\n", refundModel.ID, err)
-			return errors.New("unexpected internal server error")
-		}
-
-		return nil
-	} else {
-		payment.ErrorLog.Println("Refund metadata didn't contain a payment key")
-		return errors.New("refund doesn't contain required metadata")
-	}
-}
-
-func (payment *Payments) HandleRefundFailed(event *stripe.Event) error {
-	var refund stripe.Refund
-	if err := json.Unmarshal(event.Data.Raw, &refund); err != nil {
-		payment.ErrorLog.Printf("Failed to unmarshal refund: %s\n", err)
-		return errors.New("unexpected internal server error")
 	}
 
-	if paymentKey, hasPaymentKey := refund.Metadata["payment_key"]; hasPaymentKey {
-		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
-		if err != nil || coursePurchase == nil {
-			payment.ErrorLog.Printf("Failed to find course purchase by payment key (\"%s\"): %s\n", paymentKey, err)
-			return errors.New("unexpected internal server error")
-		}
-
-		refundModel, err := payment.Database.GetRefundWithCoursePurchaseID(coursePurchase.ID)
-		if err != nil {
-			payment.ErrorLog.Printf("Failed to get refund from course purchase ID (\"%s\"): %s\n", coursePurchase.ID, err)
-			return errors.New("unexpected internal server error")
-		}
-
-		if err := payment.Database.UpdateRefundStatus(coursePurchase.ID, database.RefundFailed); err != nil {
-			payment.ErrorLog.Printf("Failed to update refund (\"%s\") status to failed: %s\n", refundModel.ID, err)
-			return errors.New("unexpected internal server error")
-		}
-
+	if status == database.RefundFailed || status == database.RefundCancelled {
 		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Succeeded); err != nil {
 			payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") payment status to succeeded: %s\n", coursePurchase.ID, err)
 			return errors.New("unexpected internal server error")
 		}
-
-		return nil
 	} else {
-		payment.ErrorLog.Println("Refund metadata didn't contain a payment key")
-		return errors.New("refund doesn't contain required metadata")
+		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Refunded); err != nil {
+			payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") payment status to refunded: %s\n", coursePurchase.ID, err)
+			return errors.New("unexpected internal server error")
+		}
 	}
+
+	return nil
 }
 
 func (payment *Payments) HandleChargeRefunded(event *stripe.Event) error {
@@ -318,9 +313,13 @@ func (payment *Payments) HandleChargeRefunded(event *stripe.Event) error {
 			return errors.New("unexpected internal server error")
 		}
 
-		if err := payment.Database.UpdateRefundStatus(refundModel.ID, database.RefundSucceeded); err != nil {
-			payment.ErrorLog.Printf("Failed to update refund (\"%s\") status to succeeded: %s\n", refundModel.ID, err)
-			return errors.New("unexpected internal server error")
+		if refundModel != nil {
+			if err := payment.Database.UpdateRefundStatus(refundModel.ID, database.RefundSucceeded); err != nil {
+				payment.ErrorLog.Printf("Failed to update refund (\"%s\") status to succeeded: %s\n", refundModel.ID, err)
+				return errors.New("unexpected internal server error")
+			}
+		} else {
+			payment.WarningLog.Printf("Could not find refund model using course purchase ID: %s\n", coursePurchase.ID)
 		}
 
 		return nil
@@ -330,110 +329,117 @@ func (payment *Payments) HandleChargeRefunded(event *stripe.Event) error {
 	}
 }
 
-func (payment *Payments) HandleChargeDisputeCreated(event *stripe.Event) error {
+func (payment *Payments) HandleChargeDispute(event *stripe.Event) error {
 	var dispute stripe.Dispute
 	if err := json.Unmarshal(event.Data.Raw, &dispute); err != nil {
 		payment.ErrorLog.Printf("Failed to unmarshal dispute: %s\n", err)
 		return errors.New("unexpected internal server error")
 	}
 
+	var coursePurchase *models.CoursePurchaseModel
+
 	if paymentKey, hasPaymentKey := dispute.Metadata["payment_key"]; hasPaymentKey {
-		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
-		if err != nil || coursePurchase == nil {
+		cp, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
+		if err != nil {
 			payment.ErrorLog.Printf("Failed to find course purchase by payment key (\"%s\"): %s\n", paymentKey, err)
 			return errors.New("unexpected internal server error")
 		}
 
-		var status database.RefundStatus
-		switch dispute.Status {
-		case "warning_needs_response":
-			status = database.DisputeWarningNeedsResponse
-		case "warning_under_review":
-			status = database.DisputeWarningUnderReview
-		case "warning_closed":
-			status = database.DisputeWarningClosed
-		case "needs_response":
-			status = database.DisputeNeedsResponse
-		case "under_review":
-			status = database.DisputeUnderReview
-		case "won":
-			status = database.DisputeWon
-		case "lost":
-			status = database.DisputeLost
+		coursePurchase = cp
+	} else {
+		var paymentIntentID string
+
+		if dispute.PaymentIntent != nil {
+			paymentIntentID = dispute.PaymentIntent.ID
+		} else if dispute.Charge != nil && dispute.Charge.PaymentIntent != nil {
+			paymentIntentID = dispute.Charge.PaymentIntent.ID
+		} else {
+			payment.ErrorLog.Println("Couldn't find the data required for logging dispute")
+			return errors.New("unexpected internal server error")
 		}
 
+		params := &stripe.CheckoutSessionListParams{}
+		params.Filters.AddFilter("payment_intent", "", paymentIntentID)
+
+		i := session.List(params)
+		for i.Next() {
+			s, ok := i.Current().(*stripe.CheckoutSession)
+			if !ok {
+				payment.WarningLog.Printf("Could not convert stripe.session.Iter to *stripe.CheckoutSession: %T\n", i.Current())
+				continue
+			}
+
+			cp, err := payment.Database.GetCoursePurchaseByCheckoutSession(s.ID)
+			if err != nil {
+				payment.ErrorLog.Printf("Failed to get course purchase by stripe checkout session ID (\"%s\"): %s\n", s.ID, err)
+				return errors.New("unexpected internal server error")
+			}
+
+			coursePurchase = cp
+		}
+
+		if err := i.Err(); err != nil {
+			payment.ErrorLog.Printf("Error retrieving checkout sessions: %v", err)
+			return errors.New("unexpected internal server error")
+		}
+	}
+
+	if coursePurchase == nil {
+		payment.ErrorLog.Println("Failed to get course purchase from the database")
+		return errors.New("unexpected internal server error")
+	}
+
+	status := database.DisputeWarningNeedsResponse
+	switch dispute.Status {
+	case "warning_needs_response":
+		status = database.DisputeWarningNeedsResponse
+	case "warning_under_review":
+		status = database.DisputeWarningUnderReview
+	case "warning_closed":
+		status = database.DisputeWarningClosed
+	case "needs_response":
+		status = database.DisputeNeedsResponse
+	case "under_review":
+		status = database.DisputeUnderReview
+	case "won":
+		status = database.DisputeWon
+	case "lost":
+		status = database.DisputeLost
+	default:
+		return nil
+	}
+
+	refundModel, err := payment.Database.GetRefundWithCoursePurchaseID(coursePurchase.ID)
+	if err != nil {
+		payment.ErrorLog.Printf("Failed to get refund from course purchase ID (\"%s\"): %s\n", coursePurchase.ID, err)
+		return errors.New("unexpected internal server error")
+	}
+
+	if refundModel == nil {
 		if err := payment.Database.RegisterRefund(coursePurchase.UserID, coursePurchase.ID, status); err != nil {
 			payment.ErrorLog.Printf("Failed to insert new dispute: %s\n", err)
 			return errors.New("unexpected internal server error")
 		}
-
-		if !slices.Contains([]database.RefundStatus{database.DisputeWarningClosed, database.DisputeWon}, status) {
-			if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Disputed); err != nil {
-				payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") payment status to disputed: %s\n", coursePurchase.ID, err)
+	} else {
+		if database.RefundStatusFromString(refundModel.RefundStatus) < status {
+			if err := payment.Database.UpdateRefundStatus(coursePurchase.ID, status); err != nil {
+				payment.ErrorLog.Printf("Failed to update refund (\"%s\") status: %s\n", refundModel.ID, err)
 				return errors.New("unexpected internal server error")
 			}
 		}
+	}
 
-		return nil
+	if status == database.DisputeWon || status == database.DisputeWarningClosed {
+		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Succeeded); err != nil {
+			payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") payment status to succeeded: %s\n", coursePurchase.ID, err)
+			return errors.New("unexpected internal server error")
+		}
 	} else {
-		payment.ErrorLog.Println("Dispute metadata didn't contain a payment key")
-		return errors.New("charge doesn't contain required metadata")
-	}
-}
-
-func (payment *Payments) HandleChargeDisputeClosed(event *stripe.Event) error {
-	var dispute stripe.Dispute
-	if err := json.Unmarshal(event.Data.Raw, &dispute); err != nil {
-		payment.ErrorLog.Printf("Failed to unmarshal dispute: %s\n", err)
-		return errors.New("unexpected internal server error")
-	}
-
-	if paymentKey, hasPaymentKey := dispute.Metadata["payment_key"]; hasPaymentKey {
-		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
-		if err != nil || coursePurchase == nil {
-			payment.ErrorLog.Printf("Failed to find course purchase by payment key (\"%s\"): %s\n", paymentKey, err)
+		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Disputed); err != nil {
+			payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") payment status to disputed: %s\n", coursePurchase.ID, err)
 			return errors.New("unexpected internal server error")
 		}
-
-		refundModel, err := payment.Database.GetRefundWithCoursePurchaseID(coursePurchase.ID)
-		if err != nil {
-			payment.ErrorLog.Printf("Failed to get refund from course purchase ID (\"%s\"): %s\n", coursePurchase.ID, err)
-			return errors.New("unexpected internal server error")
-		}
-
-		var status database.RefundStatus
-		switch dispute.Status {
-		case "warning_needs_response":
-			status = database.DisputeWarningNeedsResponse
-		case "warning_under_review":
-			status = database.DisputeWarningUnderReview
-		case "warning_closed":
-			status = database.DisputeWarningClosed
-		case "needs_response":
-			status = database.DisputeNeedsResponse
-		case "under_review":
-			status = database.DisputeUnderReview
-		case "won":
-			status = database.DisputeWon
-		case "lost":
-			status = database.DisputeLost
-		}
-
-		if err := payment.Database.UpdateRefundStatus(refundModel.ID, status); err != nil {
-			payment.ErrorLog.Printf("Failed to update dispute status: %s\n", err)
-			return errors.New("unexpected internal server error")
-		}
-
-		if slices.Contains([]database.RefundStatus{database.DisputeWarningClosed, database.DisputeWon}, status) {
-			if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Succeeded); err != nil {
-				payment.ErrorLog.Printf("Failed to update course purchase (\"%s\") payment status to succeeded: %s\n", coursePurchase.ID, err)
-				return errors.New("unexpected internal server error")
-			}
-		}
-
-		return nil
-	} else {
-		payment.ErrorLog.Println("Dispute metadata didn't contain a payment key")
-		return errors.New("charge doesn't contain required metadata")
 	}
+
+	return nil
 }

@@ -93,3 +93,32 @@ func (r RefundStatus) String() string {
 
 	return ""
 }
+
+func RefundStatusFromString(s string) RefundStatus {
+	switch s {
+	case RefundRequiresAction.String():
+		return RefundRequiresAction
+	case RefundSucceeded.String():
+		return RefundSucceeded
+	case RefundFailed.String():
+		return RefundFailed
+	case RefundCancelled.String():
+		return RefundCancelled
+	case DisputeWarningNeedsResponse.String():
+		return DisputeWarningNeedsResponse
+	case DisputeWarningUnderReview.String():
+		return DisputeWarningUnderReview
+	case DisputeWarningClosed.String():
+		return DisputeWarningClosed
+	case DisputeNeedsResponse.String():
+		return DisputeNeedsResponse
+	case DisputeUnderReview.String():
+		return DisputeUnderReview
+	case DisputeWon.String():
+		return DisputeWon
+	case DisputeLost.String():
+		return DisputeLost
+	default:
+		return RefundPending
+	}
+}

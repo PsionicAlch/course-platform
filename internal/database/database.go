@@ -133,6 +133,7 @@ type Database interface {
 	CountUsersWhoBoughtCourse(courseId string) (uint, error)
 	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)
 	GetCoursePurchaseByID(coursePurchaseId string) (*models.CoursePurchaseModel, error)
+	GetCoursePurchaseByCheckoutSession(checkoutSessionId string) (*models.CoursePurchaseModel, error)
 	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
 	GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error)
 	GetAllCoursesBoughtByUser(userId string) ([]*models.CourseModel, error)

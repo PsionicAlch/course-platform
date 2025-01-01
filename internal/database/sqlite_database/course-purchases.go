@@ -204,6 +204,24 @@ func (db *SQLiteDatabase) GetCoursePurchaseByID(coursePurchaseId string) (*model
 	return &coursePurchase, nil
 }
 
+func (db *SQLiteDatabase) GetCoursePurchaseByCheckoutSession(checkoutSessionId string) (*models.CoursePurchaseModel, error) {
+	query := `SELECT id, user_id, course_id, payment_key, stripe_checkout_session_id, affiliate_code, discount_code, affiliate_points_used, amount_paid, payment_status, created_at, updated_at FROM course_purchases WHERE stripe_checkout_session_id = ?;`
+
+	var coursePurchase models.CoursePurchaseModel
+
+	row := db.connection.QueryRow(query, checkoutSessionId)
+	if err := row.Scan(&coursePurchase.ID, &coursePurchase.UserID, &coursePurchase.CourseID, &coursePurchase.PaymentKey, &coursePurchase.StripeCheckoutSessionID, &coursePurchase.AffiliateCode, &coursePurchase.DiscountCode, &coursePurchase.AffiliatePointsUsed, &coursePurchase.AmountPaid, &coursePurchase.PaymentStatus, &coursePurchase.CreatedAt, &coursePurchase.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		db.ErrorLog.Printf("Failed to find course purchase by stripe checkout session ID (\"%s\"): %s\n", checkoutSessionId, err)
+		return nil, err
+	}
+
+	return &coursePurchase, nil
+}
+
 func (db *SQLiteDatabase) UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status database.PaymentStatus) error {
 	query := `UPDATE course_purchases SET payment_status = ? WHERE id = ?;`
 

@@ -63,21 +63,10 @@ func (db *SQLiteDatabase) GetRefundWithCoursePurchaseID(coursePurchaseId string)
 func (db *SQLiteDatabase) UpdateRefundStatus(refundId string, status database.RefundStatus) error {
 	query := `UPDATE refunds SET refund_status = ? WHERE id = ?;`
 
-	result, err := db.connection.Exec(query, status.String(), refundId)
+	_, err := db.connection.Exec(query, status.String(), refundId)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to update refund (\"%s\") status: %s\n", refundId, err)
 		return err
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		db.ErrorLog.Printf("Failed to get rows affected after updating refund status: %s\n", err)
-		return err
-	}
-
-	if rowsAffected == 0 {
-		db.ErrorLog.Println("No rows were affected after updating refund status")
-		return database.ErrNoRowsAffected
 	}
 
 	return nil
