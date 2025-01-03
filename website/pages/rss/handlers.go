@@ -17,6 +17,8 @@ func SetupHandlers(c cache.Cache) *Handlers {
 	}
 }
 
+// TODO: Add RSS feed for each individual course.
+
 func (h *Handlers) RSSGet(w http.ResponseWriter, r *http.Request) {
 	feed := h.Cache.GetRSSFeed()
 

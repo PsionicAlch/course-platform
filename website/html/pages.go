@@ -62,6 +62,14 @@ type AdminDiscountsPage struct {
 
 type AdminPurchasesPage struct {
 	BasePage
+	NumPurchases    uint
+	URLQuery        string
+	Courses         []*models.CourseModel
+	Authors         []*models.UserModel
+	PaymentStatuses []string
+	Users           []*models.UserModel
+	Discounts       []*models.DiscountModel
+	Purchases       *AdminCoursePurchaseListComponent
 }
 
 type AdminRefundsPage struct {

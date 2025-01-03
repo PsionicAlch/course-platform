@@ -15,7 +15,7 @@ func HasUserPurchasedCourse(dbFacade SqlDbFacade, userId, courseId string) (bool
 	row := dbFacade.QueryRow(query, userId, courseId, database.Succeeded.String())
 	if err := row.Scan(&id); err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println("Hello?")
+			fmt.Printf("User ID: %s\nCourse ID: %s\nPayment Status: %s\n", userId, courseId, database.Succeeded.String())
 			return false, nil
 		}
 

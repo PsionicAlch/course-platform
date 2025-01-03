@@ -1,0 +1,49 @@
+{{ define "admin-purchases-list" }}
+  {{ range .Purchases }}
+    <tr>
+      <td>{{- .ID -}}</td>
+      {{ with index $.Users .UserID }}
+        <td>{{- .Name }} {{ .Surname -}}</td>
+      {{ end }}
+      {{ with index $.Courses .CourseID }}
+        <td>{{- .Title -}}</td>
+      {{ end }}
+      <td>{{- .PaymentKey -}}</td>
+      <td>{{- .StripeCheckoutSessionID -}}</td>
+      <td>{{ if .AffiliateCode.Valid }}{{- .AffiliateCode.String -}}{{ else }}-{{ end }}</td>
+      <td>{{ if .DiscountCode.Valid }}{{- .DiscountCode.String -}}{{ else }}-{{ end }}</td>
+      <td>{{- .AffiliatePointsUsed -}}</td>
+      <td>{{- .AmountPaid -}}</td>
+      <td>{{- .PaymentStatus -}}</td>
+      <td>{{- .CreatedAt | pretty_date -}}</td>
+      <td>{{- .UpdatedAt | pretty_date -}}</td>
+    </tr>
+  {{ end }}
+
+  {{ with .LastPurchase }}
+    <tr
+      hx-get="{{- $.BaseURL -}}?{{- $.URLQuery }}"
+      hx-trigger="revealed once"
+      hx-swap="afterend"
+    >
+      <td>{{- .ID -}}</td>
+      {{ with index $.Users .UserID }}
+        <td>{{- .Name }} {{ .Surname -}}</td>
+      {{ end }}
+      {{ with index $.Courses .CourseID }}
+        <td>{{- .Title -}}</td>
+      {{ end }}
+      <td>{{- .PaymentKey -}}</td>
+      <td>{{- .StripeCheckoutSessionID -}}</td>
+      <td>{{ if .AffiliateCode.Valid }}{{- .AffiliateCode.String -}}{{ else }}-{{ end }}</td>
+      <td>{{ if .DiscountCode.Valid }}{{- .DiscountCode.String -}}{{ else }}-{{ end }}</td>
+      <td>{{- .AffiliatePointsUsed -}}</td>
+      <td>{{- .AmountPaid -}}</td>
+      <td>{{- .PaymentStatus -}}</td>
+      <td>{{- .CreatedAt | pretty_date -}}</td>
+      <td>{{- .UpdatedAt | pretty_date -}}</td>
+    </tr>
+  {{ end }}
+
+  {{ template "error-message" .ErrorMessage }}
+{{ end }}

@@ -41,9 +41,32 @@ func (p PaymentStatus) String() string {
 		return "Refunded"
 	case Disputed:
 		return "Disputed"
+	default:
+		return ""
 	}
+}
 
-	return ""
+func PaymentStatusFromString(s string) PaymentStatus {
+	switch s {
+	case Pending.String():
+		return Pending
+	case RequiresAction.String():
+		return RequiresAction
+	case Processing.String():
+		return Processing
+	case Succeeded.String():
+		return Succeeded
+	case Failed.String():
+		return Failed
+	case Cancelled.String():
+		return Cancelled
+	case Refunded.String():
+		return Refunded
+	case Disputed.String():
+		return Disputed
+	default:
+		return Pending
+	}
 }
 
 type RefundStatus int
@@ -89,9 +112,9 @@ func (r RefundStatus) String() string {
 		return "Dispute Won"
 	case DisputeLost:
 		return "Dispute Lost"
+	default:
+		return ""
 	}
-
-	return ""
 }
 
 func RefundStatusFromString(s string) RefundStatus {

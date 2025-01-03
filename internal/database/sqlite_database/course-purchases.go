@@ -10,6 +10,70 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
 )
 
+func (db *SQLiteDatabase) AdminGetCoursePurchases(term string, courseId string, authorId string, status string, boughtBy string, page, elements uint) ([]*models.CoursePurchaseModel, error) {
+	query := "SELECT cp.id, cp.user_id, cp.course_id, cp.payment_key, cp.stripe_checkout_session_id, cp.affiliate_code, cp.discount_code, cp.affiliate_points_used, cp.amount_paid, cp.payment_status, cp.created_at, cp.updated_at FROM course_purchases AS cp LEFT JOIN users AS u ON cp.user_id = u.id LEFT JOIN courses AS c ON cp.course_id = c.id WHERE 1=1"
+	var args []any
+
+	if term != "" {
+		query += " AND (LOWER(cp.id) LIKE '%' || ? || '%' OR LOWER(cp.payment_key) LIKE '%' || ? || '%' OR LOWER(cp.stripe_checkout_session_id) LIKE '%' || ? || '%' OR LOWER(cp.affiliate_code) LIKE '%' || ? || '%' OR LOWER(cp.discount_code) LIKE '%' || ? || '%' OR LOWER(u.name) LIKE '%' || ? || '%' OR LOWER(u.surname) LIKE '%' || ? || '%' OR LOWER(c.title) LIKE '%' || ? || '%')"
+		args = append(args, term, term, term, term, term, term, term, term)
+	}
+
+	if courseId != "" {
+		query += " AND cp.course_id = ?"
+		args = append(args, courseId)
+	}
+
+	if authorId != "" {
+		query += " AND c.author_id = ?"
+		args = append(args, authorId)
+	}
+
+	if status != "" {
+		query += " AND cp.payment_status = ?"
+		args = append(args, status)
+	}
+
+	if boughtBy != "" {
+		query += " AND cp.user_id = ?"
+		args = append(args, boughtBy)
+	}
+
+	offset := (page - 1) * elements
+	query += " ORDER BY cp.updated_at DESC, cp.created_at DESC LIMIT ? OFFSET ?;"
+	args = append(args, elements, offset)
+
+	var coursePurchases []*models.CoursePurchaseModel
+
+	rows, err := db.connection.Query(query, args...)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get all course purchases from the database: %s\n", err)
+		db.ErrorLog.Printf("\nSQL Query Used: \n%s\n", query)
+
+		return nil, err
+	}
+
+	for rows.Next() {
+		var coursePurchase models.CoursePurchaseModel
+
+		if err := rows.Scan(&coursePurchase.ID, &coursePurchase.UserID, &coursePurchase.CourseID, &coursePurchase.PaymentKey, &coursePurchase.StripeCheckoutSessionID, &coursePurchase.AffiliateCode, &coursePurchase.DiscountCode, &coursePurchase.AffiliatePointsUsed, &coursePurchase.AmountPaid, &coursePurchase.PaymentStatus, &coursePurchase.CreatedAt, &coursePurchase.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read row from course purchases table: %s\n", err)
+			return nil, err
+		}
+
+		coursePurchases = append(coursePurchases, &coursePurchase)
+	}
+
+	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get all course purchases from the database: %s\n", err)
+		db.ErrorLog.Printf("\nSQL Query Used: \n%s\n", query)
+
+		return nil, err
+	}
+
+	return coursePurchases, nil
+}
+
 func (db *SQLiteDatabase) HasUserPurchasedCourse(userId, courseId string) (bool, error) {
 	b, err := internal.HasUserPurchasedCourse(db.connection, userId, courseId)
 	if err != nil {
@@ -130,6 +194,24 @@ func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, s
 	}
 
 	return nil
+}
+
+func (db *SQLiteDatabase) CountAllPurchases() (uint, error) {
+	query := `SELECT COUNT(id) FROM course_purchases;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query)
+	if err := row.Scan(&count); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count all course purchases: %s\n", err)
+		return 0, err
+	}
+
+	return count, nil
 }
 
 func (db *SQLiteDatabase) CountCoursesWhereDiscountWasUsed(discountCode string) (uint, error) {

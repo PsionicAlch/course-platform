@@ -214,3 +214,13 @@ type AffiliateHistoryListComponent struct {
 	QueryURL             string
 	ErrorMessage         string
 }
+
+type AdminCoursePurchaseListComponent struct {
+	Purchases    []*models.CoursePurchaseModel
+	LastPurchase *models.CoursePurchaseModel
+	Users        map[string]*models.UserModel
+	Courses      map[string]*models.CourseModel
+	BaseURL      string
+	URLQuery     string
+	ErrorMessage string
+}

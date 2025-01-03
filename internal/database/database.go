@@ -119,6 +119,7 @@ type Database interface {
 
 	// Discounts functions.
 	GetDiscountsPaginated(term string, active *bool, page, elements uint) ([]*models.DiscountModel, error)
+	GetAllDiscounts() ([]*models.DiscountModel, error)
 	CountDiscounts() (uint, error)
 	AddDiscount(title, description string, discount, uses uint64) error
 	GetDiscountByID(discountId string) (*models.DiscountModel, error)
@@ -127,8 +128,10 @@ type Database interface {
 	DeactivateDiscount(discountId string) error
 
 	// Course Purchases functions.
+	AdminGetCoursePurchases(term string, courseId string, authorId string, status string, boughtBy string, page, elements uint) ([]*models.CoursePurchaseModel, error)
 	HasUserPurchasedCourse(userId, courseId string) (bool, error)
 	RegisterCoursePurchase(userId, courseId, paymentKey, stripeCheckoutSessionId string, affiliateCode, discountCode sql.NullString, affiliatePointsUsed uint, amountPaid float64, token, tokenType string, validUntil time.Time) error
+	CountAllPurchases() (uint, error)
 	CountCoursesWhereDiscountWasUsed(discountCode string) (uint, error)
 	CountUsersWhoBoughtCourse(courseId string) (uint, error)
 	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)

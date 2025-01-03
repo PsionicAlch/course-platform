@@ -19,8 +19,6 @@ CREATE TABLE IF NOT EXISTS course_purchases (
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
--- TODO: Consider adding unique index on user_id and course_id.
-
 CREATE INDEX IF NOT EXISTS idx_course_purchases_discount_code ON course_purchases(discount_code);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_course_purchases_stripe_checkout_session_id ON course_purchases(stripe_checkout_session_id);

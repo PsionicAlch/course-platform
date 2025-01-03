@@ -58,6 +58,41 @@ func (db *SQLiteDatabase) GetDiscountsPaginated(term string, active *bool, page,
 	return discounts, nil
 }
 
+func (db *SQLiteDatabase) GetAllDiscounts() ([]*models.DiscountModel, error) {
+	query := `SELECT id, title, description, code, discount, uses, active, created_at, updated_at FROM discounts;`
+
+	var discounts []*models.DiscountModel
+
+	rows, err := db.connection.Query(query)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get all discounts from the database: %s\n", err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var discount models.DiscountModel
+		var active uint
+
+		if err := rows.Scan(&discount.ID, &discount.Title, &discount.Description, &discount.Code, &discount.Discount, &discount.Uses, &active, &discount.CreatedAt, &discount.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read row from discounts table: %s\n", err)
+			return nil, err
+		}
+
+		if active == 1 {
+			discount.Active = true
+		}
+
+		discounts = append(discounts, &discount)
+	}
+
+	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get all discounts from the database: %s\n", err)
+		return nil, err
+	}
+
+	return discounts, nil
+}
+
 func (db *SQLiteDatabase) CountDiscounts() (uint, error) {
 	query := `SELECT COUNT(id) FROM discounts;`
 
