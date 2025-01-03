@@ -137,6 +137,7 @@ type Database interface {
 	GetCoursePurchaseByPaymentKey(paymentKey string) (*models.CoursePurchaseModel, error)
 	GetCoursePurchaseByID(coursePurchaseId string) (*models.CoursePurchaseModel, error)
 	GetCoursePurchaseByCheckoutSession(checkoutSessionId string) (*models.CoursePurchaseModel, error)
+	GetCourseByCoursePurchaseID(coursePurchaseId string) (*models.CourseModel, error)
 	UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status PaymentStatus) error
 	GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error)
 	GetAllCoursesBoughtByUser(userId string) ([]*models.CourseModel, error)
@@ -161,9 +162,11 @@ type Database interface {
 	GetCourseFromCertificate(certificateId string) (*models.CourseModel, error)
 
 	// Refunds functions.
+	AdminGetRefunds(term string, status string, page, elements uint) ([]*models.RefundModel, error)
 	RegisterRefund(userId, coursePurchaseId string, status RefundStatus) error
 	GetRefundWithCoursePurchaseID(coursePurchaseId string) (*models.RefundModel, error)
 	UpdateRefundStatus(refundId string, status RefundStatus) error
+	CountRefunds() (uint, error)
 
 	// Models functions.
 	CommentSetUser(comment *models.CommentModel) error

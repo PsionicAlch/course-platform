@@ -224,3 +224,13 @@ type AdminCoursePurchaseListComponent struct {
 	URLQuery     string
 	ErrorMessage string
 }
+
+type AdminRefundsListComponent struct {
+	Refunds      []*models.RefundModel
+	LastRefund   *models.RefundModel
+	Users        map[string]*models.UserModel
+	Courses      map[string]*models.CourseModel
+	BaseURL      string
+	URLQuery     string
+	ErrorMessage string
+}

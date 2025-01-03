@@ -20,6 +20,8 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// TODO: Fix title for course chapters
+
 const CoursesPerPagination = 25
 
 type Handlers struct {

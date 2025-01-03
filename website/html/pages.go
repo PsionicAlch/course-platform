@@ -74,6 +74,10 @@ type AdminPurchasesPage struct {
 
 type AdminRefundsPage struct {
 	BasePage
+	NumRefunds     uint
+	URLQuery       string
+	RefundStatuses []string
+	Refunds        *AdminRefundsListComponent
 }
 
 type AdminTutorialsPage struct {

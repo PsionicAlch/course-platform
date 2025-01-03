@@ -9,6 +9,51 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
+func (db *SQLiteDatabase) AdminGetRefunds(term string, status string, page, elements uint) ([]*models.RefundModel, error) {
+	query := `SELECT r.id, r.user_id, r.course_purchase_id, r.refund_status, r.created_at, r.updated_at FROM refunds AS r LEFT JOIN users AS u ON r.user_id = u.id LEFT JOIN course_purchases AS cp ON r.course_purchase_id = cp.id LEFT JOIN courses AS c ON cp.course_id = c.id WHERE 1=1`
+	args := []any{}
+
+	if term != "" {
+		query += " AND (LOWER(r.id) LIKE '%' || ? || '%' OR LOWER(u.name) LIKE '%' || ? || '%' OR LOWER(u.surname) LIKE '%' || ? || '%' OR LOWER(c.title) LIKE '%' || ? || '%')"
+		args = append(args, term, term, term, term)
+	}
+
+	if status != "" {
+		query += " AND r.refund_status = ?"
+		args = append(args, status)
+	}
+
+	offset := (page - 1) * elements
+	query += " ORDER BY r.updated_at DESC, r.created_at DESC LIMIT ? OFFSET ?;"
+	args = append(args, elements, offset)
+
+	var refunds []*models.RefundModel
+
+	rows, err := db.connection.Query(query, args...)
+	if err != nil {
+		db.ErrorLog.Printf("Failed to get all refunds from the database: %s\n", err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var refund models.RefundModel
+
+		if err := rows.Scan(&refund.ID, &refund.UserID, &refund.CoursePurchaseID, &refund.RefundStatus, &refund.CreatedAt, &refund.UpdatedAt); err != nil {
+			db.ErrorLog.Printf("Failed to read row from refunds table: %s\n", err)
+			return nil, err
+		}
+
+		refunds = append(refunds, &refund)
+	}
+
+	if err := rows.Err(); err != nil {
+		db.ErrorLog.Printf("Failed to get all refunds from the database: %s\n", err)
+		return nil, err
+	}
+
+	return refunds, nil
+}
+
 func (db *SQLiteDatabase) RegisterRefund(userId, coursePurchaseId string, status database.RefundStatus) error {
 	query := `INSERT INTO refunds (id, user_id, course_purchase_id, refund_status) VALUES (?, ?, ?, ?);`
 
@@ -70,4 +115,22 @@ func (db *SQLiteDatabase) UpdateRefundStatus(refundId string, status database.Re
 	}
 
 	return nil
+}
+
+func (db *SQLiteDatabase) CountRefunds() (uint, error) {
+	query := `SELECT COUNT(id) FROM refunds;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query)
+	if err := row.Scan(&count); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count the number of refunds in the database: %s\n", err)
+		return 0, err
+	}
+
+	return count, nil
 }

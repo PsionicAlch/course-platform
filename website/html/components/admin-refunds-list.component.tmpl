@@ -1,0 +1,39 @@
+{{ define "admin-refunds-list" }}
+  {{ range .Refunds }}
+    <tr>
+      <td>{{- .ID -}}</td>
+      {{ with index $.Users .UserID }}
+        <td>{{- .Name }} {{ .Surname -}}</td>
+      {{ end }}
+      {{ with index $.Courses .CoursePurchaseID }}
+        <td><a href="/admin/purchases?query={{- .ID -}}"></a>{{- .Title -}}</td>
+      {{ end }}
+      <td>{{- .CoursePurchaseID -}}</td>
+      <td>{{- .RefundStatus -}}</td>
+      <td>{{- .CreatedAt | pretty_date -}}</td>
+      <td>{{- .UpdatedAt | pretty_date -}}</td>
+    </tr>
+  {{ end }}
+
+  {{ with .LastRefund }}
+    <tr
+      hx-get="{{- $.BaseURL -}}?{{- $.URLQuery }}"
+      hx-trigger="revealed once"
+      hx-swap="afterend"
+    >
+      <td>{{- .ID -}}</td>
+      {{ with index $.Users .UserID }}
+        <td>{{- .Name }} {{ .Surname -}}</td>
+      {{ end }}
+      {{ with index $.Courses .CoursePurchaseID }}
+        <td><a href="/admin/purchases?query={{- .ID -}}"></a>{{- .Title -}}</td>
+      {{ end }}
+      <td>{{- .CoursePurchaseID -}}</td>
+      <td>{{- .RefundStatus -}}</td>
+      <td>{{- .CreatedAt | pretty_date -}}</td>
+      <td>{{- .UpdatedAt | pretty_date -}}</td>
+    </tr>
+  {{ end }}
+
+  {{ template "error-message" .ErrorMessage }}
+{{ end }}

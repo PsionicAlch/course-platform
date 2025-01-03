@@ -299,6 +299,27 @@ func (db *SQLiteDatabase) GetCoursePurchaseByCheckoutSession(checkoutSessionId s
 	return &coursePurchase, nil
 }
 
+func (db *SQLiteDatabase) GetCourseByCoursePurchaseID(coursePurchaseId string) (*models.CourseModel, error) {
+	query := `SELECT c.id, c.title, c.slug, c.description, c.thumbnail_url, c.banner_url, c.content, c.published, c.author_id, c.file_checksum, c.file_key, c.created_at, c.updated_at FROM course_purchases AS cp LEFT JOIN courses AS c ON cp.course_id = c.id WHERE cp.id = ?;`
+
+	var course models.CourseModel
+	var published int
+
+	row := db.connection.QueryRow(query, coursePurchaseId)
+	if err := row.Scan(&course.ID, &course.Title, &course.Slug, &course.Description, &course.ThumbnailURL, &course.BannerURL, &course.Content, &published, &course.AuthorID, &course.FileChecksum, &course.FileKey, &course.CreatedAt, &course.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		db.ErrorLog.Printf("Failed to get course from course purchase model (\"%s\"): %s\n", coursePurchaseId, err)
+		return nil, err
+	}
+
+	course.Published = published == 1
+
+	return &course, nil
+}
+
 func (db *SQLiteDatabase) UpdateCoursePurchasePaymentStatus(coursePurchaseId string, status database.PaymentStatus) error {
 	query := `UPDATE course_purchases SET payment_status = ? WHERE id = ?;`
 
