@@ -10,7 +10,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
 )
 
-func (db *SQLiteDatabase) AdminGetCoursePurchases(term string, courseId string, authorId string, status string, boughtBy string, page, elements uint) ([]*models.CoursePurchaseModel, error) {
+func (db *SQLiteDatabase) AdminGetCoursePurchases(term string, courseId string, authorId string, status string, page, elements uint) ([]*models.CoursePurchaseModel, error) {
 	query := "SELECT cp.id, cp.user_id, cp.course_id, cp.payment_key, cp.stripe_checkout_session_id, cp.affiliate_code, cp.discount_code, cp.affiliate_points_used, cp.amount_paid, cp.payment_status, cp.created_at, cp.updated_at FROM course_purchases AS cp LEFT JOIN users AS u ON cp.user_id = u.id LEFT JOIN courses AS c ON cp.course_id = c.id WHERE 1=1"
 	var args []any
 
@@ -32,11 +32,6 @@ func (db *SQLiteDatabase) AdminGetCoursePurchases(term string, courseId string, 
 	if status != "" {
 		query += " AND cp.payment_status = ?"
 		args = append(args, status)
-	}
-
-	if boughtBy != "" {
-		query += " AND cp.user_id = ?"
-		args = append(args, boughtBy)
 	}
 
 	offset := (page - 1) * elements

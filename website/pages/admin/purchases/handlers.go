@@ -162,14 +162,12 @@ func (h *Handlers) PurchasesPaginationGet(w http.ResponseWriter, r *http.Request
 // -course
 // -author
 // -status
-// -bought_by
 func (h *Handlers) CreateCoursePurchasesList(r *http.Request) (*html.AdminCoursePurchaseListComponent, url.Values, error) {
 	var page int
 	var query string
 	var course string
 	var author string
 	var status string
-	var boughtBy string
 
 	urlQuery := make(url.Values)
 
@@ -201,12 +199,7 @@ func (h *Handlers) CreateCoursePurchasesList(r *http.Request) (*html.AdminCourse
 		urlQuery.Add("status", s)
 	}
 
-	if b := r.URL.Query().Get("bought_by"); b != "" {
-		boughtBy = b
-		urlQuery.Add("bought_by", b)
-	}
-
-	coursePurchases, err := h.Database.AdminGetCoursePurchases(query, course, author, status, boughtBy, uint(page), PurchasesPerPagination)
+	coursePurchases, err := h.Database.AdminGetCoursePurchases(query, course, author, status, uint(page), PurchasesPerPagination)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get course purchases (page %d): %s\n", page, err)
 		return nil, urlQuery, err
