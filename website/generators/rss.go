@@ -13,7 +13,9 @@ import (
 
 func RSSFeed(loggers utils.Loggers, db database.Database, renderer render.Renderer) func() (string, error) {
 	return func() (string, error) {
-		rssData := html.GeneralRSS{}
+		rssData := &html.GeneralRSS{
+			LastBuildTime: time.Now(),
+		}
 
 		published := true
 		feed := new(bytes.Buffer)
@@ -91,8 +93,6 @@ func RSSFeed(loggers utils.Loggers, db database.Database, renderer render.Render
 
 		rssData.Authors = authors
 
-		rssData.LastBuildTime = time.Now()
-
 		if err := renderer.Render(feed, nil, "general-rss", rssData); err != nil {
 			loggers.ErrorLog.Println(err)
 		}
@@ -103,7 +103,9 @@ func RSSFeed(loggers utils.Loggers, db database.Database, renderer render.Render
 
 func TutorialsRSSFeed(loggers utils.Loggers, db database.Database, renderer render.Renderer) func() (string, error) {
 	return func() (string, error) {
-		rssData := html.TutorialsRSS{}
+		rssData := &html.TutorialsRSS{
+			LastBuildTime: time.Now(),
+		}
 
 		published := true
 
@@ -147,8 +149,6 @@ func TutorialsRSSFeed(loggers utils.Loggers, db database.Database, renderer rend
 
 		rssData.Authors = authors
 
-		rssData.LastBuildTime = time.Now()
-
 		if err := renderer.Render(feed, nil, "tutorials-rss", rssData); err != nil {
 			loggers.ErrorLog.Println(err)
 		}
@@ -159,7 +159,9 @@ func TutorialsRSSFeed(loggers utils.Loggers, db database.Database, renderer rend
 
 func CoursesRSSFeed(loggers utils.Loggers, db database.Database, renderer render.Renderer) func() (string, error) {
 	return func() (string, error) {
-		rssData := html.CoursesRSS{}
+		rssData := &html.CoursesRSS{
+			LastBuildTime: time.Now(),
+		}
 
 		published := true
 
@@ -203,8 +205,6 @@ func CoursesRSSFeed(loggers utils.Loggers, db database.Database, renderer render
 
 		rssData.Authors = authors
 
-		rssData.LastBuildTime = time.Now()
-
 		if err := renderer.Render(feed, nil, "courses-rss", rssData); err != nil {
 			loggers.ErrorLog.Println(err)
 		}
@@ -215,7 +215,9 @@ func CoursesRSSFeed(loggers utils.Loggers, db database.Database, renderer render
 
 func AuthorTutorialsRSSFeed(loggers utils.Loggers, db database.Database, renderer render.Renderer) func(authorSlug string) (string, error) {
 	return func(authorSlug string) (string, error) {
-		rssData := html.TutorialAuthorRSS{}
+		rssData := &html.TutorialAuthorRSS{
+			LastBuildTime: time.Now(),
+		}
 
 		published := true
 
@@ -262,7 +264,6 @@ func AuthorTutorialsRSSFeed(loggers utils.Loggers, db database.Database, rendere
 		}
 
 		rssData.Tutorials = tutorials
-		rssData.LastBuildTime = time.Now()
 
 		if err := renderer.Render(feed, nil, "author-tutorials-rss", rssData); err != nil {
 			loggers.ErrorLog.Println(err)
@@ -274,7 +275,9 @@ func AuthorTutorialsRSSFeed(loggers utils.Loggers, db database.Database, rendere
 
 func AuthorCoursesRSSFeed(loggers utils.Loggers, db database.Database, renderer render.Renderer) func(authorSlug string) (string, error) {
 	return func(authorSlug string) (string, error) {
-		rssData := html.CourseAuthorRSS{}
+		rssData := &html.CourseAuthorRSS{
+			LastBuildTime: time.Now(),
+		}
 
 		published := true
 
@@ -323,6 +326,56 @@ func AuthorCoursesRSSFeed(loggers utils.Loggers, db database.Database, renderer 
 		rssData.Courses = courses
 
 		if err := renderer.Render(feed, nil, "author-courses-rss", rssData); err != nil {
+			loggers.ErrorLog.Println(err)
+		}
+
+		return feed.String(), err
+	}
+}
+
+func TutorialRSSFeed(loggers utils.Loggers, db database.Database, renderer render.Renderer) func(tutorialSlug string) (string, error) {
+	return func(tutorialSlug string) (string, error) {
+		rssData := &html.TutorialRSS{
+			LastBuildTime: time.Now(),
+		}
+
+		feed := new(bytes.Buffer)
+
+		tutorial, err := db.GetTutorialBySlug(tutorialSlug)
+		if err != nil {
+			loggers.ErrorLog.Printf("Failed to get tutorial by slug (\"%s\"): %s\n", tutorialSlug, err)
+
+			if err := renderer.Render(feed, nil, "errors-500-rss", nil); err != nil {
+				loggers.ErrorLog.Println(err)
+			}
+
+			return feed.String(), err
+		}
+
+		if !tutorial.Published || !tutorial.AuthorID.Valid {
+			if err := renderer.Render(feed, nil, "errors-404-rss", nil); err != nil {
+				loggers.ErrorLog.Println(err)
+			}
+
+			return feed.String(), err
+		}
+
+		rssData.Tutorial = tutorial
+
+		author, err := db.GetUserByID(tutorial.AuthorID.String, database.Author)
+		if err != nil {
+			loggers.ErrorLog.Printf("Failed to get author by ID (\"%s\"): %s\n", tutorial.AuthorID.String, err)
+
+			if err := renderer.Render(feed, nil, "errors-500-rss", nil); err != nil {
+				loggers.ErrorLog.Println(err)
+			}
+
+			return feed.String(), err
+		}
+
+		rssData.Author = author
+
+		if err := renderer.Render(feed, nil, "tutorial-rss", rssData); err != nil {
 			loggers.ErrorLog.Println(err)
 		}
 

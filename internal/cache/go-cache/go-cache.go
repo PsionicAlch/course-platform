@@ -9,12 +9,10 @@ type Generators struct {
 	// RSS Feed Generators.
 	RSSFeed                func() (string, error)
 	TutorialsRSSFeed       func() (string, error)
+	TutorialRssFeed        func(tutorialSlug string) (string, error)
 	CoursesRSSFeed         func() (string, error)
 	AuthorTutorialsRSSFeed func(authorSlug string) (string, error)
 	AuthorCoursesRSSFeed   func(authorSlug string) (string, error)
-
-	// Sitemap Generators.
-	Sitemap func() (string, error)
 }
 
 type GoCache struct {

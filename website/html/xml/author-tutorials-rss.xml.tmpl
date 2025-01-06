@@ -6,7 +6,7 @@
     <description>Tutorials written by {{ .Author.Name }} {{ .Author.Surname }} on PsionicAlch.</description>
     <language>en-us</language>
     <lastBuildDate>{{ format_time_to_rfc_822 .LastBuildTime }}</lastBuildDate>
-    <atom:link href="https://www.psionicalch.com/rss/tutorials/{{- .Author.Slug -}}" rel="self" type="application/rss+xml" />
+    <atom:link href="https://www.psionicalch.com/rss/author/{{- .Author.Slug -}}/tutorials" rel="self" type="application/rss+xml" />
     <image>
       <!-- TODO: Replace with actual image -->
       <url>https://www.psionicalch.com/assets/img/logo.png</url>
@@ -23,6 +23,7 @@
       <dc:creator>{{ $.Author.Name }} {{ $.Author.Surname }}</dc:creator>
       <category>Tutorial</category>
       <guid>https://www.psionicalch.com/tutorials/{{- .Slug -}}</guid>
+      <atom:link href="https://www.psionicalch.com/rss/tutorials/{{- .Slug -}}" rel="alternative" type="application/rss+xml" />
     </item>
     {{ end }}
   </channel>

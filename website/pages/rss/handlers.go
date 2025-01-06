@@ -17,10 +17,8 @@ func SetupHandlers(c cache.Cache) *Handlers {
 	}
 }
 
-// TODO: Add RSS feed for each individual course.
-
 func (h *Handlers) RSSGet(w http.ResponseWriter, r *http.Request) {
-	feed := h.Cache.GetRSSFeed()
+	feed := h.Cache.GetGeneralRSSFeed()
 
 	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 	w.Write([]byte(feed))
@@ -28,6 +26,14 @@ func (h *Handlers) RSSGet(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) RSSTutorialsGet(w http.ResponseWriter, r *http.Request) {
 	feed := h.Cache.GetTutorialsRSSFeed()
+
+	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+	w.Write([]byte(feed))
+}
+
+func (h *Handlers) RSSTutorialGet(w http.ResponseWriter, r *http.Request) {
+	tutorialSlug := chi.URLParam(r, "tutorial-slug")
+	feed := h.Cache.GetTutorialRSSFeed(tutorialSlug)
 
 	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 	w.Write([]byte(feed))

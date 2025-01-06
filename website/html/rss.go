@@ -36,3 +36,9 @@ type TutorialAuthorRSS struct {
 	Tutorials     []*models.TutorialModel
 	Author        *models.UserModel
 }
+
+type TutorialRSS struct {
+	LastBuildTime time.Time
+	Tutorial      *models.TutorialModel
+	Author        *models.UserModel
+}

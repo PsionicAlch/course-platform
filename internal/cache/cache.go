@@ -5,8 +5,9 @@ type Cache interface {
 	InvalidateCache()
 
 	// RSS Feed functions.
-	GetRSSFeed() string
+	GetGeneralRSSFeed() string
 	GetTutorialsRSSFeed() string
+	GetTutorialRSSFeed(tutorialSlug string) string
 	GetCoursesRSSFeed() string
 	GetAuthorTutorialsRSSFeed(authorSlug string) string
 	GetAuthorCoursesRSSFeed(authorSlug string) string

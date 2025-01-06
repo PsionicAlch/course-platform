@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{- .Tutorial.Title }} - PsionicAlch</title>
+    <link>https://www.psionicalch.com/tutorials/{{ .Tutorial.Slug }}</link>
+    <description>{{ .Tutorial.Description }}</description>
+    <language>en-us</language>
+    <lastBuildDate>{{- format_time_to_rfc_822 .LastBuildTime -}}</lastBuildDate>
+    <atom:link href="https://www.psionicalch.com/tutorials/{{- .Tutorial.Slug -}}/rss" rel="self" type="application/rss+xml" />
+
+    <image>
+      <!-- TODO: Replace with actual image -->
+      <url>{{- .Tutorial.BannerURL -}}</url>
+      <title>{{- .Tutorial.Title }} - PsionicAlch</title>
+      <link>https://www.psionicalch.com/tutorials/{{- .Tutorial.Slug -}}</link>
+    </image>
+
+    <item>
+      <title>{{- .Tutorial.Title -}}</title>
+      <link>https://www.psionicalch.com/tutorials/{{- .Tutorial.Slug -}}</link>
+      <description><![CDATA[
+        {{ .Tutorial.Content }}
+      ]]></description>
+      <pubDate>{{- format_time_to_rfc_822 .Tutorial.CreatedAt -}}</pubDate>
+      <dc:creator>{{- .Author.Name }} {{ .Author.Surname -}}</dc:creator>
+      <category>Tutorial</category>
+      <guid>https://www.psionicalch.com/tutorials/{{- .Tutorial.Slug -}}</guid>
+    </item>
+  </channel>
+</rss>

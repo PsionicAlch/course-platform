@@ -98,6 +98,7 @@ func StartWebsite() {
 	gens := &gocache.Generators{
 		RSSFeed:                generators.RSSFeed(utils.CreateLoggers("RSS FEED GENERATOR"), db, xmlRenderer),
 		TutorialsRSSFeed:       generators.TutorialsRSSFeed(utils.CreateLoggers("TUTORIALS RSS FEED GENERATOR"), db, xmlRenderer),
+		TutorialRssFeed:        generators.TutorialRSSFeed(utils.CreateLoggers("TUTORIAL RSS FEED GENERATOR"), db, xmlRenderer),
 		CoursesRSSFeed:         generators.CoursesRSSFeed(utils.CreateLoggers("COURSES RSS FEED GENERATOR"), db, xmlRenderer),
 		AuthorTutorialsRSSFeed: generators.AuthorTutorialsRSSFeed(utils.CreateLoggers("AUTHOR TUTORIALS RSS FEED GENERATOR"), db, xmlRenderer),
 		AuthorCoursesRSSFeed:   generators.AuthorCoursesRSSFeed(utils.CreateLoggers("AUTHOR COURSES RSS FEED GENERATOR"), db, xmlRenderer),
