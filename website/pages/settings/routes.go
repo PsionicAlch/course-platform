@@ -9,6 +9,8 @@ import (
 func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
 
+	router.Use(handlers.Auth.AllowAuthenticated("/accounts/login"))
+
 	router.Get("/", handlers.SettingsGet)
 
 	router.Get("/whitelist/{ip-address}", handlers.WhitelistIPAddressPost)
