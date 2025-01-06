@@ -1,13 +1,13 @@
 {{ template "admin" .}}
 
 {{ define "title" }}
-  <title>Discounts - PsionicAlch</title>
+  <title>Discounts Administration Panel | PsionicAlch</title>
 {{ end }}
 
 {{ define "body" }}
   <section class="admin-container">
     <div class="admin-header" x-data="{ modalOpen: false }">
-      <h2><a href="/admin/discounts">Discounts Administration (discounts: {{ .NumDiscounts -}})</a></h2>
+      <h2><a href="/admin/discounts">Discounts Administration Panel ({{ .NumDiscounts -}} discounts)</a></h2>
 
       <div class="admin-header-actions">
         <form

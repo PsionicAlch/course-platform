@@ -1,7 +1,43 @@
 {{ template "base" .}}
 
 {{ define "meta-tags" }}
-  <!-- TODO: Generate SEO Tags with ChatGPT. -->
+  <meta name="robots" content="index, follow" />
+
+  <link rel="canonical" href="https://www.psionicalch.com/accounts/signup" />
+
+  <meta name="description" content="Join PsionicAlch and start learning how to build real-world applications using Golang. Create your account today to access our tutorials and courses." />
+  <meta name="keywords" content="Sign Up, Create Account, Golang Courses, Golang Tutorials, Golang Programming, Golang Projects, Learn Golang, Web Development with Go, Real-World Applications, Programming Tutorials, Programming Courses, Build Software with Go, Go Programming Language, Backend Development with Go, Golang Learning Platform, Practical Golang courses for developers, Real-world Golang application tutorials, Build software with Golang step-by-step, Complete Golang development course for beginners, Golang backend development for web apps, Step-by-step Golang tutorials for web development, Learn Go programming with real-world projects, Best Golang tutorials for intermediate developers, How to implement HTMX with Go programming, Build and deploy Golang applications tutorial, Learn AlpineJS and Golang integration, Earn discounts with affiliate programs for Golang courses, Affiliate programs for programming tutorials, Refer and earn with coding platforms, Complete Golang web development project, Get certified in Golang programming, Golang course completion certificates, Showcase Golang skills with certification, Learn Golang from scratch, Build scalable apps with Golang, Backend programming with Go, Practical Golang for real-world development, HTMX integration with Golang, Using AlpineJS with Go, Full-stack development with Golang, API development with Go, Building scalable SaaS platforms in Go" />
+
+  <meta property="og:title" content="Sign Up - Create Your Account Today | PsionicAlch" />
+  <meta property="og:description" content="Join PsionicAlch and start learning how to build real-world applications using Golang. Create your account today to access our tutorials and courses." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.psionicalch.com/accounts/signup" />
+  <meta property="og:image" content="https://www.psionicalch.com/static/images/signup-preview.png" /> <!-- TODO: Set up actual image -->
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Sign Up - Create Your Account Today | PsionicAlch" />
+  <meta name="twitter:description" content="Join PsionicAlch and start learning how to build real-world applications using Golang. Create your account today to access our tutorials and courses." />
+  <meta name="twitter:image" content="https://www.psionicalch.com/static/images/signup-preview.png" /> <!-- TODO: Set up actual image -->
+  <meta name="twitter:site" content="@psionicalch" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Sign Up - Create Your Account Today | PsionicAlch",
+      "url": "https://www.psionicalch.com/accounts/signup",
+      "description": "Join PsionicAlch and start learning how to build real-world applications using Golang. Create your account today to access our tutorials and courses.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "PsionicAlch",
+        "url": "https://www.psionicalch.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.psionicalch.com/static/images/logo.png" // TODO: Replace with actual image.
+        }
+      }
+    }
+  </script>
 {{ end }}
 
 {{ define "stylesheets" }}
@@ -9,7 +45,7 @@
 {{ end }}
 
 {{ define "title" }}
-  <title>Create a PsionicAlch Account - Start Learning Golang</title>
+  <title>Sign Up - Create Your Account Today | PsionicAlch</title>
 {{ end }}
 
 {{ define "body" }}

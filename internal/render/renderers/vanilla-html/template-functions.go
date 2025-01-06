@@ -9,12 +9,13 @@ import (
 
 func CreateFuncMap() template.FuncMap {
 	funcMap := template.FuncMap{
-		"props":        Props,
-		"pretty_date":  PrettyDate,
-		"html":         HTML,
-		"add_queries":  AddQueries,
-		"current_time": CurrentTime,
-		"url_escape":   URLEscape,
+		"props":                   Props,
+		"pretty_date":             PrettyDate,
+		"format_time_to_iso_8601": FormatTimeToISO8601,
+		"html":                    HTML,
+		"add_queries":             AddQueries,
+		"current_time":            CurrentTime,
+		"url_escape":              URLEscape,
 	}
 
 	return funcMap
@@ -41,6 +42,10 @@ func Props(values ...any) (map[string]any, error) {
 
 func PrettyDate(t time.Time) string {
 	return t.Format("Monday, January 2, 2006 at 3:04 PM")
+}
+
+func FormatTimeToISO8601(t time.Time) string {
+	return t.Format("2006-01-02")
 }
 
 func HTML(s string) template.HTML {

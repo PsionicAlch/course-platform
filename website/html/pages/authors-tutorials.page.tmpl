@@ -1,7 +1,50 @@
 {{ template "base" .}}
 
 {{ define "meta-tags" }}
-  {{/* TODO: Generate SEO Tags with ChatGPT. */}}
+  <meta name="robots" content="index, follow" />
+
+  <link rel="canonical" href="https://www.psionicalch.com/authors/{{- .Author.Slug -}}/tutorials" />
+
+  <link rel="alternate" type="application/rss+xml" title="RSS Feed for Tutorials by {{ .Author.Name }} {{ .Author.Surname }}" href="https://www.psionicalch.com/rss/authors/{{- .Author.Slug -}}/tutorials" />
+
+  <meta name="description" content="Browse all Golang tutorials written by {{ .Author.Name }} {{ .Author.Surname }} on PsionicAlch. Learn to build real-world applications with practical, step-by-step guides." />
+  <meta name="keywords" content="Tutorials by {{ .Author.Name }} {{ .Author.Surname }}, Golang Courses, Golang Tutorials, Golang Programming, Golang Projects, Learn Golang, Web Development with Go, Real-World Applications, Programming Tutorials, Programming Courses, Build Software with Go, Go Programming Language, Backend Development with Go, Golang Learning Platform, Practical Golang courses for developers, Real-world Golang application tutorials, Build software with Golang step-by-step, Complete Golang development course for beginners, Golang backend development for web apps, Step-by-step Golang tutorials for web development, Learn Go programming with real-world projects, Best Golang tutorials for intermediate developers, How to implement HTMX with Go programming, Build and deploy Golang applications tutorial, Learn AlpineJS and Golang integration, Earn discounts with affiliate programs for Golang courses, Affiliate programs for programming tutorials, Refer and earn with coding platforms, Complete Golang web development project, Get certified in Golang programming, Golang course completion certificates, Showcase Golang skills with certification, Learn Golang from scratch, Build scalable apps with Golang, Backend programming with Go, Practical Golang for real-world development, HTMX integration with Golang, Using AlpineJS with Go, Full-stack development with Golang, API development with Go, Building scalable SaaS platforms in Go" />
+
+  <meta property="og:title" content="Tutorials by {{ .Author.Name }} {{ .Author.Surname }} | PsionicAlch" />
+  <meta property="og:description" content="Browse all Golang tutorials written by {{ .Author.Name }} {{ .Author.Surname }} on PsionicAlch. Learn to build real-world applications with practical, step-by-step guides." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.psionicalch.com/authors/{{- .Author.Slug -}}/tutorials" />
+  <meta property="og:image" content="https://www.psionicalch.com/static/images/authors/{{ .Author.Slug }}.png" /> <!-- TODO: Replace with actual image. -->
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Tutorials by {{ .Author.Name }} {{ .Author.Surname}} | PsionicAlch" />
+  <meta name="twitter:description" content="Browse all Golang tutorials written by {{ .Author.Name }} {{ .Author.Surname }} on PsionicAlch. Learn to build real-world applications with practical, step-by-step guides." />
+  <meta name="twitter:image" content="https://www.psionicalch.com/static/images/authors/{{ .Author.Slug }}.png" /> <!-- TODO: Replace with actual image. -->
+  <meta name="twitter:site" content="@psionicalch" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Tutorials by {{ .Author.Name }} {{ .Author.Surname }} | PsionicAlch",
+      "description": "Browse all Golang tutorials written by {{ .Author.Name }} {{ .Author.Surname }} on PsionicAlch. Learn to build real-world applications with practical, step-by-step guides.",
+      "url": "https://www.psionicalch.com/authors/{{- .Author.Slug -}}/tutorials",
+      "author": {
+        "@type": "Person",
+        "name": "{{ .Author.Name }} {{ .Author.Surname }}"
+      },
+      "itemListElement": [
+        {{ range .Tutorials.Tutorials }}
+        {
+          "@type": "Article",
+          "headline": "{{ .Title }}",
+          "description": "{{ .Description }}",
+          "url": "https://www.psionicalch.com/tutorials/{{ .Slug }}"
+        },
+        {{ end }}
+      ]
+    }
+  </script>
 {{ end }}
 
 {{ define "stylesheets" }}

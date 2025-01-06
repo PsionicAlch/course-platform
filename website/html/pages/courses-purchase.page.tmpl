@@ -1,52 +1,11 @@
 {{ template "base" .}}
 
-{{ define "meta-tags" }}
-  <meta name="description" content="Purchase {{ .Course.Title }} and learn {{ .Course.Description }}. Secure your spot today and start building real-world applications with Golang." />
-  <meta name="keywords" content="Buy {{ .Course.Title }}, Golang course purchase, {{ .Course.Title }} pricing, PsionicAlch courses, real-world Golang applications" />
-
-  <meta property="og:title" content="Buy {{ .Course.Title }} - PsionicAlch" />
-  <meta property="og:description" content="Purchase {{ .Course.Title }} and start learning to {{ .Course.Description }}. Master Golang with PsionicAlch." />
-  <meta property="og:image" content="{{- .Course.BannerURL -}}" />
-  <meta property="og:url" content="https://www.psionicalch.com/courses/{{ .Course.Slug }}/purchase" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="PsionicAlch" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@psionicalch" />
-  <meta name="twitter:title" content="Buy {{ .Course.Title }} - PsionicAlch" />
-  <meta name="twitter:description" content="Purchase {{ .Course.Title }} to learn {{ .Course.Description }}. Secure your spot and build real-world applications with Golang." />
-  <meta name="twitter:image" content="{{- .Course.BannerURL -}}" />
-
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "name": "{{- .Course.Title -}}",
-      "description": "{{- .Course.Description -}}",
-      "url": "https://www.psionicalch.com/course/{{- .Course.Slug -}}/purchase",
-      "image": "{{- .Course.BannerURL -}}",
-      "offers": {
-        "@type": "Offer",
-        "price": "200",
-        "priceCurrency": "USD",
-        "url": "https://www.psionicalch.com/course/{{- .Course.Slug -}}/purchase",
-        "availability": "http://schema.org/InStock",
-        "validFrom": "{{ .Course.CreatedAt }}"
-      },
-      "brand": {
-        "@type": "Brand",
-        "name": "PsionicAlch"
-      }
-    }
-  </script>
-{{ end }}
-
 {{ define "stylesheets" }}
   <link rel="stylesheet" href="/assets/css/purchase-course.css">
 {{ end }}
 
 {{ define "title" }}
-  <title>Buy {{ .Course.Title }} - PsionicAlch | Secure Your Spot</title>
+  <title>Buy {{ .Course.Title }} - Secure Your Spot | PsionicAlch</title>
 {{ end }}
 
 {{ define "body" }}

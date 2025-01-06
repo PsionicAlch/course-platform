@@ -1,65 +1,11 @@
 {{ template "base" .}}
 
-{{ define "meta-tags" }}
-  <meta name="robots" content="noindex, nofollow" />
-
-  <meta name="description" content="Access your PsionicAlch profile to view your affiliate points, affiliate code, usage history, purchased courses, and bookmarked tutorials." />
-  <meta name="keywords" content="user profile, PsionicAlch, affiliate points, course purchases, tutorial bookmarks, tutorial likes" />
-
-  <meta property="og:title" content="Your Profile - PsionicAlch" />
-  <meta property="og:description" content="Manage your profile: view affiliate points, course purchases, tutorial bookmarks, and likes." />
-  <meta property="og:image" content="https://www.psionicalch.com/static/images/profile-placeholder.jpg" />  <!-- TODO: Replace with actual image. -->
-  <meta property="og:url" content="https://www.psionicalch.com/profile" />
-  <meta property="og:type" content="website" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@psionicalch" />
-  <meta name="twitter:title" content="Your Profile - PsionicAlch" />
-  <meta name="twitter:description" content="Access your PsionicAlch profile and manage your activity, including affiliate points, purchases, and bookmarks." />
-  <meta name="twitter:image" content="https://www.psionicalch.com/static/images/profile-placeholder.jpg" /> <!-- TODO: Replace with actual image. -->
-
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "UserProfile",
-      "url": "https://www.psionicalch.com/profile",
-      "mainEntity": {
-        "@type": "Person",
-        "name": "Logged-in User",
-        "memberOf": {
-          "@type": "Organization",
-          "name": "PsionicAlch",
-          "url": "https://www.psionicalch.com"
-        },
-        "owns": {
-          "@type": "ItemList",
-          "name": "Purchased Courses",
-          "itemListElement": [
-            {{ range .Courses }}
-            {
-              "@type": "CreativeWork",
-              "name": "{{- .Title -}}",
-              "url": "https://www.psionicalch.com/courses/{{- .Slug -}}"
-            },
-            {{ end }}
-          ]
-        },
-        "interactionStatistic": {
-          "@type": "InteractionCounter",
-          "interactionType": "https://schema.org/BookmarkAction",
-          "userInteractionCount": {{- .NumTutorialsBookmarked -}}
-        }
-      }
-    }
-  </script>
-{{ end }}
-
 {{ define "stylesheets" }}
   <link rel="stylesheet" href="/assets/css/profile.css">
 {{ end }}
 
 {{ define "title" }}
-  <title>Your Profile - PsionicAlch</title>
+  <title>Your Profile | PsionicAlch</title>
 {{ end }}
 
 {{ define "body" }}

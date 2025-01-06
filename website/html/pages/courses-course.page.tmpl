@@ -1,10 +1,14 @@
 {{ template "base" .}}
 
 {{ define "meta-tags" }}
-  <meta name="description" content="{{- .Course.Description -}} Master Go programming and learn step-by-step {{- .Course.Title -}} with real-world, practical examples from PsionicAlch." />
-  <meta name="keywords" content="{{- range .Course.Keywords -}}{{- . -}},{{ end }}" />
+  <meta name="robots" content="index, follow" />
 
-  <meta property="og:title" content="{{- .Course.Title -}} - PsionicAlch" />
+  <link rel="canonical" href="https://www.psionicalch.com/courses/{{- .Course.Slug -}}" />
+
+  <meta name="description" content="{{- .Course.Description -}} Master Go programming and learn step-by-step {{- .Course.Title -}} with real-world, practical examples from PsionicAlch." />
+  <meta name="keywords" content="{{- range .Course.Keywords -}}{{- . -}},{{ end }} Golang Courses, Golang Tutorials, Golang Programming, Golang Projects, Learn Golang, Web Development with Go, Real-World Applications, Programming Tutorials, Programming Courses, Build Software with Go, Go Programming Language, Backend Development with Go, Golang Learning Platform, Practical Golang courses for developers, Real-world Golang application tutorials, Build software with Golang step-by-step, Complete Golang development course for beginners, Golang backend development for web apps, Step-by-step Golang tutorials for web development, Learn Go programming with real-world projects, Best Golang tutorials for intermediate developers, How to implement HTMX with Go programming, Build and deploy Golang applications tutorial, Learn AlpineJS and Golang integration, Earn discounts with affiliate programs for Golang courses, Affiliate programs for programming tutorials, Refer and earn with coding platforms, Complete Golang web development project, Get certified in Golang programming, Golang course completion certificates, Showcase Golang skills with certification, Learn Golang from scratch, Build scalable apps with Golang, Backend programming with Go, Practical Golang for real-world development, HTMX integration with Golang, Using AlpineJS with Go, Full-stack development with Golang, API development with Go, Building scalable SaaS platforms in Go" />
+
+  <meta property="og:title" content="{{- .Course.Title -}} | PsionicAlch" />
   <meta property="og:description" content="{{- .Course.Description -}} Learn {{- .Course.Title -}} using real-world, step-by-step guides." />
   <meta property="og:image" content="{{- .Course.BannerURL -}}" />
   <meta property="og:url" content="https://www.psionicalch.com/courses/{{- .Course.Slug -}}" />
@@ -13,7 +17,7 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@psionicalch" />
-  <meta name="twitter:title" content="{{- .Course.Title -}} - PsionicAlch" />
+  <meta name="twitter:title" content="{{- .Course.Title -}} | PsionicAlch" />
   <meta name="twitter:description" content="{{- .Course.Description -}} Learn {{- .Course.Title -}} with PsionicAlch's comprehensive Golang course." />
   <meta name="twitter:image" content="{{- .Course.BannerURL -}}" />
 
@@ -21,7 +25,7 @@
     {
       "@context": "https://schema.org",
       "@type": "Course",
-      "name": "{{- .Course.Title -}}",
+      "name": "{{- .Course.Title -}} | PsionicAlch",
       "description": "{{- .Course.Description -}}",
       "provider": {
         "@type": "Organization",
@@ -48,7 +52,7 @@
 {{ end }}
 
 {{ define "title" }}
-  <title>{{- .Course.Title -}} - PsionicAlch | Learn to Build {{- .Course.Title -}}</title>
+  <title>{{- .Course.Title -}} | PsionicAlch</title>
 {{ end }}
 
 {{ define "body" }}

@@ -1,24 +1,55 @@
+{{ with .UserData }}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="Congratulations {{ .UserData.User.Name }} {{ .UserData.User.Surname }} on completing the {{ .UserData.Course.Title }} course by PsionicAlch. Showcase your achievement and the skills you've gained!" />
-  <meta name="keywords" content="Certificate of Completion, {{ .UserData.Course.Title }} certificate, Golang certification, PsionicAlch certificate, {{ .UserData.User.Name }} {{ .UserData.User.Surname }} achievement" />
+  <meta name="robots" content="index, follow" />
 
-  <meta property="og:title" content="Certificate of Completion - {{ .UserData.Course.Title }} | PsionicAlch" />
-  <meta property="og:description" content="This certificate is awarded to {{ .UserData.User.Name }} {{ .UserData.User.Surname }} for successfully completing the {{ .UserData.Course.Title }} course by PsionicAlch. Learn more and start your journey!" />
-  <meta property="og:image" content="https://www.psionicalch.com/certificates/img" /> <!-- TODO: Replace with actual image -->
-  <meta property="og:url" content="https://www.psionicalch.com/certificates/{{- .UserData.Certificate.ID -}}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="PsionicAlch" />
+  <link rel="canonical" href="https://www.psionicalch.com/certificates/{{- .Certificate.ID -}}" />
+
+  <meta name="description" content="Certificate of Completion awarded to {{ .User.Name }} {{ .User.Surname }} for successfully completing the course {{ .Course.Title }} on PsionicAlch." />
+  <meta name="keywords" content="Certificate of Completion, {{ .Course.Title }}, {{ .User.Name }} {{ .User.Surname }}, Golang course certificate, PsionicAlch certification, Golang Courses, Golang Tutorials, Golang Programming, Golang Projects, Learn Golang, Web Development with Go, Real-World Applications, Programming Tutorials, Programming Courses, Build Software with Go, Go Programming Language, Backend Development with Go, Golang Learning Platform, Practical Golang courses for developers, Real-world Golang application tutorials, Build software with Golang step-by-step, Complete Golang development course for beginners, Golang backend development for web apps, Step-by-step Golang tutorials for web development, Learn Go programming with real-world projects, Best Golang tutorials for intermediate developers, How to implement HTMX with Go programming, Build and deploy Golang applications tutorial, Learn AlpineJS and Golang integration, Earn discounts with affiliate programs for Golang courses, Affiliate programs for programming tutorials, Refer and earn with coding platforms, Complete Golang web development project, Get certified in Golang programming, Golang course completion certificates, Showcase Golang skills with certification, Learn Golang from scratch, Build scalable apps with Golang, Backend programming with Go, Practical Golang for real-world development, HTMX integration with Golang, Using AlpineJS with Go, Full-stack development with Golang, API development with Go, Building scalable SaaS platforms in Go" />
+
+  <meta property="og:title" content="Certificate of Completion - {{ .User.Name }} {{ .User.Surname }} - {{ .Course.Title }} | PsionicAlch" />
+  <meta property="og:description" content="Certificate of Completion awarded to {{ .User.Name }} {{ .User.Surname }} for successfully completing the course {{ .Course.Title }} on PsionicAlch." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.psionicalch.com/certificates/{{- .Certificate.ID -}}" />
+  <meta property="og:image" content="https://www.psionicalch.com/static/images/certificate-placeholder.png" /> <!-- TODO: Replace with actual image -->
 
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Certificate of Completion - {{ .User.Name }} {{ .User.Surname }} - {{ .Course.Title }} | PsionicAlch" />
+  <meta name="twitter:description" content="Certificate of Completion awarded to {{ .User.Name }} {{ .User.Surname }} for successfully completing the course {{ .Course.Title }} on PsionicAlch." />
+  <meta name="twitter:image" content="https://www.psionicalch.com/static/images/certificate-placeholder.png" /> <!-- TODO: Replace with actual image -->
   <meta name="twitter:site" content="@psionicalch" />
-  <meta name="twitter:title" content="Certificate of Completion - {{ .UserData.Course.Title }} | PsionicAlch" />
-  <meta name="twitter:description" content="Congrats {{ .UserData.User.Name }} {{ .UserData.User.Surname }}! You've earned your certificate for completing the {{ .Course.Title }} course by PsionicAlch. Share your achievement today!" />
-  <meta name="twitter:image" content="https://www.psionicalch.com/certificates/img" /> <!-- TODO: Replace with actual image -->
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "name": "Certificate of Completion - {{ .User.Name }} {{ .User.Surname }} - {{ .Course.Title }}",
+      "description": "Certificate of Completion awarded to {{ .User.Name }} {{ .User.Surname }} for successfully completing the course {{ .Course.Title }} on PsionicAlch.",
+      "url": "https://www.psionicalch.com/certificates/{{- .Certificate.ID -}}",
+      "creator": {
+        "@type": "Organization",
+        "name": "PsionicAlch"
+      },
+      "provider": {
+        "@type": "Organization",
+        "name": "PsionicAlch"
+      },
+      "recipient": {
+        "@type": "Person",
+        "name": "{{- .User.Name }} {{ .User.Surname -}}"
+      },
+      "about": {
+        "@type": "Course",
+        "name": "{{- .Course.Title -}}"
+      },
+      "dateCreated": "{{ .Certificate.CreatedAt | format_time_to_iso_8601 }}"
+    }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,13 +60,13 @@
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/certification.css">
 
-  <title>Certificate of Completion - {{ .UserData.Course.Title }} | PsionicAlch</title>
+  <title>Certificate of Completion - {{ .User.Name }} {{ .User.Surname }} - {{ .Course.Title }} | PsionicAlch</title>
 </head>
 <body>
   <nav>
     <h2>PsionicAlch</h2>
 
-    <p>Certificate No: {{ .UserData.Certificate.ID -}}</p>
+    <p>Certificate No: {{ .Certificate.ID -}}</p>
   </nav>
 
   <main>
@@ -193,20 +224,20 @@
     <div class="text-container">
       <div>
         <h3>Certificate of Completion</h3>
-        <h1 class="certificate-heading">{{- .UserData.Course.Title -}}</h1>
+        <h1 class="certificate-heading">{{- .Course.Title -}}</h1>
       </div>
 
       <hr>
 
       <div>
-        <h3 class="user-name">{{- .UserData.User.Name }} {{ .UserData.User.Surname -}}</h3>
-        <p>Completed on {{ pretty_date .UserData.Certificate.CreatedAt -}}</p>
+        <h3 class="user-name">{{- .User.Name }} {{ .User.Surname -}}</h3>
+        <p>Completed on {{ pretty_date .Certificate.CreatedAt -}}</p>
       </div>
     </div>
   </main>
 
   <footer>
-    <p>www.psionicalch.com/certificates/{{- .UserData.Certificate.ID -}}</p>
+    <p>www.psionicalch.com/certificates/{{- .Certificate.ID -}}</p>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -237,9 +268,10 @@
         console.log(pdf);
 
         pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-        pdf.save('{{- .UserData.Certificate.ID -}}.pdf');
+        pdf.save('{{- .Certificate.ID -}}.pdf');
       }
     });
   </script>
 </body>
 </html>
+{{ end }}

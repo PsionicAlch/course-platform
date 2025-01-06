@@ -1,10 +1,16 @@
 {{ template "base" .}}
 
 {{ define "meta-tags" }}
-  <meta name="description" content="Explore free Golang tutorials by PsionicAlch. Learn Go programming through step-by-step guides and real-world examples. Perfect for intermediate developers looking to master practical skills." />
-  <meta name="keywords" content="Golang tutorials, Go programming tutorials, free Golang guides, learn Go programming, Golang step-by-step, real-world Go projects, Go web development tutorials, HTMX, AlpineJS, Bootstrap with Golang" />
+  <meta name="robots" content="index, follow" />
 
-  <meta property="og:title" content="Free Golang Tutorials - PsionicAlch" />
+  <link rel="canonical" href="https://www.psionicalch.com/tutorials" />
+
+  <link rel="alternate" type="application/rss+xml" title="RSS Feed for Tutorials" href="https://www.psionicalch.com/rss/tutorials" />
+
+  <meta name="description" content="Explore free Golang tutorials by PsionicAlch. Learn Go programming through step-by-step guides and real-world examples. Perfect for intermediate developers looking to master practical skills." />
+  <meta name="keywords" content="Golang Courses, Golang Tutorials, Golang Programming, Golang Projects, Learn Golang, Web Development with Go, Real-World Applications, Programming Tutorials, Programming Courses, Build Software with Go, Go Programming Language, Backend Development with Go, Golang Learning Platform, Practical Golang courses for developers, Real-world Golang application tutorials, Build software with Golang step-by-step, Complete Golang development course for beginners, Golang backend development for web apps, Step-by-step Golang tutorials for web development, Learn Go programming with real-world projects, Best Golang tutorials for intermediate developers, How to implement HTMX with Go programming, Build and deploy Golang applications tutorial, Learn AlpineJS and Golang integration, Earn discounts with affiliate programs for Golang courses, Affiliate programs for programming tutorials, Refer and earn with coding platforms, Complete Golang web development project, Get certified in Golang programming, Golang course completion certificates, Showcase Golang skills with certification, Learn Golang from scratch, Build scalable apps with Golang, Backend programming with Go, Practical Golang for real-world development, HTMX integration with Golang, Using AlpineJS with Go, Full-stack development with Golang, API development with Go, Building scalable SaaS platforms in Go" />
+
+  <meta property="og:title" content="Free Golang Tutorials - Learn Go Programming with Real-World Examples | PsionicAlch" />
   <meta property="og:description" content="Master Go programming with PsionicAlch's free Golang tutorials. Step-by-step guides for real-world projects designed for intermediate developers." />
   <meta property="og:image" content="https://www.psionicalch.com/assets/img/tutorials_page_og_image.jpg" /> <!-- TODO: Replace with actual image -->
   <meta property="og:url" content="https://www.psionicalch.com/tutorials" />
@@ -13,7 +19,7 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@psionicalch" />
-  <meta name="twitter:title" content="Free Golang Tutorials - PsionicAlch" />
+  <meta name="twitter:title" content="Free Golang Tutorials - Learn Go Programming with Real-World Examples | PsionicAlch" />
   <meta name="twitter:description" content="Discover free Golang tutorials by PsionicAlch. Learn practical Go programming with real-world project examples and guides." />
   <meta name="twitter:image" content="https://www.psionicalch.com/assets/img/tutorials_page_twitter_image.jpg" /> <!-- TODO: Replace with actual image -->
 
@@ -21,7 +27,7 @@
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      "name": "Free Golang Tutorials - PsionicAlch",
+      "name": "Free Golang Tutorials - Learn Go Programming with Real-World Examples | PsionicAlch",
       "url": "https://www.psionicalch.com/tutorials",
       "description": "PsionicAlch's free tutorials for intermediate Go developers. Learn Golang through real-world examples and practical guides.",
       "hasPart": [
@@ -43,7 +49,7 @@
 {{ end }}
 
 {{ define "title" }}
-  <title>Free Golang Tutorials - PsionicAlch | Learn Go Programming with Real-World Examples</title>
+  <title>Free Golang Tutorials - Learn Go Programming with Real-World Examples | PsionicAlch</title>
 {{ end }}
 
 {{ define "body" }}
