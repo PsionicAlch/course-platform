@@ -34,7 +34,7 @@
         "name": "{{ .Author.Name }} {{ .Author.Surname }}"
       },
       "itemListElement": [
-        {{ range := .Courses.Courses }}
+        {{ range .Courses.Courses }}
         {
           "@type": "Course",
           "name": "{{ .Title }}",
