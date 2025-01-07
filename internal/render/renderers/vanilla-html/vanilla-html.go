@@ -34,7 +34,7 @@ func SetupVanillaHTMLRenderer(sessions *session.Session, embeddedFS embed.FS, fi
 func (renderer *VanillaHTMLRenderer) Render(w io.Writer, ctx context.Context, file string, data any) error {
 	var infoMessages, warningMessages, errorMessages []string
 
-	if renderer.sessions != nil {
+	if renderer.sessions != nil && ctx != nil {
 		infoMessages = renderer.sessions.GetInfoMessages(ctx)
 		warningMessages = renderer.sessions.GetWarningMessages(ctx)
 		errorMessages = renderer.sessions.GetErrorMessages(ctx)
@@ -63,7 +63,7 @@ func (renderer *VanillaHTMLRenderer) Render(w io.Writer, ctx context.Context, fi
 func (renderer *VanillaHTMLRenderer) RenderHTML(w http.ResponseWriter, ctx context.Context, file string, data any, status ...int) error {
 	var infoMessages, warningMessages, errorMessages []string
 
-	if renderer.sessions != nil {
+	if renderer.sessions != nil && ctx != nil {
 		infoMessages = renderer.sessions.GetInfoMessages(ctx)
 		warningMessages = renderer.sessions.GetWarningMessages(ctx)
 		errorMessages = renderer.sessions.GetErrorMessages(ctx)

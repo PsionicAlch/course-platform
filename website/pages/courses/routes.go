@@ -18,9 +18,7 @@ func RegisterRoutes(handlers *Handlers) http.Handler {
 	router.With(handlers.Auth.AllowAuthenticated("/accounts/login")).Post("/{course-slug}/purchase", handlers.PurchaseCoursePost)
 
 	router.Get("/{course-slug}/purchase/success", handlers.PurchaseCourseSuccessGet)
-
 	router.Get("/{course-slug}/purchase/cancel", handlers.PurchaseCourseCancelGet)
-
 	router.Get("/{course-slug}/purchase/check", handlers.PurchaseCourseCheckGet)
 
 	router.With(handlers.Auth.AllowAuthenticated("/accounts/login")).Post("/{course-slug}/purchase/validate", handlers.ValidatePurchasePost)

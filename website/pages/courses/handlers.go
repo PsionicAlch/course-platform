@@ -359,7 +359,13 @@ func (h *Handlers) PurchaseCourseCancelGet(w http.ResponseWriter, r *http.Reques
 
 	h.Session.SetWarningMessage(r.Context(), "Payment was cancelled.")
 
-	utils.Redirect(w, r, fmt.Sprintf("/courses/%s/purchase", courseSlug))
+	redirectScreen := &html.RedirectScreenPage{
+		RedirectURL: fmt.Sprintf("/courses/%s", courseSlug),
+	}
+
+	if err := h.Renderers.Page.RenderHTML(w, nil, "redirect-screen", redirectScreen); err != nil {
+		h.ErrorLog.Println(err)
+	}
 }
 
 func (h *Handlers) PurchaseCourseCheckGet(w http.ResponseWriter, r *http.Request) {

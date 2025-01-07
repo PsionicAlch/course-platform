@@ -163,6 +163,11 @@ type GeneralRefundPolicyPage struct {
 	BasePage
 }
 
+type LoadingScreenPage struct {
+	Title   string
+	PingURL string
+}
+
 type ProfilePage struct {
 	BasePage
 	User                       *models.UserModel
@@ -216,6 +221,10 @@ type ProfileTutorialsLikedPage struct {
 	Tutorials *TutorialsListComponent
 }
 
+type RedirectScreenPage struct {
+	RedirectURL string
+}
+
 type SettingsPage struct {
 	BasePage
 	ChangeFirstNameForm *ChangeFirstNameFormComponent
@@ -241,9 +250,4 @@ type TutorialsTutorialPage struct {
 	TutorialLiked      bool
 	TutorialBookmarked bool
 	Comments           *CommentsListComponent
-}
-
-type LoadingScreenPage struct {
-	Title   string
-	PingURL string
 }
