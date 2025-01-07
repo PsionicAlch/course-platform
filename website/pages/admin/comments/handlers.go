@@ -14,6 +14,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
+	"github.com/justinas/nosurf"
 )
 
 const CommentsPerPagination = 25
@@ -39,14 +40,14 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.AdminCommentsPage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	commentsList, urlQuery, err := h.CreateCommentsList(r)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to create comments list: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -62,7 +63,7 @@ func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all tutorials: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -75,7 +76,7 @@ func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all users: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -88,7 +89,7 @@ func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to count the omments: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 

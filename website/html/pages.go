@@ -3,12 +3,14 @@ package html
 import "github.com/PsionicAlch/psionicalch-home/internal/database/models"
 
 type BasePage struct {
-	Navbar *NavbarComponent
+	Navbar    *NavbarComponent
+	CSRFToken string
 }
 
-func NewBasePage(user *models.UserModel) BasePage {
+func NewBasePage(user *models.UserModel, csrfToken string) BasePage {
 	return BasePage{
-		Navbar: NewNavbarComponent(user),
+		Navbar:    NewNavbarComponent(user),
+		CSRFToken: csrfToken,
 	}
 }
 

@@ -8,6 +8,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/go-chi/chi/v5"
+	"github.com/justinas/nosurf"
 )
 
 func (h *Handlers) UserBoughtCourse(next http.Handler) http.Handler {
@@ -20,7 +21,7 @@ func (h *Handlers) UserBoughtCourse(next http.Handler) http.Handler {
 		if err != nil {
 			h.ErrorLog.Printf("Failed to get course by slug (\"%s\"): %s\n", courseSlug, err)
 
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 				h.ErrorLog.Println(err)
 			}
 
@@ -28,7 +29,7 @@ func (h *Handlers) UserBoughtCourse(next http.Handler) http.Handler {
 		}
 
 		if course == nil {
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 				h.ErrorLog.Println(err)
 			}
 
@@ -36,7 +37,7 @@ func (h *Handlers) UserBoughtCourse(next http.Handler) http.Handler {
 		}
 
 		if !course.Published {
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 				h.ErrorLog.Println(err)
 			}
 
@@ -47,7 +48,7 @@ func (h *Handlers) UserBoughtCourse(next http.Handler) http.Handler {
 		if err != nil {
 			h.ErrorLog.Printf("Failed to check if user (\"%s\") has purchased the course (\"%s\"): %s\n", user.ID, course.Title, err)
 
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 				h.ErrorLog.Println(err)
 			}
 

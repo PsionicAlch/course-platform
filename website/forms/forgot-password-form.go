@@ -8,8 +8,9 @@ import (
 )
 
 func NewForgotPasswordForm(r *http.Request) *GenericForm {
-	// There's no need to do any validation that the user will see.
-	return NewForm(r, map[FieldName]validators.ValidationFunc{})
+	return NewForm(r, map[FieldName]validators.ValidationFunc{
+		EmailName: validators.NotEmpty,
+	})
 }
 
 func EmptyForgotPasswordFormComponent() *html.ForgotPasswordFormComponent {

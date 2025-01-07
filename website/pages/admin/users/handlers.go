@@ -14,6 +14,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
+	"github.com/justinas/nosurf"
 )
 
 const UsersPerPagination = 25
@@ -39,7 +40,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 func (h *Handlers) UsersGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.AdminUsersPage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	usersCount, err := h.Database.CountUsers()
@@ -47,7 +48,7 @@ func (h *Handlers) UsersGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to get the number of users from the database: %s\n", err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
@@ -64,7 +65,7 @@ func (h *Handlers) UsersGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to get the number of users from the database: %s\n", err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}

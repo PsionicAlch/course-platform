@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
@@ -11,6 +12,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
+	"github.com/justinas/nosurf"
 )
 
 const TutorialsPerPagination = 4
@@ -38,9 +40,11 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, a
 func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	const Elements = 4
 
+	fmt.Println(nosurf.Token(r))
+
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.ProfilePage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		User:     user,
 	}
 
@@ -48,7 +52,7 @@ func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get affiliate points history associated with user (\"%s\"): %s\n", user.ID, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -61,7 +65,7 @@ func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get courses bought by user (\"%s\"): %s\n", user.ID, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -86,7 +90,7 @@ func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get tutorials bookmarked by user (\"%s\"): %s\n", user.ID, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -112,7 +116,7 @@ func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get tutorials liked by user (\"%s\"): %s\n", user.ID, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 

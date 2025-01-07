@@ -18,6 +18,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
+	"github.com/justinas/nosurf"
 )
 
 // TODO: Fix title for course chapters
@@ -49,14 +50,14 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.CoursesPage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	coursesList, err := h.CreateCoursesList(r)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to create courses list: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -92,7 +93,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.CoursesCoursePage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	courseSlug := chi.URLParam(r, "course-slug")
@@ -102,7 +103,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to get course from the database with slug \"%s\": %s\n", courseSlug, err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
@@ -112,7 +113,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 
 	if course == nil {
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
@@ -127,7 +128,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to count all the chapters, connected to course \"%s\", in the database: %s\n", course.Title, err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
@@ -149,7 +150,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to get author by ID \"%s\", in the database: %s\n", authorID, err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
@@ -167,7 +168,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.CoursesPurchasesPage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	courseSlug := chi.URLParam(r, "course-slug")
@@ -176,7 +177,7 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get course by slug: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -186,7 +187,7 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 	if course == nil {
 		h.ErrorLog.Printf("Could not find a course by slug: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -198,7 +199,7 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 	if !course.AuthorID.Valid {
 		h.ErrorLog.Printf("Course does not contain a valid author ID: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -209,7 +210,7 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get course by slug: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -219,7 +220,7 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 	if author == nil {
 		h.ErrorLog.Printf("Could not find a author by ID: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -232,7 +233,7 @@ func (h *Handlers) PurchaseCourseGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to check if user (\"%s\") has purchased course (\"%s\"): %s\n", user.ID, course.ID, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 

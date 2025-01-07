@@ -13,6 +13,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
+	"github.com/justinas/nosurf"
 )
 
 const TutorialsPerPagination = 25
@@ -36,14 +37,14 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 func (h *Handlers) TutorialsBookmarksGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.ProfileTutorialsBookmarksPage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	tutorialsList, err := h.CreateTutorialsList(r, "/profile/tutorials/bookmarks/htmx", h.Database.GetTutorialsBookmarkedByUser)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to create tutorials list: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -77,14 +78,14 @@ func (h *Handlers) TutorialsBookmarksPaginationGet(w http.ResponseWriter, r *htt
 func (h *Handlers) TutorialsLikesGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.ProfileTutorialsLikedPage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	tutorialsList, err := h.CreateTutorialsList(r, "/profile/tutorials/likes/htmx", h.Database.GetTutorialsLikedByUser)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to create tutorials list: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 

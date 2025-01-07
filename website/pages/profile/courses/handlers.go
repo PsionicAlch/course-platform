@@ -16,6 +16,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
+	"github.com/justinas/nosurf"
 )
 
 const CoursesPerPagination = 25
@@ -41,14 +42,14 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 func (h *Handlers) CoursesGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.ProfileCourses{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	courses, err := h.CreateCoursesList(r)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to create courses list: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -134,7 +135,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 	if user == nil {
 		h.ErrorLog.Println("Failed to get user from context")
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -144,7 +145,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 	if course == nil {
 		h.ErrorLog.Println("Failed to get course from context")
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -155,7 +156,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all course (\"%s\") chapters: %s\n", course.Title, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -167,7 +168,7 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			h.ErrorLog.Printf("Could not check if user has completed course chapter: %s\n", err)
 
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 				h.ErrorLog.Println(err)
 			}
 
@@ -188,13 +189,13 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	user := authentication.GetUserFromRequest(r)
 	course := GetCourseFromRequest(r)
 	pageData := &html.ProfileCertificate{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	if user == nil {
 		h.ErrorLog.Println("Failed to get user from context")
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -204,7 +205,7 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	if course == nil {
 		h.ErrorLog.Println("Failed to get course from context")
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -218,7 +219,7 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all chapters of course (\"%s\") that the user (\"%s\") hasn't completed yet: %s\n", course.ID, user.ID, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -234,7 +235,7 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get certificate from the database: %s\n", err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -242,7 +243,7 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	}
 
 	if certificate == nil {
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -254,7 +255,7 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	if !course.AuthorID.Valid {
 		h.ErrorLog.Printf("Course (\"%s\") does not have a valid author", course.Title)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -265,7 +266,7 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get author by ID (\"%s\"): %s\n", course.AuthorID.String, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -275,7 +276,7 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	if author == nil {
 		h.ErrorLog.Printf("Failed to get author by ID (\"%s\")", course.AuthorID.String)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -288,7 +289,7 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get chapters associates with course (\"%s\"): %s\n", course.ID, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -296,7 +297,7 @@ func (h *Handlers) CourseCertificateGet(w http.ResponseWriter, r *http.Request) 
 	}
 
 	if chapters == nil {
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -317,7 +318,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 	if user == nil {
 		h.ErrorLog.Println("Failed to get user from context")
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -327,7 +328,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 	if course == nil {
 		h.ErrorLog.Println("Failed to get course from context")
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -335,7 +336,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pageData := html.ProfileCourse{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		Course:   course,
 	}
 
@@ -345,7 +346,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get chapter by slug (\"%s\"): %s\n", chapterSlug, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -353,7 +354,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if chapter == nil {
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -366,7 +367,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get chapters associates with course (\"%s\"): %s\n", course.ID, err)
 
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -374,7 +375,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if chapters == nil {
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -396,7 +397,7 @@ func (h *Handlers) CourseChapterGet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			h.ErrorLog.Printf("Failed to check if user (\"%s\") has completed course (\"%s\") chapter (\"%s\"): %s\n", user.ID, course.ID, c.ID, err)
 
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 				h.ErrorLog.Println(err)
 			}
 

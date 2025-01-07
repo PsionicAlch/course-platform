@@ -1,7 +1,9 @@
 {{ define "login-form" }}
-  <form action="/accounts/login" method="post" novalidate autocomplete="off" spellcheck="false">
+  <form hx-post="/accounts/login" hx-swap="self" novalidate autocomplete="off" spellcheck="false">
     {{ template "form-control" .EmailInput}}
     {{ template "password-control" .PasswordInput }}
+
+    {{ template "error-message" .ErrorMessage }}
 
     <button type="submit" class="btn btn-blue shadow-sm">Log In</button>
   </form>

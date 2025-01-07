@@ -14,6 +14,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
+	"github.com/justinas/nosurf"
 )
 
 const TutorialsPerPagination = 25
@@ -41,7 +42,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.AdminTutorialsPage{
-		BasePage: html.NewBasePage(user),
+		BasePage: html.NewBasePage(user, nosurf.Token(r)),
 	}
 
 	tutorialList, urlQuery, err := h.CreateTutorialsList(r)
@@ -49,7 +50,7 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to construct tutorial list component: %s\n", err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
@@ -69,7 +70,7 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to count the number of tutorials in the database: %s\n", err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
@@ -84,7 +85,7 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to get all the authors from the database: %s\n", err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
@@ -99,7 +100,7 @@ func (h *Handlers) TutorialsGet(w http.ResponseWriter, r *http.Request) {
 		h.ErrorLog.Printf("Failed to get all the keywords from the database: %s\n", err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
-			BasePage: html.NewBasePage(user),
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
 		}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}

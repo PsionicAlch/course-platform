@@ -54,6 +54,12 @@
 
     {{ block "javascript" .UserData }}
     {{ end }}
+
+    <script>
+      document.addEventListener('htmx:configRequest', function(event) {
+        event.detail.headers['X-CSRF-Token'] = '{{- .UserData.CSRFToken -}}';
+      });
+    </script>
   </body>
   </html>
 {{ end }}

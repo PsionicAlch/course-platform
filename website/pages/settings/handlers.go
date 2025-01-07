@@ -18,6 +18,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
+	"github.com/justinas/nosurf"
 )
 
 type Handlers struct {
@@ -47,7 +48,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, d
 func (h *Handlers) SettingsGet(w http.ResponseWriter, r *http.Request) {
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.SettingsPage{
-		BasePage:            html.NewBasePage(user),
+		BasePage:            html.NewBasePage(user, nosurf.Token(r)),
 		ChangeFirstNameForm: forms.EmptyChangeFirstNameFormComponent(),
 		ChangeLastNameForm:  forms.EmptyChangeLastNameFormComponent(),
 		ChangeEmailForm:     forms.EmptyChangeEmailFormComponent(),
@@ -58,7 +59,7 @@ func (h *Handlers) SettingsGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user's (\"%s\") whitelisted IP addresses: %s\n", user.ID, err)
 
-		if err := h.Render.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Render.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -71,7 +72,7 @@ func (h *Handlers) SettingsGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all courses bought by user (\"%s\"): %s\n", user.ID, err)
 
-		if err := h.Render.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user)}, http.StatusInternalServerError); err != nil {
+		if err := h.Render.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 

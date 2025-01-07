@@ -66,6 +66,7 @@ type PasswordControlComponent struct {
 type LoginFormComponent struct {
 	EmailInput    *FormControlComponent
 	PasswordInput *PasswordControlComponent
+	ErrorMessage  string
 }
 
 type SignupFormComponent struct {
@@ -74,16 +75,19 @@ type SignupFormComponent struct {
 	EmailInput           *FormControlComponent
 	PasswordInput        *PasswordControlComponent
 	ConfirmPasswordInput *PasswordControlComponent
+	ErrorMessage         string
 }
 
 type ForgotPasswordFormComponent struct {
-	EmailInput *FormControlComponent
+	EmailInput   *FormControlComponent
+	ErrorMessage string
 }
 
 type ResetPasswordFormComponent struct {
 	EmailToken           string
 	PasswordInput        *PasswordControlComponent
 	ConfirmPasswordInput *PasswordControlComponent
+	ErrorMessage         string
 }
 
 type NewDiscountFormComponent struct {

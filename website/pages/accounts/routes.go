@@ -3,11 +3,14 @@ package accounts
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
 func RegisterRoutes(handlers *Handlers) http.Handler {
 	router := chi.NewRouter()
+
+	router.Use(middleware.CSRFProtection)
 
 	router.With(handlers.Auth.AllowAuthenticated("/accounts/login")).Delete("/logout", handlers.LogoutDelete)
 

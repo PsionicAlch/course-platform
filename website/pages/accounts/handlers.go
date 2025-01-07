@@ -16,6 +16,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/html"
 	"github.com/PsionicAlch/psionicalch-home/website/pages"
 	"github.com/go-chi/chi/v5"
+	"github.com/justinas/nosurf"
 )
 
 type Handlers struct {
@@ -42,7 +43,7 @@ func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, a
 
 func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
 	pageData := html.AccountsLoginPage{
-		BasePage:  html.NewBasePage(nil),
+		BasePage:  html.NewBasePage(nil, nosurf.Token(r)),
 		LoginForm: forms.EmptyLoginFormComponent(),
 	}
 
@@ -54,13 +55,10 @@ func (h *Handlers) LoginGet(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 	loginForm := forms.NewLoginForm(r)
-	pageData := html.AccountsLoginPage{
-		BasePage: html.NewBasePage(nil),
-	}
 
 	if !loginForm.Validate() {
-		pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-login", pageData); err != nil {
+		loginFormComponent := forms.NewLoginFormComponent(loginForm)
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "login-form", loginFormComponent); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -72,10 +70,10 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get IP address from r.RemoteAddr: %s\n", err)
 
-		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
+		loginFormComponent := forms.NewLoginFormComponent(loginForm)
+		loginFormComponent.ErrorMessage = "Unexpected server error. Please try again."
 
-		pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-login", pageData); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "login-form", loginFormComponent); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -86,18 +84,18 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == authentication.ErrInvalidCredentials {
 			loginForm.SetEmailError("invalid email or password")
-			pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
+			loginFormComponent := forms.NewLoginFormComponent(loginForm)
 
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-login", pageData); err != nil {
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "login-form", loginFormComponent); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		} else {
 			h.ErrorLog.Printf("Failed to log user (\"%s\") in: %s\n", email, err)
 
-			h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
+			loginFormComponent := forms.NewLoginFormComponent(loginForm)
+			loginFormComponent.ErrorMessage = "Unexpected server error. Please try again."
 
-			pageData.LoginForm = forms.NewLoginFormComponent(loginForm)
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-login", pageData); err != nil {
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "login-form", loginFormComponent); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		}
@@ -122,16 +120,16 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 
 	redirectUrl := h.Session.GetRedirectURL(r.Context())
 	if redirectUrl != "" {
-		http.Redirect(w, r, redirectUrl, http.StatusFound)
+		utils.Redirect(w, r, redirectUrl)
 	} else {
-		http.Redirect(w, r, "/profile", http.StatusFound)
+		utils.Redirect(w, r, "/profile")
 	}
 }
 
 func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 	signupForm := forms.EmptySignupFormComponent()
 	pageData := html.AccountsSignupPage{
-		BasePage:   html.NewBasePage(nil),
+		BasePage:   html.NewBasePage(nil, nosurf.Token(r)),
 		SignupForm: signupForm,
 	}
 
@@ -142,13 +140,10 @@ func (h *Handlers) SignupGet(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	signupForm := forms.NewSignupForm(r)
-	pageData := html.AccountsSignupPage{
-		BasePage: html.NewBasePage(nil),
-	}
 
 	if !signupForm.Validate() {
-		pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-signup", pageData); err != nil {
+		signupFormComponent := forms.NewSignupFormComponent(signupForm)
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "signup-form", signupFormComponent); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -160,10 +155,10 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get IP address from r.RemoteAddr: %s\n", err)
 
-		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
+		signupFormComponent := forms.NewSignupFormComponent(signupForm)
+		signupFormComponent.ErrorMessage = "Unexpected server error. Please try again."
 
-		pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-signup", pageData); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "signup-form", signupFormComponent); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -174,18 +169,18 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == authentication.ErrUserExists {
 			signupForm.SetEmailError("this email has already been registered")
-			pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
+			signupFormComponent := forms.NewSignupFormComponent(signupForm)
 
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-signup", pageData); err != nil {
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "signup-form", signupFormComponent); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		} else {
 			h.ErrorLog.Printf("Failed to sign user up: %s\n", err)
 
-			h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
+			signupFormComponent := forms.NewSignupFormComponent(signupForm)
+			signupFormComponent.ErrorMessage = "Unexpected server error. Please try again."
 
-			pageData.SignupForm = forms.NewSignupFormComponent(signupForm)
-			if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-signup", pageData); err != nil {
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "signup-form", signupFormComponent); err != nil {
 				h.ErrorLog.Println(err)
 			}
 		}
@@ -193,13 +188,14 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO: Generate 50% discount code with one usage and add it to their email address.
 	go h.Emailer.SendWelcomeEmail(user.Email, user.Name, user.AffiliateCode)
 
 	http.SetCookie(w, cookie)
 
 	redirectUrl := h.Session.GetRedirectURL(r.Context())
 	if redirectUrl != "" {
-		http.Redirect(w, r, redirectUrl, http.StatusFound)
+		utils.Redirect(w, r, redirectUrl)
 	} else {
 		utils.Redirect(w, r, "/courses")
 	}
@@ -221,7 +217,7 @@ func (h *Handlers) LogoutDelete(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) ForgotPasswordGet(w http.ResponseWriter, r *http.Request) {
 	forgotPasswordForm := forms.NewForgotPasswordForm(r)
 	pageData := html.AccountsForgotPasswordPage{
-		BasePage:           html.NewBasePage(nil),
+		BasePage:           html.NewBasePage(nil, nosurf.Token(r)),
 		ForgotPasswordForm: forms.NewForgotPasswordFormComponent(forgotPasswordForm),
 	}
 
@@ -232,21 +228,26 @@ func (h *Handlers) ForgotPasswordGet(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) ForgotPasswordPost(w http.ResponseWriter, r *http.Request) {
 	forgotPasswordForm := forms.NewForgotPasswordForm(r)
-	pageData := html.AccountsForgotPasswordPage{
-		BasePage:           html.NewBasePage(nil),
-		ForgotPasswordForm: nil,
+
+	if !forgotPasswordForm.Validate() {
+		forgotPasswordFormComponent := forms.NewForgotPasswordFormComponent(forgotPasswordForm)
+
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "forgot-password-form", forgotPasswordFormComponent); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
 	}
 
 	email := forms.GetForgotPasswordFormValues(forgotPasswordForm)
-
 	user, resetToken, err := h.Auth.GeneratePasswordResetToken(email)
 	if err != nil && err != authentication.ErrUnregisteredEmail {
 		h.ErrorLog.Printf("Failed to generate new password reset token: %s\n", err)
 
-		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
+		forgotPasswordFormComponent := forms.NewForgotPasswordFormComponent(forgotPasswordForm)
+		forgotPasswordFormComponent.ErrorMessage = "Unexpected server error. Please try again."
 
-		pageData.ForgotPasswordForm = forms.NewForgotPasswordFormComponent(forgotPasswordForm)
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-forgot-password", pageData); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "forgot-password-form", forgotPasswordFormComponent); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -257,7 +258,9 @@ func (h *Handlers) ForgotPasswordPost(w http.ResponseWriter, r *http.Request) {
 		go h.Emailer.SendPasswordResetEmail(email, user.Name, resetToken)
 	}
 
-	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-forgot-password", pageData); err != nil {
+	resp := "<p>An email with instructions on how to reset your password has been sent to your inbox. Please note that if there is no account with this email registered then you won't receive any email.</p>"
+
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "empty", resp); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -265,7 +268,7 @@ func (h *Handlers) ForgotPasswordPost(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 	emailToken := chi.URLParam(r, "email_token")
 	pageData := html.AccountsResetPasswordPage{
-		BasePage:          html.NewBasePage(nil),
+		BasePage:          html.NewBasePage(nil, nosurf.Token(r)),
 		ResetPasswordForm: forms.EmptyResetPasswordFormComponent(emailToken),
 	}
 
@@ -297,13 +300,10 @@ func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 	emailToken := chi.URLParam(r, "email_token")
 	resetPasswordForm := forms.NewResetPasswordForm(r)
-	pageData := html.AccountsResetPasswordPage{
-		BasePage: html.NewBasePage(nil),
-	}
 
 	if !resetPasswordForm.Validate() {
-		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-reset-password", pageData); err != nil {
+		resetPasswordFormComponent := forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "reset-password-form", resetPasswordFormComponent); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -314,10 +314,10 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to validate password reset token: %s\n", err)
 
-		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
+		resetPasswordFormComponent := forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
+		resetPasswordFormComponent.ErrorMessage = "Unexpected server error. Please try again."
 
-		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-reset-password", pageData); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "reset-password-form", resetPasswordFormComponent); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -334,10 +334,10 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user from password reset token: %s\n", err)
 
-		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
+		resetPasswordFormComponent := forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
+		resetPasswordFormComponent.ErrorMessage = "Unexpected server error. Please try again."
 
-		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-reset-password", pageData); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "reset-password-form", resetPasswordFormComponent); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -349,10 +349,10 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user from password reset token: %s\n", err)
 
-		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
+		resetPasswordFormComponent := forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
+		resetPasswordFormComponent.ErrorMessage = "Unexpected server error. Please try again."
 
-		pageData.ResetPasswordForm = forms.NewResetPasswordFormComponent(resetPasswordForm, emailToken)
-		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "accounts-reset-password", pageData); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "reset-password-form", resetPasswordFormComponent); err != nil {
 			h.ErrorLog.Println(err)
 		}
 

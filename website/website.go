@@ -8,6 +8,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	gocache "github.com/PsionicAlch/psionicalch-home/internal/cache/go-cache"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
+	pm "github.com/PsionicAlch/psionicalch-home/internal/middleware"
 	"github.com/PsionicAlch/psionicalch-home/internal/payments"
 	vanillahtml "github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla-html"
 	vanillatext "github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla-text"
@@ -32,6 +33,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/website/pages/tutorials"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/justinas/nosurf"
 )
 
 func StartWebsite() {
@@ -128,6 +130,7 @@ func StartWebsite() {
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
+	router.Use(pm.CSRFProtection)
 
 	// Register payments webhook.
 	router.Post("/payments/webhook", payment.Webhook)
@@ -154,7 +157,7 @@ func StartWebsite() {
 	router.With(auth.SetUser, sessions.SessionMiddleware).NotFound(func(w http.ResponseWriter, r *http.Request) {
 		user := authentication.GetUserFromRequest(r)
 
-		if err := pagesRenderer.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user)}, http.StatusNotFound); err != nil {
+		if err := pagesRenderer.RenderHTML(w, r.Context(), "errors-404", html.Errors404Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusNotFound); err != nil {
 			loggers.ErrorLog.Println(err)
 		}
 	})
