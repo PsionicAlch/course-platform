@@ -5,7 +5,7 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/website/content"
+	"github.com/PsionicAlch/psionicalch-home/web/content"
 )
 
 func main() {

@@ -7,7 +7,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/pkg/envloader"
 	"github.com/PsionicAlch/psionicalch-home/pkg/envloader/validators"
-	"github.com/PsionicAlch/psionicalch-home/website/assets"
+	"github.com/PsionicAlch/psionicalch-home/web/assets"
 )
 
 type AssetPipeline struct {
