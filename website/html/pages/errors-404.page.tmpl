@@ -1,7 +1,7 @@
 {{ template "base" .}}
 
 {{ define "stylesheets" }}
-<link rel="stylesheet" href="/assets/css/error.css">
+<link rel="stylesheet" href="{{ assets "/css/error.css" }}">
 {{ end }}
 
 {{ define "title" }}
@@ -12,7 +12,7 @@
   <main class="error">
     <div class="container">
       <section class="error-container">
-        <img src="/assets/img/desires-img.svg" alt="Crash test dummy gopher">
+        <img src="{{ assets "/img/desires-img.svg" }}" alt="Crash test dummy gopher">
 
         <h2>Page Not Found</h2>
 
