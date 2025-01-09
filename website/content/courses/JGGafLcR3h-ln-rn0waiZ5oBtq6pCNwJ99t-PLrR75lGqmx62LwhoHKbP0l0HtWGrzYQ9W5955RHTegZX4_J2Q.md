@@ -1,8 +1,8 @@
 ---
 title: "Golang Microservices: Design, Deploy, and Scale Distributed Systems"
 description: "Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience."
-thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/banner-img.png"
+thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
+banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/banner-img.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
 key: "JGGafLcR3h-ln-rn0waiZ5oBtq6pCNwJ99t-PLrR75lGqmx62LwhoHKbP0l0HtWGrzYQ9W5955RHTegZX4_J2Q"

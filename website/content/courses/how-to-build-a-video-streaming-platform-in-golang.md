@@ -1,8 +1,8 @@
 ---
 title: "Build Your Own Video Streaming Platform in Golang"
 description: "Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience."
-thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/banner-img.png"
+thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
+banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/banner-img.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
 key: "HC-0VylfwyK7N0NNEuNib9ufulMnTGpkrTRT5YnIcsnlHWFIp612211N6SXn32Vuk_sPCxdC5gk6ffXCrMeXYA"

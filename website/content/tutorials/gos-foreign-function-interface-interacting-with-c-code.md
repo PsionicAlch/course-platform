@@ -1,8 +1,8 @@
 ---
 title: "Go's Foreign Function Interface: Interacting with C Code"
 description: "Interoperate with C code from your Go programs."
-thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/golang-course-platform-image.png"
+thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
+banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
 
 key: "LJ0m3SlzRBhw3ACstdRjklOkmAsoDwOmJSHzUf2fUD1WhCvD7rdtc1M6g6kGmp5PSvtC-qYXTzc0uqSRn3zXsw"
@@ -12,7 +12,7 @@ key: "LJ0m3SlzRBhw3ACstdRjklOkmAsoDwOmJSHzUf2fUD1WhCvD7rdtc1M6g6kGmp5PSvtC-qYXTz
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer placerat ante ut sodales venenatis. Donec non aliquam ligula, sit amet sollicitudin ligula. Mauris ornare neque consequat, viverra quam non, fermentum leo. Nullam feugiat ullamcorper ipsum, vel dapibus elit porttitor eget. Cras rutrum, lacus at laoreet convallis, erat libero gravida ex, id accumsan augue magna id nunc. Proin semper elit eu arcu elementum, non aliquet massa scelerisque. Duis porta commodo dapibus. Nulla vestibulum tristique blandit. Suspendisse pulvinar tortor purus, sit amet varius urna vehicula sit amet. Aenean congue mi mi, a blandit lectus maximus efficitur. Nunc quis metus lorem. Morbi et diam in elit laoreet bibendum. Morbi ultrices ligula at massa accumsan, a congue enim ullamcorper. Phasellus sit amet ultricies dolor.
 
-![Alt text for image](/assets/img/golang-course-platform-image.png "a title for the image")
+![Alt text for image](https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png "a title for the image")
 
 ## Secondary Title
 

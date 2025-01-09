@@ -1,8 +1,8 @@
 ---
 title: "Master Web Development with Golang, HTMX, AlpineJS, and Tailwind CSS"
 description: "Build a professional-grade web application using cutting-edge tools like Golang, HTMX, AlpineJS, and Tailwind CSS. Launch a production-ready app to showcase your skills or power your own projects."
-thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/banner-img.png"
+thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
+banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/banner-img.png"
 keywords: ["golang course", "web development", "htmx", "alpinejs", "tailwind css", "golang for beginners"]
 
 key: "wDfNJiBuZ7M1XpKPZUJUPq1PoE5h5o0qRxVgPzh5bZX2n7-uFoZsVBvonNpgjDitbqanWM6P8D_yJ9Yq6zwpHA"

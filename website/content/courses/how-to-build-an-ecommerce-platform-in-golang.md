@@ -1,8 +1,8 @@
 ---
 title: "Build an E-Commerce Platform using Golang and Stripe"
 description: "Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience."
-thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/banner-img.png"
+thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
+banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/banner-img.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
 key: "xYAzlV4AcIGn_Qyh7wqtyIqkzG8CmLD2Xirs2dCofmnKeP7wQqs2HkX9U9L8i28aYj0JddQRG_FaXscbfdSIRQ"

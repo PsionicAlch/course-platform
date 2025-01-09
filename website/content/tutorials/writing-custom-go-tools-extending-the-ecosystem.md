@@ -1,8 +1,8 @@
 ---
 title: "Writing Custom Go Tools: Extending the Ecosystem"
 description: "Build custom tools to extend the Go ecosystem."
-thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/golang-course-platform-image.png"
+thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
+banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3"]
 
 key: "4w0tyrVdIteKT_ZLwga-H4-sCMDfoH1yHk3mShJAcEidv-gbV9IPL6Y2euqJF_3CGZYk_E4Jf-fUrZavIgx-JA"
@@ -12,7 +12,7 @@ key: "4w0tyrVdIteKT_ZLwga-H4-sCMDfoH1yHk3mShJAcEidv-gbV9IPL6Y2euqJF_3CGZYk_E4Jf-
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer placerat ante ut sodales venenatis. Donec non aliquam ligula, sit amet sollicitudin ligula. Mauris ornare neque consequat, viverra quam non, fermentum leo. Nullam feugiat ullamcorper ipsum, vel dapibus elit porttitor eget. Cras rutrum, lacus at laoreet convallis, erat libero gravida ex, id accumsan augue magna id nunc. Proin semper elit eu arcu elementum, non aliquet massa scelerisque. Duis porta commodo dapibus. Nulla vestibulum tristique blandit. Suspendisse pulvinar tortor purus, sit amet varius urna vehicula sit amet. Aenean congue mi mi, a blandit lectus maximus efficitur. Nunc quis metus lorem. Morbi et diam in elit laoreet bibendum. Morbi ultrices ligula at massa accumsan, a congue enim ullamcorper. Phasellus sit amet ultricies dolor.
 
-![Alt text for image](/assets/img/golang-course-platform-image.png "a title for the image")
+![Alt text for image](https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png "a title for the image")
 
 ## Secondary Title
 

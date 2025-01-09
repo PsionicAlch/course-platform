@@ -1,8 +1,8 @@
 ---
 title: "Golang and Kubernetes: Develop, Deploy, and Scale Cloud-Native Applications"
 description: "Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience."
-thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/banner-img.png"
+thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
+banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/banner-img.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
 key: "RtBW6IjHP1sC-2n08KwrRMnIVHahlFVCJKkEt3D26S2M7Rh-h3mncAOG5sErLSCwcK70yBziOYy2-E9QBF2wLQ"

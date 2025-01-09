@@ -1,8 +1,8 @@
 ---
 title: "High-Performance Go: Concurrency, Parallelism, and Optimized Applications"
 description: "Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience."
-thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/banner-img.png"
+thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
+banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/banner-img.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
 key: "1n3IY6gRWpxV4KaYmmr2tLKT6cPyGh9BvzBygaZHvmWTg1jrJ1XbEUgdozbyQi78ZrH-O3KOZQewUE9JzYSMvA"

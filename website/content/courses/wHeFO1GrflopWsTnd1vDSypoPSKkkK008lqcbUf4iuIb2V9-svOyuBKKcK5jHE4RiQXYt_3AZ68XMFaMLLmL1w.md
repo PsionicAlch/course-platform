@@ -1,8 +1,8 @@
 ---
 title: "Practical Go: Developing Full-Stack Web Applications with HTMX and AlpineJS"
 description: "Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience."
-thumbnail_url: "/assets/img/golang-course-platform-image.png"
-banner_url: "/assets/img/banner-img.png"
+thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
+banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/banner-img.png"
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
 key: "wHeFO1GrflopWsTnd1vDSypoPSKkkK008lqcbUf4iuIb2V9-svOyuBKKcK5jHE4RiQXYt_3AZ68XMFaMLLmL1w"
