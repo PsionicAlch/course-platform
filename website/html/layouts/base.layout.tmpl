@@ -16,10 +16,12 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 
-    <link rel="stylesheet" href="/assets/css/variables.css">
-    <link rel="stylesheet" href="/assets/css/reset.css">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <link rel="stylesheet" href="/assets/css/navbar.css">
+    <link rel="preconnect" href="{{ assets "" }}">
+
+    <link rel="stylesheet" href="{{ assets "/css/variables.css" }}">
+    <link rel="stylesheet" href="{{ assets "/css/reset.css" }}">
+    <link rel="stylesheet" href="{{ assets "/css/styles.css" }}">
+    <link rel="stylesheet" href="{{ assets "/css/navbar.css" }}">
 
     {{ block "stylesheets" .UserData }}
     {{ end }}
@@ -48,7 +50,7 @@
 
     {{ template "footer" .UserData }}
 
-    <script src="/assets/js/script.js"></script>
+    <script src="{{ assets "/js/script.js" }}"></script>
 
     {{ template "notyf" . }}
 

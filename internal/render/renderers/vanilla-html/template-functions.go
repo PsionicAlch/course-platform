@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"html/template"
 	"net/url"
+	"strings"
 	"time"
 )
 
-func CreateFuncMap() template.FuncMap {
+func CreateFuncMap(cdnURL string) template.FuncMap {
 	funcMap := template.FuncMap{
 		"props":                   Props,
 		"pretty_date":             PrettyDate,
@@ -16,6 +17,7 @@ func CreateFuncMap() template.FuncMap {
 		"add_queries":             AddQueries,
 		"current_time":            CurrentTime,
 		"url_escape":              URLEscape,
+		"assets":                  Assets(cdnURL),
 	}
 
 	return funcMap
@@ -88,4 +90,14 @@ func CurrentTime() time.Time {
 
 func URLEscape(s string) string {
 	return url.QueryEscape(s)
+}
+
+func Assets(cdnURL string) func(path string) string {
+	return func(path string) string {
+		if !strings.HasPrefix(path, "/") {
+			path = fmt.Sprintf("/%s", path)
+		}
+
+		return cdnURL + path
+	}
 }

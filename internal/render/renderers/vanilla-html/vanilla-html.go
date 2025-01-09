@@ -16,8 +16,8 @@ type VanillaHTMLRenderer struct {
 	sessions      *session.Session
 }
 
-func SetupVanillaHTMLRenderer(sessions *session.Session, embeddedFS embed.FS, fileExtension, directory string, otherDirectories ...string) (*VanillaHTMLRenderer, error) {
-	templates, err := CreateTemplates(embeddedFS, directory, otherDirectories...)
+func SetupVanillaHTMLRenderer(cdnURL string, sessions *session.Session, embeddedFS embed.FS, fileExtension, directory string, otherDirectories ...string) (*VanillaHTMLRenderer, error) {
+	templates, err := CreateTemplates(cdnURL, embeddedFS, directory, otherDirectories...)
 	if err != nil {
 		return nil, err
 	}

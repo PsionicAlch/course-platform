@@ -42,10 +42,10 @@
 {{ end }}
 
 {{ define "stylesheets" }}
-  <link rel="stylesheet" href="/assets/css/home.css">
-  <link rel="stylesheet" href="/assets/css/hero.css">
-  <link rel="stylesheet" href="/assets/css/projects.css">
-  <link rel="stylesheet" href="/assets/css/interests.css">
+  <link rel="stylesheet" href="{{ assets "/css/home.css" }}">
+  <link rel="stylesheet" href="{{ assets "/css/hero.css" }}">
+  <link rel="stylesheet" href="{{ assets "/css/projects.css" }}">
+  <link rel="stylesheet" href="{{ assets "/css/interests.css" }}">
 {{ end }}
 
 {{ define "title" }}
@@ -68,7 +68,7 @@
           <a href="/courses" class="btn btn-blue shadow">Start Building Today</a>
         </div>
         <div class="hero-img">
-          <img src="/assets/img/hero-img.svg" alt="Gopher holding network cable" width="180px" height="180px">
+          <img src="{{ assets "/img/hero-img.svg" }}" alt="Gopher holding network cable" width="180px" height="180px">
         </div>
       </div>
     </div>
@@ -97,7 +97,7 @@
         </div>
 
         <div class="sections-img">
-          <img src="/assets/img/projects-img.svg" alt="Gopher with a backpack" width="180px" height="180px">
+          <img src="{{ assets "/img/projects-img.svg" }}" alt="Gopher with a backpack" width="180px" height="180px">
         </div>
       </div>
     </div>
@@ -129,7 +129,7 @@
         </div>
 
         <div class="sections-img">
-          <img src="/assets/img/interests-img.svg" alt="Gopher wearing a witch's hat" width="180px" height="180px">
+          <img src="{{ assets "/img/interests-img.svg" }}" alt="Gopher wearing a witch's hat" width="180px" height="180px">
         </div>
       </div>
     </div>
@@ -161,7 +161,7 @@
         </div>
 
         <div class="sections-img">
-          <img src="/assets/img/desires-img.svg" alt="Gopher crash test dummy" width="180px" height="180px">
+          <img src="{{ assets "/img/desires-img.svg" }}" alt="Gopher crash test dummy" width="180px" height="180px">
         </div>
       </div>
     </div>
@@ -181,7 +181,7 @@
         </div>
 
         <div class="sections-img">
-          <img src="/assets/img/action-img.svg" alt="Gopher in a ballerina outfit" width="180px" height="180px">
+          <img src="{{ assets "/img/action-img.svg" }}" alt="Gopher in a ballerina outfit" width="180px" height="180px">
         </div>
       </div>
     </div>
@@ -214,7 +214,7 @@
         </div>
 
         <div class="sections-img">
-          <img src="/assets/img/features-img.svg" alt="Gopher holding red heart" width="180px" height="180px">
+          <img src="{{ assets "/img/features-img.svg" }}" alt="Gopher holding red heart" width="180px" height="180px">
         </div>
       </div>
     </div>
@@ -242,7 +242,7 @@
         </div>
 
         <div class="sections-img">
-          <img src="/assets/img/courses-img.svg" alt="Gopher going on a hike" width="180px" height="180px">
+          <img src="{{ assets "/img/courses-img.svg" }}" alt="Gopher going on a hike" width="180px" height="180px">
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ type Templates struct {
 	Cache TemplateCache
 }
 
-func CreateTemplates(embeddedFS embed.FS, directory string, otherDirectories ...string) (*Templates, error) {
+func CreateTemplates(cdnURL string, embeddedFS embed.FS, directory string, otherDirectories ...string) (*Templates, error) {
 	tmpls, err := embeddedFS.ReadDir(directory)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func CreateTemplates(embeddedFS embed.FS, directory string, otherDirectories ...
 
 		patterns := append(otherDirectories, fmt.Sprintf("%s/%s", directory, name))
 
-		t, err := template.New(name).Funcs(CreateFuncMap()).ParseFS(embeddedFS, patterns...)
+		t, err := template.New(name).Funcs(CreateFuncMap(cdnURL)).ParseFS(embeddedFS, patterns...)
 		if err != nil {
 			return nil, err
 		}

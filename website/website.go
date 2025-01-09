@@ -15,7 +15,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/pkg/sitemapper"
-	"github.com/PsionicAlch/psionicalch-home/website/assets"
 	"github.com/PsionicAlch/psionicalch-home/website/config"
 	"github.com/PsionicAlch/psionicalch-home/website/emails"
 	"github.com/PsionicAlch/psionicalch-home/website/generators"
@@ -59,12 +58,13 @@ func StartWebsite() {
 	sessions := session.SetupSession(cookieName, domainName)
 
 	// Set up renderers.
-	pagesRenderer, err := vanillahtml.SetupVanillaHTMLRenderer(sessions, html.HTMLFiles, ".page.tmpl", "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
+	cloudfrontURL := config.GetWithoutError[string]("CLOUDFRONT_URL")
+	pagesRenderer, err := vanillahtml.SetupVanillaHTMLRenderer(cloudfrontURL, sessions, html.HTMLFiles, ".page.tmpl", "pages", "layouts/*.layout.tmpl", "components/*.component.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up pages renderer: ", err)
 	}
 
-	htmxRenderer, err := vanillahtml.SetupVanillaHTMLRenderer(nil, html.HTMLFiles, ".htmx.tmpl", "htmx", "components/*.component.tmpl")
+	htmxRenderer, err := vanillahtml.SetupVanillaHTMLRenderer(cloudfrontURL, nil, html.HTMLFiles, ".htmx.tmpl", "htmx", "components/*.component.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up htmx renderer: ", err)
 	}
@@ -74,7 +74,7 @@ func StartWebsite() {
 		loggers.ErrorLog.Fatalln("Failed to set up rss renderer: ", err)
 	}
 
-	emailRenderer, err := vanillahtml.SetupVanillaHTMLRenderer(nil, html.HTMLFiles, ".email.tmpl", "emails", "layouts/email.layout.tmpl")
+	emailRenderer, err := vanillahtml.SetupVanillaHTMLRenderer(cloudfrontURL, nil, html.HTMLFiles, ".email.tmpl", "emails", "layouts/email.layout.tmpl")
 	if err != nil {
 		loggers.ErrorLog.Fatalln("Failed to set up email renderer: ", err)
 	}
@@ -134,9 +134,6 @@ func StartWebsite() {
 
 	// Register payments webhook.
 	router.Post("/payments/webhook", payment.Webhook)
-
-	// Set up asset routes.
-	router.Mount("/assets", http.StripPrefix("/assets", http.FileServerFS(assets.AssetFiles)))
 
 	// Set up RSS routes.
 	router.Mount("/rss", rss.RegisterRoutes(rssHandlers))
