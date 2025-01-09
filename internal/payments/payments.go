@@ -60,8 +60,7 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 					ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
 						Name:        stripe.String(course.Title),
 						Description: stripe.String(course.Description),
-						// TODO: Make sure that images are hosted with their full URL path.
-						// Images: stripe.StringSlice([]string{course.ThumbnailURL}),
+						Images:      stripe.StringSlice([]string{course.ThumbnailURL}),
 					},
 					UnitAmount: stripe.Int64(amountPaid),
 				},
