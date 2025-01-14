@@ -3,6 +3,7 @@ package admin
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/web/pages"
 	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/comments"
 	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/courses"
 	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/discounts"
@@ -13,28 +14,24 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func RegisterRoutes(handlers *Handlers) http.Handler {
-	commentsHandlers := comments.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
-	coursesHandlers := courses.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
-	discountsHandlers := discounts.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
-	purchasesHandlers := purchases.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
-	refundsHandlers := refunds.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
-	tutorialsHandlers := tutorials.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
-	usersHandlers := users.SetupHandlers(handlers.Renderers.Page, handlers.Renderers.Htmx, handlers.Database, handlers.Auth)
+func RegisterRoutes(handlerContext *pages.HandlerContext) http.Handler {
+	handlers := SetupHandlers(handlerContext)
 
 	router := chi.NewRouter()
 
-	router.Use(handlers.Auth.AllowAdmin("/"))
+	router.Use(handlerContext.Authentication.SetUserWithEmail(handlerContext.Emailer))
+	router.Use(handlerContext.Session.SessionMiddleware)
+	router.Use(handlerContext.Authentication.AllowAdmin("/"))
 
 	router.Get("/", handlers.AdminGet)
 
-	router.Mount("/comments", comments.RegisterRoutes(commentsHandlers))
-	router.Mount("/courses", courses.RegisterRoutes(coursesHandlers))
-	router.Mount("/discounts", discounts.RegisterRoutes(discountsHandlers))
-	router.Mount("/purchases", purchases.RegisterRoutes(purchasesHandlers))
-	router.Mount("/refunds", refunds.RegisterRoutes(refundsHandlers))
-	router.Mount("/tutorials", tutorials.RegisterRoutes(tutorialsHandlers))
-	router.Mount("/users", users.RegisterRoutes(usersHandlers))
+	router.Mount("/comments", comments.RegisterRoutes(handlerContext))
+	router.Mount("/courses", courses.RegisterRoutes(handlerContext))
+	router.Mount("/discounts", discounts.RegisterRoutes(handlerContext))
+	router.Mount("/purchases", purchases.RegisterRoutes(handlerContext))
+	router.Mount("/refunds", refunds.RegisterRoutes(handlerContext))
+	router.Mount("/tutorials", tutorials.RegisterRoutes(handlerContext))
+	router.Mount("/users", users.RegisterRoutes(handlerContext))
 
 	return router
 }

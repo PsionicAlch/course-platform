@@ -3,28 +3,21 @@ package admin
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
 )
 
 type Handlers struct {
 	utils.Loggers
-	Renderers pages.Renderers
-	Database  database.Database
-	Auth      *authentication.Authentication
+	*pages.HandlerContext
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, auth *authentication.Authentication) *Handlers {
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 	loggers := utils.CreateLoggers("ADMIN HANDLERS")
 
 	return &Handlers{
-		Loggers:   loggers,
-		Renderers: *pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
-		Database:  db,
-		Auth:      auth,
+		Loggers:        loggers,
+		HandlerContext: handlerContext,
 	}
 }
 

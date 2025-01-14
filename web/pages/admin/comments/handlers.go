@@ -9,7 +9,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/web/html"
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
@@ -21,19 +20,15 @@ const CommentsPerPagination = 25
 
 type Handlers struct {
 	utils.Loggers
-	Renderers pages.Renderers
-	Database  database.Database
-	Auth      *authentication.Authentication
+	*pages.HandlerContext
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, auth *authentication.Authentication) *Handlers {
-	loggers := utils.CreateLoggers("ADMIN HANDLERS")
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
+	loggers := utils.CreateLoggers("ADMIN COMMENTS HANDLERS")
 
 	return &Handlers{
-		Loggers:   loggers,
-		Renderers: *pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
-		Database:  db,
-		Auth:      auth,
+		Loggers:        loggers,
+		HandlerContext: handlerContext,
 	}
 }
 
@@ -87,7 +82,7 @@ func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 
 	numComments, err := h.Database.CountComments()
 	if err != nil {
-		h.ErrorLog.Printf("Failed to count the omments: %s\n", err)
+		h.ErrorLog.Printf("Failed to count the comments: %s\n", err)
 
 		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)

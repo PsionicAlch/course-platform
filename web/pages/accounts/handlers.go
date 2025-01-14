@@ -6,12 +6,8 @@ import (
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
-	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/web/emails"
 	"github.com/PsionicAlch/psionicalch-home/web/forms"
 	"github.com/PsionicAlch/psionicalch-home/web/html"
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
@@ -21,23 +17,15 @@ import (
 
 type Handlers struct {
 	utils.Loggers
-	Renderers *pages.Renderers
-	Auth      *authentication.Authentication
-	Database  database.Database
-	Emailer   *emails.Emails
-	Session   *session.Session
+	*pages.HandlerContext
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, auth *authentication.Authentication, db database.Database, emailer *emails.Emails, sessions *session.Session) *Handlers {
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 	loggers := utils.CreateLoggers("ACCOUNT HANDLERS")
 
 	return &Handlers{
-		Loggers:   loggers,
-		Renderers: pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
-		Auth:      auth,
-		Database:  db,
-		Emailer:   emailer,
-		Session:   sessions,
+		Loggers:        loggers,
+		HandlerContext: handlerContext,
 	}
 }
 
@@ -80,7 +68,7 @@ func (h *Handlers) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, cookie, err := h.Auth.LogUserIn(email, password)
+	user, cookie, err := h.Authentication.LogUserIn(email, password)
 	if err != nil {
 		if err == authentication.ErrInvalidCredentials {
 			loginForm.SetEmailError("invalid email or password")
@@ -165,7 +153,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, cookie, err := h.Auth.SignUserUp(firstName, lastName, email, password, ipAddr)
+	user, cookie, err := h.Authentication.SignUserUp(firstName, lastName, email, password, ipAddr)
 	if err != nil {
 		if err == authentication.ErrUserExists {
 			signupForm.SetEmailError("this email has already been registered")
@@ -202,7 +190,7 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) LogoutDelete(w http.ResponseWriter, r *http.Request) {
-	cookie, err := h.Auth.LogUserOut(r.Cookies())
+	cookie, err := h.Authentication.LogUserOut(r.Cookies())
 	if err != nil {
 		h.ErrorLog.Printf("An error occurred whilst logging user out: %s\n", err)
 	}
@@ -240,7 +228,7 @@ func (h *Handlers) ForgotPasswordPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	email := forms.GetForgotPasswordFormValues(forgotPasswordForm)
-	user, resetToken, err := h.Auth.GeneratePasswordResetToken(email)
+	user, resetToken, err := h.Authentication.GeneratePasswordResetToken(email)
 	if err != nil && err != authentication.ErrUnregisteredEmail {
 		h.ErrorLog.Printf("Failed to generate new password reset token: %s\n", err)
 
@@ -272,7 +260,7 @@ func (h *Handlers) ResetPasswordGet(w http.ResponseWriter, r *http.Request) {
 		ResetPasswordForm: forms.EmptyResetPasswordFormComponent(emailToken),
 	}
 
-	valid, err := h.Auth.ValidateEmailToken(emailToken)
+	valid, err := h.Authentication.ValidateEmailToken(emailToken)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to validate password reset token: %s\n", err)
 
@@ -310,7 +298,7 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	valid, err := h.Auth.ValidateEmailToken(emailToken)
+	valid, err := h.Authentication.ValidateEmailToken(emailToken)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to validate password reset token: %s\n", err)
 
@@ -330,7 +318,7 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.Auth.GetUserFromEmailToken(emailToken)
+	user, err := h.Authentication.GetUserFromEmailToken(emailToken)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user from password reset token: %s\n", err)
 
@@ -345,7 +333,7 @@ func (h *Handlers) ResetPasswordPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	password, _ := forms.GetResetPasswordFormValues(resetPasswordForm)
-	err = h.Auth.ChangeUserPassword(user, password)
+	err = h.Authentication.ChangeUserPassword(user, password)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user from password reset token: %s\n", err)
 

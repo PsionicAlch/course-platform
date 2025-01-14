@@ -1,0 +1,23 @@
+{{ template "base" .}}
+
+{{ define "stylesheets" }}
+<link rel="stylesheet" href="{{ assets "/css/error.css" }}">
+{{ end }}
+
+{{ define "title" }}
+  <title>Too Many Requests | PsionicAlch</title>
+{{ end }}
+
+{{ define "body" }}
+  <main class="error">
+    <div class="container">
+      <section class="error-container">
+        <img src="{{ assets "/img/desires-img.svg" }}" alt="Crash test dummy gopher">
+
+        <h2>Too Many Requests</h2>
+
+        <p>You've made too many requests in a short period of time. Please wait a moment and try again.</p>
+      </section>
+    </div>
+  </main>
+{{ end }}

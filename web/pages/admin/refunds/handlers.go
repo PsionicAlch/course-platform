@@ -9,7 +9,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/web/html"
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
@@ -34,19 +33,15 @@ var RefundStatuses = []string{
 
 type Handlers struct {
 	utils.Loggers
-	Render   pages.Renderers
-	Database database.Database
-	Auth     *authentication.Authentication
+	*pages.HandlerContext
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, auth *authentication.Authentication) *Handlers {
-	loggers := utils.CreateLoggers("ADMIN HANDLERS")
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
+	loggers := utils.CreateLoggers("ADMIN REFUNDS HANDLERS")
 
 	return &Handlers{
-		Loggers:  loggers,
-		Render:   *pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
-		Database: db,
-		Auth:     auth,
+		Loggers:        loggers,
+		HandlerContext: handlerContext,
 	}
 }
 
@@ -61,7 +56,7 @@ func (h *Handlers) RefundsGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to count the number of refunds in the database: %s\n", err)
 
-		if err := h.Render.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -74,7 +69,7 @@ func (h *Handlers) RefundsGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to create refunds list: %s\n", err)
 
-		if err := h.Render.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -86,7 +81,7 @@ func (h *Handlers) RefundsGet(w http.ResponseWriter, r *http.Request) {
 	urlQuery.Set("page", "1")
 	pageData.URLQuery = urlQuery.Encode()
 
-	if err := h.Render.Page.RenderHTML(w, r.Context(), "admin-refunds", pageData); err != nil {
+	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "admin-refunds", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -96,14 +91,14 @@ func (h *Handlers) RefundsPaginationGet(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		h.ErrorLog.Printf("Failed to create refunds list: %s\n", err)
 
-		if err := h.Render.Htmx.RenderHTML(w, nil, "admin-refunds", html.AdminRefundsListComponent{ErrorMessage: "Failed to get refunds. Please try again."}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "admin-refunds", html.AdminRefundsListComponent{ErrorMessage: "Failed to get refunds. Please try again."}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
 		return
 	}
 
-	if err := h.Render.Htmx.RenderHTML(w, nil, "admin-refunds", refundsList); err != nil {
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "admin-refunds", refundsList); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

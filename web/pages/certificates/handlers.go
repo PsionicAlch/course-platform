@@ -5,7 +5,6 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/web/html"
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
@@ -15,17 +14,15 @@ import (
 
 type Handlers struct {
 	utils.Loggers
-	Renderers pages.Renderers
-	Database  database.Database
+	*pages.HandlerContext
 }
 
-func SetupHandlers(pageRenderer render.Renderer, db database.Database) *Handlers {
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 	loggers := utils.CreateLoggers("CERTIFICATE HANDLERS")
 
 	return &Handlers{
-		Loggers:   loggers,
-		Renderers: *pages.CreateRenderers(pageRenderer, nil, nil),
-		Database:  db,
+		Loggers:        loggers,
+		HandlerContext: handlerContext,
 	}
 }
 

@@ -4,22 +4,18 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
 	"github.com/go-chi/chi/v5"
 )
 
 type Handlers struct {
-	Render   pages.Renderers
-	Database database.Database
+	*pages.HandlerContext
 }
 
-func SetupHandlers(pageRenderer, htmxRenderer render.Renderer, db database.Database) *Handlers {
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 	return &Handlers{
-		Render:   *pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
-		Database: db,
+		HandlerContext: handlerContext,
 	}
 }
 

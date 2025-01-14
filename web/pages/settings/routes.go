@@ -3,13 +3,18 @@ package settings
 import (
 	"net/http"
 
+	"github.com/PsionicAlch/psionicalch-home/web/pages"
 	"github.com/go-chi/chi/v5"
 )
 
-func RegisterRoutes(handlers *Handlers) http.Handler {
+func RegisterRoutes(handlerContext *pages.HandlerContext) http.Handler {
+	handlers := SetupHandlers(handlerContext)
+
 	router := chi.NewRouter()
 
-	router.Use(handlers.Auth.AllowAuthenticated("/accounts/login"))
+	router.Use(handlerContext.Authentication.SetUserWithEmail(handlers.Emailer))
+	router.Use(handlerContext.Session.SessionMiddleware)
+	router.Use(handlerContext.Authentication.AllowAuthenticated("/accounts/login"))
 
 	router.Get("/", handlers.SettingsGet)
 

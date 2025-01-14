@@ -7,9 +7,7 @@ import (
 	"strconv"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/web/html"
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
@@ -20,17 +18,15 @@ const TutorialsPerPagination = 25
 
 type Handlers struct {
 	utils.Loggers
-	Renderers pages.Renderers
-	Database  database.Database
+	*pages.HandlerContext
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database) *Handlers {
-	loggers := utils.CreateLoggers("PROFILE HANDLERS")
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
+	loggers := utils.CreateLoggers("PROFILE TUTORIALS HANDLERS")
 
 	return &Handlers{
-		Loggers:   loggers,
-		Renderers: *pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
-		Database:  db,
+		Loggers:        loggers,
+		HandlerContext: handlerContext,
 	}
 }
 

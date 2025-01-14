@@ -7,13 +7,8 @@ import (
 	"time"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/payments"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
-	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/web/emails"
 	"github.com/PsionicAlch/psionicalch-home/web/forms"
 	"github.com/PsionicAlch/psionicalch-home/web/html"
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
@@ -23,25 +18,15 @@ import (
 
 type Handlers struct {
 	utils.Loggers
-	Render   *pages.Renderers
-	Database database.Database
-	Session  *session.Session
-	Auth     *authentication.Authentication
-	Emailer  *emails.Emails
-	Payments *payments.Payments
+	*pages.HandlerContext
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, sessions *session.Session, auth *authentication.Authentication, emailer *emails.Emails, pay *payments.Payments) *Handlers {
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 	loggers := utils.CreateLoggers("SETTINGS HANDLERS")
 
 	return &Handlers{
-		Loggers:  loggers,
-		Render:   pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
-		Database: db,
-		Session:  sessions,
-		Auth:     auth,
-		Emailer:  emailer,
-		Payments: pay,
+		Loggers:        loggers,
+		HandlerContext: handlerContext,
 	}
 }
 
@@ -59,7 +44,7 @@ func (h *Handlers) SettingsGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get user's (\"%s\") whitelisted IP addresses: %s\n", user.ID, err)
 
-		if err := h.Render.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -72,7 +57,7 @@ func (h *Handlers) SettingsGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.ErrorLog.Printf("Failed to get all courses bought by user (\"%s\"): %s\n", user.ID, err)
 
-		if err := h.Render.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}, http.StatusInternalServerError); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -85,7 +70,7 @@ func (h *Handlers) SettingsGet(w http.ResponseWriter, r *http.Request) {
 
 	pageData.Courses = courses
 
-	if err := h.Render.Page.RenderHTML(w, r.Context(), "settings", pageData); err != nil {
+	if err := h.Renderers.Page.RenderHTML(w, r.Context(), "settings", pageData); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }
@@ -119,7 +104,7 @@ func (h *Handlers) ChangeFirstNamePost(w http.ResponseWriter, r *http.Request) {
 	form := forms.NewChangeFirstNameForm(r)
 
 	if !form.Validate() {
-		if err := h.Render.Htmx.RenderHTML(w, nil, "change-first-name-form", forms.NewChangeFirstNameFormComponent(form)); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "change-first-name-form", forms.NewChangeFirstNameFormComponent(form)); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -147,7 +132,7 @@ func (h *Handlers) ChangeLastNamePost(w http.ResponseWriter, r *http.Request) {
 	form := forms.NewChangeLastNameForm(r)
 
 	if !form.Validate() {
-		if err := h.Render.Htmx.RenderHTML(w, nil, "change-last-name-form", forms.NewChangeLastNameFormComponent(form)); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "change-last-name-form", forms.NewChangeLastNameFormComponent(form)); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -175,7 +160,7 @@ func (h *Handlers) ChangeEmailPost(w http.ResponseWriter, r *http.Request) {
 	form := forms.NewChangeEmailForm(r)
 
 	if !form.Validate() {
-		if err := h.Render.Htmx.RenderHTML(w, nil, "change-email-form", forms.NewChangeEmailFormComponent(form)); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "change-email-form", forms.NewChangeEmailFormComponent(form)); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -203,7 +188,7 @@ func (h *Handlers) ChangePasswordPost(w http.ResponseWriter, r *http.Request) {
 	form := forms.NewChangePasswordForm(r)
 
 	if !form.Validate() {
-		if err := h.Render.Htmx.RenderHTML(w, nil, "change-password-form", forms.NewChangePasswordFormComponent(form)); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "change-password-form", forms.NewChangePasswordFormComponent(form)); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
@@ -211,7 +196,7 @@ func (h *Handlers) ChangePasswordPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	previousPassword, newPassword := forms.GetChangePasswordFormValues(form)
-	valid, err := h.Auth.ValidatePassword(user, previousPassword)
+	valid, err := h.Authentication.ValidatePassword(user, previousPassword)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to validate user's (\"%s\") previous password: %s\n", user.ID, err)
 		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
@@ -225,14 +210,14 @@ func (h *Handlers) ChangePasswordPost(w http.ResponseWriter, r *http.Request) {
 	if !valid {
 		forms.SetPreviousPasswordError(form, "invalid password provided")
 
-		if err := h.Render.Htmx.RenderHTML(w, nil, "change-password-form", forms.NewChangePasswordFormComponent(form)); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "change-password-form", forms.NewChangePasswordFormComponent(form)); err != nil {
 			h.ErrorLog.Println(err)
 		}
 
 		return
 	}
 
-	if err := h.Auth.ChangeUserPassword(user, newPassword); err != nil {
+	if err := h.Authentication.ChangeUserPassword(user, newPassword); err != nil {
 		h.ErrorLog.Printf("Failed to update user's (\"%s\") password: %s\n", user.ID, err)
 		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 
@@ -244,7 +229,7 @@ func (h *Handlers) ChangePasswordPost(w http.ResponseWriter, r *http.Request) {
 
 	go h.Emailer.SendPasswordResetConfirmationEmail(user.Email, user.Name)
 
-	_, authCookie, err := h.Auth.LogUserIn(user.Email, newPassword)
+	_, authCookie, err := h.Authentication.LogUserIn(user.Email, newPassword)
 	if err != nil {
 		h.ErrorLog.Printf("Failed to log user (\"%s\") in after updating password: %s\n", user.ID, err)
 		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
@@ -289,7 +274,7 @@ func (h *Handlers) RequestRefundPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.Payments.RequestRefund(user, course); err != nil {
+	if err := h.Payment.RequestRefund(user, course); err != nil {
 		h.ErrorLog.Printf("Failed to request course (\"%s\") refund for user (\"%s\"): %s\n", course.ID, user.ID, err)
 		h.Session.SetErrorMessage(r.Context(), "Unexpected server error. Please try again.")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -319,7 +304,7 @@ func (h *Handlers) ValidateChangePassword(w http.ResponseWriter, r *http.Request
 	form := forms.ChangePasswordFormPartialValidation(r)
 	form.Validate()
 
-	if err := h.Render.Htmx.RenderHTML(w, nil, "change-password-form", forms.NewChangePasswordFormComponent(form)); err != nil {
+	if err := h.Renderers.Htmx.RenderHTML(w, nil, "change-password-form", forms.NewChangePasswordFormComponent(form)); err != nil {
 		h.ErrorLog.Println(err)
 	}
 }

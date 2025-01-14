@@ -9,7 +9,6 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/web/html"
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
@@ -21,19 +20,15 @@ const UsersPerPagination = 25
 
 type Handlers struct {
 	utils.Loggers
-	Renderers pages.Renderers
-	Database  database.Database
-	Auth      *authentication.Authentication
+	*pages.HandlerContext
 }
 
-func SetupHandlers(pageRenderer render.Renderer, htmxRenderer render.Renderer, db database.Database, auth *authentication.Authentication) *Handlers {
-	loggers := utils.CreateLoggers("USERS ADMIN HANDLERS")
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
+	loggers := utils.CreateLoggers("ADMIN USERS HANDLERS")
 
 	return &Handlers{
-		Loggers:   loggers,
-		Renderers: *pages.CreateRenderers(pageRenderer, htmxRenderer, nil),
-		Database:  db,
-		Auth:      auth,
+		Loggers:        loggers,
+		HandlerContext: handlerContext,
 	}
 }
 

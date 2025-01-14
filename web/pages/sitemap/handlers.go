@@ -3,16 +3,16 @@ package sitemap
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/pkg/sitemapper"
+	"github.com/PsionicAlch/psionicalch-home/web/pages"
 )
 
 type Handlers struct {
-	Mapper *sitemapper.SiteMapper
+	*pages.HandlerContext
 }
 
-func SetupHandlers(mapper *sitemapper.SiteMapper) *Handlers {
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 	return &Handlers{
-		Mapper: mapper,
+		HandlerContext: handlerContext,
 	}
 }
 

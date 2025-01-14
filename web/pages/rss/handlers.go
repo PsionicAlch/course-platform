@@ -3,17 +3,17 @@ package rss
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/cache"
+	"github.com/PsionicAlch/psionicalch-home/web/pages"
 	"github.com/go-chi/chi/v5"
 )
 
 type Handlers struct {
-	Cache cache.Cache
+	*pages.HandlerContext
 }
 
-func SetupHandlers(c cache.Cache) *Handlers {
+func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 	return &Handlers{
-		Cache: c,
+		HandlerContext: handlerContext,
 	}
 }
 

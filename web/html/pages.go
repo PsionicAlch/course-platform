@@ -143,6 +143,10 @@ type Errors404Page struct {
 	BasePage
 }
 
+type Errors429Page struct {
+	BasePage
+}
+
 type Errors500Page struct {
 	BasePage
 }
