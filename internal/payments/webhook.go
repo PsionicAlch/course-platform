@@ -290,6 +290,15 @@ func (payment *Payments) HandleRefund(event *stripe.Event) error {
 		}
 	}
 
+	switch status {
+	case database.RefundFailed:
+		// TODO: Send email to user that the refund failed.
+	case database.RefundCancelled:
+		// TODO: Send email to user that refund failed.
+	case database.RefundSucceeded:
+		// TODO: Send email to user that refund succeeded.
+	}
+
 	return nil
 }
 

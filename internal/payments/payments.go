@@ -117,7 +117,6 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 }
 
 func (payment *Payments) RequestRefund(user *models.UserModel, course *models.CourseModel) error {
-
 	coursePurchases, err := payment.Database.GetCoursePurchasesByUserAndCourse(user.ID, course.ID)
 	if err != nil {
 		payment.ErrorLog.Printf("Failed to get course purchase for user (\"%s\") and course (\"%s\"): %s\n", user.ID, course.ID, err)
@@ -135,8 +134,6 @@ func (payment *Payments) RequestRefund(user *models.UserModel, course *models.Co
 	coursePurchase := coursePurchases[index]
 
 	if coursePurchase.AmountPaid == 0.0 {
-		// TODO: Email user about successful course refund.
-
 		if err := payment.Database.RegisterRefund(coursePurchase.UserID, coursePurchase.ID, database.RefundSucceeded); err != nil {
 			payment.ErrorLog.Printf("Failed to insert new refund: %s\n", err)
 			return err

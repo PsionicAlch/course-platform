@@ -281,6 +281,8 @@ func (h *Handlers) RequestRefundPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	go h.Emailer.SendRefundRequestAcknowledgementEmail(user.Email, user.Name)
+
 	h.Session.SetInfoMessage(r.Context(), "Refund successfully requested.")
 }
 

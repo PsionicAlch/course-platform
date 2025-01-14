@@ -112,3 +112,15 @@ func NewAccountDeletionEmail(firstName string) *AccountDeletionEmail {
 		FirstName: firstName,
 	}
 }
+
+type RefundRequestAcknowledgementEmail struct {
+	BaseEmail
+	FirstName string
+}
+
+func NewRefundRequestAcknowledgementEmail(firstName string) *RefundRequestAcknowledgementEmail {
+	return &RefundRequestAcknowledgementEmail{
+		BaseEmail: NewBaseEmail("Acknowledgement of Refund Request"),
+		FirstName: firstName,
+	}
+}

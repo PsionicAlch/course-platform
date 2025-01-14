@@ -82,3 +82,8 @@ func (e *Emails) SendAccountDeletionEmail(email, firstName string) {
 	emailData := html.NewAccountDeletionEmail(firstName)
 	e.SendEmail(email, emailData.Title, "account-deletion", emailData)
 }
+
+func (e *Emails) SendRefundRequestAcknowledgementEmail(email, firstName string) {
+	emailData := html.NewRefundRequestAcknowledgementEmail(firstName)
+	e.SendEmail(email, emailData.Title, "refund-request-acknowledgement", emailData)
+}

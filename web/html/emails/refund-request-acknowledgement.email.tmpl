@@ -1,0 +1,20 @@
+{{ template "email" . }}
+
+{{ define "content" }}
+  <p>Hello {{.FirstName}},</p>
+
+  <p>We've received your request for a refund, and we're currently processing it. Thank you for reaching out to us regarding this matter!</p>
+
+  <p>Refunds typically take a few business days to process, depending on your payment method and bank. Once your refund has been completed, you'll receive a confirmation email from us.</p>
+
+  <p>If you have any questions or run into any issues, feel free to reach out to us:</p>
+  <p>
+    <a href="https://twitter.com/psionicalch">Twitter</a> |
+    <a href="https://bsky.app/profile/psionicalch.com">Bluesky</a> |
+    <a href="mailto:contact@psionicalch.com">Email</a>
+  </p>
+
+  <p>Thank you for choosing PsionicAlch. We're here to help if you have any concerns or need support during this process.</p>
+
+  <p>Warm regards,<br>The PsionicAlch Team</p>
+{{ end }}
