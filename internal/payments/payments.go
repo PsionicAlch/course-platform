@@ -86,7 +86,30 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 			return "", err
 		}
 
-		return fmt.Sprintf("/profile/courses/%s", course.Slug), nil
+		redirectURL := fmt.Sprintf("/profile/courses/%s", course.Slug)
+
+		if ac.Valid {
+			affiliateUser, err := payment.Database.GetUserByAffiliateCode(coursePurchase.AffiliateCode.String, database.All)
+			if err != nil {
+				payment.ErrorLog.Printf("Failed to get user by affiliate code (\"%s\"): %s\n", coursePurchase.AffiliateCode.String, err)
+				return redirectURL, nil
+			}
+
+			if err := payment.Database.RegisterAffiliatePointsChange(affiliateUser.ID, coursePurchase.CourseID, AffiliateReward, "Affiliate reward received"); err != nil {
+				payment.ErrorLog.Printf("Failed to reward user (\"%s\") with affiliate points: %s\n", affiliateUser.ID, err)
+				return redirectURL, nil
+			}
+		}
+
+		discount, err := payment.CreateDiscount(fmt.Sprintf("Thank You Gift To %s %s", user.Name, user.Surname), "A gift to thank the user for buying a course from us", 20, 1)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to create new discount: %s\n", err)
+			return redirectURL, nil
+		}
+
+		go payment.Mailer.SendThankYouForPurchaseEmail(user.Email, user.Name, user.AffiliateCode, course, discount)
+
+		return redirectURL, nil
 	}
 
 	metaData := map[string]string{
