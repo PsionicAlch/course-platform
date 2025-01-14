@@ -344,7 +344,7 @@ func (db *SQLiteDatabase) UpdateCoursePurchasePaymentStatus(coursePurchaseId str
 }
 
 func (db *SQLiteDatabase) GetCoursesBoughtByUser(term, userId string, page, elements uint) ([]*models.CourseModel, error) {
-	query := `SELECT c.id, c.title, c.slug, c.description, c.thumbnail_url, c.banner_url, c.content, c.published, c.author_id, c.file_checksum, c.file_key, c.created_at, c.updated_at FROM course_purchases AS cp JOIN courses AS c ON cp.course_id = c.id WHERE cp.user_id = ? AND cp.payment_status = ?`
+	query := `SELECT c.id, c.title, c.slug, c.description, c.thumbnail_url, c.banner_url, c.content, c.published, c.author_id, c.file_checksum, c.file_key, c.created_at, c.updated_at FROM course_purchases AS cp JOIN courses AS c ON cp.course_id = c.id WHERE cp.user_id = ? AND cp.payment_status = ? AND c.published = 1`
 	args := []any{userId, database.Succeeded.String()}
 
 	if term != "" {

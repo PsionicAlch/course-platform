@@ -8,7 +8,7 @@ import (
 )
 
 func (db *SQLiteDatabase) GetTutorialsLikedByUser(term, userId string, page, elements uint) ([]*models.TutorialModel, error) {
-	query := `SELECT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials_likes AS tl JOIN tutorials AS t ON tl.tutorial_id = t.id WHERE tl.user_id = ?`
+	query := `SELECT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials_likes AS tl JOIN tutorials AS t ON tl.tutorial_id = t.id WHERE tl.user_id = ? AND t.published = 1`
 	args := []any{userId}
 
 	if term != "" {

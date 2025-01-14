@@ -8,7 +8,7 @@ import (
 )
 
 func (db *SQLiteDatabase) GetTutorialsBookmarkedByUser(term, userId string, page, elements uint) ([]*models.TutorialModel, error) {
-	query := `SELECT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials_bookmarks AS tb JOIN tutorials AS t ON tb.tutorial_id = t.id WHERE tb.user_id = ?`
+	query := `SELECT t.id, t.title, t.slug, t.description, t.thumbnail_url, t.banner_url, t.content, t.published, t.author_id, t.file_checksum, t.file_key, t.created_at, t.updated_at FROM tutorials_bookmarks AS tb JOIN tutorials AS t ON tb.tutorial_id = t.id WHERE tb.user_id = ? AND t.published = 1`
 	args := []any{userId}
 
 	if term != "" {
