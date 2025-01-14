@@ -51,7 +51,7 @@ func (auth *Authentication) SignUserUp(name, surname, email, password, ipAddr st
 		return nil, nil, err
 	}
 
-	token, err := NewToken()
+	token, err := database.GenerateToken()
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to generate new token: %s\n", err)
 		return nil, nil, err
@@ -99,7 +99,7 @@ func (auth *Authentication) LogUserIn(email, password string) (*models.UserModel
 		return nil, nil, ErrInvalidCredentials
 	}
 
-	token, err := NewToken()
+	token, err := database.GenerateToken()
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to generate new authentication token for user (\"%s\"): %s\n", email, err)
 		return nil, nil, err
@@ -193,7 +193,7 @@ func (auth *Authentication) GeneratePasswordResetToken(email string) (*models.Us
 		return nil, "", ErrUnregisteredEmail
 	}
 
-	token, err := NewToken()
+	token, err := database.GenerateToken()
 	if err != nil {
 		auth.ErrorLog.Printf("Failed to generate new email token for user (\"%s\"): %s\n", email, err)
 		return nil, "", err
