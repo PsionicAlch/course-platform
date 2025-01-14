@@ -69,14 +69,14 @@ func CreateHandlerContext() (*HandlerContext, error) {
 		return nil, err
 	}
 
-	// Set up payments.
-	payment := SetupPayments(db)
-
 	// Set up emailer.
 	emailer, err := SetupEmailer()
 	if err != nil {
 		return nil, err
 	}
+
+	// Set up payments.
+	payment := SetupPayments(db, emailer)
 
 	// Set up cache.
 	cache := SetupCache(db, renderers.RSS)
@@ -148,11 +148,11 @@ func SetupAuthentication(db database.Database, sessions *session.Session) (*auth
 	return auth, nil
 }
 
-func SetupPayments(db database.Database) *payments.Payments {
+func SetupPayments(db database.Database, emailer *emails.Emails) *payments.Payments {
 	stripeSecretKey := config.GetWithoutError[string]("STRIPE_SECRET_KEY")
 	stripeWebhookSecret := config.GetWithoutError[string]("STRIPE_WEBHOOK_SECRET")
 
-	return payments.SetupPayments(stripeSecretKey, stripeWebhookSecret, db)
+	return payments.SetupPayments(stripeSecretKey, stripeWebhookSecret, db, emailer)
 }
 
 func SetupEmailer() (*emails.Emails, error) {
