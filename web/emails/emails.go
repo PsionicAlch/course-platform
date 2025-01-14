@@ -88,3 +88,8 @@ func (e *Emails) SendRefundRequestAcknowledgementEmail(email, firstName string) 
 	emailData := html.NewRefundRequestAcknowledgementEmail(firstName)
 	e.SendEmail(email, emailData.Title, "refund-request-acknowledgement", emailData)
 }
+
+func (e *Emails) SendThankYouForPurchaseEmail(email, firstName, affiliateCode string, course *models.CourseModel, discount *models.DiscountModel) {
+	emailData := html.NewThankYouForPurchaseEmail(firstName, affiliateCode, course, discount)
+	e.SendEmail(email, emailData.Title, "thank-you-for-purchase", emailData)
+}

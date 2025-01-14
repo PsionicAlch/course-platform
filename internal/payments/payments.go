@@ -16,9 +16,10 @@ type Payments struct {
 	utils.Loggers
 	WebhookSecret string
 	Database      database.Database
+	Mailer        Emailer
 }
 
-func SetupPayments(privateKey, webhookSecret string, db database.Database) *Payments {
+func SetupPayments(privateKey, webhookSecret string, db database.Database, mailer Emailer) *Payments {
 	loggers := utils.CreateLoggers("PAYMENTS")
 
 	stripe.Key = privateKey
@@ -27,6 +28,7 @@ func SetupPayments(privateKey, webhookSecret string, db database.Database) *Paym
 		Loggers:       loggers,
 		WebhookSecret: webhookSecret,
 		Database:      db,
+		Mailer:        mailer,
 	}
 }
 

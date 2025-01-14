@@ -1,0 +1,31 @@
+{{ template "email" . }}
+
+{{ define "content" }}
+  <p>Hello {{.FirstName}},</p>
+
+  <p>Thank you for purchasing <strong>{{.Course.Title}}</strong>! We're thrilled to have you on this journey and can't wait to see how you grow your skills with us.</p>
+
+  <p>To show our gratitude, here's an exclusive discount code just for you:</p>
+
+  <p><strong>Your discount code: {{.Discount.Code}}</strong></p>
+  <p>Use this code to get <strong>{{.Discount.Discount}}% off</strong> your next course purchase. It's our way of saying thanks for being part of the PsionicAlch community!</p>
+
+  <p>At PsionicAlch, we're committed to providing you with the best programming tutorials and support. If you have any questions or need assistance while working through <strong>{{.Course.Title}}</strong>, don't hesitate to reach out:</p>
+  <p>
+    <a href="https://twitter.com/psionicalch">Twitter</a> |
+    <a href="https://bsky.app/profile/psionicalch.com">Bluesky</a> |
+    <a href="mailto:contact@psionicalch.com">Email</a>
+  </p>
+
+  <p>To get started, head over to your <a href="https://www.psionicalch.com/profile/courses">Courses Dashboard</a> where you'll find <strong>{{.Course.Title}}</strong> ready and waiting for you. Let the learning begin!</p>
+
+  <p>Oh, and don't forget to share your affiliate code with friends and colleagues:</p>
+
+  <p><strong>Your affiliate code: {{.AffiliateCode}}</strong></p>
+
+  <p>When they use your code to purchase a course, you'll earn 10 affiliate points. Use these points to save on your next tutorial. Learn more on our <a href="https://www.psionicalch.com/affiliate-program">Affiliate Program page</a>.</p>
+
+  <p>Once again, thank you for choosing PsionicAlch. We're honored to have you as part of our learning community and can't wait to hear about your progress!</p>
+
+  <p>Happy coding,<br>The PsionicAlch Team</p>
+{{ end }}

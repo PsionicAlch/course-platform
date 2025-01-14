@@ -120,3 +120,21 @@ func NewRefundRequestAcknowledgementEmail(firstName string) *RefundRequestAcknow
 		FirstName: firstName,
 	}
 }
+
+type ThankYouForPurchaseEmail struct {
+	BaseEmail
+	FirstName     string
+	AffiliateCode string
+	Course        *models.CourseModel
+	Discount      *models.DiscountModel
+}
+
+func NewThankYouForPurchaseEmail(firstName, affiliateCode string, course *models.CourseModel, discount *models.DiscountModel) *ThankYouForPurchaseEmail {
+	return &ThankYouForPurchaseEmail{
+		BaseEmail:     NewBaseEmail("Thank You For Your Purchase"),
+		FirstName:     firstName,
+		AffiliateCode: affiliateCode,
+		Course:        course,
+		Discount:      discount,
+	}
+}

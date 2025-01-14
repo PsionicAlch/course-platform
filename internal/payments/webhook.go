@@ -3,6 +3,7 @@ package payments
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -116,7 +117,25 @@ func (payment *Payments) HandlePaymentSuccess(event *stripe.Event) error {
 			}
 		}
 
-		// TODO: Send email to thank user for purchase.
+		user, err := payment.Database.GetUserByID(coursePurchase.UserID, database.All)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to get user (\"%s\") from the database: %s\n", coursePurchase.UserID, err)
+			return nil
+		}
+
+		course, err := payment.Database.GetCourseByID(coursePurchase.CourseID)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to get course (\"%s\") from the database: %s\n", coursePurchase.CourseID, err)
+			return nil
+		}
+
+		discount, err := payment.CreateDiscount(fmt.Sprintf("Thank You Gift To %s %s", user.Name, user.Surname), "A gift to thank the user for buying a course from us", 20, 1)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to create new discount: %s\n", err)
+			return nil
+		}
+
+		go payment.Mailer.SendThankYouForPurchaseEmail(user.Email, user.Name, user.AffiliateCode, course, discount)
 	}
 
 	return nil
