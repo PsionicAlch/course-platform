@@ -170,13 +170,15 @@ func (db *SQLiteDatabase) RegisterCoursePurchase(userId, courseId, paymentKey, s
 		return err
 	}
 
-	if err := internal.AddToken(tx, paymentTokenId, token, tokenType, user.ID, validUntil); err != nil {
-		if err := tx.Rollback(); err != nil {
-			db.ErrorLog.Printf("Failed to rollback changes after error occurred: %s\n", err)
-		}
+	if token != "" {
+		if err := internal.AddToken(tx, paymentTokenId, token, tokenType, user.ID, validUntil); err != nil {
+			if err := tx.Rollback(); err != nil {
+				db.ErrorLog.Printf("Failed to rollback changes after error occurred: %s\n", err)
+			}
 
-		db.ErrorLog.Printf("Failed to save the payment token: %s\n", err)
-		return err
+			db.ErrorLog.Printf("Failed to save the payment token: %s\n", err)
+			return err
+		}
 	}
 
 	if err := tx.Commit(); err != nil {

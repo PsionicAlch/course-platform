@@ -9,7 +9,7 @@
         <td>{{- .Title -}}</td>
       {{ end }}
       <td>{{- .PaymentKey -}}</td>
-      <td>{{- .StripeCheckoutSessionID -}}</td>
+      <td>{{if .StripeCheckoutSessionID }}{{- .StripeCheckoutSessionID -}}{{ else }}-{{ end }}</td>
       <td>{{ if .AffiliateCode.Valid }}{{- .AffiliateCode.String -}}{{ else }}-{{ end }}</td>
       <td>{{ if .DiscountCode.Valid }}{{- .DiscountCode.String -}}{{ else }}-{{ end }}</td>
       <td>{{- .AffiliatePointsUsed -}}</td>
@@ -34,7 +34,7 @@
         <td>{{- .Title -}}</td>
       {{ end }}
       <td>{{- .PaymentKey -}}</td>
-      <td>{{- .StripeCheckoutSessionID -}}</td>
+      <td>{{if .StripeCheckoutSessionID }}{{- .StripeCheckoutSessionID -}}{{ else }}-{{ end }}</td>
       <td>{{ if .AffiliateCode.Valid }}{{- .AffiliateCode.String -}}{{ else }}-{{ end }}</td>
       <td>{{ if .DiscountCode.Valid }}{{- .DiscountCode.String -}}{{ else }}-{{ end }}</td>
       <td>{{- .AffiliatePointsUsed -}}</td>

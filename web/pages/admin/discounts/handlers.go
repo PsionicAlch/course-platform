@@ -25,6 +25,7 @@ type Handlers struct {
 	*pages.HandlerContext
 }
 
+// TODO: Set "Used" based on database
 func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 	loggers := utils.CreateLoggers("ADMIN DISCOUNTS HANDLERS")
 

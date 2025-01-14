@@ -40,7 +40,10 @@ func (payment *Payments) CalculatePrice(userId, affiliateCode, discountCode stri
 		discount = 1.0
 	}
 
-	total := int64((CoursePrice - (CoursePrice * (affiliateCodeDiscount + discountCodeDiscount + affiliatePointsDiscount))) * 100)
+	total := int64((CoursePrice - (CoursePrice * discount)) * 100)
+	if total < 0 {
+		total = 0
+	}
 
 	return total, nil
 }

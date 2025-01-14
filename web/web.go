@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -28,6 +29,11 @@ import (
 )
 
 func StartWeb() {
+	// Set up config.
+	if err := config.SetupConfig(); err != nil {
+		log.Fatalln(err)
+	}
+
 	// Set up loggers for main.
 	loggers := utils.CreateLoggers("WEBSITE")
 

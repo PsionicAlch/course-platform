@@ -41,13 +41,13 @@ func RateLimiter(requestLimit int, windowLength time.Duration, renderer render.R
 			user := authentication.GetUserFromRequest(r)
 			pageData := &html.Errors429Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}
 
-			renderer.RenderHTML(w, r.Context(), "errors-429", pageData)
+			renderer.RenderHTML(w, nil, "errors-429", pageData)
 		})),
 		httprate.WithErrorHandler(func(w http.ResponseWriter, r *http.Request, err error) {
 			user := authentication.GetUserFromRequest(r)
 			pageData := &html.Errors500Page{BasePage: html.NewBasePage(user, nosurf.Token(r))}
 
-			renderer.RenderHTML(w, r.Context(), "errors-500", pageData)
+			renderer.RenderHTML(w, nil, "errors-500", pageData)
 		}),
 	)
 }

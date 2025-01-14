@@ -166,14 +166,14 @@
           try {
             refundBtn.innerText = "Requesting...";
 
-            const response = await fetch(refundURL, { method: "post" });
+            const response = await fetch(refundURL, { method: "post", headers: { "X-CSRF-Token": "{{- .CSRFToken -}}" } });
             if (!response.ok) {
               throw new Error(`Response status: ${response.status}`);
             }
           } catch (_) {
           }
 
-          location.reload();
+          // location.reload();
         }
       }));
     });

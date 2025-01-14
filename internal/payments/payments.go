@@ -30,7 +30,6 @@ func SetupPayments(privateKey, webhookSecret string, db database.Database) *Paym
 	}
 }
 
-// TODO: Check logic on courses where user pays $0.
 func (payment *Payments) BuyCourse(user *models.UserModel, course *models.CourseModel, successUrl, cancelUrl, affiliateCode, discountCode string, affiliatePointsUsed uint, amountPaid int64) (string, error) {
 	paymentKey, err := GeneratePaymentKey()
 	if err != nil {
@@ -42,6 +41,29 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 	if err != nil {
 		payment.ErrorLog.Printf("Failed to generate payment token: %s\n", err)
 		return "", err
+	}
+
+	if amountPaid <= 0 {
+		ac := database.NewNullString(affiliateCode)
+		dc := database.NewNullString(discountCode)
+
+		if err := payment.Database.RegisterCoursePurchase(user.ID, course.ID, paymentKey, "", ac, dc, affiliatePointsUsed, float64(amountPaid)/100.0, "", PaymentToken, time.Now().Add(time.Hour)); err != nil {
+			payment.ErrorLog.Printf("Failed register course purchase in the database: %s\n", err)
+			return "", err
+		}
+
+		coursePurchase, err := payment.Database.GetCoursePurchaseByPaymentKey(paymentKey)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to get course purchase by payment key (\"%s\"): %s\n", paymentKey, err)
+			return "", err
+		}
+
+		if err := payment.Database.UpdateCoursePurchasePaymentStatus(coursePurchase.ID, database.Succeeded); err != nil {
+			payment.ErrorLog.Printf("Failed to update course purchase's (\"%s\") payment status: %s\n", coursePurchase.ID, err)
+			return "", err
+		}
+
+		return fmt.Sprintf("/profile/courses/%s", course.Slug), nil
 	}
 
 	metaData := map[string]string{
@@ -95,6 +117,7 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 }
 
 func (payment *Payments) RequestRefund(user *models.UserModel, course *models.CourseModel) error {
+
 	coursePurchases, err := payment.Database.GetCoursePurchasesByUserAndCourse(user.ID, course.ID)
 	if err != nil {
 		payment.ErrorLog.Printf("Failed to get course purchase for user (\"%s\") and course (\"%s\"): %s\n", user.ID, course.ID, err)

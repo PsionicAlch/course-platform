@@ -1,7 +1,6 @@
 package profile
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
@@ -30,8 +29,6 @@ func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 
 func (h *Handlers) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	const Elements = 4
-
-	fmt.Println(nosurf.Token(r))
 
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.ProfilePage{
