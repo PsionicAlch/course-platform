@@ -30,6 +30,27 @@ func SetupPayments(privateKey, webhookSecret string, db database.Database) *Paym
 	}
 }
 
+func (payment *Payments) CreateDiscount(title, description string, discountAmount, uses uint64) (*models.DiscountModel, error) {
+	discountId, err := payment.Database.AddDiscount(title, description, discountAmount, uses)
+	if err != nil {
+		payment.ErrorLog.Printf("Failed to create new discount: %s\n", err)
+		return nil, err
+	}
+
+	if err := payment.Database.ActivateDiscount(discountId); err != nil {
+		payment.ErrorLog.Printf("Failed to activate new discount: %s\n", err)
+		return nil, err
+	}
+
+	discount, err := payment.Database.GetDiscountByID(discountId)
+	if err != nil {
+		payment.ErrorLog.Printf("Failed to get discount by ID: %s\n", err)
+		return nil, err
+	}
+
+	return discount, nil
+}
+
 func (payment *Payments) BuyCourse(user *models.UserModel, course *models.CourseModel, successUrl, cancelUrl, affiliateCode, discountCode string, affiliatePointsUsed uint, amountPaid int64) (string, error) {
 	paymentKey, err := GeneratePaymentKey()
 	if err != nil {

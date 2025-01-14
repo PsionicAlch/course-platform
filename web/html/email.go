@@ -3,6 +3,8 @@ package html
 import (
 	"net/url"
 	"time"
+
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
 type BaseEmail struct {
@@ -18,23 +20,17 @@ func NewBaseEmail(title string) BaseEmail {
 type GreetingEmail struct {
 	BaseEmail
 	FirstName     string
-	LatestCourses []struct {
-		Name        string
-		Description string
-		Slug        string
-	}
+	Discount      *models.DiscountModel
+	LatestCourses []*models.CourseModel
 	AffiliateCode string
 }
 
-func NewGreetingEmail(firstName, affiliateCode string) *GreetingEmail {
+func NewGreetingEmail(firstName, affiliateCode string, discount *models.DiscountModel, latestCourses []*models.CourseModel) *GreetingEmail {
 	return &GreetingEmail{
-		BaseEmail: NewBaseEmail("Welcome to PsionicAlch"),
-		FirstName: firstName,
-		LatestCourses: []struct {
-			Name        string
-			Description string
-			Slug        string
-		}{},
+		BaseEmail:     NewBaseEmail("Welcome to PsionicAlch"),
+		FirstName:     firstName,
+		Discount:      discount,
+		LatestCourses: latestCourses,
 		AffiliateCode: affiliateCode,
 	}
 }

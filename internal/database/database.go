@@ -120,7 +120,7 @@ type Database interface {
 	GetDiscountsPaginated(term string, active *bool, page, elements uint) ([]*models.DiscountModel, error)
 	GetAllDiscounts() ([]*models.DiscountModel, error)
 	CountDiscounts() (uint, error)
-	AddDiscount(title, description string, discount, uses uint64) error
+	AddDiscount(title, description string, discount, uses uint64) (string, error)
 	GetDiscountByID(discountId string) (*models.DiscountModel, error)
 	GetDiscountByCode(discountCode string) (*models.DiscountModel, error)
 	ActivateDiscount(discountId string) error

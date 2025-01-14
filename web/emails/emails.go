@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"time"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/email"
 	smtp_email_client "github.com/PsionicAlch/psionicalch-home/internal/email/clients/SMTP"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
@@ -53,8 +54,8 @@ func (e *Emails) SendEmail(email, title, tmpl string, data any) {
 	e.Client.SendEmail(email, title, buf.String())
 }
 
-func (e *Emails) SendWelcomeEmail(email, firstName, affiliateCode string) {
-	emailData := html.NewGreetingEmail(firstName, affiliateCode)
+func (e *Emails) SendWelcomeEmail(email, firstName, affiliateCode string, discount *models.DiscountModel, latestCourses []*models.CourseModel) {
+	emailData := html.NewGreetingEmail(firstName, affiliateCode, discount, latestCourses)
 	e.SendEmail(email, emailData.Title, "greeting", emailData)
 }
 

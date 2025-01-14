@@ -113,7 +113,7 @@ func (h *Handlers) NewDiscountPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	title, description, uses, amount := forms.GetNewDiscountFormValues(form)
-	if err := h.Database.AddDiscount(title, description, amount, uses); err != nil {
+	if _, err := h.Database.AddDiscount(title, description, amount, uses); err != nil {
 		formComponent := forms.NewDiscountFormComponent(form)
 		formComponent.ErrorMessage = "Unexpected server error. Failed to create new discount."
 

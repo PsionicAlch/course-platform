@@ -1,43 +1,42 @@
 {{ template "email" . }}
 
-{{/* TODO: Add 50% discount code. It will serve as a way to validate their email address. */}}
-
 {{ define "content" }}
-  <p>Hello {{.FirstName}},</p>
+  <p>Hello {{ .FirstName -}},</p>
 
-  <p>Welcome to PsionicAlch, your go-to place for unlocking the power of programming! We're excited to have you on board, and we can't wait to see you grow and level up with our tutorials.</p>
+  <p>Welcome to PsionicAlch, your go-to place for unlocking the power of programming! We're thrilled to have you join our community and can't wait to see you grow and level up with our tutorials.</p>
 
-  <p>Now that you're officially a member, it's time to dive in! We've got a fantastic range of tutorials that cover everything from the basics to more advanced topics. Here's a quick peek at some of our latest courses:</p>
+  <p>To kick things off, we're giving you an exclusive discount code for your first course purchase:</p>
 
-  {{if .LatestCourses}}
+  <p><strong>Your discount code: {{ .Discount.Code -}}</strong></p>
+
+  <p>Use this code at checkout to get <strong>{{- .Discount.Discount -}}% off</strong> your first course purchase. It's the perfect opportunity to dive into our tutorials and start your programming journey!</p>
+
+  <p>Here's a glimpse of some of our latest tutorials to spark your curiosity:</p>
+
+  {{ if .LatestCourses }}
     <ul>
-      {{range .LatestCourses}}
-        <li><strong>{{.Name}}</strong>: {{.Description}} <a href="https://www.psionicalch.com/courses/{{.Slug}}">Start learning</a></li>
-      {{end}}
+      {{ range .LatestCourses }}
+        <li><strong>{{- .Title -}}</strong>: {{ .Description }} <a href="https://www.psionicalch.com/courses/{{- .Slug -}}">Learn more</a></li>
+      {{ end }}
     </ul>
-  {{end}}
+  {{ end }}
 
-  <p>Feeling curious? Check out all our available tutorials at <a href="https://www.psionicalch.com/courses">our Courses page</a>.</p>
+  <p>Feeling inspired? Explore all our tutorials on <a href="https://www.psionicalch.com/courses">our Courses page</a>.</p>
 
-  <p>But wait, there's more! We're excited to introduce you to your very own affiliate code:</p>
+  <p>Oh, and there's more! Did you know you also have your very own affiliate code?</p>
 
-  <p><strong>Your affiliate code: {{.AffiliateCode}}</strong></p>
+  <p><strong>Your affiliate code: {{ .AffiliateCode -}}</strong></p>
 
-  <p>With this affiliate code, you can earn affiliate points every time someone purchases a course using your link. Each time someone buys a course, you'll get 10% of the purchase value in points. These points can be redeemed for discounts on your future courses!</p>
+  <p>Every time someone purchases a course using your affiliate link, you'll earn affiliate points worth 10% of their purchase value. You can redeem these points for discounts on your own course purchases! Learn all about it on our <a href="https://www.psionicalch.com/affiliate-program">Affiliate Program page</a>.</p>
 
-  <p>To learn more about how you can start earning points and discounts, visit our <a href="https://www.psionicalch.com/affiliate-program">Affiliate Program page</a>.</p>
-
-  <p>Need help or have any questions? Feel free to reach out to me directly:</p>
+  <p>If you have any questions or need support, feel free to reach out to us:</p>
   <p>
     <a href="https://twitter.com/psionicalch">Twitter</a> |
     <a href="https://bsky.app/profile/psionicalch.com">Bluesky</a> |
     <a href="mailto:contact@psionicalch.com">Email</a>
   </p>
 
-  <p>Oh, and here's something to get you started! You can get a 50% discount on your first course purchase—no code needed, just choose your first course and the discount will automatically apply.</p>
+  <p>We're so excited to have you with us, {{.FirstName}}. Start exploring, learning, and coding with PsionicAlch!</p>
 
-  <p>We're thrilled to have you with us, {{.FirstName}}. Start exploring, start learning, and start coding!</p>
-
-  <p>Happy learning,</p>
-  <p>The PsionicAlch Team</p>
+  <p>Happy learning,<br>The PsionicAlch Team</p>
 {{ end }}

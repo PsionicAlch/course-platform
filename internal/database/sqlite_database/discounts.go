@@ -111,39 +111,39 @@ func (db *SQLiteDatabase) CountDiscounts() (uint, error) {
 	return count, nil
 }
 
-func (db *SQLiteDatabase) AddDiscount(title, description string, discount, uses uint64) error {
+func (db *SQLiteDatabase) AddDiscount(title, description string, discount, uses uint64) (string, error) {
 	query := `INSERT INTO discounts (id, title, description, code, discount, uses) VALUES (?, ?, ?, ?, ?, ?);`
 
 	id, err := database.GenerateID()
 	if err != nil {
 		db.ErrorLog.Printf("Failed to generate ID for new discount: %s\n", err)
-		return err
+		return "", err
 	}
 
 	code, err := database.GenerateID()
 	if err != nil {
 		db.ErrorLog.Printf("Failed to generate code for new discount: %s\n", err)
-		return err
+		return "", err
 	}
 
 	result, err := db.connection.Exec(query, id, title, description, code, discount, uses)
 	if err != nil {
 		db.ErrorLog.Printf("Failed to add new discount \"%s\" to the database: %s\n", title, err)
-		return err
+		return "", err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		db.ErrorLog.Printf("Failed to query the database for the number of rows affected after adding new discount: %s\n", err)
-		return err
+		return "", err
 	}
 
 	if rowsAffected == 0 {
 		db.ErrorLog.Println("No rows were affected after adding new discount to the database")
-		return database.ErrNoRowsAffected
+		return "", database.ErrNoRowsAffected
 	}
 
-	return nil
+	return id, nil
 }
 
 func (db *SQLiteDatabase) GetDiscountByID(discountId string) (*models.DiscountModel, error) {

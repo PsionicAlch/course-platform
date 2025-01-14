@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"time"
@@ -176,8 +177,17 @@ func (h *Handlers) SignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: Generate 50% discount code with one usage and add it to their email address.
-	go h.Emailer.SendWelcomeEmail(user.Email, user.Name, user.AffiliateCode)
+	discount, err := h.Payment.CreateDiscount(fmt.Sprintf("Welcome discount for %s %s", user.Name, user.Surname), fmt.Sprintf("A discount that encourages %s %s to buy their first course after creating a new account", user.Name, user.Surname), 50, 1)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to create a welcome discount for %s %s: %s\n", user.Name, user.Surname, err)
+	} else {
+		latestCourses, err := h.Database.GetCourses("", "", 1, 5)
+		if err != nil {
+			h.ErrorLog.Printf("Failed to get the latest courses: %s\n", err)
+		} else {
+			go h.Emailer.SendWelcomeEmail(user.Email, user.Name, user.AffiliateCode, discount, latestCourses)
+		}
+	}
 
 	http.SetCookie(w, cookie)
 
