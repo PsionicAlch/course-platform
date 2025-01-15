@@ -14,8 +14,8 @@ type VanillaTextRenderer struct {
 	fileExtension string
 }
 
-func SetupVanillaTextRenderer(embeddedFS embed.FS, fileExtension, directory string, otherDirectories ...string) (*VanillaTextRenderer, error) {
-	templates, err := CreateTemplates(embeddedFS, directory, otherDirectories...)
+func SetupVanillaTextRenderer(cdnURL string, embeddedFS embed.FS, fileExtension, directory string, otherDirectories ...string) (*VanillaTextRenderer, error) {
+	templates, err := CreateTemplates(cdnURL, embeddedFS, directory, otherDirectories...)
 	if err != nil {
 		return nil, err
 	}

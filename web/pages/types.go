@@ -116,7 +116,7 @@ func SetupRenderers(sessions *session.Session) (*Renderers, error) {
 		return nil, fmt.Errorf("failed to set up htmx renderer: %w", err)
 	}
 
-	xmlRenderer, err := vanillatext.SetupVanillaTextRenderer(html.XMLFiles, ".xml.tmpl", "xml")
+	xmlRenderer, err := vanillatext.SetupVanillaTextRenderer(cloudfrontURL, html.XMLFiles, ".xml.tmpl", "xml")
 	if err != nil {
 		return nil, fmt.Errorf("failed to set up rss renderer: %w", err)
 	}
