@@ -60,7 +60,7 @@ func (ds *DatabaseSeeder) SeedDiscounts(wg *sync.WaitGroup) {
 	ds.InfoLog.Printf("Seeding discounts...")
 
 	for _, discount := range Discounts {
-		if err := ds.Database.AddDiscount(discount.Title, discount.Description, uint64(discount.Amount), uint64(discount.Uses)); err != nil {
+		if _, err := ds.Database.AddDiscount(discount.Title, discount.Description, uint64(discount.Amount), uint64(discount.Uses)); err != nil {
 			ds.ErrorLog.Fatalf("Failed to add new discount to the database: %s\n", err)
 		}
 	}

@@ -29,7 +29,10 @@ new-keys:
 	@go run ./cmd/keys
 
 load-content:
-	@go run -tags content_loader ./cmd/content
+	@go run ./cmd/content
+
+sync-assets:
+	@go run ./cmd/assets
 
 generate-file-key:
 	@go run ./cmd/filekey
