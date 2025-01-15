@@ -50,7 +50,7 @@ func StartWeb() {
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(pm.CSRFProtection)
-	router.Use(pm.RateLimiter(50, time.Minute, handlerContext.Renderers.Page))
+	router.Use(pm.RateLimiter(25, time.Minute, handlerContext.Renderers.Page))
 
 	// Register payments webhook.
 	router.Post("/payments/webhook", handlerContext.Payment.Webhook)
