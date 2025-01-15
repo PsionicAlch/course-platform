@@ -12,7 +12,10 @@
 
   <meta property="og:title" content="Explore Golang Courses - Build Real-World Applications | PsionicAlch" />
   <meta property="og:description" content="Master Go programming with PsionicAlch's courses. Build practical, real-world applications and take your skills to the next level." />
-  <meta property="og:image" content="https://www.psionicalch.com/static/images/course_page_og_image.jpg" /> <!-- TODO: replace with actual path -->
+  <meta property="og:image" content="{{ assets "/img/psionicalch-og-img.jpg" }}" />
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
   <meta property="og:url" content="https://www.psionicalch.com/course" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="PsionicAlch" />
@@ -21,7 +24,7 @@
   <meta name="twitter:site" content="@psionicalch" />
   <meta name="twitter:title" content="Explore Golang Courses - Build Real-World Applications | PsionicAlch" />
   <meta name="twitter:description" content="Browse courses to master Go programming. Build real-world applications with PsionicAlch's expert-guided, practical courses." />
-  <meta name="twitter:image" content="https://www.psionicalch.com/static/images/course_page_twitter_image.jpg" /> <!-- TODO: replace with actual path -->
+  <meta name="twitter:image" content="{{ assets "/img/psionicalch-twitter-card-img.jpg" }}" />
 
   <script type="application/ld+json">
     {
@@ -40,7 +43,13 @@
           "provider": {
             "@type": "Organization",
             "name": "PsionicAlch",
-            "url": "https://www.psionicalch.com"
+            "url": "https://www.psionicalch.com",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "{{ assets "/img/psionicalch-logo.jpg" }}",
+              "width": 512,
+              "height": 512
+            }
           }
         },
         {{ end }}

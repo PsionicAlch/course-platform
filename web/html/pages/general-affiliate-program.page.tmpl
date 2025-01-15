@@ -12,12 +12,15 @@
   <meta property="og:description" content="Join the PsionicAlch Affiliate Program and earn points for discounts on courses. Share your code, help others learn Go, and save big on your own learning journey." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.psionicalch.com/affiliate-program" />
-  <meta property="og:image" content="https://www.psionicalch.com/static/images/affiliate-program-banner.png" /> <!-- TODO: Replace with actual image -->
+  <meta property="og:image" content="{{ assets "/img/psionicalch-og-img.jpg" }}" />
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Affiliate Program - Earn Points by Promoting PsionicAlch Courses | PsionicAlch" />
   <meta name="twitter:description" content="Join the PsionicAlch Affiliate Program and earn points for discounts on courses. Share your code, help others learn Go, and save big on your own learning journey." />
-  <meta name="twitter:image" content="https://www.psionicalch.com/static/images/affiliate-program-banner.png" /> <!-- TODO: Replace with actual image -->
+  <meta name="twitter:image" content="{{ assets "/img/psionicalch-twitter-card-img.jpg" }}" />
   <meta name="twitter:site" content="@psionicalch" />
 
   <script type="application/ld+json">
@@ -29,7 +32,14 @@
       "url": "https://www.psionicalch.com/affiliate-program",
       "publisher": {
         "@type": "Organization",
-        "name": "PsionicAlch"
+        "name": "PsionicAlch",
+        "url": "https://www.psionicalch.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ assets "/img/psionicalch-logo.jpg" }}",
+          "width": 512,
+          "height": 512
+        }
       }
     }
   </script>

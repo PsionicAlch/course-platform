@@ -10,7 +10,10 @@
 
   <meta property="og:title" content="Privacy Policy | PsionicAlch" />
   <meta property="og:description" content="Learn how PsionicAlch collects, stores, and protects your data, including personal and payment information, in compliance with GDPR and CCPA regulations." />
-  <meta property="og:image" content="https://www.psionicalch.com/assets/img/og-banner-img.png" /> <!-- TODO: replace with actual image -->
+  <meta property="og:image" content="{{ assets "/img/psionicalch-og-img.jpg" }}" />
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
   <meta property="og:url" content="https://www.psionicalch.com/privacy-policy" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="PsionicAlch" />
@@ -19,7 +22,7 @@
   <meta name="twitter:site" content="@psionicalch" />
   <meta name="twitter:title" content="Privacy Policy | PsionicAlch" />
   <meta name="twitter:description" content="Learn how PsionicAlch collects, stores, and protects your data, including personal and payment information, in compliance with GDPR and CCPA regulations." />
-  <meta name="twitter:image" content="https://www.psionicalch.com/assets/img/og-banner-img.png" /> <!-- TODO: replace with actual image -->
+  <meta name="twitter:image" content="{{ assets "/img/psionicalch-twitter-card-img.jpg" }}" />
 
   <script type="application/ld+json">
     {
@@ -31,10 +34,14 @@
       "publisher": {
         "@type": "Organization",
         "name": "PsionicAlch",
-        "url": "https://www.psionicalch.com"
-      },
-      "datePublished": "2024-01-06",  // TODO: Set the date before publishing
-      "dateModified": "2024-01-06"  // TODO: Set the date before publishing
+        "url": "https://www.psionicalch.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ assets "/img/psionicalch-logo.jpg" }}",
+          "width": 512,
+          "height": 512
+        }
+      }
     }
   </script>
 {{ end }}
@@ -61,7 +68,7 @@
 
           <p><b>Affiliate Tracking:</b> If you purchase a course using an affiliate link, we record this to attribute the referral accurately.</p>
 
-          <p><b>Anonymous Analytics:</b> We use Umami for anonymous site analytics to understand general usage patterns without tracking individual users.</p>
+          <p><b>Anonymous Analytics:</b> We use <a href="https://umami.is" target="_blank">Umami</a> for anonymous site analytics to understand general usage patterns without tracking individual users.</p>
         </div>
 
         <div class="privacy-policy">
@@ -87,29 +94,29 @@
         <div class="privacy-policy">
           <h2>4. Third-Party Services</h2>
 
-          <p><b>Stripe:</b> We use Stripe for secure payment processing. Stripe may collect information necessary to process payments. We do not store any financial information; all payment data is handled by Stripe. For more details, please refer to Stripe’s own privacy policy.</p>
+          <p><b><a href="https://stripe.com" target="_blank">Stripe</a>:</b> We use <a href="https://stripe.com" target="_blank">Stripe</a> for secure payment processing. <a href="https://stripe.com" target="_blank">Stripe</a> may collect information necessary to process payments. We do not store any financial information; all payment data is handled by <a href="https://stripe.com" target="_blank">Stripe</a>. For more details, please refer to <a href="https://stripe.com/privacy" target="_blank">Stripe's own privacy policy</a>.</p>
 
-          <p><b>Umami:</b> We self-host Umami for anonymous analytics. No user-specific or personally identifiable information is collected through this service.</p>
+          <p><b><a href="https://umami.is" target="_blank">Umami</a>:</b> We self-host <a href="https://umami.is" target="_blank">Umami</a> for anonymous analytics. No user-specific or personally identifiable information is collected through this service.</p>
         </div>
 
         <div class="privacy-policy">
           <h2>5. Payment Information</h2>
 
-          <p>All payments are processed by Stripe, and we do not store any of your credit card or other payment information. We retain non-sensitive data related to each transaction (such as purchase date and amount) solely for bookkeeping purposes.</p>
+          <p>All payments are processed by <a href="https://stripe.com" target="_blank">Stripe</a>, and we do not store any of your credit card or other payment information. We retain non-sensitive data related to each transaction (such as purchase date and amount) solely for bookkeeping purposes.</p>
         </div>
 
         <div class="privacy-policy">
           <h2>6. Data Storage and Retention</h2>
 
-          <p><b>Storage Location:</b> User data is stored on our servers hosted by Hetzner in Germany.</p>
+          <p><b>Storage Location:</b> User data is stored on our servers hosted by <a href="https://www.hetzner.com" target="_blank">Hetzner</a> in Germany.</p>
 
-          <p><b>Retention Policy:</b> We retain your data as long as you have an account on the platform. Upon account deletion, all personal information is permanently deleted, except for records related to payment transactions, which we retain for bookkeeping. Anonymous analytics data collected by Umami is also retained, as it cannot be linked back to individual users.</p>
+          <p><b>Retention Policy:</b> We retain your data as long as you have an account on the platform. Upon account deletion, all personal information is permanently deleted, except for records related to payment transactions, which we retain for bookkeeping. Anonymous analytics data collected by <a href="https://umami.is" target="_blank">Umami</a> is also retained, as it cannot be linked back to individual users.</p>
         </div>
 
         <div class="privacy-policy">
           <h2>7. Data Security</h2>
 
-          <p><b>Encryption:</b> Passwords are stored securely using a custom-built encryption method based on the Argon2 algorithm.</p>
+          <p><b>Encryption:</b> Passwords are stored securely using a custom-built encryption method based on the Argon2 hashing algorithm.</p>
 
           <p><b>Breach Notification:</b> In the unlikely event of a data breach, we will promptly inform affected users via email. While we do not store sensitive financial information, we recommend users update their passwords if notified of a breach.</p>
         </div>

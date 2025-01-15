@@ -16,12 +16,15 @@
   <meta property="og:description" content="Certificate of Completion awarded to {{ .User.Name }} {{ .User.Surname }} for successfully completing the course {{ .Course.Title }} on PsionicAlch." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.psionicalch.com/certificates/{{- .Certificate.ID -}}" />
-  <meta property="og:image" content="https://www.psionicalch.com/static/images/certificate-placeholder.png" /> <!-- TODO: Replace with actual image -->
+  <meta property="og:image" content="{{ assets "/img/psionicalch-og-img.jpg" }}" />
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Certificate of Completion - {{ .User.Name }} {{ .User.Surname }} - {{ .Course.Title }} | PsionicAlch" />
   <meta name="twitter:description" content="Certificate of Completion awarded to {{ .User.Name }} {{ .User.Surname }} for successfully completing the course {{ .Course.Title }} on PsionicAlch." />
-  <meta name="twitter:image" content="https://www.psionicalch.com/static/images/certificate-placeholder.png" /> <!-- TODO: Replace with actual image -->
+  <meta name="twitter:image" content="{{ assets "/img/psionicalch-twitter-card-img.jpg" }}" />
   <meta name="twitter:site" content="@psionicalch" />
 
   <script type="application/ld+json">
@@ -33,11 +36,25 @@
       "url": "https://www.psionicalch.com/certificates/{{- .Certificate.ID -}}",
       "creator": {
         "@type": "Organization",
-        "name": "PsionicAlch"
+        "name": "PsionicAlch",
+        "url": "https://www.psionicalch.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ assets "/img/psionicalch-logo.jpg" }}",
+          "width": 512,
+          "height": 512
+        }
       },
       "provider": {
         "@type": "Organization",
-        "name": "PsionicAlch"
+        "name": "PsionicAlch",
+        "url": "https://www.psionicalch.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ assets "/img/psionicalch-logo.jpg" }}",
+          "width": 512,
+          "height": 512
+        }
       },
       "recipient": {
         "@type": "Person",

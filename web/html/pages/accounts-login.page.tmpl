@@ -12,12 +12,15 @@
   <meta property="og:description" content="Access your PsionicAlch account to continue learning and building with Golang." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.psionicalch.com/accounts/login" />
-  <meta property="og:image" content="https://www.psionicalch.com/static/images/signup-preview.png" /> <!-- TODO: Set up actual image -->
+  <meta property="og:image" content="{{ assets "/img/psionicalch-og-img.jpg" }}" />
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Log In - Access Your Golang Courses | PsionicAlch" />
   <meta name="twitter:description" content="Access your PsionicAlch account to continue learning and building with Golang." />
-  <meta name="twitter:image" content="https://www.psionicalch.com/static/images/signup-preview.png" /> <!-- TODO: Set up actual image -->
+  <meta name="twitter:image" content="{{ assets "/img/psionicalch-twitter-card-img.jpg" }}" />
   <meta name="twitter:site" content="@psionicalch" />
 
   <script type="application/ld+json">
@@ -33,7 +36,9 @@
         "url": "https://www.psionicalch.com",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://www.psionicalch.com/static/images/logo.png" // TODO: Replace with actual image.
+          "url": "{{ assets "/img/psionicalch-logo.jpg" }}",
+          "width": 512,
+          "height": 512
         }
       }
     }

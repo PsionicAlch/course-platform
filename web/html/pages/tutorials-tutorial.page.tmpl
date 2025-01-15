@@ -13,6 +13,9 @@
   <meta property="og:title" content="{{- .Tutorial.Title -}} - Learn Golang with Real-World Examples | PsionicAlch" />
   <meta property="og:description" content="{{- .Tutorial.Description -}} Learn this essential Golang skill with PsionicAlch's in-depth tutorial." />
   <meta property="og:image" content="{{- .Tutorial.BannerURL -}}" />
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
   <meta property="og:url" content="https://www.psionicalch.com/tutorials/{{- .Tutorial.Slug -}}" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="PsionicAlch" />
@@ -41,8 +44,9 @@
         "name": "PsionicAlch",
         "logo": {
           "@type": "ImageObject",
-          <!-- TODO: Set up logo URL -->
-          "url": "https://www.psionicalch.com/static/images/psionicalch_logo.png"
+          "url": "{{ assets "/img/psionicalch-logo.jpg" }}",
+          "width": 512,
+          "height": 512
         }
       },
       {{ if .Course }}
