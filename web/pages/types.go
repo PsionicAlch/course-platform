@@ -15,11 +15,11 @@ import (
 	vanillatext "github.com/PsionicAlch/psionicalch-home/internal/render/renderers/vanilla-text"
 	"github.com/PsionicAlch/psionicalch-home/internal/session"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/pkg/sitemapper"
 	"github.com/PsionicAlch/psionicalch-home/web/config"
 	"github.com/PsionicAlch/psionicalch-home/web/emails"
 	"github.com/PsionicAlch/psionicalch-home/web/generators"
 	"github.com/PsionicAlch/psionicalch-home/web/html"
+	"github.com/PsionicAlch/sitemapper"
 )
 
 type Renderers struct {
@@ -178,5 +178,13 @@ func SetupCache(db database.Database, xmlRenderer render.Renderer) cache.Cache {
 }
 
 func SetupSiteMapper() *sitemapper.SiteMapper {
-	return sitemapper.NewSiteMapper("http://localhost:8080", time.Hour*24*7)
+	loggers := utils.CreateLoggers("SITEMAPPER")
+
+	options := sitemapper.DefaultOptions()
+	options.SetLinkAttributes("hx-get")
+	options.SetErrorLogger(func(err error) {
+		loggers.ErrorLog.Println(err)
+	})
+
+	return sitemapper.NewSiteMapper(options)
 }

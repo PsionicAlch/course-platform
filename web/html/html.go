@@ -7,3 +7,5 @@ var HTMLFiles embed.FS
 
 //go:embed xml/*.xml.tmpl
 var XMLFiles embed.FS
+
+// TODO: Set up favicon to work with pages that don't use any layouts.
