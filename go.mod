@@ -4,6 +4,7 @@ go 1.23.4
 
 require (
 	github.com/AfterShip/email-verifier v1.4.1
+	github.com/PsionicAlch/sitemapper v1.0.0
 	github.com/TwiN/go-away v1.6.14
 	github.com/adrg/frontmatter v0.2.0
 	github.com/aws/aws-sdk-go-v2 v1.32.7
@@ -29,7 +30,6 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
-	github.com/PsionicAlch/sitemapper v0.0.0-20250118164321-09c148941211 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.7 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.22 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.26 // indirect
@@ -61,7 +61,7 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c // indirect
-	golang.org/x/net v0.34.0
+	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	modernc.org/gc/v3 v3.0.0-20241004144649-1aea3fae8852 // indirect
