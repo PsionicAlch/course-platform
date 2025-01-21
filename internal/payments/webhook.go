@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"slices"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
@@ -309,13 +310,43 @@ func (payment *Payments) HandleRefund(event *stripe.Event) error {
 		}
 	}
 
-	switch status {
-	case database.RefundFailed:
-		// TODO: Send email to user that the refund failed.
-	case database.RefundCancelled:
-		// TODO: Send email to user that refund failed.
-	case database.RefundSucceeded:
-		// TODO: Send email to user that refund succeeded.
+	if slices.Contains([]database.RefundStatus{database.RefundFailed, database.RefundCancelled, database.RefundSucceeded}, status) {
+		user, err := payment.Database.GetUserByID(coursePurchase.UserID, database.All)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to get user by ID (\"%s\"): %s\n", coursePurchase.UserID, err)
+			return errors.New("unexpected internal server error")
+		}
+
+		course, err := payment.Database.GetCourseByID(coursePurchase.CourseID)
+		if err != nil {
+			payment.ErrorLog.Printf("Failed to get course by ID (\"%s\"): %s\n", coursePurchase.CourseID, err)
+			return errors.New("unexpected internal server error")
+		}
+
+		switch status {
+		case database.RefundFailed:
+			var failureReason string
+			switch refund.FailureReason {
+			case "lost_or_stolen_card":
+				failureReason = "Lost or Stolen Card"
+			case "expired_or_canceled_card":
+				failureReason = "Expired or Canceled Card"
+			case "charge_for_pending_refund_disputed":
+				failureReason = "Charge for Pending Refund Disputed"
+			case "insufficient_funds":
+				failureReason = "Insufficient Funds"
+			case "declined":
+				failureReason = "Declined"
+			default:
+				failureReason = "Unknown"
+			}
+
+			go payment.Mailer.SendRefundRequestFailedEmail(user.Email, user.Name, course.Title, failureReason)
+		case database.RefundCancelled:
+			go payment.Mailer.SendRefundRequestCancelledEmail(user.Email, user.Name, course.Title)
+		case database.RefundSucceeded:
+			go payment.Mailer.SendRefundRequestSuccessfulEmail(user.Email, user.Name, course.Title, coursePurchase.AmountPaid)
+		}
 	}
 
 	return nil

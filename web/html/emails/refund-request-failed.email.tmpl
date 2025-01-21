@@ -1,0 +1,20 @@
+{{ template "email" . }}
+
+{{ define "content" }}
+  <p>Hello {{ .FirstName }},</p>
+
+  <p>We wanted to inform you that your recent refund request for <strong>{{ .CourseName }}</strong> was not successful. Unfortunately, the refund could not be processed due to the following reason: <b>{{ .FailureReason }}</b></p>
+
+  <p>If you believe this is a mistake or have additional questions, please review our <a href="https://www.psionicalch.com/refund-policy">Refund Policy</a> for more details. You can also reach out to us directly, and we'll be happy to assist:</p>
+  <p>
+    <a href="https://twitter.com/psionicalch">Twitter</a> |
+    <a href="https://bsky.app/profile/psionicalch.com">Bluesky</a> |
+    <a href="mailto:contact@psionicalch.com">Email</a>
+  </p>
+
+  <p>We understand that this may be disappointing, and we want to assure you that we're here to help. If there's anything we can do to improve your experience or clarify the situation, don't hesitate to contact us.</p>
+
+  <p>Thank you for being part of the PsionicAlch community. We're here to support your learning journey every step of the way.</p>
+
+  <p>Best regards,<br>The PsionicAlch Team</p>
+{{ end }}

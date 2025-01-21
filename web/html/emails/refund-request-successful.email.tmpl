@@ -1,0 +1,22 @@
+{{ template "email" . }}
+
+{{ define "content" }}
+  <p>Hello {{.FirstName}},</p>
+
+  <p>We're writing to confirm that your refund request for <strong>{{.CourseName}}</strong> has been successfully processed. The amount of <strong>${{.RefundAmount}}</strong> has been refunded to your original payment method.</p>
+
+  <p>Please note that it may take 5-10 business days for the refunded amount to appear in your account, depending on your bank or payment provider.</p>
+
+  <p>If you have any questions about your refund or need further assistance, don't hesitate to reach out to us. We're here to help:</p>
+  <p>
+    <a href="https://twitter.com/psionicalch">Twitter</a> |
+    <a href="https://bsky.app/profile/psionicalch.com">Bluesky</a> |
+    <a href="mailto:contact@psionicalch.com">Email</a>
+  </p>
+
+  <p>We're sorry to see you part ways with <strong>{{.CourseName}}</strong>, but we hope to continue supporting your programming journey. Remember, our full catalog of tutorials is always available to help you learn and grow. Check them out here: <a href="https://www.psionicalch.com/courses">our Courses page</a>.</p>
+
+  <p>Thank you for being part of the PsionicAlch community, and we hope to see you back soon!</p>
+
+  <p>Best regards,<br>The PsionicAlch Team</p>
+{{ end }}

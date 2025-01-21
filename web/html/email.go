@@ -138,3 +138,49 @@ func NewThankYouForPurchaseEmail(firstName, affiliateCode string, course *models
 		Discount:      discount,
 	}
 }
+
+type RefundRequestFailedEmail struct {
+	BaseEmail
+	FirstName     string
+	CourseName    string
+	FailureReason string
+}
+
+func NewRefundRequestFailedEmail(firstName, courseName, failureReason string) *RefundRequestFailedEmail {
+	return &RefundRequestFailedEmail{
+		BaseEmail:     NewBaseEmail("Refund Request Failed"),
+		FirstName:     firstName,
+		CourseName:    courseName,
+		FailureReason: failureReason,
+	}
+}
+
+type RefundRequestCancelledEmail struct {
+	BaseEmail
+	FirstName  string
+	CourseName string
+}
+
+func NewRefundRequestCancelledEmail(firstName, courseName string) *RefundRequestCancelledEmail {
+	return &RefundRequestCancelledEmail{
+		BaseEmail:  NewBaseEmail("Refund Request Cancelled"),
+		FirstName:  firstName,
+		CourseName: courseName,
+	}
+}
+
+type RefundRequestSuccessfulEmail struct {
+	BaseEmail
+	FirstName    string
+	CourseName   string
+	RefundAmount float64
+}
+
+func NewRefundRequestSuccessfulEmail(firstName, courseName string, refundAmount float64) *RefundRequestSuccessfulEmail {
+	return &RefundRequestSuccessfulEmail{
+		BaseEmail:    NewBaseEmail("Refund Request Successful"),
+		FirstName:    firstName,
+		CourseName:   courseName,
+		RefundAmount: refundAmount,
+	}
+}

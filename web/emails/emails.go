@@ -93,3 +93,18 @@ func (e *Emails) SendThankYouForPurchaseEmail(email, firstName, affiliateCode st
 	emailData := html.NewThankYouForPurchaseEmail(firstName, affiliateCode, course, discount)
 	e.SendEmail(email, emailData.Title, "thank-you-for-purchase", emailData)
 }
+
+func (e *Emails) SendRefundRequestFailedEmail(email, firstName, courseName, failureReason string) {
+	emailData := html.NewRefundRequestFailedEmail(firstName, courseName, failureReason)
+	e.SendEmail(email, emailData.Title, "refund-request-failed", emailData)
+}
+
+func (e *Emails) SendRefundRequestCancelledEmail(email, firstName, courseName string) {
+	emailData := html.NewRefundRequestCancelledEmail(firstName, courseName)
+	e.SendEmail(email, emailData.Title, "refund-request-cancelled", emailData)
+}
+
+func (e *Emails) SendRefundRequestSuccessfulEmail(email, firstName, courseName string, refundAmount float64) {
+	emailData := html.NewRefundRequestSuccessfulEmail(firstName, courseName, refundAmount)
+	e.SendEmail(email, emailData.Title, "refund-request-successful", emailData)
+}

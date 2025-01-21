@@ -190,6 +190,8 @@ func (payment *Payments) RequestRefund(user *models.UserModel, course *models.Co
 			return err
 		}
 
+		go payment.Mailer.SendRefundRequestSuccessfulEmail(user.Email, user.Name, course.Title, coursePurchase.AmountPaid)
+
 		return nil
 	}
 
