@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// CoursePurchaseModel is a struct representation of the course_purchases table.
 type CoursePurchaseModel struct {
 	ID                      string
 	UserID                  string

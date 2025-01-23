@@ -11,6 +11,7 @@ import (
 	"github.com/justinas/nosurf"
 )
 
+// CSRFProtection is middleware to set up nosurf CSRF protection.
 func CSRFProtection(next http.Handler) http.Handler {
 	csrfHandler := nosurf.New(next)
 
@@ -24,6 +25,7 @@ func CSRFProtection(next http.Handler) http.Handler {
 	return csrfHandler
 }
 
+// RateLimiter is middleware to set up httprate rate limiting.
 func RateLimiter(requestLimit int, windowLength time.Duration, renderer render.Renderer) func(next http.Handler) http.Handler {
 	return httprate.Limit(
 		requestLimit,

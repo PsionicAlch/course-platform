@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"iter"
 )
 
@@ -29,6 +27,7 @@ func InSeq[T iter.Seq[A], A comparable](item A, items T) bool {
 	return false
 }
 
+// Find uses a user provided function to linearly search through a slice to find the index of an element.
 func Find[A comparable](items []A, compareFunc func(item A) bool) (int, bool) {
 	for index, item := range items {
 		if compareFunc(item) {
@@ -37,34 +36,4 @@ func Find[A comparable](items []A, compareFunc func(item A) bool) (int, bool) {
 	}
 
 	return -1, false
-}
-
-func RandomByteSlice(length int) ([]byte, error) {
-	b := make([]byte, length)
-	_, err := rand.Read(b)
-	if err != nil {
-		return nil, err
-	}
-
-	return b, nil
-}
-
-func EncodeString(src []byte) string {
-	return base64.RawStdEncoding.EncodeToString(src)
-}
-
-func DecodeString(src string) ([]byte, error) {
-	return base64.RawStdEncoding.Strict().DecodeString(src)
-}
-
-func Filter[S ~[]E, E any](items S, compareFunc func(E) bool) S {
-	var collection S
-
-	for _, item := range items {
-		if compareFunc(item) {
-			collection = append(collection, item)
-		}
-	}
-
-	return collection
 }

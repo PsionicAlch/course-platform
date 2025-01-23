@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// DiscountModel is a struct representation of the discounts table.
 type DiscountModel struct {
 	ID          string
 	Title       string

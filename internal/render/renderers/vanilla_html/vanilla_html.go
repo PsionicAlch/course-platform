@@ -16,6 +16,7 @@ type VanillaHTMLRenderer struct {
 	sessions      *session.Session
 }
 
+// SetupVanillaHTMLRenderer creates a new instance of the VanillaHTMLRenderer based on the provided properties.
 func SetupVanillaHTMLRenderer(cdnURL string, sessions *session.Session, embeddedFS embed.FS, fileExtension, directory string, otherDirectories ...string) (*VanillaHTMLRenderer, error) {
 	templates, err := CreateTemplates(cdnURL, embeddedFS, directory, otherDirectories...)
 	if err != nil {
@@ -31,6 +32,7 @@ func SetupVanillaHTMLRenderer(cdnURL string, sessions *session.Session, embedded
 	return vanillaHTMLRenderer, nil
 }
 
+// Render writes the compiled template to the provided io.Writer.
 func (renderer *VanillaHTMLRenderer) Render(w io.Writer, ctx context.Context, file string, data any) error {
 	var infoMessages, warningMessages, errorMessages []string
 
@@ -60,6 +62,7 @@ func (renderer *VanillaHTMLRenderer) Render(w io.Writer, ctx context.Context, fi
 	return nil
 }
 
+// RenderHTML writes the compiled directly to the http.ResponseWriter as well as sets the necessary headers.
 func (renderer *VanillaHTMLRenderer) RenderHTML(w http.ResponseWriter, ctx context.Context, file string, data any, status ...int) error {
 	var infoMessages, warningMessages, errorMessages []string
 
@@ -94,6 +97,7 @@ func (renderer *VanillaHTMLRenderer) RenderHTML(w http.ResponseWriter, ctx conte
 	return nil
 }
 
+// RenderXML should not be called and will only ever return an error.
 func (renderer *VanillaHTMLRenderer) RenderXML(w http.ResponseWriter, file string, data any, status ...int) error {
 	return render.ErrCannotRenderXML
 }

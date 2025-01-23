@@ -8,9 +8,8 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
-// AddToken adds a new token to the database. It works with transactions and single database connections.
-// This function does database level uniqueness checks and will return a custom database.ErrTokenAlreadyExists
-// which could be checked for on the caller side.
+// AddToken adds a new token to the database. This function works with either a database connection or a database
+// transaction. This function WILL throw a ErrTokenAlreadyExists error upon a unique constraint violation.
 func AddToken(dbFacade SqlDbFacade, id, token, tokenType, userId string, validUntil time.Time) error {
 	query := `INSERT INTO tokens (id, token, token_type, valid_until, user_id) VALUES (?, ?, ?, ?, ?);`
 

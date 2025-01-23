@@ -23,6 +23,7 @@ func GenerateID() (string, error) {
 	return id.String(), err
 }
 
+// GenerateToken creates a new token for use in authentication, emails, and payments.
 func GenerateToken() (string, error) {
 	tokenBytes, err := RandomBytes(32)
 	if err != nil {
@@ -32,6 +33,7 @@ func GenerateToken() (string, error) {
 	return BytesToURLString(tokenBytes), nil
 }
 
+// RandomBytes generates a slice of random bytes equal to the given length.
 func RandomBytes(length uint) ([]byte, error) {
 	b := make([]byte, length)
 	_, err := cryptoRand.Read(b)
@@ -42,10 +44,13 @@ func RandomBytes(length uint) ([]byte, error) {
 	return b, nil
 }
 
+// BytesToURLString converts a slice of bytes to a URL safe string.
 func BytesToURLString(src []byte) string {
 	return base64.RawURLEncoding.EncodeToString(src)
 }
 
+// NewNullString creates a new sql.NullString based off a given string. If the string is empty the sql.NullString
+// generated won't be valid.
 func NewNullString(s string) sql.NullString {
 	if s == "" {
 		return sql.NullString{Valid: false}

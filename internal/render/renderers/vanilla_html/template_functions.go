@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// CreateFuncMap constructs a function map for all HTML based functions.
 func CreateFuncMap(cdnURL string) template.FuncMap {
 	funcMap := template.FuncMap{
 		"props":                   Props,
@@ -23,6 +24,7 @@ func CreateFuncMap(cdnURL string) template.FuncMap {
 	return funcMap
 }
 
+// Props constructs a map that can be passed to HTML components as properties.
 func Props(values ...any) (map[string]any, error) {
 	valuesLen := len(values)
 
@@ -42,18 +44,23 @@ func Props(values ...any) (map[string]any, error) {
 	return dict, nil
 }
 
+// PrettyDate formats a date into something more human readable.
 func PrettyDate(t time.Time) string {
 	return t.Format("Monday, January 2, 2006 at 3:04 PM")
 }
 
+// FormatTimeToISO8601 formats a date according to the ISO 8601 standard.
 func FormatTimeToISO8601(t time.Time) string {
 	return t.Format("2006-01-02")
 }
 
+// HTML converts a given string to a template.HTML type so that HTML can be rendered without being
+// escaped.
 func HTML(s string) template.HTML {
 	return template.HTML(s)
 }
 
+// AddQueries adds values to a URL query.
 func AddQueries(queries string, values ...any) (string, error) {
 	valuesLen := len(values)
 
@@ -84,14 +91,17 @@ func AddQueries(queries string, values ...any) (string, error) {
 	return urlQuery.Encode(), nil
 }
 
+// CurrentTime returns the current time.
 func CurrentTime() time.Time {
 	return time.Now()
 }
 
+// URLEscape ensures that a string is URL safe.
 func URLEscape(s string) string {
 	return url.QueryEscape(s)
 }
 
+// Assets appends a path to the provided CDN link.
 func Assets(cdnURL string) func(path string) string {
 	return func(path string) string {
 		if !strings.HasPrefix(path, "/") {

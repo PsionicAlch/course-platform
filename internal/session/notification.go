@@ -4,6 +4,8 @@ import (
 	"context"
 )
 
+// TODO: Write documentation
+
 const (
 	InfoMessageKey    = "info-flash-messages"
 	WarningMessageKey = "warning-flash-messages"

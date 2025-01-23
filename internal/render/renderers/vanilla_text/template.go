@@ -1,10 +1,10 @@
-package vanillahtml
+package vanillatext
 
 import (
 	"bytes"
 	"embed"
 	"fmt"
-	"html/template"
+	"text/template"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 )
@@ -16,6 +16,7 @@ type Templates struct {
 	Cache TemplateCache
 }
 
+// CreateTemplates constructs a new Templates instance based off the provided parameters.
 func CreateTemplates(cdnURL string, embeddedFS embed.FS, directory string, otherDirectories ...string) (*Templates, error) {
 	tmpls, err := embeddedFS.ReadDir(directory)
 	if err != nil {
@@ -49,6 +50,7 @@ func CreateTemplates(cdnURL string, embeddedFS embed.FS, directory string, other
 	return templates, nil
 }
 
+// Compile renders a given template to a buffer.
 func (templates *Templates) Compile(tmpl string, data any) (*bytes.Buffer, error) {
 	t, ok := templates.Cache[tmpl]
 	if !ok {

@@ -6,6 +6,7 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 )
 
+// MarkdownToHTML parses markdown into HTML.
 func MarkdownToHTML(md []byte) []byte {
 	// create markdown parser with extensions
 	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock

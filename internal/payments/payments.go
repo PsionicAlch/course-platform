@@ -19,6 +19,7 @@ type Payments struct {
 	Mailer        Emailer
 }
 
+// SetupPayments creates a new instance of Payments.
 func SetupPayments(privateKey, webhookSecret string, db database.Database, mailer Emailer) *Payments {
 	loggers := utils.CreateLoggers("PAYMENTS")
 
@@ -32,6 +33,7 @@ func SetupPayments(privateKey, webhookSecret string, db database.Database, maile
 	}
 }
 
+// CreateDiscount adds a new discount to the database and returns an instance of the newly created discount.
 func (payment *Payments) CreateDiscount(title, description string, discountAmount, uses uint64) (*models.DiscountModel, error) {
 	discountId, err := payment.Database.AddDiscount(title, description, discountAmount, uses)
 	if err != nil {
@@ -53,6 +55,7 @@ func (payment *Payments) CreateDiscount(title, description string, discountAmoun
 	return discount, nil
 }
 
+// BuyCourse registers a course purchase in the database and constructs a Stripe Checkout Session to handle the receiving the funds.
 func (payment *Payments) BuyCourse(user *models.UserModel, course *models.CourseModel, successUrl, cancelUrl, affiliateCode, discountCode string, affiliatePointsUsed uint, amountPaid int64) (string, error) {
 	paymentKey, err := GeneratePaymentKey()
 	if err != nil {
@@ -162,6 +165,7 @@ func (payment *Payments) BuyCourse(user *models.UserModel, course *models.Course
 	return s.URL, nil
 }
 
+// RequestRefund registers a refund in the database and initializes a refund on Stripe's side.
 func (payment *Payments) RequestRefund(user *models.UserModel, course *models.CourseModel) error {
 	coursePurchases, err := payment.Database.GetCoursePurchasesByUserAndCourse(user.ID, course.ID)
 	if err != nil {

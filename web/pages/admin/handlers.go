@@ -7,6 +7,8 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/web/pages"
 )
 
+// TODO: Reset Cache on POST requests
+
 type Handlers struct {
 	utils.Loggers
 	*pages.HandlerContext

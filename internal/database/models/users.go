@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// UserModel is a struct representation of the users table.
 type UserModel struct {
 	ID              string
 	Name            string

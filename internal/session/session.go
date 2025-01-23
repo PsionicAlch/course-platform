@@ -10,6 +10,8 @@ import (
 	"github.com/alexedwards/scs/v2/memstore"
 )
 
+// TODO: Write documentation
+
 type Session struct {
 	utils.Loggers
 	session *scs.SessionManager

@@ -14,6 +14,7 @@ type SMTPEmailClient struct {
 	Password    string
 }
 
+// SetupSMTPEmailClient creates a new SMTPEmailClient
 func SetupSMTPEmailClient(host, port, email, password string) *SMTPEmailClient {
 	loggers := utils.CreateLoggers("SMTP EMAIL CLIENT")
 
@@ -26,6 +27,7 @@ func SetupSMTPEmailClient(host, port, email, password string) *SMTPEmailClient {
 	}
 }
 
+// SendEmail sends an email of type text/html to the provided recipient with the provided subject and body.
 func (client *SMTPEmailClient) SendEmail(recipient, subject, body string) {
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	msg := []byte("Subject: " + subject + "\n" + mime + body)

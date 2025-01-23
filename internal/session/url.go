@@ -2,6 +2,8 @@ package session
 
 import "context"
 
+// TODO: Write documentation
+
 const RedirectURLKey = "redirect-url-key"
 
 func (s *Session) SetRedirectURL(ctx context.Context, url string) {

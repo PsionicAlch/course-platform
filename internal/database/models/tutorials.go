@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// TutorialModel is a struct representation of the tutorials table.
 type TutorialModel struct {
 	ID           string
 	Title        string

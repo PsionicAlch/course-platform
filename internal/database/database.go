@@ -167,14 +167,6 @@ type Database interface {
 	UpdateRefundStatus(refundId string, status RefundStatus) error
 	CountRefunds() (uint, error)
 
-	// Models functions.
-	CommentSetUser(comment *models.CommentModel) error
-	CommentsSetUser(comments []*models.CommentModel) error
-	CommentSetTutorial(comment *models.CommentModel) error
-	CommentsSetTutorial(comments []*models.CommentModel) error
-	CommentSetTimeAgo(comment *models.CommentModel)
-	CommentsSetTimeAgo(comment []*models.CommentModel)
-
 	// Bulk functions.
 	PrepareBulkTutorials()
 	InsertTutorial(title, slug, description, thumbnailUrl, bannerUrl, content, checksum, fileKey string, keywords []string)

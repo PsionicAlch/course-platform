@@ -7,6 +7,8 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
+// AddCourse adds a new course row to the database. This function works with either a database connection or a database
+// transaction.
 func AddCourse(dbFacade SqlDbFacade, id, title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum, fileKey string) error {
 	query := `INSERT INTO courses (id, title, slug, description, thumbnail_url, banner_url, content, file_checksum, file_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`
 
@@ -27,6 +29,8 @@ func AddCourse(dbFacade SqlDbFacade, id, title, slug, description, thumbnailUrl,
 	return nil
 }
 
+// UpdateCourse updates the course row based on the provided ID. This function works with either a database connection
+// or a database transaction.
 func UpdateCourse(dbFacade SqlDbFacade, id, title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum, fileKey string) error {
 	query := `UPDATE courses SET title = ?, slug = ?, description = ?, thumbnail_url = ?, banner_url = ?, content = ?, published = 0, file_checksum = ?, file_key = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?;`
 	results, err := dbFacade.Exec(query, title, slug, description, thumbnailUrl, bannerUrl, content, fileChecksum, fileKey, id)
@@ -46,6 +50,8 @@ func UpdateCourse(dbFacade SqlDbFacade, id, title, slug, description, thumbnailU
 	return nil
 }
 
+// GetCourseByID retrieves a CourseModel based on the provided course ID. This function works with either a database
+// connection or a database transaction.
 func GetCourseByID(dbFacade SqlDbFacade, courseId string) (*models.CourseModel, error) {
 	query := `SELECT id, title, slug, description, thumbnail_url, banner_url, content, published, author_id, file_checksum, file_key, created_at, updated_at FROM courses WHERE id = ?;`
 

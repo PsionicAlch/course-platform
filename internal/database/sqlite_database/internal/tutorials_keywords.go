@@ -6,6 +6,9 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
+// AddKeywordToTutorial adds a new keyword-tutorial association in the database. This function works with either a
+// database connection or a database transaction. This function wil NOT throw an error upon a unique constraint
+// violation.
 func AddKeywordToTutorial(dbFacade SqlDbFacade, id, keywordId, tutorialId string) error {
 	query := `INSERT INTO tutorials_keywords (id, tutorial_id, keyword_id) VALUES (?, ?, ?);`
 
@@ -30,6 +33,8 @@ func AddKeywordToTutorial(dbFacade SqlDbFacade, id, keywordId, tutorialId string
 	return nil
 }
 
+// DeleteAllKeywordsFromTutorial removes all keyword associations from the tutorial with the provided ID. This function
+// works with either a database connection or a database transaction.
 func DeleteAllKeywordsFromTutorial(dbFacade SqlDbFacade, tutorialId string) error {
 	query := `DELETE FROM tutorials_keywords WHERE tutorial_id = ?;`
 

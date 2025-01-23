@@ -9,9 +9,13 @@ import (
 	"github.com/oklog/ulid/v2"
 )
 
-// The price of a course.
+// CoursePrice is the price of a course.
 const CoursePrice float64 = 200.0
+
+// AffiliateCodeDiscount is the discount percentage from using an affiliate code.
 const AffiliateCodeDiscount float64 = 10.0 / 100.0
+
+// AffiliatePointDiscount is the discount percentage from using an affiliate point.
 const AffiliatePointDiscount float64 = 1.0 / 100.0
 
 // CalculatePrice will determine the cost of the course in cents. It takes into account the discounts when determining the price.
@@ -48,6 +52,7 @@ func (payment *Payments) CalculatePrice(userId, affiliateCode, discountCode stri
 	return total, nil
 }
 
+// ValidateAffiliateCode ensure that the provided affiliate code is allowed to be used.
 func (payment *Payments) ValidateAffiliateCode(userId, affiliateCode string) (float64, error) {
 	if affiliateCode == "" {
 		return 0, nil
@@ -80,6 +85,7 @@ func (payment *Payments) ValidateAffiliateCode(userId, affiliateCode string) (fl
 	return AffiliateCodeDiscount, nil
 }
 
+// ValidateDiscountCode ensures the provided discount code is allowed to be used.
 func (payment *Payments) ValidateDiscountCode(discountCode string) (float64, error) {
 	if discountCode == "" {
 		return 0, nil
@@ -112,6 +118,7 @@ func (payment *Payments) ValidateDiscountCode(discountCode string) (float64, err
 	return float64(discount.Discount) / 100.0, nil
 }
 
+// ValidateAffiliatePointsUsed ensures that the user is allowed to use the provided amount of affiliate points.
 func (payment *Payments) ValidateAffiliatePointsUsed(userId string, affiliatePointsUsed uint) (float64, error) {
 	user, err := payment.Database.GetUserByID(userId, database.All)
 	if err != nil {
@@ -126,6 +133,7 @@ func (payment *Payments) ValidateAffiliatePointsUsed(userId string, affiliatePoi
 	return float64(affiliatePointsUsed) * AffiliatePointDiscount, nil
 }
 
+// GeneratePaymentKey creates a new and unique payment key.
 func GeneratePaymentKey() (string, error) {
 	now := time.Now()
 	entropy := rand.New(rand.NewSource(now.UnixNano()))

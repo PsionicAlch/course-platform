@@ -6,6 +6,8 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
+// AddKeywordToCourse associates a keyword row to a course row. This function works with either a database connection
+// or a database transaction. This function will NOT throw an error upon a unique constraint violation.
 func AddKeywordToCourse(dbFacade SqlDbFacade, id, keywordId, courseId string) error {
 	query := `INSERT INTO courses_keywords (id, course_id, keyword_id) VALUES (?, ?, ?);`
 
@@ -30,6 +32,8 @@ func AddKeywordToCourse(dbFacade SqlDbFacade, id, keywordId, courseId string) er
 	return nil
 }
 
+// DeleteAllKeywordsFromCourses removes all database associations between courses and keywords. This function works
+// with either a database connection or a database transaction.
 func DeleteAllKeywordsFromCourses(dbFacade SqlDbFacade, courseId string) error {
 	query := `DELETE FROM courses_keywords WHERE course_id = ?;`
 

@@ -10,11 +10,8 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
-// AddUser is an internal function that allows you to add a new user to the database with either a standalone connection
-// or through a database connection. This function will return a user model or an error. It will fail on unique constraint
-// violation with a custom database.ErrUserAlreadyExists. This can be used to do thread safe and runtime safe data uniqueness
-// tests instead of doing two separate database calls where you check if the user exists first and then try to add them.
-// Those kinds of tests can fail because a user could have been added after you checked but before you added your user.
+// AddUser adds a new user row to the database. This function will work with either a database connection or a database
+// transaction.
 func AddUser(dbFacade SqlDbFacade, id, name, surname, slug, email, password, affiliateCode string) (*models.UserModel, error) {
 	query := `INSERT INTO users (id, name, surname, slug, email, password, affiliate_code, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`
 
@@ -53,6 +50,8 @@ func AddUser(dbFacade SqlDbFacade, id, name, surname, slug, email, password, aff
 	return user, nil
 }
 
+// GetUserByID retrieves a UserModel from the database depending on the provided ID and authorization level of the user.
+// This function will work with either a database connection or a database transaction.
 func GetUserByID(dbFacade SqlDbFacade, id string, level database.AuthorizationLevel) (*models.UserModel, error) {
 	query := `SELECT id, name, surname, slug, email, password, is_admin, is_author, affiliate_code, affiliate_points, created_at, updated_at FROM users WHERE id = ?`
 

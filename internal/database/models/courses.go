@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// CourseModel is a struct representation of the courses table.
 type CourseModel struct {
 	ID           string
 	Title        string
@@ -19,6 +20,4 @@ type CourseModel struct {
 	FileKey      string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-
-	Keywords []string
 }

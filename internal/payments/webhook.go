@@ -15,6 +15,7 @@ import (
 	"github.com/stripe/stripe-go/v81/webhook"
 )
 
+// Webhook is the web handler responsible for handling requests from Stripe.
 func (payment *Payments) Webhook(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -55,6 +56,8 @@ func (payment *Payments) Webhook(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// HandlePaymentIntent handles updating course purchases for "payment_intent.requires_action" and
+// "payment_intent.processing" events.
 func (payment *Payments) HandlePaymentIntent(status database.PaymentStatus) func(event *stripe.Event) error {
 	return func(event *stripe.Event) error {
 		var intent stripe.PaymentIntent
@@ -86,6 +89,7 @@ func (payment *Payments) HandlePaymentIntent(status database.PaymentStatus) func
 	}
 }
 
+// HandlePaymentSuccess handles updating course purchases when payment is successful.
 func (payment *Payments) HandlePaymentSuccess(event *stripe.Event) error {
 	var intent stripe.PaymentIntent
 	if err := json.Unmarshal(event.Data.Raw, &intent); err != nil {
@@ -142,6 +146,7 @@ func (payment *Payments) HandlePaymentSuccess(event *stripe.Event) error {
 	return nil
 }
 
+// HandlePaymentCancel updates course purchase when payment is canceled.
 func (payment *Payments) HandlePaymentCancel(event *stripe.Event) error {
 	var intent stripe.PaymentIntent
 	if err := json.Unmarshal(event.Data.Raw, &intent); err != nil {
@@ -172,6 +177,7 @@ func (payment *Payments) HandlePaymentCancel(event *stripe.Event) error {
 	return nil
 }
 
+// HandlePaymentFailed updates course purchase when payment fails.
 func (payment *Payments) HandlePaymentFailed(event *stripe.Event) error {
 	var intent stripe.PaymentIntent
 	if err := json.Unmarshal(event.Data.Raw, &intent); err != nil {
@@ -202,6 +208,7 @@ func (payment *Payments) HandlePaymentFailed(event *stripe.Event) error {
 	return nil
 }
 
+// HandleRefund updates the course purchase and refund based on the provided Stripe events.
 func (payment *Payments) HandleRefund(event *stripe.Event) error {
 	var refund stripe.Refund
 	if err := json.Unmarshal(event.Data.Raw, &refund); err != nil {
@@ -352,6 +359,7 @@ func (payment *Payments) HandleRefund(event *stripe.Event) error {
 	return nil
 }
 
+// HandleChargeRefunded updates the course purchase and refund based on the provided Stripe events.
 func (payment *Payments) HandleChargeRefunded(event *stripe.Event) error {
 	var charge stripe.Charge
 	if err := json.Unmarshal(event.Data.Raw, &charge); err != nil {

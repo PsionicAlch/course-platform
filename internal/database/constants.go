@@ -23,6 +23,7 @@ const (
 	Disputed
 )
 
+// String converts PaymentStatus to a string.
 func (p PaymentStatus) String() string {
 	switch p {
 	case Pending:
@@ -46,6 +47,7 @@ func (p PaymentStatus) String() string {
 	}
 }
 
+// PaymentStatusFromString converts a string to a PaymentStatus.
 func PaymentStatusFromString(s string) PaymentStatus {
 	switch s {
 	case Pending.String():
@@ -86,6 +88,7 @@ const (
 	DisputeLost
 )
 
+// String converts a RefundStatus to a string.
 func (r RefundStatus) String() string {
 	switch r {
 	case RefundPending:
@@ -117,6 +120,7 @@ func (r RefundStatus) String() string {
 	}
 }
 
+// RefundStatusFromString converts a string to a RefundStatus.
 func RefundStatusFromString(s string) RefundStatus {
 	switch s {
 	case RefundRequiresAction.String():

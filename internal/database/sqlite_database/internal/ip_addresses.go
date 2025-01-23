@@ -5,9 +5,8 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
-// AddIPAddress adds a new IP address to a user's whitelist of IP addresses. This function is compatible with database
-// transactions. It does database level uniqueness checks and will NOT return an error if a uniqueness constraint
-// violation is caused.
+// AddIPAddress adds a new IP address to a user's whitelist of IP addresses. This function works with either a database
+// connection or a database transaction. This function will NOT throw an error upon a unique constraint violation.
 func AddIPAddress(dbFacade SqlDbFacade, id, userId, ipAddr string) error {
 	query := `INSERT INTO whitelisted_ips (id, user_id, ip_address) VALUES (?, ?, ?);`
 

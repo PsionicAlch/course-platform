@@ -9,6 +9,8 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
+// AddKeywords adds a new keyword row to the database. This function works with either a database connection or a
+// database transaction. This function will NOT throw an error upon a unique constraint violation.
 func AddKeyword(dbFacade SqlDbFacade, id, keyword string) error {
 	query := `INSERT INTO keywords (id, keyword) VALUES (?, ?);`
 
@@ -33,6 +35,8 @@ func AddKeyword(dbFacade SqlDbFacade, id, keyword string) error {
 	return nil
 }
 
+// GetKeywordByKeyword will retrieve a KeywordModel from the database using a given keyword. This function works with
+// either a database connection or a database transaction.
 func GetKeywordByKeyword(dbFacade SqlDbFacade, keyword string) (*models.KeywordModel, error) {
 	query := `SELECT id, keyword FROM keywords WHERE keyword = ?;`
 
