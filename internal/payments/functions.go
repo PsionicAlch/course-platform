@@ -105,7 +105,7 @@ func (payment *Payments) ValidateDiscountCode(discountCode string) (float64, err
 		return 0, err
 	}
 
-	if discountUsed > discount.Uses {
+	if discountUsed >= discount.Uses {
 		return 0, ErrInvalidDiscountCode
 	}
 

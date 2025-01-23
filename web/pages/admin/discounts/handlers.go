@@ -393,7 +393,7 @@ func (h *Handlers) CreateDiscountsList(r *http.Request) (*html.AdminDiscountsLis
 
 	discountUsed := make(map[string]uint, len(discounts))
 	for _, discount := range discounts {
-		uses, err := h.Database.CountDiscountUses(discount.Code)
+		uses, err := h.Database.CountCoursesWhereDiscountWasUsed(discount.Code)
 		if err != nil {
 			h.ErrorLog.Printf("Failed to count the amount of times discount code (\"%s\") was used: %s\n", discount.Code, err)
 			return nil, urlQuery, err

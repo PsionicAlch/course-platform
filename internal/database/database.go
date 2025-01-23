@@ -125,7 +125,6 @@ type Database interface {
 	GetDiscountByCode(discountCode string) (*models.DiscountModel, error)
 	ActivateDiscount(discountId string) error
 	DeactivateDiscount(discountId string) error
-	CountDiscountUses(discountCode string) (uint, error)
 
 	// Course Purchases functions.
 	AdminGetCoursePurchases(term string, courseId string, authorId string, status string, page, elements uint) ([]*models.CoursePurchaseModel, error)
