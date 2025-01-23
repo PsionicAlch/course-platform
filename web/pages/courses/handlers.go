@@ -391,9 +391,6 @@ func (h *Handlers) PurchaseCourseCheckGet(w http.ResponseWriter, r *http.Request
 	if bought {
 		h.Payment.DeletePaymentToken(token)
 		h.Session.SetInfoMessage(r.Context(), "Thank you for your purchase! We hope you enjoy the course.")
-
-		// TODO: Send email thanking user for the purchase of the course.
-
 		utils.Redirect(w, r, fmt.Sprintf("/profile/courses/%s", course.Slug))
 	}
 }
