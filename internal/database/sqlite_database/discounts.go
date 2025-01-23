@@ -211,3 +211,21 @@ func (db *SQLiteDatabase) DeactivateDiscount(discountId string) error {
 
 	return nil
 }
+
+func (db *SQLiteDatabase) CountDiscountUses(discountCode string) (uint, error) {
+	query := `SELECT COUNT(id) FROM course_purchases WHERE discount_code = ?;`
+
+	var count uint
+
+	row := db.connection.QueryRow(query, discountCode)
+	if err := row.Scan(&count); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
+
+		db.ErrorLog.Printf("Failed to count the number of times the discount code (\"%s\") was used: %s\n", discountCode, err)
+		return 0, err
+	}
+
+	return count, nil
+}

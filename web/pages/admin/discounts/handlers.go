@@ -25,7 +25,6 @@ type Handlers struct {
 	*pages.HandlerContext
 }
 
-// TODO: Set "Used" based on database
 func SetupHandlers(handlerContext *pages.HandlerContext) *Handlers {
 	loggers := utils.CreateLoggers("ADMIN DISCOUNTS HANDLERS")
 
@@ -394,8 +393,13 @@ func (h *Handlers) CreateDiscountsList(r *http.Request) (*html.AdminDiscountsLis
 
 	discountUsed := make(map[string]uint, len(discounts))
 	for _, discount := range discounts {
-		// TODO: Query database for every time this discount code was used.
-		discountUsed[discount.ID] = 0
+		uses, err := h.Database.CountDiscountUses(discount.Code)
+		if err != nil {
+			h.ErrorLog.Printf("Failed to count the amount of times discount code (\"%s\") was used: %s\n", discount.Code, err)
+			return nil, urlQuery, err
+		}
+
+		discountUsed[discount.ID] = uses
 	}
 
 	discountsList := &html.AdminDiscountsListComponent{
