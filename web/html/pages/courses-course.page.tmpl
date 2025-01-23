@@ -74,7 +74,7 @@
 
           <p>{{- .Course.Description -}}</p>
 
-          <a href="/courses/{{- .Course.Slug -}}/purchase" class="btn btn-blue btn-buy shadow-sm">Buy Course - $150</a>
+          <a href="/courses/{{- .Course.Slug -}}/purchase" class="btn btn-blue btn-buy shadow-sm">Buy Course - ${{ .CoursePrice }}</a>
         </div>
 
         <hr>
@@ -82,7 +82,7 @@
         <div class="course-body">
           {{ html .Course.Content }}
 
-          <a href="/courses/course-slug-goes-here/purchase" class="btn btn-blue btn-buy shadow-sm">Buy Course - $150</a>
+          <a href="/courses/course-slug-goes-here/purchase" class="btn btn-blue btn-buy shadow-sm">Buy Course - ${{ .CoursePrice }}</a>
         </div>
       </div>
     </div>

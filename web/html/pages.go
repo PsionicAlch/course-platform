@@ -127,9 +127,10 @@ type CoursesPage struct {
 
 type CoursesCoursePage struct {
 	BasePage
-	Course   *models.CourseModel
-	Author   *models.UserModel
-	Chapters int
+	CoursePrice float64
+	Course      *models.CourseModel
+	Author      *models.UserModel
+	Chapters    int
 }
 
 type CoursesPurchasesPage struct {

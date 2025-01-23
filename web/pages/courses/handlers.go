@@ -9,6 +9,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
 	"github.com/PsionicAlch/psionicalch-home/internal/database"
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/psionicalch-home/internal/payments"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/web/config"
 	"github.com/PsionicAlch/psionicalch-home/web/forms"
@@ -76,11 +77,10 @@ func (h *Handlers) CoursesPaginationGet(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
-	// TODO: Fill the course price in based on the payment.CoursePrice const
-
 	user := authentication.GetUserFromRequest(r)
 	pageData := html.CoursesCoursePage{
-		BasePage: html.NewBasePage(user, nosurf.Token(r)),
+		BasePage:    html.NewBasePage(user, nosurf.Token(r)),
+		CoursePrice: payments.CoursePrice,
 	}
 
 	courseSlug := chi.URLParam(r, "course-slug")
