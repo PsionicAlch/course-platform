@@ -9,6 +9,7 @@ import (
 	sqlite3 "modernc.org/sqlite/lib"
 )
 
+// AddCertificate adds a new certificate row the database.
 func (db *SQLiteDatabase) AddCertificate(userId, courseId string) error {
 	query := `INSERT INTO certificates (id, user_id, course_id) VALUES (?, ?, ?);`
 
@@ -42,6 +43,7 @@ func (db *SQLiteDatabase) AddCertificate(userId, courseId string) error {
 	return nil
 }
 
+// GetCertificateFromID retrieves a CertificateModel from the database by the given ID.
 func (db *SQLiteDatabase) GetCertificateFromID(certificateId string) (*models.CertificateModel, error) {
 	query := `SELECT id, user_id, course_id, created_at FROM certificates WHERE id = ?;`
 
@@ -60,6 +62,7 @@ func (db *SQLiteDatabase) GetCertificateFromID(certificateId string) (*models.Ce
 	return &certificate, nil
 }
 
+// GetCertificateFromUserAndCourse retrieves a CertificateModel based on the user ID and course ID.
 func (db *SQLiteDatabase) GetCertificateFromUserAndCourse(userId, courseId string) (*models.CertificateModel, error) {
 	query := `SELECT id, user_id, course_id, created_at FROM certificates WHERE user_id = ? AND course_id = ?;`
 
@@ -78,6 +81,7 @@ func (db *SQLiteDatabase) GetCertificateFromUserAndCourse(userId, courseId strin
 	return &certificate, nil
 }
 
+// GetUserFromCertificate retrieves a UserModel from the given certificate ID.
 func (db *SQLiteDatabase) GetUserFromCertificate(certificateId string) (*models.UserModel, error) {
 	query := `SELECT u.id, u.name, u.surname, u.slug, u.email, u.password, u.is_admin, u.is_author, u.affiliate_code, u.affiliate_points, u.created_at, u.updated_at FROM certificates AS c LEFT JOIN users AS u ON c.user_id = u.id WHERE c.id = ?;`
 
@@ -101,6 +105,7 @@ func (db *SQLiteDatabase) GetUserFromCertificate(certificateId string) (*models.
 	return &user, nil
 }
 
+// GetCourseFromCertificate retrieves a CourseModel from the given certificate ID.
 func (db *SQLiteDatabase) GetCourseFromCertificate(certificateId string) (*models.CourseModel, error) {
 	query := `SELECT c.id, c.title, c.slug, c.description, c.thumbnail_url, c.banner_url, c.content, c.published, c.author_id, c.file_checksum, c.file_key, c.created_at, c.updated_at FROM certificates AS cf LEFT JOIN courses AS c ON cf.course_id = c.id WHERE cf.id = ?;`
 

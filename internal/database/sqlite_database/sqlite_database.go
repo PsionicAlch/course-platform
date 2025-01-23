@@ -8,6 +8,8 @@ import (
 	_ "modernc.org/sqlite"
 )
 
+// TODO: Add database cleanup functions that run in the background.
+
 type SQLiteDatabase struct {
 	utils.Loggers
 	fileName      string

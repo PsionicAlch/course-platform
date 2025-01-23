@@ -6,6 +6,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
 )
 
+// RegisterAffiliatePointsChange adds a new row to the affiliate_points_history table.
 func (db *SQLiteDatabase) RegisterAffiliatePointsChange(userId, courseId string, pointsChange int, reason string) error {
 	id, err := database.GenerateID()
 	if err != nil {
@@ -21,6 +22,7 @@ func (db *SQLiteDatabase) RegisterAffiliatePointsChange(userId, courseId string,
 	return nil
 }
 
+// CountUserAffiliateHistory counts all the times the given user's affiliate code was used.
 func (db *SQLiteDatabase) CountUserAffiliateHistory(userId string) (uint, error) {
 	query := `SELECT COUNT(id) FROM affiliate_points_history WHERE user_id = ?;`
 
@@ -35,6 +37,7 @@ func (db *SQLiteDatabase) CountUserAffiliateHistory(userId string) (uint, error)
 	return count, nil
 }
 
+// GetUserAffiliatePointsHistory gets a slice of AffiliatePointsHistoryModel for a given user.
 func (db *SQLiteDatabase) GetUserAffiliatePointsHistory(userId string, page, elements uint) ([]*models.AffiliatePointsHistoryModel, error) {
 	query := `SELECT id, user_id, course_id, points_change, reason, created_at FROM affiliate_points_history WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?;;`
 

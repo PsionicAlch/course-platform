@@ -8,6 +8,7 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 )
 
+// AdminGetComments gets a paginated list of all comments for the admin panel.
 func (db *SQLiteDatabase) AdminGetComments(term, tutorialId, userId string, page, elements uint) ([]*models.CommentModel, error) {
 	query := `SELECT c.id, c.content, c.user_id, c.tutorial_id, c.created_at FROM comments AS c WHERE (LOWER(c.id) LIKE '%' || ? || '%' OR LOWER(c.content) LIKE '%' || ? || '%')`
 
@@ -58,6 +59,7 @@ func (db *SQLiteDatabase) AdminGetComments(term, tutorialId, userId string, page
 	return comments, nil
 }
 
+// GetAllCommentsPaginated gets a paginated list of comments for a given tutorial by ID.
 func (db *SQLiteDatabase) GetAllCommentsPaginated(tutorialId string, page, elements int) ([]*models.CommentModel, error) {
 	query := `SELECT id, content, user_id, tutorial_id, created_at FROM comments WHERE tutorial_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?;`
 
@@ -94,6 +96,7 @@ func (db *SQLiteDatabase) GetAllCommentsPaginated(tutorialId string, page, eleme
 	return comments, nil
 }
 
+// GetAllCommentsBySlugPaginated gets a paginated list of comments for a given tutorial by slug.
 func (db *SQLiteDatabase) GetAllCommentsBySlugPaginated(slug string, page, elements int) ([]*models.CommentModel, error) {
 	query := `SELECT id, content, user_id, tutorial_id, created_at FROM comments WHERE tutorial_id = (SELECT id FROM tutorials WHERE slug = ?) ORDER BY created_at DESC LIMIT ? OFFSET ?;`
 
@@ -130,6 +133,7 @@ func (db *SQLiteDatabase) GetAllCommentsBySlugPaginated(slug string, page, eleme
 	return comments, nil
 }
 
+// CountCommentsForTutorial counts the number of comments a given tutorial has.
 func (db *SQLiteDatabase) CountCommentsForTutorial(tutorialId string) (uint, error) {
 	query := `SELECT COUNT(id) FROM comments WHERE tutorial_id = ?;`
 
@@ -148,6 +152,7 @@ func (db *SQLiteDatabase) CountCommentsForTutorial(tutorialId string) (uint, err
 	return comments, nil
 }
 
+// AddCommentBySlug adds a comment to a tutorial by the tutorial slug.
 func (db *SQLiteDatabase) AddCommentBySlug(content, userId, slug string) (*models.CommentModel, error) {
 	query := `INSERT INTO comments (id, content, user_id, tutorial_id, created_at) VALUES (?, ?, ?, (SELECT id FROM tutorials WHERE slug = ?), ?);`
 
@@ -185,6 +190,7 @@ func (db *SQLiteDatabase) AddCommentBySlug(content, userId, slug string) (*model
 	return &comment, nil
 }
 
+// CountComments counts the number of comments in the database.
 func (db *SQLiteDatabase) CountComments() (uint, error) {
 	query := `SELECT COUNT(id) FROM comments;`
 
@@ -199,6 +205,7 @@ func (db *SQLiteDatabase) CountComments() (uint, error) {
 	return count, nil
 }
 
+// DeleteComment deletes a comment by it's ID.
 func (db *SQLiteDatabase) DeleteComment(commentId string) error {
 	query := `DELETE FROM comments WHERE id = ?;`
 
