@@ -18,8 +18,6 @@ import (
 	"github.com/justinas/nosurf"
 )
 
-// TODO: Fix title for course chapters
-
 const CoursesPerPagination = 25
 
 type Handlers struct {
