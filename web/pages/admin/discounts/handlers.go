@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
@@ -262,7 +263,7 @@ func (h *Handlers) StatusEditPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !utils.InSlice(discountStatus, DiscountStatuses) {
+	if !slices.Contains(DiscountStatuses, discountStatus) {
 		discountStatuses := make(map[string]string, len(DiscountStatuses))
 		for _, status := range DiscountStatuses {
 			discountStatuses[status] = status

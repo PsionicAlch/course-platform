@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
@@ -234,7 +235,7 @@ func (h *Handlers) PublishedEditPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !utils.InSlice(publishStatus, PublishStatuses) {
+	if !slices.Contains(PublishStatuses, publishStatus) {
 		publishStatuses := make(map[string]string, len(PublishStatuses))
 		for _, status := range PublishStatuses {
 			publishStatuses[status] = status
@@ -474,7 +475,7 @@ func (h *Handlers) CreateCoursesList(r *http.Request) (*html.AdminCoursesListCom
 
 	urlQuery := make(url.Values)
 
-	if !utils.InSlice(r.URL.Query().Get("status"), PublishStatuses) {
+	if !slices.Contains(PublishStatuses, r.URL.Query().Get("status")) {
 		published = nil
 	} else {
 		if r.URL.Query().Get("status") == "Published" {

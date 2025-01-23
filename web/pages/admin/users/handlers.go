@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 
 	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
@@ -168,7 +169,7 @@ func (h *Handlers) AuthorEditPost(w http.ResponseWriter, r *http.Request) {
 
 	authorStatus := r.Form.Get("author-status")
 
-	if !utils.InSlice(authorStatus, []string{"Author", "User"}) {
+	if !slices.Contains([]string{"Author", "User"}, authorStatus) {
 		h.ErrorLog.Printf("Received invalid author status option: %s\n", authorStatus)
 
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
@@ -319,7 +320,7 @@ func (h *Handlers) AdminEditPost(w http.ResponseWriter, r *http.Request) {
 
 	adminStatus := r.Form.Get("admin-status")
 
-	if !utils.InSlice(adminStatus, []string{"Admin", "User"}) {
+	if !slices.Contains([]string{"Admin", "User"}, adminStatus) {
 		h.ErrorLog.Printf("Received invalid admin status option: %s\n", adminStatus)
 
 		if err := h.Renderers.Htmx.RenderHTML(w, nil, "select", html.SelectComponent{
