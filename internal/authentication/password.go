@@ -6,6 +6,7 @@ import (
 	"encoding/gob"
 	"runtime"
 
+	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"golang.org/x/crypto/argon2"
 )
 
@@ -60,11 +61,11 @@ func (params *PasswordParameters) HashPassword(password string) (string, error) 
 		return "", err
 	}
 
-	return BytesToString(passwordBytes), nil
+	return utils.BytesToString(passwordBytes), nil
 }
 
 func ComparePasswordAndHash(password, passwordHash string) (bool, error) {
-	passwordBytes, err := StringToBytes(passwordHash)
+	passwordBytes, err := utils.StringToBytes(passwordHash)
 	if err != nil {
 		return false, err
 	}
@@ -112,5 +113,5 @@ func PasswordFromBytes(password []byte) (*Password, error) {
 }
 
 func NewSalt(length int) ([]byte, error) {
-	return RandomBytes(uint(length))
+	return utils.RandomBytes(uint(length))
 }

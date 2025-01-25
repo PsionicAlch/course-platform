@@ -6,7 +6,7 @@ import (
 
 	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
 	"github.com/PsionicAlch/psionicalch-home/internal/email"
-	smtp_email_client "github.com/PsionicAlch/psionicalch-home/internal/email/clients/SMTP"
+	smtp_email_client "github.com/PsionicAlch/psionicalch-home/internal/email/clients/smtp"
 	"github.com/PsionicAlch/psionicalch-home/internal/render"
 	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 	"github.com/PsionicAlch/psionicalch-home/web/config"

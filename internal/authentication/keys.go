@@ -3,6 +3,8 @@ package authentication
 import (
 	"fmt"
 	"strings"
+
+	"github.com/PsionicAlch/psionicalch-home/internal/utils"
 )
 
 type SecureCookieKeys struct {
@@ -22,12 +24,12 @@ func CreateSecureCookieKeys(key string) (*SecureCookieKeys, error) {
 		return nil, ErrInvalidSecureCookieKey
 	}
 
-	hashKeyBytes, err := StringToBytes(hashKey)
+	hashKeyBytes, err := utils.StringToBytes(hashKey)
 	if err != nil {
 		return nil, ErrInvalidSecureCookieKey
 	}
 
-	blockKeyBytes, err := StringToBytes(blockKey)
+	blockKeyBytes, err := utils.StringToBytes(blockKey)
 	if err != nil {
 		return nil, ErrInvalidSecureCookieKey
 	}
@@ -55,10 +57,10 @@ func GenerateKeyString() (string, error) {
 }
 
 func GenerateKey(length uint) (string, error) {
-	byteSlice, err := RandomBytes(length)
+	byteSlice, err := utils.RandomBytes(length)
 	if err != nil {
 		return "", err
 	}
 
-	return BytesToString(byteSlice), nil
+	return utils.BytesToString(byteSlice), nil
 }

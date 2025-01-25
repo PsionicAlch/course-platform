@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"iter"
 )
 
@@ -36,4 +38,26 @@ func Find[A comparable](items []A, compareFunc func(item A) bool) (int, bool) {
 	}
 
 	return -1, false
+}
+
+func RandomBytes(length uint) ([]byte, error) {
+	b := make([]byte, length)
+	_, err := rand.Read(b)
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
+
+func BytesToString(src []byte) string {
+	return base64.RawStdEncoding.EncodeToString(src)
+}
+
+func BytesToURLString(src []byte) string {
+	return base64.RawURLEncoding.EncodeToString(src)
+}
+
+func StringToBytes(src string) ([]byte, error) {
+	return base64.RawStdEncoding.Strict().DecodeString(src)
 }

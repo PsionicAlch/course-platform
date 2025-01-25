@@ -2,6 +2,7 @@ package validators
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 )
 
@@ -98,10 +99,8 @@ func Complex128(name, data string) error {
 
 func InSlice(items []string) ValidationFunc {
 	return func(name, data string) error {
-		for _, item := range items {
-			if item == data {
-				return nil
-			}
+		if slices.Contains(items, data) {
+			return nil
 		}
 
 		return fmt.Errorf("%s's %s is not in the list of viable options: %v", name, data, items)
