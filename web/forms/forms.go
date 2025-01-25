@@ -7,6 +7,8 @@ import (
 	"github.com/PsionicAlch/psionicalch-home/web/forms/validators"
 )
 
+// TODO: Move to internal
+
 type FieldName string
 
 type GenericForm struct {
@@ -57,6 +59,7 @@ func (form *GenericForm) SetError(field FieldName, err string) {
 	form.errors[field] = append(form.errors[field], err)
 }
 
+// TODO: Delete me!
 func (form *GenericForm) SetEmailError(err string) {
 	form.SetError(EmailName, err)
 }
