@@ -25,8 +25,8 @@ seed-database:
 new-admin:
 	@go run ./cmd/add_admin_user -name="$(name)" -surname="$(surname)" -email="$(email)" -password="$(password)"
 
-new-keys:
-	@go run ./cmd/keys
+new-key:
+	@go run ./cmd/auth_key
 
 load-content:
 	@go run ./cmd/content

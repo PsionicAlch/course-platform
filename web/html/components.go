@@ -135,8 +135,9 @@ type TutorialsListComponent struct {
 }
 
 type CommentsListComponent struct {
-	Comments     []*models.CommentModel
-	LastComment  *models.CommentModel
+	Comments    []*models.CommentModel
+	LastComment *models.CommentModel
+	// TODO: ADD STUFFS
 	QueryURL     string
 	ErrorMessage string
 }

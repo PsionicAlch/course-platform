@@ -146,7 +146,6 @@ func (b *S3Bucket) UploadFileFS(files embed.FS, fileName, checksum string) error
 		Body:              strings.NewReader(string(output)),
 		ContentType:       aws.String(contentType),
 		ChecksumAlgorithm: types.ChecksumAlgorithmSha256,
-		ACL:               types.ObjectCannedACLPublicRead,
 		Metadata: map[string]string{
 			"checksum": checksum,
 		},

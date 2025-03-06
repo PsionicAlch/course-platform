@@ -1,18 +1,19 @@
 ---
-title: "Go's Built-in Concurrency: Goroutines and Channels"
-description: "Harness the power of concurrency in Go with goroutines and channels."
-thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
-banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
-keywords: ["keyword 1", "keyword 2", "keyword 3"]
+title: "Advanced Concurrency Patterns in Go Part 1"
+description: "Explore advanced concurrency patterns and best practices in Go"
+thumbnail_url: # INSERT LINK TO YOUR IMAGE
+banner_url: # INSERT LINK TO YOUR IMAGE
+keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
-key: "rePxWEIboKUOC3XXMkIKFB5DQ8wKPppHjKt3lG5XqItRZF9mDxYq_L07TGBvmnVmioIYcc2nBVzLXyHvZuMNlg"
+# DO NOT TOUCH THIS
+key: "z2PKy8TJKRk8vToArlDCPpBxTdb3IJeusgAWfQUD03RI0quSqEbhGDJMy1CirGoGI2JLj9kiDPStrjNLL9nE2A"
 ---
 
 ## Lorem Ipsum Dolor Sit Amet
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer placerat ante ut sodales venenatis. Donec non aliquam ligula, sit amet sollicitudin ligula. Mauris ornare neque consequat, viverra quam non, fermentum leo. Nullam feugiat ullamcorper ipsum, vel dapibus elit porttitor eget. Cras rutrum, lacus at laoreet convallis, erat libero gravida ex, id accumsan augue magna id nunc. Proin semper elit eu arcu elementum, non aliquet massa scelerisque. Duis porta commodo dapibus. Nulla vestibulum tristique blandit. Suspendisse pulvinar tortor purus, sit amet varius urna vehicula sit amet. Aenean congue mi mi, a blandit lectus maximus efficitur. Nunc quis metus lorem. Morbi et diam in elit laoreet bibendum. Morbi ultrices ligula at massa accumsan, a congue enim ullamcorper. Phasellus sit amet ultricies dolor.
 
-![Alt text for image](https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png "a title for the image")
+![Alt text for image](INSERT LINK TO YOUR IMAGE "a title for the image")
 
 ## Secondary Title
 

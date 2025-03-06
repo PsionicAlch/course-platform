@@ -1,11 +1,11 @@
 ---
-title: "Go for DevOps: Automate and Manage Infrastructure with Golang"
+title: "Build Your Own Course Platform with Golang, HTMX, AlpineJS and Bootstrap 5"
 description: "Unlock the skills to build and launch a fully-functional course platform - a real, production-ready web application you can immediately use to teach, share, and grow your audience."
-thumbnail_url: "https://d2ra3i7lkx098s.cloudfront.net/img/golang-course-platform-image.png"
-banner_url: "https://d2ra3i7lkx098s.cloudfront.net/img/banner-img.png"
+thumbnail_url: # INSERT LINK TO YOUR IMAGE
+banner_url: # INSERT LINK TO YOUR IMAGE
 keywords: ["keyword 1", "keyword 2", "keyword 3", "keyword 4", "keyword 5"]
 
-key: "pM6HichwKbGxQscc5nkDucXBx-13tcNQYH65ndmu9d_yOlZ1R7mGfwbMgrc3tmSnlJJbBnt4soLvdo6fUpKCVA"
+key: "JvSfm3LDdJuD6jxD1uwoC-D1MbUFY_nTnLLRk9dJarqHkFVsPTwaDIE2We6m0SXtNCZyxb5QWGRsTwdsYElXgQ"
 ---
 
 ## Course Overview

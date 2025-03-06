@@ -1,27 +1,39 @@
 {{ define "comments-list" }}
   {{ if .Comments }}
     {{ range .Comments }}
-      {{ template "comment" . }}
+      <div class="comment shadow-sm-hover">
+        <div class="comment-header">
+          <p><b>{{- .User.Name -}} {{- .User.Surname -}}</b></p>
+    
+          <p><small>{{- .TimeAgo -}}</small></p>
+        </div>
+    
+        <hr>
+    
+        <div class="comment-body">
+          <p>{{- .Content -}}</p>
+        </div>
+      </div>
     {{ end }}
   {{ end }}
 
-  {{ if .LastComment }}
+  {{ with .LastComment }}
     <div
-      hx-get="{{ .QueryURL }}"
+      hx-get="{{ $.QueryURL }}"
       hx-trigger="revealed once"
       hx-swap="afterend"
       class="comment shadow-sm-hover"
     >
       <div class="comment-header">
-        <p><b>{{- .LastComment.User.Name -}} {{- .LastComment.User.Surname -}}</b></p>
+        <p><b>{{- .User.Name -}} {{- .User.Surname -}}</b></p>
 
-        <p><small>{{- .LastComment.TimeAgo -}}</small></p>
+        <p><small>{{- .TimeAgo -}}</small></p>
       </div>
 
       <hr>
 
       <div class="comment-body">
-        <p>{{- .LastComment.Content -}}</p>
+        <p>{{- .Content -}}</p>
       </div>
     </div>
   {{ end }}
