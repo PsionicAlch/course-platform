@@ -169,7 +169,7 @@ You can generate a key using the following command: ```make generate-file-key```
 
 The rest of the tutorial can be written in plain Markdown. Images are supported but you will need to provide the exact URL path to the image. The reason for this is so that you can use images that aren't hosted by you. You can also write code blocks and they will be properly sytnax highlighted using [highligh.js](https://highlightjs.org/).
 
-Once your tutorial has been written you can load it into the database with the following command: ```make load-content```. The tutorial will be set to "unpublished" by default without an author so you will need to [publish your tutorial]("") before it's visible.
+Once your tutorial has been written you can load it into the database with the following command: ```make load-content```. The tutorial will be set to "unpublished" by default without an author so you will need to [publish your tutorial]("https://github.com/PsionicAlch/course-platform?tab=readme-ov-file#how-to-publish-a-tutorial") before it's visible.
 
 ## How to publish a tutorial?
 
@@ -219,7 +219,7 @@ You can generate a key using the following command: ```make generate-file-key```
 
 This file can contain images and code blocks and the code blocks will be properly sytnax highlighted using [highligh.js](https://highlightjs.org/).
 
-Once your course has been written you can load it into the database with the following command: ```make load-content```. The course will be set to "unpublished" by default without an author so you will need to [publish your course]("") before it's visible.
+Once your course has been written you can load it into the database with the following command: ```make load-content```. The course will be set to "unpublished" by default without an author so you will need to [publish your course]("https://github.com/PsionicAlch/course-platform?tab=readme-ov-file#how-to-publish-a-course") before it's visible.
 
 ## How to publish a course?
 
