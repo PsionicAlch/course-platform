@@ -6,12 +6,12 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/web/html"
-	"github.com/PsionicAlch/psionicalch-home/web/pages"
+	"github.com/PsionicAlch/course-platform/internal/authentication"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/utils"
+	"github.com/PsionicAlch/course-platform/web/html"
+	"github.com/PsionicAlch/course-platform/web/pages"
 	goaway "github.com/TwiN/go-away"
 	"github.com/go-chi/chi/v5"
 	"github.com/justinas/nosurf"
@@ -181,15 +181,16 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 		h.Session.SetErrorMessage(r.Context(), "Failed to get comments for tutorial.")
 	}
 
-	if comments != nil {
-		if err := h.Database.CommentsSetUser(comments); err != nil {
-			h.ErrorLog.Printf("Failed to get users of comments for tutorial (\"%s\"): %s\n", tutorial.Title, err)
-			h.Session.SetErrorMessage(r.Context(), "Failed to get comments for tutorial.")
+	users := make(map[string]*models.UserModel)
 
-			comments = nil
+	for _, comment := range comments {
+		user, err := h.Database.GetUserByID(comment.UserID, database.All)
+		if err != nil {
+			h.ErrorLog.Printf("Failed to get user (\"%s\") for comment (\"%s\"): %s\n", comment.ID, comment.UserID, err)
+			h.Session.SetErrorMessage(r.Context(), "Failed to get comments for tutorial.")
 		}
 
-		h.Database.CommentsSetTimeAgo(comments)
+		users[comment.UserID] = user
 	}
 
 	var commentsSlice []*models.CommentModel
@@ -205,6 +206,7 @@ func (h *Handlers) TutorialGet(w http.ResponseWriter, r *http.Request) {
 	pageData.Comments = &html.CommentsListComponent{
 		Comments:    commentsSlice,
 		LastComment: lastComment,
+		Users:       users,
 		QueryURL:    fmt.Sprintf("/tutorials/%s/comments?page=2", tutorial.Slug),
 	}
 
@@ -343,17 +345,22 @@ func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if comments != nil {
-		if err := h.Database.CommentsSetUser(comments); err != nil {
-			h.ErrorLog.Printf("Failed to get users of comments for tutorial (\"%s\"): %s\n", tutorialSlug, err)
-			h.Session.SetErrorMessage(r.Context(), "Failed to get comments for tutorial.")
+	users := make(map[string]*models.UserModel)
 
-			comments = nil
+	for _, comment := range comments {
+		user, err := h.Database.GetUserByID(comment.UserID, database.All)
+		if err != nil {
+			h.ErrorLog.Printf("Failed to get user (\"%s\") for comment (\"%s\"): %s\n", comment.ID, comment.UserID, err)
+			commentsList.ErrorMessage = "Failed to load comments."
+
+			if err := h.Renderers.Htmx.RenderHTML(w, nil, "comments", commentsList, http.StatusBadRequest); err != nil {
+				h.ErrorLog.Println(err)
+			}
+
+			return
 		}
-	}
 
-	if comments != nil {
-		h.Database.CommentsSetTimeAgo(comments)
+		users[comment.UserID] = user
 	}
 
 	var commentsSlice []*models.CommentModel
@@ -368,6 +375,7 @@ func (h *Handlers) CommentsGet(w http.ResponseWriter, r *http.Request) {
 
 	commentsList.Comments = commentsSlice
 	commentsList.LastComment = lastComment
+	commentsList.Users = users
 	commentsList.QueryURL = fmt.Sprintf("/tutorials/%s/comments?page=%d", tutorialSlug, page+1)
 
 	if err := h.Renderers.Htmx.RenderHTML(w, nil, "comments", commentsList); err != nil {
@@ -395,10 +403,11 @@ func (h *Handlers) CommentsPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		commentModel.User = user
-		h.Database.CommentSetTimeAgo(commentModel)
+		commentsList := &html.CommentsListComponent{}
+		commentsList.Comments = []*models.CommentModel{commentModel}
+		commentsList.Users = map[string]*models.UserModel{commentModel.UserID: user}
 
-		if err := h.Renderers.Htmx.RenderHTML(w, nil, "single-comment", commentModel); err != nil {
+		if err := h.Renderers.Htmx.RenderHTML(w, nil, "comments", commentsList); err != nil {
 			h.ErrorLog.Println(err)
 		}
 	}

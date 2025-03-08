@@ -3,8 +3,8 @@ package sqlite_database
 import (
 	"database/sql"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
 )
 
 func (db *SQLiteDatabase) GetDiscountsPaginated(term string, active *bool, page, elements uint) ([]*models.DiscountModel, error) {

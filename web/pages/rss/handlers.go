@@ -3,7 +3,7 @@ package rss
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/web/pages"
+	"github.com/PsionicAlch/course-platform/web/pages"
 	"github.com/go-chi/chi/v5"
 )
 

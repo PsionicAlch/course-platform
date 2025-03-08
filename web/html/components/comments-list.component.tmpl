@@ -3,9 +3,11 @@
     {{ range .Comments }}
       <div class="comment shadow-sm-hover">
         <div class="comment-header">
-          <p><b>{{- .User.Name -}} {{- .User.Surname -}}</b></p>
+          {{ with index $.Users .UserID }}
+            <p><b>{{- .Name -}} {{- .Surname -}}</b></p>
+          {{ end }}
     
-          <p><small>{{- .TimeAgo -}}</small></p>
+          <p><small>{{- time_ago .CreatedAt -}}</small></p>
         </div>
     
         <hr>
@@ -25,9 +27,11 @@
       class="comment shadow-sm-hover"
     >
       <div class="comment-header">
-        <p><b>{{- .User.Name -}} {{- .User.Surname -}}</b></p>
+        {{ with index $.Users .UserID }}
+          <p><b>{{- .Name -}} {{- .Surname -}}</b></p>
+        {{ end }}
 
-        <p><small>{{- .TimeAgo -}}</small></p>
+        <p><small>{{- time_ago .CreatedAt -}}</small></p>
       </div>
 
       <hr>

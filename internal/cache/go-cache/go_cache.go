@@ -1,7 +1,7 @@
 package gocache
 
 import (
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/course-platform/internal/utils"
 	"github.com/patrickmn/go-cache"
 )
 

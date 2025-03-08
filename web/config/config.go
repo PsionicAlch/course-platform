@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/PsionicAlch/psionicalch-home/pkg/envloader"
-	"github.com/PsionicAlch/psionicalch-home/pkg/envloader/validators"
+	"github.com/PsionicAlch/course-platform/pkg/envloader"
+	"github.com/PsionicAlch/course-platform/pkg/envloader/validators"
 )
 
 const (

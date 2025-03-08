@@ -3,9 +3,9 @@ package authors
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/web/pages"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/authors/courses"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/authors/tutorials"
+	"github.com/PsionicAlch/course-platform/web/pages"
+	"github.com/PsionicAlch/course-platform/web/pages/authors/courses"
+	"github.com/PsionicAlch/course-platform/web/pages/authors/tutorials"
 	"github.com/go-chi/chi/v5"
 )
 

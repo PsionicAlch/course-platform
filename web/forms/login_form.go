@@ -3,8 +3,8 @@ package forms
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/web/forms/validators"
-	"github.com/PsionicAlch/psionicalch-home/web/html"
+	"github.com/PsionicAlch/course-platform/web/forms/validators"
+	"github.com/PsionicAlch/course-platform/web/html"
 )
 
 func NewLoginForm(r *http.Request) *GenericForm {

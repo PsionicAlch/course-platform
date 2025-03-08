@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/database/sqlite_database/internal"
 	"modernc.org/sqlite"
 	sqlite3 "modernc.org/sqlite/lib"
 )

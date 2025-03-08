@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/web/html"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/render"
+	"github.com/PsionicAlch/course-platform/internal/utils"
+	"github.com/PsionicAlch/course-platform/web/html"
 )
 
 func RSSFeed(loggers utils.Loggers, db database.Database, renderer render.Renderer) func() (string, error) {

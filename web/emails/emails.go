@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/email"
-	smtp_email_client "github.com/PsionicAlch/psionicalch-home/internal/email/clients/smtp"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/web/config"
-	"github.com/PsionicAlch/psionicalch-home/web/html"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/email"
+	smtp_email_client "github.com/PsionicAlch/course-platform/internal/email/clients/smtp"
+	"github.com/PsionicAlch/course-platform/internal/render"
+	"github.com/PsionicAlch/course-platform/internal/utils"
+	"github.com/PsionicAlch/course-platform/web/config"
+	"github.com/PsionicAlch/course-platform/web/html"
 )
 
 type Emails struct {

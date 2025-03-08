@@ -3,10 +3,10 @@ package profile
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/web/pages"
-	affiliatehistory "github.com/PsionicAlch/psionicalch-home/web/pages/profile/affiliate-history"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/profile/courses"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/profile/tutorials"
+	"github.com/PsionicAlch/course-platform/web/pages"
+	affiliatehistory "github.com/PsionicAlch/course-platform/web/pages/profile/affiliate-history"
+	"github.com/PsionicAlch/course-platform/web/pages/profile/courses"
+	"github.com/PsionicAlch/course-platform/web/pages/profile/tutorials"
 	"github.com/go-chi/chi/v5"
 )
 

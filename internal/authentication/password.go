@@ -6,7 +6,7 @@ import (
 	"encoding/gob"
 	"runtime"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/course-platform/internal/utils"
 	"golang.org/x/crypto/argon2"
 )
 

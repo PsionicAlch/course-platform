@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/PsionicAlch/psionicalch-home/pkg/envloader/validators"
+	"github.com/PsionicAlch/course-platform/pkg/envloader/validators"
 	"github.com/joho/godotenv"
 )
 

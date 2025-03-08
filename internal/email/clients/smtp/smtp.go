@@ -3,7 +3,7 @@ package smtp_email_client
 import (
 	"net/smtp"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/course-platform/internal/utils"
 )
 
 type SMTPEmailClient struct {

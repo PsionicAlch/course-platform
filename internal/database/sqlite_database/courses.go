@@ -3,8 +3,8 @@ package sqlite_database
 import (
 	"database/sql"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/database/sqlite_database/internal"
 )
 
 func (db *SQLiteDatabase) AdminGetCourses(term string, published *bool, authorId *string, boughtBy, keyword string, page, elements uint) ([]*models.CourseModel, error) {

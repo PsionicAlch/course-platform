@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
+	"github.com/PsionicAlch/course-platform/internal/render"
 )
 
 type TemplateCache map[string]*template.Template

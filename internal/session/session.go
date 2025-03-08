@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/course-platform/internal/utils"
 	"github.com/alexedwards/scs/v2"
 	"github.com/alexedwards/scs/v2/memstore"
 )

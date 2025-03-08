@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/middleware"
-	"github.com/PsionicAlch/psionicalch-home/web/pages"
+	"github.com/PsionicAlch/course-platform/internal/middleware"
+	"github.com/PsionicAlch/course-platform/web/pages"
 	"github.com/go-chi/chi/v5"
 )
 

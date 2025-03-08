@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
 )
 
 type BaseEmail struct {

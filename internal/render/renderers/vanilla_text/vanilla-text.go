@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
+	"github.com/PsionicAlch/course-platform/internal/render"
 )
 
 type VanillaTextRenderer struct {

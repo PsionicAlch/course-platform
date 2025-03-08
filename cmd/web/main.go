@@ -1,6 +1,6 @@
 package main
 
-import "github.com/PsionicAlch/psionicalch-home/web"
+import "github.com/PsionicAlch/course-platform/web"
 
 func main() {
 	web.StartWeb()

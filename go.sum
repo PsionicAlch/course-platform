@@ -3,8 +3,6 @@ github.com/AfterShip/email-verifier v1.4.1/go.mod h1:AcFyA5b7X6L4l5dBuemWBSh8mq7
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/toml v1.4.0 h1:kuoIxZQy2WRRk1pttg9asf+WVv6tWQuBNVmK8+nqPr0=
 github.com/BurntSushi/toml v1.4.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
-github.com/PsionicAlch/sitemapper v0.0.0-20250118164321-09c148941211 h1:sqSJ43IB6ccxCV+ilDaJ4BdzIIWo2JaY+01AVxZGeDs=
-github.com/PsionicAlch/sitemapper v0.0.0-20250118164321-09c148941211/go.mod h1:xKC9s/BSxqZWMYs5cnfHAqrUuHT5HP748QLZC0khZH0=
 github.com/PsionicAlch/sitemapper v1.0.0 h1:u1i9HM7rHz3TZat3vwZ92OsTx0LwOs1VT3p/8GiDrds=
 github.com/PsionicAlch/sitemapper v1.0.0/go.mod h1:xKC9s/BSxqZWMYs5cnfHAqrUuHT5HP748QLZC0khZH0=
 github.com/TwiN/go-away v1.6.14 h1:gjFP+6/A36gmj0NpYX0Sz9hrdU0KtHwtNWYnsJgV4fo=

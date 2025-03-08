@@ -3,8 +3,8 @@ package internal
 import (
 	"database/sql"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
 	"modernc.org/sqlite"
 	sqlite3 "modernc.org/sqlite/lib"
 )

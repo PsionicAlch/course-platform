@@ -1,6 +1,6 @@
 package html
 
-import "github.com/PsionicAlch/psionicalch-home/internal/database/models"
+import "github.com/PsionicAlch/course-platform/internal/database/models"
 
 type BasePage struct {
 	Navbar    *NavbarComponent

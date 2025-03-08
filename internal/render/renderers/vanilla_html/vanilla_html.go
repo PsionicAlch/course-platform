@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
-	"github.com/PsionicAlch/psionicalch-home/internal/session"
+	"github.com/PsionicAlch/course-platform/internal/render"
+	"github.com/PsionicAlch/course-platform/internal/session"
 )
 
 type VanillaHTMLRenderer struct {

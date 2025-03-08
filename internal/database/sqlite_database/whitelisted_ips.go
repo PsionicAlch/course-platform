@@ -1,9 +1,9 @@
 package sqlite_database
 
 import (
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/database/sqlite_database/internal"
 )
 
 func (db *SQLiteDatabase) AddIPAddress(userId, ipAddr string) error {

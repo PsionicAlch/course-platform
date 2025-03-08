@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/PsionicAlch/psionicalch-home/web/forms/validators"
+	"github.com/PsionicAlch/course-platform/web/forms/validators"
 )
 
 // TODO: Move to internal

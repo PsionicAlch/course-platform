@@ -29,7 +29,7 @@ All the configuration for this project lives in a .env file. You can copy the fo
 ```env
 PORT=8080
 ENVIRONMENT=development
-DOMAIN_NAME=localhosh
+DOMAIN_NAME=localhost
 
 NOTIFICATION_COOKIE_NAME=notifs
 AUTH_COOKIE_NAME=auth
@@ -149,3 +149,88 @@ make run
 ```
 
 This will build the project and run it.
+
+## How to write a tutorial?
+
+To write a tutorial you will need to create a Markdown file under ./web/content/tutorials. The name you give your Markdown file does not matter at all so you can use whatever works best for. This project uses FrontMatter for setting file based metadata so your file should always start with something like this:
+
+```markdown
+---
+title: "A SEO FRIENDLY TITLE FOR YOUR TUTORIAL"
+description: "A SEO FRIENDLY SHORT DESCRIPTION OF YOUR TUTORIAL"
+thumbnail_url: "THE EXACT URL PATH FOR YOUR TUTORIAL'S THUMBNAIL IMAGE"
+banner_url: "THE EXACT URL PATH FOR YOUR TUTORIAL'S BANNER IMAGE"
+keywords: ["THE LIST OF SEO KEYWORDS YOU WANT YOUR TUTORIAL TO HAVE"]
+key: "A UNIQUE STRING TO ASSOCIATE WITH THIS SPECIFIC TUTORIAL"
+---
+```
+
+You can generate a key using the following command: ```make generate-file-key```. Each file key should be unique because it is used in the database to uniquely identify each tutorial. If two or more tutorials share the same file key they will override each other in the database.
+
+The rest of the tutorial can be written in plain Markdown. Images are supported but you will need to provide the exact URL path to the image. The reason for this is so that you can use images that aren't hosted by you. You can also write code blocks and they will be properly sytnax highlighted using [highligh.js](https://highlightjs.org/).
+
+Once your tutorial has been written you can load it into the database with the following command: ```make load-content```. The tutorial will be set to "unpublished" by default without an author so you will need to [publish your tutorial]("") before it's visible.
+
+## How to publish a tutorial?
+
+To publish a your newly created tutorial you will need have an admin account. You can create a new admin account with the following command: ```make new-admin name="YOUR NAME" surname="YOUR SURNAME" email="YOUR EMAIL ADDRESS" password="YOUR PASSWORD"```. After the new admin account has been registered you'll need to login using the email and password you just set.
+
+Now that you're logged into your admin account you'll notice a new "Admin" link in your navbar. You can click on it to go to the admin panel. You'll be redirected to "/admin/users". This is the users administration panel. You'll need to set at least one user to be an author. You can do this by scrolling to the column called "Author". This should currently be a cross to indicate that the user you're looking at is not an author. You can double click the cell to get a dropdown. Select "Author" from the dropdown. If all goes well the user's status should be set to "Author" and you should now see a checkmark.
+
+Next you need to go to the tutorials administration panel. You can do this by clicking on the hamburger icon on the right of your screen. A menu should popup. You will need to click on "Tutorial Managment" to be redirected to the tutorials administration panel. Find the tutorial you want to publish in the table and scroll to the "Published" column. You can double click the cell to get another popup. Select "Published" from the dropdown menu. Lastly scroll to the "Author" column and double click the cell. You should get another dropdown menu. Select an author from the dropdown menu. 
+
+Now that your tutorial has been set to "Published" and have an author you can go to "/tutorials" and you should see your tutorial there.
+
+## How to write a course?
+
+To write your first course you can head over to the ./web/content/courses folder of the source code. 
+
+A course is made up of two parts. The first part is a Markdown file that represents the sales page for your course. The second part is a folder that contains all the Markdown files. Each Markdown files represents an individual chapter of your course. The name of the sales page Markdown file does not matter, nor does the folder that contains the chapters so you can name it whatever works best for you.
+
+The sales page file uses FrontMatter for the file specific metadata. So the start of your file should always contain the following metadata:
+
+```markdown
+---
+title: "A SEO FRIENDLY TITLE OF THE COURSE"
+description: "A SEO FRIENDLY SHORT DESCRIPTION OF THE COURSE"
+thumbnail_url: "THE EXACT URL PATH FOR THE COURSE'S THUMBNAIL IMAGE"
+banner_url: "THE EXACT URL PATH FOR THE COURSE'S BANNER IMAGE"
+keywords: ["THE LIST OF SEO KEYWORDS YOU WANT YOUR COURSE TO HAVE"]
+key: "A UNIQUE STRING TO ASSOCIATE WITH THIS SPECIFIC COURSE"
+---
+```
+
+You can generate a key using the following command: ```make generate-file-key```. Each file key should be unique because it is used in the database to uniquely identify each course and to link the chapter files that are associated with this course. If two or more courses share the same file key they will override each other in the database.
+
+The rest of the file should be used to write an effective sales page for the course. Don't include information like the price of the course nor any links to the buy button since that will automatically be added.
+
+Next up this the chapter files. The name of folder containing the individual chapters doesn't matter. Each chapter files uses FrontMatter for the file specific metadata. So the start of each chapter file should always contain the following metadata:
+
+```markdown
+---
+title: "THE TITLE OF THIS SPECIFIC CHAPTER"
+chapter: "AN INTEGER THAT STATES THE CURRENT CHAPTER NUMBER"
+course_key: "THE FILE KEY OF THE COURSE SALES PAGE FILE THAT THIS CHAPTER IS LINKED TO"
+key: "A UNIQUE STRING TO ASSOCIATE WITH THIS SPECIFIC CHAPTER"
+---
+```
+
+You can generate a key using the following command: ```make generate-file-key```. Each file key should be unique because it is used in the database to uniquely identify each chapter. If two or more chapters share the same file key they will override each other in the database.
+
+This file can contain images and code blocks and the code blocks will be properly sytnax highlighted using [highligh.js](https://highlightjs.org/).
+
+Once your course has been written you can load it into the database with the following command: ```make load-content```. The course will be set to "unpublished" by default without an author so you will need to [publish your course]("") before it's visible.
+
+## How to publish a course?
+
+To publish a your newly created course you will need have an admin account. You can create a new admin account with the following command: ```make new-admin name="YOUR NAME" surname="YOUR SURNAME" email="YOUR EMAIL ADDRESS" password="YOUR PASSWORD"```. After the new admin account has been registered you'll need to login using the email and password you just set.
+
+Now that you're logged into your admin account you'll notice a new "Admin" link in your navbar. You can click on it to go to the admin panel. You'll be redirected to "/admin/users". This is the users administration panel. You'll need to set at least one user to be an author. You can do this by scrolling to the column called "Author". This should currently be a cross to indicate that the user you're looking at is not an author. You can double click the cell to get a dropdown. Select "Author" from the dropdown. If all goes well the user's status should be set to "Author" and you should now see a checkmark.
+
+Next you need to go to the courses administration panel. You can do this by clicking on the hamburger icon on the right of your screen. A menu should popup. You will need to click on "Course Managment" to be redirected to the courses administration panel. Find the course you want to publish in the table and scroll to the "Published" column. You can double click the cell to get another popup. Select "Published" from the dropdown menu. Lastly scroll to the "Author" column and double click the cell. You should get another dropdown menu. Select an author from the dropdown menu. 
+
+Now that your course has been set to "Published" and have an author you can go to "/courses" and you should see your tutorial there.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/PsionicAlch/course-platform/blob/main/LICENSE) file for details.

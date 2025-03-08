@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
 )
 
 // AdminGetComments gets a paginated list of all comments for the admin panel.

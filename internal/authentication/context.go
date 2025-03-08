@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
 )
 
 type ContextKey string

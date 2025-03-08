@@ -3,11 +3,11 @@ package profile
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/web/html"
-	"github.com/PsionicAlch/psionicalch-home/web/pages"
+	"github.com/PsionicAlch/course-platform/internal/authentication"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/utils"
+	"github.com/PsionicAlch/course-platform/web/html"
+	"github.com/PsionicAlch/course-platform/web/pages"
 	"github.com/justinas/nosurf"
 )
 

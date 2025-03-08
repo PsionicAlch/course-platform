@@ -7,8 +7,8 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "modernc.org/sqlite"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/course-platform/internal/database/sqlite_database"
+	"github.com/PsionicAlch/course-platform/internal/utils"
 )
 
 func main() {

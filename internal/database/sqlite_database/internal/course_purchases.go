@@ -3,7 +3,7 @@ package internal
 import (
 	"database/sql"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database"
 )
 
 // HasUserPurchasedCourse checks if there is a database row that indicates the user has purchased

@@ -1,4 +1,4 @@
-module github.com/PsionicAlch/psionicalch-home
+module github.com/PsionicAlch/course-platform
 
 go 1.23.4
 

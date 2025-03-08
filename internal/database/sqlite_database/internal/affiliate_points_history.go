@@ -1,6 +1,6 @@
 package internal
 
-import "github.com/PsionicAlch/psionicalch-home/internal/database"
+import "github.com/PsionicAlch/course-platform/internal/database"
 
 // RegisterAffiliatePointsChange adds a new row to the affiliate_points_history table in a way that works with a normal
 // database connection or a database transaction.

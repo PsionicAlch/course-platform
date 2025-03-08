@@ -3,14 +3,14 @@ package admin
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/web/pages"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/comments"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/courses"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/discounts"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/purchases"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/refunds"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/tutorials"
-	"github.com/PsionicAlch/psionicalch-home/web/pages/admin/users"
+	"github.com/PsionicAlch/course-platform/web/pages"
+	"github.com/PsionicAlch/course-platform/web/pages/admin/comments"
+	"github.com/PsionicAlch/course-platform/web/pages/admin/courses"
+	"github.com/PsionicAlch/course-platform/web/pages/admin/discounts"
+	"github.com/PsionicAlch/course-platform/web/pages/admin/purchases"
+	"github.com/PsionicAlch/course-platform/web/pages/admin/refunds"
+	"github.com/PsionicAlch/course-platform/web/pages/admin/tutorials"
+	"github.com/PsionicAlch/course-platform/web/pages/admin/users"
 	"github.com/go-chi/chi/v5"
 )
 

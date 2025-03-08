@@ -3,8 +3,8 @@ package sqlite_database
 import (
 	"database/sql"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/sqlite_database/internal"
 )
 
 type intermediate_tutorial struct {

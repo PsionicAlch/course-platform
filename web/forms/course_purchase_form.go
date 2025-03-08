@@ -7,10 +7,10 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/payments"
-	"github.com/PsionicAlch/psionicalch-home/web/forms/validators"
-	"github.com/PsionicAlch/psionicalch-home/web/html"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/payments"
+	"github.com/PsionicAlch/course-platform/web/forms/validators"
+	"github.com/PsionicAlch/course-platform/web/html"
 )
 
 func ValidateAffiliateCode(user *models.UserModel, payment *payments.Payments) validators.ValidationFunc {

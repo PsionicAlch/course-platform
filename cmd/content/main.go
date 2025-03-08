@@ -3,9 +3,9 @@ package main
 import (
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/web/content"
+	"github.com/PsionicAlch/course-platform/internal/database/sqlite_database"
+	"github.com/PsionicAlch/course-platform/internal/utils"
+	"github.com/PsionicAlch/course-platform/web/content"
 )
 
 func main() {

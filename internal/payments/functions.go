@@ -5,7 +5,7 @@ import (
 
 	"math/rand"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database"
 	"github.com/oklog/ulid/v2"
 )
 

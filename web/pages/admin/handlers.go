@@ -3,8 +3,8 @@ package admin
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/web/pages"
+	"github.com/PsionicAlch/course-platform/internal/utils"
+	"github.com/PsionicAlch/course-platform/web/pages"
 )
 
 // TODO: Reset Cache on POST requests

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
+	"github.com/PsionicAlch/course-platform/internal/authentication"
 )
 
 func main() {

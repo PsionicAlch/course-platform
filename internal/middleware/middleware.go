@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/render"
-	"github.com/PsionicAlch/psionicalch-home/web/html"
+	"github.com/PsionicAlch/course-platform/internal/authentication"
+	"github.com/PsionicAlch/course-platform/internal/render"
+	"github.com/PsionicAlch/course-platform/web/html"
 	"github.com/go-chi/httprate"
 	"github.com/justinas/nosurf"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/course-platform/internal/utils"
 )
 
 type SecureCookieKeys struct {
@@ -19,7 +19,7 @@ func CreateSecureCookieKeys(key string) (*SecureCookieKeys, error) {
 		return new(SecureCookieKeys), nil
 	}
 
-	hashKey, blockKey, found := strings.Cut(key, "$")
+	hashKey, blockKey, found := strings.Cut(key, "|")
 	if !found {
 		return nil, ErrInvalidSecureCookieKey
 	}
@@ -53,7 +53,7 @@ func GenerateKeyString() (string, error) {
 		return "", fmt.Errorf("failed to generate block key: %w", err)
 	}
 
-	return fmt.Sprintf("%s$%s", hashKey, blockKey), nil
+	return fmt.Sprintf("%s|%s", hashKey, blockKey), nil
 }
 
 func GenerateKey(length uint) (string, error) {

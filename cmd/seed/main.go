@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/course-platform/internal/authentication"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/sqlite_database"
+	"github.com/PsionicAlch/course-platform/internal/utils"
 )
 
 type DatabaseSeeder struct {

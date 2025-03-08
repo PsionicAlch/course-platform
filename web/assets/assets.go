@@ -9,8 +9,8 @@ import (
 	"io/fs"
 	"strings"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/bucket"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
+	"github.com/PsionicAlch/course-platform/internal/bucket"
+	"github.com/PsionicAlch/course-platform/internal/utils"
 )
 
 //go:embed */**

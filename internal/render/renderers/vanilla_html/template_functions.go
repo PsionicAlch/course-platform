@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/xeonx/timeago"
 )
 
 // CreateFuncMap constructs a function map for all HTML based functions.
@@ -19,6 +21,7 @@ func CreateFuncMap(cdnURL string) template.FuncMap {
 		"current_time":            CurrentTime,
 		"url_escape":              URLEscape,
 		"assets":                  Assets(cdnURL),
+		"time_ago":                TimeAgo,
 	}
 
 	return funcMap
@@ -110,4 +113,8 @@ func Assets(cdnURL string) func(path string) string {
 
 		return cdnURL + path
 	}
+}
+
+func TimeAgo(t time.Time) string {
+	return timeago.English.Format(t)
 }

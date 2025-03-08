@@ -1,6 +1,6 @@
 package payments
 
-import "github.com/PsionicAlch/psionicalch-home/internal/database/models"
+import "github.com/PsionicAlch/course-platform/internal/database/models"
 
 // Emailer represents the expected email functions.
 type Emailer interface {

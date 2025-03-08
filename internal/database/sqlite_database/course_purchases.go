@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/models"
-	"github.com/PsionicAlch/psionicalch-home/internal/database/sqlite_database/internal"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/database/models"
+	"github.com/PsionicAlch/course-platform/internal/database/sqlite_database/internal"
 )
 
 // AdminGetCoursePurchases retrieves all course purchases according to the search parameters in a paginated fashion.

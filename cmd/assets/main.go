@@ -3,11 +3,11 @@ package main
 import (
 	"time"
 
-	awss3 "github.com/PsionicAlch/psionicalch-home/internal/bucket/aws_s3"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/pkg/envloader"
-	"github.com/PsionicAlch/psionicalch-home/pkg/envloader/validators"
-	"github.com/PsionicAlch/psionicalch-home/web/assets"
+	awss3 "github.com/PsionicAlch/course-platform/internal/bucket/aws_s3"
+	"github.com/PsionicAlch/course-platform/internal/utils"
+	"github.com/PsionicAlch/course-platform/pkg/envloader"
+	"github.com/PsionicAlch/course-platform/pkg/envloader/validators"
+	"github.com/PsionicAlch/course-platform/web/assets"
 )
 
 type AssetPipeline struct {

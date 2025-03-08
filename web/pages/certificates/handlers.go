@@ -3,11 +3,11 @@ package certificates
 import (
 	"net/http"
 
-	"github.com/PsionicAlch/psionicalch-home/internal/authentication"
-	"github.com/PsionicAlch/psionicalch-home/internal/database"
-	"github.com/PsionicAlch/psionicalch-home/internal/utils"
-	"github.com/PsionicAlch/psionicalch-home/web/html"
-	"github.com/PsionicAlch/psionicalch-home/web/pages"
+	"github.com/PsionicAlch/course-platform/internal/authentication"
+	"github.com/PsionicAlch/course-platform/internal/database"
+	"github.com/PsionicAlch/course-platform/internal/utils"
+	"github.com/PsionicAlch/course-platform/web/html"
+	"github.com/PsionicAlch/course-platform/web/pages"
 	"github.com/go-chi/chi/v5"
 	"github.com/justinas/nosurf"
 )

@@ -1,6 +1,6 @@
 package html
 
-import "github.com/PsionicAlch/psionicalch-home/internal/database/models"
+import "github.com/PsionicAlch/course-platform/internal/database/models"
 
 type NavbarComponent struct {
 	User *models.UserModel
@@ -135,9 +135,9 @@ type TutorialsListComponent struct {
 }
 
 type CommentsListComponent struct {
-	Comments    []*models.CommentModel
-	LastComment *models.CommentModel
-	// TODO: ADD STUFFS
+	Comments     []*models.CommentModel
+	LastComment  *models.CommentModel
+	Users        map[string]*models.UserModel
 	QueryURL     string
 	ErrorMessage string
 }
