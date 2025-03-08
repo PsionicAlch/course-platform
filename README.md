@@ -33,7 +33,7 @@ DOMAIN_NAME=localhost
 
 NOTIFICATION_COOKIE_NAME=notifs
 AUTH_COOKIE_NAME=auth
-AUTH_TOKEN_LIFETIME=302400
+AUTH_TOKEN_LIFETIME=43200
 EMAIL_TOKEN_LIFETIME=30
 CURRENT_SECURE_COOKIE_KEY=
 PREVIOUS_SECURE_COOKIE_KEY=
@@ -64,7 +64,7 @@ BUCKET_NAME=
 
 **AUTH_COOKIE_NAME**: The name you want the authentication cookie to have.
 
-**AUTH_TOKEN_LIFETIME**: How long you want an authentication token to be valid for. This number is in minutes: 60 * 24 * 7 * 30 = 302400.
+**AUTH_TOKEN_LIFETIME**: How long you want an authentication token to be valid for. This number is in minutes: 60 minutes per hour * 24 hours per day * 30 days = 43200.
 
 **EMAIL_TOKEN_LIFETIME**: How long you want an email token to be valid for (email tokens are used when resetting a user's password): This number is in minutes.
 
