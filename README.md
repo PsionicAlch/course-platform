@@ -1,6 +1,6 @@
 # Creating a course platform from scratch with Golang, Stripe, and AWS
 
-![Home Page](https://github.com/PsionicAlch/course-platform/screenshots/homepage.png)
+![Home Page](https://github.com/PsionicAlch/course-platform/blob/main/screenshots/homepage.png)
 
 ## Why This Project Stands Out
 
@@ -75,19 +75,19 @@ If you’re a Go developer or someone looking to see how real-world applications
 
 This project isn't just about writing code—it's about engineering a real-world solution. Whether you're looking to learn Golang, explore scalable system design, or just see what a true end-to-end application looks like without cutting corners, this project delivers.
 
-![Administration Page](https://github.com/PsionicAlch/course-platform/screenshots/adminpage.png)
+![Administration Page](https://github.com/PsionicAlch/course-platform/blob/main/screenshots/adminpage.png)
 
-![Login Page](https://github.com/PsionicAlch/course-platform/screenshots/loginpage.png)
+![Login Page](https://github.com/PsionicAlch/course-platform/blob/main/screenshots/loginpage.png)
 
-![Lighthouse Performance](https://github.com/PsionicAlch/course-platform/screenshots/performancepage.png)
+![Lighthouse Performance](https://github.com/PsionicAlch/course-platform/blob/main/screenshots/performancepage.png)
 
-![Course Purchase Page](https://github.com/PsionicAlch/course-platform/screenshots/purchasepage.png)
+![Course Purchase Page](https://github.com/PsionicAlch/course-platform/blob/main/screenshots/purchasepage.png)
 
-![RSS Feed](https://github.com/PsionicAlch/course-platform/screenshots/rsspage.png)
+![RSS Feed](https://github.com/PsionicAlch/course-platform/blob/main/screenshots/rsspage.png)
 
-![User Settings Page](https://github.com/PsionicAlch/course-platform/screenshots/settingspage.png)
+![User Settings Page](https://github.com/PsionicAlch/course-platform/blob/main/screenshots/settingspage.png)
 
-![Sitemap](https://github.com/PsionicAlch/course-platform/screenshots/sitemappage.png)
+![Sitemap](https://github.com/PsionicAlch/course-platform/blob/main/screenshots/sitemappage.png)
 
 ## How to get this project running on your local device?
 
