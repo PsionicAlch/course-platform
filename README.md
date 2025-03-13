@@ -1,6 +1,57 @@
 # Creating a course platform from scratch with Golang, Stripe, and AWS
 
-The goal of this project was originally to host Golang courses on creating real world software. The first course was intended to be on creating a course platform from scratch. As such a lot of the functionality of this project was created from the ground up for the sake of teaching how specific features work without hiding any of the implementation details behind "just use this library". This includes the authentication system which most developers say you shouldn't create from scratch but I completely disagree.
+## Why This Project Stands Out
+
+Building a course platform isn’t the challenge — picking up a ready-made framework and slapping together some third-party services can get you 80% of the way there. But this project is different.
+
+This is a fully custom-built course platform, crafted from the ground up using Golang, AWS, and Stripe to handle everything from authentication to payments, asset management, and dynamic content generation. Unlike most platforms that lean heavily on third-party authentication, this project includes a modular authentication system that can be reused across different projects with minimal changes. Every piece of this system was built with scalability, security, and real-world production readiness in mind.
+
+If you’re a Go developer or someone looking to see how real-world applications can be built without hiding behind "just use this library," this is the project for you.
+
+## Key Features
+
+### 🚀 Built from Scratch Authentication System
+
+- No third-party auth providers—everything is handled internally.
+- Secure user login and signup with encrypted session cookies.
+- Password reset with email verification.
+- Suspicious activity detection, notifying users of unusual logins.
+- Modular enough to be extracted and used in other projects.
+
+### 💰 Full Stripe Integration
+
+- Handle course purchases seamlessly with Stripe.
+- Built-in refund and dispute management.
+- Webhook handling to update user access in real time.
+
+### 🏗 AWS-Powered Infrastructure
+
+- AWS S3 for storing assets, ensuring efficient and scalable storage.
+- AWS CloudFront as a CDN, making content delivery lightning-fast.
+- Automatic asset syncing with simple CLI commands.
+
+### ⚡ Blazing Fast Performance (100/100 Lighthouse Score)
+
+- Server-side rendering for near-instant load times.
+- Optimized asset delivery through CloudFront.
+- Efficient database queries to minimize response times.
+
+### 📡 Full RSS Feed Support
+
+- Users can subscribe to an RSS feed for new tutorials and courses.
+- Updates are generated dynamically based on available content.
+
+### 📜 Auto-Generated Sitemaps
+
+- The platform dynamically generates a full sitemap at runtime.
+- Ensures that all public URLs are indexed correctly for SEO.
+
+### 🎓 User Certification System
+
+- Users receive a PDF certificate upon course completion.
+- Certificates are generated client-side, reducing server load.
+
+This project isn't just about writing code—it's about engineering a real-world solution. Whether you're looking to learn Golang, explore scalable system design, or just see what a true end-to-end application looks like without cutting corners, this project delivers.
 
 ## How to get this project running on your local device?
 
