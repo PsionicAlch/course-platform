@@ -1,5 +1,7 @@
 # Creating a course platform from scratch with Golang, Stripe, and AWS
 
+![Home Page](https://github.com/PsionicAlch/course-platform/screenshots/homepage.png)
+
 ## Why This Project Stands Out
 
 Building a course platform isn’t the challenge — picking up a ready-made framework and slapping together some third-party services can get you 80% of the way there. But this project is different.
@@ -43,7 +45,7 @@ If you’re a Go developer or someone looking to see how real-world applications
 
 ### 📜 Auto-Generated Sitemaps
 
-- The platform dynamically generates a full sitemap at runtime.
+- The platform dynamically generates a full sitemap at runtime using [sitemapper](https://github.com/PsionicAlch/sitemapper).
 - Ensures that all public URLs are indexed correctly for SEO.
 
 ### 🎓 User Certification System
@@ -51,7 +53,41 @@ If you’re a Go developer or someone looking to see how real-world applications
 - Users receive a PDF certificate upon course completion.
 - Certificates are generated client-side, reducing server load.
 
+### 🛠 Admin Dashboard
+
+- Fully functional admin panel to manage all aspects of the platform.
+- Control comments, courses, discounts, purchases, refunds, tutorials, and users from one place.
+- Designed for scalability and ease of use.
+
+### 🌟 Affiliate Program
+
+- Users can share their affiliate code to earn discounts on future course purchases.
+- Incentivizes engagement and word-of-mouth marketing.
+- Fully integrated with Stripe for seamless discount handling and price calculations.
+
+### 🔧 Comprehensive User Settings Page
+
+- Users can update their first and last names.
+- Change their email address and password.
+- Manage their whitelisted IP addresses for added security.
+- Request refunds directly from their settings.
+- Permanently delete their profile if needed.
+
 This project isn't just about writing code—it's about engineering a real-world solution. Whether you're looking to learn Golang, explore scalable system design, or just see what a true end-to-end application looks like without cutting corners, this project delivers.
+
+![Administration Page](https://github.com/PsionicAlch/course-platform/screenshots/adminpage.png)
+
+![Login Page](https://github.com/PsionicAlch/course-platform/screenshots/loginpage.png)
+
+![Lighthouse Performance](https://github.com/PsionicAlch/course-platform/screenshots/performancepage.png)
+
+![Course Purchase Page](https://github.com/PsionicAlch/course-platform/screenshots/purchasepage.png)
+
+![RSS Feed](https://github.com/PsionicAlch/course-platform/screenshots/rsspage.png)
+
+![User Settings Page](https://github.com/PsionicAlch/course-platform/screenshots/settingspage.png)
+
+![Sitemap](https://github.com/PsionicAlch/course-platform/screenshots/sitemappage.png)
 
 ## How to get this project running on your local device?
 

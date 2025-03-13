@@ -131,6 +131,7 @@ type CoursesCoursePage struct {
 	Course      *models.CourseModel
 	Author      *models.UserModel
 	Chapters    int
+	Keywords    []string
 }
 
 type CoursesPurchasesPage struct {

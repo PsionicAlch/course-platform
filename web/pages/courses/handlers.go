@@ -125,6 +125,21 @@ func (h *Handlers) CourseGet(w http.ResponseWriter, r *http.Request) {
 
 	pageData.Chapters = chapters
 
+	keywords, err := h.Database.GetAllKeywordsForCourse(course.ID)
+	if err != nil {
+		h.ErrorLog.Printf("Failed to get all keywords for course \"%s\": %s\n", course.Title, err)
+
+		if err := h.Renderers.Page.RenderHTML(w, r.Context(), "errors-500", html.Errors500Page{
+			BasePage: html.NewBasePage(user, nosurf.Token(r)),
+		}, http.StatusInternalServerError); err != nil {
+			h.ErrorLog.Println(err)
+		}
+
+		return
+	}
+
+	pageData.Keywords = keywords
+
 	var authorID string
 	if course.AuthorID.Valid {
 		authorID = course.AuthorID.String
